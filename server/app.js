@@ -10,7 +10,7 @@ console.log('selected server port: ', port);
 const app = express();
 
 app.get('/', function (req, res) {
-  res.send({});
+  res.sendFile(path.resolve(__dirname + '/../build/index.html'));
 });
 
 app.set('port', port);
