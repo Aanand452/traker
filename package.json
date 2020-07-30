@@ -1,0 +1,16 @@
+{
+  "name": "salesforce-reporter-app-master",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.17.1"
+  },
+  "scripts": {
+    "run:dev": "nodemon ./server/app.js",
+    "run:server": "node ./server/app.js"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.4"
+  }
+}
