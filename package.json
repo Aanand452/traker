@@ -8,7 +8,7 @@
   },
   "scripts": {
     "run:dev": "nodemon ./server/app.js",
-    "run:server": "node ./server/app.js"
+    "start": "node ./server/app.js"
   },
   "devDependencies": {
     "nodemon": "^2.0.4"
