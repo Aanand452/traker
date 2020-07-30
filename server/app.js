@@ -3,15 +3,17 @@ const http = require('http');
 const path = require('path');
 const bodyParser = require('body-parser');
 
-var env = process.env.NODE_ENV || 'development';
+const port = process.env.PORT || 3000;
+const env = process.env.NODE_ENV || 'development';
 
-var app = express();
+console.log('selected server port: ', port);
+const app = express();
 
 app.get('/', function (req, res) {
   res.send({});
 });
 
-app.set('port', 80);
+app.set('port', port);
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
 
