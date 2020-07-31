@@ -11548,6 +11548,7 @@ a.slds-button--inverse:focus{
 }
 .slds-global-header__item{
   padding:0 1rem;
+  display: flex;
 }
 .slds-global-header__item_search, .slds-global-header__item--search{
   -webkit-box-flex:0;
@@ -11567,7 +11568,7 @@ a.slds-button--inverse:focus{
   fill:#b0adab;
 }
 .slds-global-header__logo{
-  width:12.5rem;
+  width:4.5rem;
   height:2.5rem;
   background-image:url("/assets/images/logo-noname.svg");
   background-size:contain;
@@ -11868,10 +11869,8 @@ a.slds-button--inverse:focus{
   display:flex;
   height:2.5rem;
   background-color:white;
-  border-bottom:3px solid #1589ee;
   color:#080707;
   position:relative;
-  padding:0 0 0 1.5rem;
 }
 .slds-context-bar__primary, .slds-context-bar__secondary, .slds-context-bar__tertiary{
   display:-webkit-box;

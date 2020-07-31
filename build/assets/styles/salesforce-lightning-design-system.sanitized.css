@@ -3118,8 +3118,6 @@ a.slds-button--inverse:focus {
   -ms-flex-align: center;
   align-items: center;
 }
-.slds-file-selector_files {
-}
 .slds-file-selector_files .slds-file-selector__body {
   display: -webkit-box;
   display: -ms-flexbox;
