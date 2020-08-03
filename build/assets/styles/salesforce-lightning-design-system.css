@@ -384,6 +384,7 @@ a:active{
 a,
 button{
   cursor:pointer;
+  margin: auto;
 }
 
 b,
@@ -11529,6 +11530,7 @@ a.slds-button--inverse:focus{
 }
 .slds-global-header_container{
   width:100%;
+  border-bottom: 3px solid #1589ee;
 }
 .slds-global-header_container .slds-assistive-text_focus,
 .slds-global-header_container .slds-assistive-text--focus{
@@ -11540,8 +11542,6 @@ a.slds-button--inverse:focus{
   background:white;
   -webkit-box-shadow:0 2px 4px rgba(0, 0, 0, 0.07);
           box-shadow:0 2px 4px rgba(0, 0, 0, 0.07);
-  padding:0.5rem 0;
-  height:3.125rem;
   -webkit-box-align:center;
       -ms-flex-align:center;
           align-items:center;
@@ -11867,7 +11867,7 @@ a.slds-button--inverse:focus{
   display:-webkit-box;
   display:-ms-flexbox;
   display:flex;
-  height:2.5rem;
+  height:3.125rem;
   background-color:white;
   color:#080707;
   position:relative;
