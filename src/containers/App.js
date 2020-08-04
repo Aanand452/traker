@@ -1,12 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import Header from '../components/Header';
-import ComponentHeader from '../containers/ComponentHeader';
-import FilteredProductList from '../containers/FilteredProductList';
-import ProductsFilterBar from '../containers/ProductsFilterBar';
-import PricelistUpload from '../containers/PricelistUpload';
 import NotFoundPage from '../containers/NotFoundPage';
-import Auth from '../containers/Auth';
 import { toggleSettingsMenu } from '../actions';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import { css } from 'glamor';
@@ -40,39 +34,23 @@ const listStyle = css({
 
 function List() {
   return (
-    <div className={`${listStyle}`}>
-      <ComponentHeader />
-      <div
-        style={{ minHeight: '300px' }}
-        className={`slds-text-color_default slds-panel
-        slds-p-horizontal_large slds-p-top_xx-small slds-p-bottom_medium
-        slds-m-vertical_medium slds-m-horizontal_xx-large ${appStyle}`}
-      >
-        <ProductsFilterBar />
-        <FilteredProductList />
-      </div>
-    </div>
-  );
-}
+    <p>What's up bro</p>
+  )
+} 
 
 function App({closeSettingsMenu, user}) {
-  if (user) {
-    return (
-      <Router>
-        <div className="app" onClick={closeSettingsMenu}>
-          <Header />
-          <Switch>
-            <Route exact path="/" component={List} />
-            <Route exact path="/home" component={List} />
-            <Route exact path="/upload" component={PricelistUpload} />
-            <Route exact path="*" component={NotFoundPage} />
-          </Switch>
-        </div>
-      </Router>
-    );
-  } else {
-    return <Auth />;
-  }
+  return (
+    <Router>
+      
+      <div className="app" onClick={closeSettingsMenu}>
+        <Switch>
+          <Route exact path="/" component={List} />
+          <Route exact path="/home" component={List} />
+          <Route exact path="*" component={NotFoundPage} />
+        </Switch>
+      </div>
+    </Router>
+  );
 }
 
 const mapStateToProps = state => {
