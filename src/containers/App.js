@@ -5,6 +5,7 @@ import { toggleSettingsMenu } from '../actions';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import { css } from 'glamor';
 
+import NavBar from '../components/NavBar';
 /**
  * App Container:
  * Handles the app routing and double checks
@@ -34,7 +35,10 @@ const listStyle = css({
 
 function List() {
   return (
-    <p>What's up bro</p>
+    <div>
+      <NavBar />
+      <p>What's up bro</p>
+    </div>
   )
 } 
 
@@ -53,18 +57,4 @@ function App({closeSettingsMenu, user}) {
   );
 }
 
-const mapStateToProps = state => {
-  return {
-    user: state.user
-  };
-};
-
-const mapDispatchToProps = dispatch => {
-  return {
-    closeSettingsMenu() {
-      dispatch(toggleSettingsMenu(false));
-    }
-  };
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(App);
+export default App;
