@@ -13,30 +13,30 @@ import {
 import logo from '@salesforce-ux/design-system/assets/images/logo.svg';
 
 import { NavContainer } from './styles';
-import SARANavigationBarLink from './SARANavigationBarLink';
+import NavigationBarLink from './NavigationBarLink';
 
 const HeaderProfileCustomContent = (props) => (
-	<div id="header-profile-custom-popover-content">
-		<div className="slds-m-around_medium">
-			<div className="slds-tile slds-tile_board slds-m-horizontal_small">
-				<p className="tile__title slds-text-heading_small">User Name</p>
-				<div className="slds-tile__detail">
-					<p className="slds-truncate">
-						<a
-							className="slds-m-right_medium"
-							href="javascript:void(0)"
-							onClick={props.onClick}
-						>
-							Settings
-						</a>
-						<a href="javascript:void(0)" onClick={props.onClick}>
-							Log Out
-						</a>
-					</p>
-				</div>
-			</div>
-		</div>
-	</div>
+  <div id="header-profile-custom-popover-content">
+    <div className="slds-m-around_medium">
+      <div className="slds-tile slds-tile_board slds-m-horizontal_small">
+        <p className="tile__title slds-text-heading_small">User Name</p>
+        <div className="slds-tile__detail">
+            <p className="slds-truncate">
+            <a
+              className="slds-m-right_medium"
+              href="javascript:void(0)"
+              onClick={props.onClick}
+            >
+              Settings
+            </a>
+            <a href="javascript:void(0)" onClick={props.onClick}>
+              Log Out
+            </a>
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
 );
 HeaderProfileCustomContent.displayName = 'HeaderProfileCustomContent';
 
@@ -85,10 +85,10 @@ const NavBar = () => (
           />
         </GlobalNavigationBarRegion>
         <GlobalNavigationBarRegion region="secondary" navigation>
-          <SARANavigationBarLink to="/admin" title="Home" />
-          <SARANavigationBarLink to="/mandatory-1" title="Mandatory 1" />
-          <SARANavigationBarLink to="/mandatory-2" title="Mandatory 2" />
-          <SARANavigationBarLink to="/mandatory-3" title="Mandatory 3" />
+          <NavigationBarLink to="/admin" title="Home" />
+          <NavigationBarLink to="/mandatory-1" title="Mandatory 1" />
+          <NavigationBarLink to="/mandatory-2" title="Mandatory 2" />
+          <NavigationBarLink to="/mandatory-3" title="Mandatory 3" />
         </GlobalNavigationBarRegion>
       </GlobalNavigationBar>
     </IconSettings>
