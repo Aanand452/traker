@@ -13,7 +13,9 @@ function List() {
   return (
     <div>
       <NavBar />
-      <p>What's up bro</p>
+      <div className="slds-m-top_xx-large">
+        <Table />
+      </div>
     </div>
   )
 } 
