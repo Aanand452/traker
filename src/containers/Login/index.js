@@ -9,7 +9,7 @@ const Login = () => {
 
     const login = e => {
       e.preventDefault();
-      history.push('/admin')
+      history.push('/report')
     }
 
     return(

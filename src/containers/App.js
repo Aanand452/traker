@@ -5,8 +5,9 @@ import { toggleSettingsMenu } from '../actions';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import { css } from 'glamor';
 
-import Login from './Login'
+import Login from './Login';
 import NavBar from '../components/NavBar';
+import Mandatory1 from './Mandatory1';
 /**
  * App Container:
  * Handles the app routing and double checks
@@ -50,7 +51,7 @@ function App({closeSettingsMenu, user}) {
       <div className="app" onClick={closeSettingsMenu}>
         <Switch>
           <Route exact path="/" component={Login} />
-          <Route exact path="/admin" component={List} />
+          <Route exact path="/mandatory-1" component={Mandatory1} />
           <Route exact path="/home" component={List} />
           <Route exact path="*" component={NotFoundPage} />
         </Switch>
