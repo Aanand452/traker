@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@reduxjs/toolkit": "^1.4.0",
     "@salesforce-ux/design-system": "^2.12.2",
     "@salesforce/design-system-react": "^0.10.21",
     "autoprefixer": "7.1.6",
