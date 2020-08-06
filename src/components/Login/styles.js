@@ -8,6 +8,7 @@ const SfdcFlexColum = styled.div`
 
 const SfdcFixedLogo = styled.img`
   width: 15rem;
+  padding-bottom: 1rem;
 `;
 
 const SfdcLoginContainer = styled.section`
