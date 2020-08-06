@@ -7,6 +7,8 @@ import { css } from 'glamor';
 
 import Login from './Login'
 import NavBar from '../components/NavBar';
+import Table from '../components/DataTable';
+
 /**
  * App Container:
  * Handles the app routing and double checks
@@ -38,7 +40,9 @@ function List() {
   return (
     <div>
       <NavBar />
-      <p>What's up bro</p>
+      <div className="slds-m-top_xx-large">
+        <Table />
+      </div>
     </div>
   )
 } 
