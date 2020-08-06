@@ -13,6 +13,7 @@ html{
   width: 100%;
   height: 100%;
   overflow-y: scroll;
+
 }
 
 @media print {
@@ -21,41 +22,13 @@ html{
   }
 }
 
-@media (max-width: 767px) {
-  html{
-    background: #fff;
-  }
-  #root{
-    height: calc(100% - 80px);
-  }
-  .app{
-      height: calc(100% - 50px);
-  }
-}
-
-@keyframes fadeIn {
-   from    { max-height: 0px }
-   to      { max-height: 500px }
-}
-
-.fadeIn {
-  max-height: 500px;
-  transition: max-height 0.25s ease-in;
-}
-
 body {
   margin: 0;
   padding: 0;
-  padding-top: 60px;
+  padding-top: 0px;
   width: 100%;
   height: 100%;
-}
-
-input[type='text'],
-input[type='password'],
-input[type='number'],
-textarea {
-  font-size: 16px;
+  
 }
 
 .hidden {
@@ -102,75 +75,24 @@ textarea {
   text-align: left !important;
 }
 
-.chevron-icon {
-  float: right;
+
+/* login */
+.slds-flex_column {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
-.products-container {
-  background: white;
-  padding: 1rem;
-  margin: 1rem 4rem;
+.slds-img-width_15rem {
+  width: 15rem
 }
 
-.slds-text-heading_large {
-  font-weight: 500;
+.slds-heigh_100vh {
+  height: 100vh;
 }
 
-.slds-text-heading_large.responsive {
-  font-size: 2.2vw;
-  line-height: 1.25;
+.slds-login-card-body {
+  width: 20rem;
+  height: 12rem;
 }
-
-@media only screen and (min-width: 1110px) {
-  .slds-text-heading_large.responsive {
-    font-size: 1.5rem;
-  }
-}
-
-.slds-global-header__logo{
-  width: 2.8125rem;
-  line-height: 2.5rem;
-}
-
-/* rc-tooltips fixes */
-.rc-tooltip {
-  opacity: 1 !important;
-  z-index: 9999 !important;
-}
-.rc-tooltip-arrow {
-  display: none !important;
-}
-.rc-tooltip-inner {
-  margin-left: -1.5rem !important;
-  width: auto !important;
-  max-width: 30rem !important;
-  max-height: 12rem !important;
-  overflow: auto;
-  overflow-wrap: break-word;
-  background: #16325c !important;
-  border: 0 !important;
-  border-radius: 0.25rem !important;
-  min-height: 2rem !important;
-  z-index: 6000 !important;
-  box-shadow: 0 2px 3px 0 rgba(0, 0, 0, 0.16) !important;
-}
-.rc-tooltip-inner:before {
-  left: 1.8rem !important;
-  top: 100%;
-  z-index: -1;
-  margin-top: -1.1rem;
-  width: 1rem;
-  height: 1rem;
-  position: absolute;
-  transform: rotate(45deg);
-  content: '';
-  background-color: inherit;
-  left: 50%;
-  bottom: -0.5rem;
-  margin-left: -1.5rem;
-  box-sizing: border-box;
-}
-.rc-tooltip-inner .tooltip-footnote {
-    font-size: 0.65rem;
-    margin-top: 0.5rem;
-}
+/* login */
