@@ -13,6 +13,7 @@ import {
     PageHeader,
     PageHeaderControl
 } from '@salesforce/design-system-react';
+import styled from 'styled-components';
 
 import data from '../../data';
 
@@ -228,12 +229,7 @@ class Table extends Component {
 
 	render() {
 		return (
-			<div
-				style={{
-					width: '100%',
-					marginBottom: '150px',
-				}}
-			>
+			<TableContainer>
 				<IconSettings iconPath="/assets/icons">
 					<PageHeader
 						onRenderActions={this.actions}
@@ -349,9 +345,15 @@ class Table extends Component {
 						/>
 					</DataTable>
 				</IconSettings>
-			</div>
+			</TableContainer>
 		);
 	}
 }
+
+const TableContainer = styled.div`
+	width: 100%;
+	margin-bottom: 150px;
+	margin-top: 5.6rem;
+`;
 
 export default Table;
