@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link, withRouter } from 'react-router-dom';
 
-const SARANavigationBarLink = props => {
+const NavigationBarLink = props => {
   const { title, to, match } = props;
 
   const isActive = () => {
@@ -22,4 +22,4 @@ const SARANavigationBarLink = props => {
   );
 };
 
-export default withRouter(SARANavigationBarLink);
+export default withRouter(NavigationBarLink);
