@@ -13,9 +13,9 @@ import {
     PageHeader,
     PageHeaderControl
 } from '@salesforce/design-system-react';
-import styled from 'styled-components';
 
 import data from '../../data';
+import { TableContainer } from './styles.js';
 
 const CustomDataTableCell = ({ children, ...props }) => (
 	<DataTableCell title={children} {...props}>
@@ -349,11 +349,5 @@ class Table extends Component {
 		);
 	}
 }
-
-const TableContainer = styled.div`
-	width: 100%;
-	margin-bottom: 150px;
-	margin-top: 5.6rem;
-`;
 
 export default Table;

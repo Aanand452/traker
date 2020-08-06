@@ -14,9 +14,9 @@ const SARANavigationBarLink = props => {
   }
 
   return (
-    <li className={`slds-context-bar__item ${isActive() && "slds-is-active"}`}>
+    <li className={`slds-context-bar__item ${isActive() && "slds-is-active"}`} key={`NavLink${title}`}>
       <Link to={to} className="slds-context-bar__label-action" title={title}>
-        <span class="slds-truncate" title={title}>{title}</span>
+        <span className="slds-truncate" title={title}>{title}</span>
       </Link>
     </li>
   );
