@@ -8,6 +8,7 @@ import { SfdcPageAppWrapper } from './styles/page';
 
 import Login from '../components/Login'
 import NavBar from '../components/NavBar';
+import Table from '../components/DataTable';
 
 function List() {
   return (
