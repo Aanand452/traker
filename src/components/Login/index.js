@@ -1,11 +1,15 @@
 import React from 'react';
-
+import {
+  SfdcFlexColum,
+  SfdcFixedLogo,
+  SfdcLoginContainer,
+  SfdcCardLogin
+} from './styles';
 import { useHistory  } from 'react-router-dom'
 
+
 const Login = () => {
-
     const history = useHistory();
-
 
     const login = e => {
       e.preventDefault();
@@ -13,11 +17,11 @@ const Login = () => {
     }
 
     return(
-      <section className="slds-heigh_100vh slds-grid slds-wrap slds-align_absolute-center">
-        <div className="slds-flex_column">
-          <img class="slds-m-bottom_medium slds-img-width_15rem" src="assets/images/logo.svg" alt="Salesforce logo"/>
+      <SfdcLoginContainer className="slds-grid slds-wrap slds-align_absolute-center">
+        <SfdcFlexColum>
+          <SfdcFixedLogo class="slds-m-bottom_medium" src="assets/images/logo.svg" alt="Salesforce logo"/>
           <article className="slds-card">
-            <div className="slds-card__body slds-card__body_inner slds-login-card-body">
+            <SfdcCardLogin className="slds-card__body slds-card__body_inner">
               <form onSubmit={e => login(e)}>
                 <div className="slds-form-element">
                   <label className="slds-form-element__label" htmlFor="text-input-id-1">
@@ -37,14 +41,14 @@ const Login = () => {
                 </div>
                 <button type="submit" className="slds-button slds-button_brand slds-button_stretch slds-m-top_small">Login</button>
               </form>
-            </div>
+            </SfdcCardLogin>
             <footer className="slds-card__footer">
               <a className="slds-card__footer-action" href="#">¿Forgot password?
               </a>
             </footer>
           </article>
-        </div>
-      </section>
+        </SfdcFlexColum>
+      </SfdcLoginContainer>
     )
 }
 
