@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@reduxjs/toolkit": "^1.4.0",
     "@salesforce-ux/design-system": "^2.12.2",
     "@salesforce/design-system-react": "^0.10.21",
     "autoprefixer": "7.1.6",
@@ -125,6 +126,7 @@
     "babel-plugin-transform-export-extensions": "^6.22.0",
     "eslint": "^4.11.0",
     "eslint-config-google": "^0.9.1",
+    "styled-components": "^5.1.1",
     "webpack": "^3.8.1"
   }
 }
