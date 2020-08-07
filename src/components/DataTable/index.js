@@ -1,4 +1,5 @@
 import React, { Component, Fragment } from 'react';
+import Moment from 'moment';
 import {
     Button,
     ButtonGroup,
@@ -13,6 +14,8 @@ import {
     PageHeader,
     PageHeaderControl
 } from '@salesforce/design-system-react';
+
+import Modal from '../Modal';
 
 import data from '../../data';
 
@@ -40,7 +43,9 @@ class Table extends Component {
 			opportunityName: 'asc',
 		},
 		items: [...data],
-		selection: [],
+        selection: [],
+        editModalIsOPen: false,
+        editRow: {}
     };
 
     actions = () => (
@@ -120,15 +125,6 @@ class Table extends Component {
             </PageHeaderControl>
             {this.state.selection.length > 0 ? <PageHeaderControl>
                 <Button
-                    assistiveText={{ icon: 'Edit List' }}
-                    iconCategory="utility"
-                    iconName="edit"
-                    iconVariant="border"
-                    variant="icon"
-                />
-            </PageHeaderControl> : null}
-            {this.state.selection.length > 0 ? <PageHeaderControl>
-                <Button
                     onClick={this.handleDeleteSelection}
                     assistiveText={{ icon: 'Delete List' }}
                     iconCategory="utility"
@@ -167,6 +163,10 @@ class Table extends Component {
         </Fragment>
     );
 
+    toggleOpen = () => {
+		this.setState({ editModalIsOPen: !this.state.editModalIsOPen });
+	};
+
     handleDeleteSelection = () => {
         let items = this.state.items.filter(el => !this.state.selection.includes(el))
         this.setState({ selection: [], items });
@@ -174,12 +174,20 @@ class Table extends Component {
 
 	handleChanged = (event, data) => {
 		this.setState({ selection: data.selection });
-	};
+    };
+    
+    editData = row => {
+        let items = [...this.state.items];
+        items.splice(row.id, 1, row)
+        this.setState({items});
+        this.toggleOpen();
+    }
 
 	handleRowAction = (item, { id }) => {
         switch(id) {
             case 0:
-                console.log('Edit');
+                this.setState({editRow: item});
+                this.toggleOpen();
                 break;
             case 1:
                 let items = this.state.items.filter((el, idx) => el.id !== item.id);
@@ -234,6 +242,7 @@ class Table extends Component {
 					marginBottom: '150px',
 				}}
 			>
+                {this.state.editModalIsOPen && <Modal onSubmit={this.editData} data={this.state.editRow} title='Edit row' isOpen={this.state.editModalIsOPen} toggleOpen={this.toggleOpen} />}
 				<IconSettings iconPath="/assets/icons">
 					<PageHeader
 						onRenderActions={this.actions}
@@ -327,9 +336,7 @@ class Table extends Component {
 							sortDirection={this.state.sortColumnDirection.endDate}
 						/>
 						<DataTableColumn label="Results" property="results" />
-						<DataTableColumn label="Assets" property="assets">
-							<CustomDataTableCell />
-						</DataTableColumn>
+						<DataTableColumn label="Assets" property="asset" />
 						<DataTableRowActions
 							options={[
 								{

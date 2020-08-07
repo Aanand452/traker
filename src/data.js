@@ -371,7 +371,7 @@ export var themes = [
   'Salesforce Culture',
   'Salesforce Live for Financial Services',
   'Salesforce Live for Retail',
-  'Salesforce Live: Asia ',
+  'Salesforce Live: Asia',
   'Salesforce Live: Australia & New Zealand',
   'Small Business Relief',
   'Work.com'
@@ -423,7 +423,7 @@ export const personas = [
   'Admin/Ops',
   'All',
   'Analytics',
-  'Digital Marketing ',
+  'Digital Marketing',
   'Executive',
   'Financial Services',
   'IT',
