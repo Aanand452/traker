@@ -118,8 +118,7 @@ class ModalComponent extends Component {
         startDate: this.props.data.startDate,
         endDate: this.props.data.endDate,
         results: this.props.data.results,
-        asset: this.props.data.asset,
-        row: {}
+        asset: this.props.data.asset
     };
 
     componentDidMount() {

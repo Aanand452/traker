@@ -1,8 +1,9 @@
 import React, { Component, Fragment } from 'react';
-import Moment from 'moment';
+
 import {
   Button,
   ButtonGroup,
+  ButtonStateful,
   DataTable,
   DataTableColumn,
   DataTableCell,
@@ -16,9 +17,11 @@ import {
 } from '@salesforce/design-system-react';
 
 import Modal from '../Modal';
+import Panel from '../Panel';
+import Pager from '../Pager';
 
 import data from '../../data';
-import { TableContainer } from './styles.js';
+import { TableContainer, PagerContainer } from './styles.js';
 
 const CustomDataTableCell = ({ children, ...props }) => (
   <DataTableCell title={children} {...props}>
@@ -37,14 +40,6 @@ CustomDataTableCell.displayName = DataTableCell.displayName;
 
 
 class Table extends Component {
-  state = {
-    sortColumn: 'opportunityName',
-    sortColumnDirection: {
-      opportunityName: 'asc',
-    },
-    items: [...data],
-    selection: [],
-  };
 
 	state = {
 		sortColumn: 'opportunityName',
@@ -54,84 +49,26 @@ class Table extends Component {
 		items: [...data],
         selection: [],
         editModalIsOPen: false,
-        editRow: {}
+        editRow: {},
+        isPanelOpen: false,
+        searchByTitle: '',
     };
+
+    componentDidMount() {
+        this.resetItems();
+    }
 
     actions = () => (
         <PageHeaderControl>
             <ButtonGroup id="button-group-page-header-actions">
                 <Button label="New" onClick={() => console.log('Create row')} />
                 <Button label="Import data" onClick={() => console.log('Import data')} />
-                <Dropdown
-                    align="right"
-                    assistiveText={{ icon: 'More Options' }}
-                    iconCategory="utility"
-                    iconName="down"
-                    iconVariant="border-filled"
-                    id="page-header-dropdown-object-home-nav-right"
-                    options={[
-                        { label: 'Menu Item One', value: 'A0' },
-                        { label: 'Menu Item Two', value: 'B0' },
-                        { label: 'Menu Item Three', value: 'C0' },
-                        { type: 'divider' },
-                        { label: 'Menu Item Four', value: 'D0' },
-                    ]}
-                />
             </ButtonGroup>
         </PageHeaderControl>
     )
 
     controls = () => (
         <Fragment>
-            <PageHeaderControl>
-                <Dropdown
-                    align="right"
-                    id="page-header-dropdown-object-home-content-right"
-                    options={[
-                        { label: 'Menu Item One', value: 'A0' },
-                        { label: 'Menu Item Two', value: 'B0' },
-                        { label: 'Menu Item Three', value: 'C0' },
-                        { type: 'divider' },
-                        { label: 'Menu Item Four', value: 'D0' },
-                    ]}
-                >
-                    <DropdownTrigger>
-                        <Button
-                            assistiveText={{ icon: 'List View Controls' }}
-                            iconCategory="utility"
-                            iconName="settings"
-                            iconVariant="more"
-                        />
-                    </DropdownTrigger>
-                </Dropdown>
-            </PageHeaderControl>
-            <PageHeaderControl>
-                <Dropdown
-                    align="right"
-                    assistiveText={{ icon: 'Change view' }}
-                    iconCategory="utility"
-                    iconName="settings"
-                    iconVariant="more"
-                    id="page-header-dropdown-object-home-content-right-2"
-                    options={[
-                        { label: 'Menu Item One', value: 'A0' },
-                        { label: 'Menu Item Two', value: 'B0' },
-                        { label: 'Menu Item Three', value: 'C0' },
-                        { type: 'divider' },
-                        { label: 'Menu Item Four', value: 'D0' },
-                    ]}
-                >
-                    <DropdownTrigger>
-                        <Button
-                            assistiveText={{ icon: 'Change view' }}
-                            iconCategory="utility"
-                            iconName="table"
-                            iconVariant="more"
-                            variant="icon"
-                        />
-                    </DropdownTrigger>
-                </Dropdown>
-            </PageHeaderControl>
             {this.state.selection.length > 0 ? <PageHeaderControl>
                 <Button
                     onClick={this.handleDeleteSelection}
@@ -143,34 +80,44 @@ class Table extends Component {
                 />
             </PageHeaderControl> : null}
             <PageHeaderControl>
-                <Button
+                <ButtonStateful
                     assistiveText={{ icon: 'Refresh' }}
                     iconCategory="utility"
                     iconName="refresh"
-                    iconVariant="border"
+                    iconVariant="border-filled"
                     variant="icon"
                 />
             </PageHeaderControl>
             <PageHeaderControl>
                 <ButtonGroup id="button-group-page-header-controls">
-                    <Button
+                    <ButtonStateful
                         assistiveText={{ icon: 'Charts' }}
                         iconCategory="utility"
                         iconName="chart"
-                        iconVariant="border"
+                        iconVariant="border-filled"
                         variant="icon"
                     />
-                    <Button
+                    <ButtonStateful
                         assistiveText={{ icon: 'Filters' }}
                         iconCategory="utility"
                         iconName="filterList"
-                        iconVariant="border"
+                        iconVariant="border-filled"
                         variant="icon"
+                        onClick={() => {
+                            this.setState({isPanelOpen: !this.state.isPanelOpen});
+                            if(this.state.isPanelOpen) {
+                                this.resetItems();
+                            }
+                        }}
                     />
                 </ButtonGroup>
             </PageHeaderControl>
         </Fragment>
     );
+
+    resetItems = () => {
+        this.setState({items: [...data]});
+    }
 
     toggleOpen = () => {
 		this.setState({ editModalIsOPen: !this.state.editModalIsOPen });
@@ -205,42 +152,51 @@ class Table extends Component {
             default:
                 break;
         }
-	};
-
-  handleSort = (sortColumn, ...rest) => {
-    if (this.props.log) {
-      this.props.log('sort')(sortColumn, ...rest);
+    };
+    
+    handleSearch = text => {
+        if(text !== '') {
+            let items = this.state.items.filter(e => e.theme.toLowerCase().includes(text.toLowerCase()));
+            this.setState({items});
+        } else {
+            this.resetItems();
+        }
     }
 
-    const sortProperty = sortColumn.property;
-    const { sortDirection } = sortColumn;
-    const newState = {
-      sortColumn: sortProperty,
-      sortColumnDirection: {
-        [sortProperty]: sortDirection,
-      },
-      items: [...this.state.items],
-    };
+    handleSort = (sortColumn, ...rest) => {
+        if (this.props.log) {
+            this.props.log('sort')(sortColumn, ...rest);
+        }
 
-    // needs to work in both directions
-    newState.items = newState.items.sort((a, b) => {
-      let val = 0;
+        const sortProperty = sortColumn.property;
+        const { sortDirection } = sortColumn;
+        const newState = {
+            sortColumn: sortProperty,
+            sortColumnDirection: {
+                [sortProperty]: sortDirection,
+            },
+            items: [...this.state.items],
+        };
 
-      if (a[sortProperty] > b[sortProperty]) {
-        val = 1;
-      }
-      if (a[sortProperty] < b[sortProperty]) {
-        val = -1;
-      }
+        // needs to work in both directions
+        newState.items = newState.items.sort((a, b) => {
+            let val = 0;
 
-      if (sortDirection === 'desc') {
-        val *= -1;
-      }
+            if (a[sortProperty] > b[sortProperty]) {
+                val = 1;
+            }
+            if (a[sortProperty] < b[sortProperty]) {
+                val = -1;
+            }
 
-      return val;
-    });
+            if (sortDirection === 'desc') {
+                val *= -1;
+            }
 
-    this.setState(newState);
+            return val;
+        });
+
+        this.setState(newState);
     };
 
 	render() {
@@ -252,7 +208,7 @@ class Table extends Component {
 				}}
 			>
                 {this.state.editModalIsOPen && <Modal onSubmit={this.editData} data={this.state.editRow} title='Edit row' isOpen={this.state.editModalIsOPen} toggleOpen={this.toggleOpen} />}
-				<IconSettings iconPath="/assets/icons">
+                <IconSettings iconPath="/assets/icons">
 					<PageHeader
 						onRenderActions={this.actions}
 						icon={
@@ -269,7 +225,6 @@ class Table extends Component {
 						title={
 							<h1 className="slds-page-header__title slds-p-right_x-small">
 								<Dropdown
-									id="page-header-dropdown-object-home-header"
 									options={[
 										{ label: 'Menu Item One', value: 'A0' },
 										{ label: 'Menu Item Two', value: 'B0' },
@@ -295,6 +250,7 @@ class Table extends Component {
 						truncate
 						variant="object-home"
 					/>
+                    {this.state.isPanelOpen && <Panel searchByTitle={this.state.searchByTitle} handleSearch={this.handleSearch} />}
 					<DataTable
 						assistiveText={{
 							actionsHeader: 'actions',
@@ -365,6 +321,9 @@ class Table extends Component {
 						/>
 					</DataTable>
 				</IconSettings>
+                <PagerContainer>
+                    <Pager />
+                </PagerContainer>
 			</div>
 		);
 	}
