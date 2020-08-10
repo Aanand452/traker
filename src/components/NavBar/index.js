@@ -11,7 +11,6 @@ import {
   GlobalNavigationBarRegion,
   GlobalNavigationBarDropdown
 } from '@salesforce/design-system-react';
-import logo from '@salesforce-ux/design-system/assets/images/logo.svg';
 
 import { NavContainer } from './styles';
 import NavigationBarLink from './NavigationBarLink';
@@ -62,7 +61,7 @@ const NavBar = () => (
   <NavContainer>
     <IconSettings iconPath="/assets/icons">
       <GlobalHeader
-        logoSrc={logo}
+        logoSrc='assets/images/logo.svg'
       >
         <GlobalHeaderButton>
           <Icon
@@ -103,7 +102,7 @@ const NavBar = () => (
           />
         </GlobalNavigationBarRegion>
         <GlobalNavigationBarRegion region="secondary" navigation>
-          <NavigationBarLink to="/admin" title="Home" />
+          <NavigationBarLink to="/home" title="Home" />
           <GlobalNavigationBarDropdown 
             assistiveText={{ icon: 'Open menu item submenu' }}
             id="primaryDropdown"
