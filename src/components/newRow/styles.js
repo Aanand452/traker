@@ -1,8 +1,8 @@
 import styled from 'styled-components';
 
 const SfdcFlexCenter = styled.section`
+    padding-top: 6rem;
     display: flex;
-    justify-content: center;
 `;
 
 const Sfdch1NewRow = styled.h1`
@@ -13,4 +13,4 @@ const Sfdch1NewRow = styled.h1`
 export {
     SfdcFlexCenter,
     Sfdch1NewRow
-};
+}
