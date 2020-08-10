@@ -171,7 +171,7 @@ const CreateNewRow = ({
                 labels={{
                   label: 'Start Date',
                 }}
-                triggerClassName="slds-form-element__create-row"
+                triggerClassName="slds-col slds-size_1-of-2"
                 onChange={(event, data) => {
                   console.log(event.target)
                   console.log(data)
@@ -196,7 +196,7 @@ const CreateNewRow = ({
                 labels={{
                   label: 'Start Date',
                 }}
-                triggerClassName="slds-form-element__create-row"
+                triggerClassName="slds-col slds-size_1-of-2"
                 onChange={(event, data) => {
                   console.log(event.target)
                   console.log(data)
