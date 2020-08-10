@@ -1,4 +1,5 @@
 import React, { Component, Fragment } from 'react';
+import { withRouter } from 'react-router-dom';
 
 import {
   Button,
@@ -61,8 +62,8 @@ class Table extends Component {
   actions = () => (
     <PageHeaderControl>
       <ButtonGroup id="button-group-page-header-actions">
-        <Button label="New" onClick={() => console.log('Create row')} />
-        <Button label="Import data" onClick={() => console.log('Import data')} />
+        <Button label="New" onClick={() => this.props.history.push('/home')} />
+        <Button label="Import data" onClick={() => this.props.history.push('/home')} />
       </ButtonGroup>
     </PageHeaderControl>
   )
@@ -196,7 +197,7 @@ class Table extends Component {
 
   render() {
 
-    let filtered = this.state.items && this.state.items.filter(e => e.title.toLowerCase().indexOf(this.state.searchByTitle.toLowerCase()) !== -1);
+    let filtered = this.state.items && this.state.items.filter(e => e.theme.toLowerCase().indexOf(this.state.searchByTitle.toLowerCase()) !== -1);
 
     return (
       <div
@@ -332,4 +333,4 @@ class Table extends Component {
   }
 }
 
-export default Table;
+export default withRouter(Table);
