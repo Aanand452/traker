@@ -1,3 +1,5 @@
+import moment from 'moment';
+
 export const theme = [
     {
         text: 'Artificial Intelligence',
@@ -450,6 +452,22 @@ let dataModel = {
 };
 
 let data = [];
+let titles = [
+    'Lorem ipsum dolor sit amet, consectetur adipiscing elit',
+    'Aenean in ipsum ac eros tincidunt porttitor non sit amet tellus.',
+    'Aenean euismod, purus id venenatis iaculis',
+    'Nunc interdum cursus ipsum egestas molestie. ',
+    'Cras non erat eget turpis suscipit viverra. ',
+    'lectus eu, congue dolor.',
+    'Proin nec magna porta, semper arcu in, blandit ante.',
+    'Lorem ipsum dolor sit amet, consectetur adipiscing elit',
+    'Aenean in ipsum ac eros tincidunt porttitor non sit amet tellus.',
+    'Aenean euismod, purus id venenatis iaculis',
+    'Nunc interdum cursus ipsum egestas molestie. ',
+    'Cras non erat eget turpis suscipit viverra. ',
+    'lectus eu, congue dolor.',
+    'Proin nec magna porta, semper arcu in, blandit ante.',
+]
 
 for(var i = 0; i < 15; i++){
   let theme = themes[Math.round(Math.random() * themes.length)];
@@ -457,6 +475,11 @@ for(var i = 0; i < 15; i++){
   let program = programs[Math.round(Math.random() * programs.length)];
   let format = formats[Math.round(Math.random() * formats.length)];
   let persona = personas[Math.round(Math.random() * personas.length)];
+  let title = titles[Math.round(Math.random() * titles.length)] 
+  let startDate = moment(new Date(+(new Date()) - Math.floor(Math.random()*10000000000)))
+  .format('DD/MM/YYYY');
+  let endDate = moment(new Date(+(new Date()) - Math.floor(Math.random()*10000000000)))
+  .format('DD/MM/YYYY');
   
   let row = {...dataModel};
   
@@ -465,6 +488,9 @@ for(var i = 0; i < 15; i++){
   row.program = program;
   row.format = format;
   row.persona = persona;
+  row.startDate = startDate;
+  row.endDate = endDate;
+  row.title = title;
   row.id = i;
   
   data.push(row);
