@@ -196,7 +196,12 @@ class Table extends Component {
 
   render() {
 
-    let filtered = this.state.items && this.state.items.filter(e => e.title.toLowerCase().indexOf(this.state.searchByTitle.toLowerCase()) !== -1);
+    let filtered = this.state.items && this.state.items.filter(e => {
+      if(e && e.title)
+        return e.title.toLowerCase().indexOf(this.state.searchByTitle.toLowerCase()) !== -1
+      else
+        return [];
+    });
 
     return (
       <div
