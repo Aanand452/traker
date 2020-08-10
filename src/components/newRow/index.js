@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import CreateNewRow from '../CreateNewRow';
 import {
+  IconSettings,
+  Panel,
   Button
 } from '@salesforce/design-system-react';
 import {
@@ -21,7 +23,7 @@ const newRow = () => {
 
   const table = e => {
     e.preventDefault();
-    history.push('/table')
+    history.push('/my-report')
   }
 
   const onSubmit = e =>{
@@ -51,16 +53,21 @@ const newRow = () => {
         <NavBar />
         <SfdcFlexCenter>
           <section class="slds-grid slds-wrap">
-            <div className="slds-grid slds-wrap slds-p-around_medium slds_full-width">
-              <div className="slds-col slds-size_12-of-12">
-                <Sfdch1NewRow>Create new row</Sfdch1NewRow>
-                <CreateNewRow
-                    getFormData = {getFormData}
-                />
-                <Button label="Cancel" onClick={e => table(e)}/>
-                <Button label="Save" variant="brand" onClick={e => onSubmit(e)} />
-              </div>
-            </div>
+            <IconSettings iconPath="/assets/icons">
+              <Panel>
+                <div className="slds-grid slds-wrap slds-p-around_medium slds_full-width">
+                  <div className="slds-col slds-size_12-of-12">
+                    <Sfdch1NewRow>Create new row</Sfdch1NewRow>
+                    <CreateNewRow
+                        getFormData = {getFormData}
+                        abstract = {'"To help infuse our Salesforce community with joy and inspiration, today we launched our #FeelGoodFridays series across our social channels. 🙌The aim of this series is to share how our community is keeping spirits high with positive vibes every week. Our first #FeelGoodFriday story is about one of our education Trailblazers, A Team Tuition. No doubt, many of us can relate to Hayden’s story of being stereotyped at school as a particular type of learner. Well, Hayden has turned this on its head with his business A Team Tuition."'}
+                    />
+                    <Button label="Cancel" onClick={e => table(e)}/>
+                    <Button label="Save" variant="brand" onClick={e => table(e)} />
+                  </div>
+                </div>
+              </Panel>
+            </IconSettings>
           </section>
         </SfdcFlexCenter>
       </section>
