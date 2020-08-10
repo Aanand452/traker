@@ -10,7 +10,6 @@ import {
   Sfdch1NewRow
 } from './styles';
 import { useHistory  } from 'react-router-dom'
-import NavBar from '../NavBar';
 
 const newRow = () => {
   const history = useHistory();
@@ -50,7 +49,6 @@ const newRow = () => {
 
     return (
       <section>
-        <NavBar />
         <SfdcFlexCenter>
           <section class="slds-grid slds-wrap">
             <IconSettings iconPath="/assets/icons">
