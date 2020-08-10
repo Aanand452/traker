@@ -103,7 +103,7 @@ const NavBar = () => (
           />
         </GlobalNavigationBarRegion>
         <GlobalNavigationBarRegion region="secondary" navigation>
-          <NavigationBarLink to="/admin" title="Home" />
+          <NavigationBarLink to="/home" title="Home" />
           <GlobalNavigationBarDropdown 
             assistiveText={{ icon: 'Open menu item submenu' }}
             id="primaryDropdown"
