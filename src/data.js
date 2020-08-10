@@ -371,7 +371,7 @@ export var themes = [
   'Salesforce Culture',
   'Salesforce Live for Financial Services',
   'Salesforce Live for Retail',
-  'Salesforce Live: Asia ',
+  'Salesforce Live: Asia',
   'Salesforce Live: Australia & New Zealand',
   'Small Business Relief',
   'Work.com'
@@ -423,7 +423,7 @@ export const personas = [
   'Admin/Ops',
   'All',
   'Analytics',
-  'Digital Marketing ',
+  'Digital Marketing',
   'Executive',
   'Financial Services',
   'IT',
@@ -443,8 +443,8 @@ let dataModel = {
   persona: 'All',
   abstract: '"To help infuse our Salesforce community with joy and inspiration, today we launched our #FeelGoodFridays series across our social channels. 🙌The aim of this series is to share how our community is keeping spirits high with positive vibes every week. Our first #FeelGoodFriday story is about one of our education Trailblazers, A Team Tuition. No doubt, many of us can relate to Hayden’s story of being stereotyped at school as a particular type of learner. Well, Hayden has turned this on its head with his business A Team Tuition."',
   region: 'APAC',
-  startDate: '2020-01-07',
-  endDate: '2020-06-30',
+  startDate: '01/01/2020',
+  endDate: '06/30/2020',
   results: '',
   asset: ''
 };
