@@ -15,23 +15,6 @@ import {
 import { NavContainer } from './styles';
 import NavigationBarLink from './NavigationBarLink';
 
-const dropdownCollection = [
-  {
-    label: 'My Report',
-    value: '1',
-    iconCategory: 'utility',
-    iconName: 'table',
-    href: '/my-report',
-  },
-  {
-    label: 'Team Report',
-    value: '2',
-    iconCategory: 'utility',
-    iconName: 'kanban',
-    href: '/team-report',
-  }
-]
-
 const HeaderProfileCustomContent = (props) => (
   <div id="header-profile-custom-popover-content">
     <div className="slds-m-around_medium">
@@ -98,17 +81,14 @@ const NavBar = () => (
       <GlobalNavigationBar>
         <GlobalNavigationBarRegion region="primary">
           <AppLauncher
-            triggerName="App Name"
+            triggerName="Sara    "
           />
         </GlobalNavigationBarRegion>
         <GlobalNavigationBarRegion region="secondary" navigation>
           <NavigationBarLink to="/home" title="Home" />
-          <GlobalNavigationBarDropdown 
-            assistiveText={{ icon: 'Open menu item submenu' }}
-            id="primaryDropdown"
-            label="Menu Item"
-            options={dropdownCollection}
-          />
+          <NavigationBarLink to="/my-report" title="My report" />
+          <NavigationBarLink to="/team-report" title="Team report" />
+          
         </GlobalNavigationBarRegion>
       </GlobalNavigationBar>
     </IconSettings>
