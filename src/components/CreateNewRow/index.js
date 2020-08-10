@@ -125,7 +125,7 @@ const CreateNewRow = ({
                   variant="readonly"
                 />
               </IconSettings>
-              <Input onChange={(event, data) => {handleCHange("title", data.value)}} defaultValue={row.title} id="title" label="Title" className="slds-form-element__create-row"/>
+              <Input onChange={(event, data) => {handleCHange("title", data.value)}} defaultValue={row.title} id="title" label="Title"/>
               <IconSettings iconPath="assets/icons">
                 <Combobox
                   id="format"
@@ -158,7 +158,7 @@ const CreateNewRow = ({
                   variant="readonly"
                 />
               </IconSettings>
-              <Input onChange={(event, data) => {handleCHange("abstract", data.value)}} defaultValue={row.abstract} id="abstract" label="Abstract" className="slds-form-element__create-row"/>
+              <Input onChange={(event, data) => {handleCHange("abstract", data.value)}} defaultValue={row.abstract} id="abstract" label="Abstract"/>
               <IconSettings iconPath="assets/icons">
                 <Combobox
                   id="region"
@@ -225,8 +225,8 @@ const CreateNewRow = ({
                 value={row.endDate}
               />
               </IconSettings>
-              <Input onChange={(event, data) => {handleCHange("results", data.value)}} defaultValue={row.results} id="results" label="Result" className="slds-form-element__create-row"/>
-              <Input onChange={(event, data) => {handleCHange("asset", data.value)}} defaultValue={row.asset} id="asset" label="Asset" className="slds-form-element__create-row"/>
+              <Input onChange={(event, data) => {handleCHange("results", data.value)}} defaultValue={row.results} id="results" label="Result"/>
+              <Input onChange={(event, data) => {handleCHange("asset", data.value)}} defaultValue={row.asset} id="asset" label="Asset"/>
             </form>
           </div>
     )
