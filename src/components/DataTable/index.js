@@ -289,12 +289,14 @@ class Table extends Component {
             <DataTableColumn label="Format" property="format" />
             <DataTableColumn label="Persona" property="persona" />
             <DataTableColumn label="Abstract" property="abstract" />
-            <DataTableColumn
-              sortDirection={this.state.sortColumnDirection.region}
-              sortable isSorted={this.state.sortColumn === 'region'}
-              label="Region"
-              property="region"
-            />
+            { this.props.type === "2" &&
+              <DataTableColumn
+                sortDirection={this.state.sortColumnDirection.region}
+                sortable isSorted={this.state.sortColumn === 'region'}
+                label="Region"
+                property="region"
+              />
+            }
             <DataTableColumn
               isSorted={this.state.sortColumn === 'startDate'}
               label="Start date"

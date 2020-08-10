@@ -14,6 +14,7 @@ import {
 
 import { NavContainer } from './styles';
 import NavigationBarLink from './NavigationBarLink';
+import { useHistory  } from 'react-router-dom';
 
 const HeaderProfileCustomContent = (props) => (
   <div id="header-profile-custom-popover-content">
@@ -40,13 +41,21 @@ const HeaderProfileCustomContent = (props) => (
 );
 HeaderProfileCustomContent.displayName = 'HeaderProfileCustomContent';
 
-const NavBar = () => (
+const NavBar = () => {
+  const history = useHistory();
+
+  const toHome = e => {
+    e.preventDefault();
+    history.push('/home')
+  }
+
+  return (
   <NavContainer>
     <IconSettings iconPath="/assets/icons">
       <GlobalHeader
         logoSrc='assets/images/logo.svg'
       >
-        <GlobalHeaderButton>
+        <GlobalHeaderButton onClick={toHome}>
           <Icon
             assistiveText={{ label: 'Add Registry' }}
             category="utility"
@@ -54,7 +63,7 @@ const NavBar = () => (
             size="x-small"
           />
         </GlobalHeaderButton>
-        <GlobalHeaderButton>
+        <GlobalHeaderButton onClick={toHome}>
           <Icon
             assistiveText={{ label: 'Upload CSV' }}
             category="utility"
@@ -62,7 +71,7 @@ const NavBar = () => (
             size="x-small"
           />  
         </GlobalHeaderButton> 
-        <GlobalHeaderButton>
+        {/*<GlobalHeaderButton>
           <Icon
             assistiveText={{ label: 'Error' }}
             category="utility"
@@ -70,6 +79,7 @@ const NavBar = () => (
             size="x-small"
           />
         </GlobalHeaderButton>
+        */}
         <GlobalHeaderProfile 
           popover={
             <Popover
@@ -81,7 +91,7 @@ const NavBar = () => (
       <GlobalNavigationBar>
         <GlobalNavigationBarRegion region="primary">
           <AppLauncher
-            triggerName="Sara    "
+            triggerName="SARA"
           />
         </GlobalNavigationBarRegion>
         <GlobalNavigationBarRegion region="secondary" navigation>
@@ -93,6 +103,6 @@ const NavBar = () => (
       </GlobalNavigationBar>
     </IconSettings>
   </NavContainer>
-);
+)};
 
 export default NavBar;

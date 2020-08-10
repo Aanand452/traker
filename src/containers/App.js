@@ -11,11 +11,20 @@ import NewRow from '../components/newRow'
 import NavBar from '../components/NavBar';
 import Table from '../components/DataTable';
 
-function List() {
+function MyList() {
   return (
     <div>
       <NavBar />
-      <Table />
+      <Table type="1" />
+    </div>
+  )
+} 
+
+function TeamList() {
+  return (
+    <div>
+      <NavBar />
+      <Table type="2" />
     </div>
   )
 } 
@@ -36,8 +45,8 @@ function App({closeSettingsMenu, user}) {
       <SfdcPageAppWrapper className="app" onClick={closeSettingsMenu}>
         <Switch>
           <Route exact path="/" component={Login} />
-          <Route exact path="/my-report" component={List} />
-          <Route exact path="/team-report" component={List} />
+          <Route exact path="/my-report" component={MyList} />
+          <Route exact path="/team-report" component={TeamList} />
           <Route exact path="/home" component={Layout} />
           <Route exact path="*" component={NotFoundPage} />
         </Switch>
