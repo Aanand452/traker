@@ -15,6 +15,7 @@ const newRow = () => {
   const [row, setRow] = useState({})
 
   const getFormData = (data) => {
+    console.log(data)
     setRow({row: data})
   }
 
@@ -23,21 +24,24 @@ const newRow = () => {
     history.push('/table')
   }
 
-  const onSubmit = () =>{
+  const onSubmit = e =>{
+    e.preventDefault();
     history.push({
       pathname: '/table',
-      id: 10000,
-      theme: row.theme[0] && row.theme[0].label,
-      program: row.program[0] && row.program[0].label,
-      format: row.format[0] && row.format[0].label,
-      persona: row.persona[0] && row.persona[0].label,
-      region: row.region[0] && row.region[0].label,
-      title: row.title,
-      abstract: row.abstract,
-      startDate: row.startDate,
-      endDate: row.endDate,
-      results: row.results,
-      asset: row.asset
+      newRow:{
+        id: 10000,
+        theme: row.theme[0] && row.theme[0].label,
+        program: row.program[0] && row.program[0].label,
+        format: row.format[0] && row.format[0].label,
+        persona: row.persona[0] && row.persona[0].label,
+        region: row.region[0] && row.region[0].label,
+        title: row.title,
+        abstract: row.abstract,
+        startDate: row.startDate,
+        endDate: row.endDate,
+        results: row.results,
+        asset: row.asset
+      }
     })
     
   }
@@ -54,7 +58,7 @@ const newRow = () => {
                     getFormData = {getFormData}
                 />
                 <Button label="Cancel" onClick={e => table(e)}/>
-                <Button label="Save" variant="brand" onClick={e => table(e)} />
+                <Button label="Save" variant="brand" onClick={e => onSubmit(e)} />
               </div>
             </div>
           </section>
