@@ -7,6 +7,7 @@ import { css } from 'glamor';
 import { SfdcPageAppWrapper } from './styles/page';
 
 import Login from '../components/Login'
+import newRow from '../components/newRow'
 import NavBar from '../components/NavBar';
 import Table from '../components/DataTable';
 
@@ -26,8 +27,9 @@ function App({closeSettingsMenu, user}) {
       <SfdcPageAppWrapper className="app" onClick={closeSettingsMenu}>
         <Switch>
           <Route exact path="/" component={Login} />
-          <Route exact path="/admin" component={List} />
-          <Route exact path="/home" component={List} />
+          <Route exact path="/my-report" component={List} />
+          <Route exact path="/team-report" component={List} />
+          <Route exact path="/home" component={newRow} />
           <Route exact path="*" component={NotFoundPage} />
         </Switch>
       </SfdcPageAppWrapper>

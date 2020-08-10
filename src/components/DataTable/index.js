@@ -51,7 +51,7 @@ class Table extends Component {
     editModalIsOPen: false,
     editRow: {},
     isPanelOpen: false,
-    searchByTitle: '',
+    searchByTitle: ''
   };
 
   componentDidMount() {
@@ -155,12 +155,7 @@ class Table extends Component {
   };
   
   handleSearch = text => {
-    if(text !== '') {
-      let items = this.state.items.filter(e => e.title.toLowerCase().includes(text.toLowerCase()));
-      this.setState({items});
-    } else {
-      this.resetItems();
-    }
+    this.setState({searchByTitle: text});
   }
 
   handleSort = (sortColumn, ...rest) => {
@@ -200,6 +195,9 @@ class Table extends Component {
   };
 
   render() {
+
+    let filtered = this.state.items.filter(e => e.title.toLowerCase().indexOf(this.state.searchByTitle.toLowerCase()) !== -1);
+
     return (
       <div
         style={{
@@ -262,7 +260,7 @@ class Table extends Component {
             }}
             fixedHeader
             fixedLayout
-            items={this.state.items}
+            items={filtered}
             id="DataTableExample-FixedHeaders"
             joined
             onRowChange={this.handleChanged}
@@ -285,7 +283,12 @@ class Table extends Component {
             <DataTableColumn label="Format" property="format" />
             <DataTableColumn label="Persona" property="persona" />
             <DataTableColumn label="Abstract" property="abstract" />
-            <DataTableColumn label="Region" property="region" />
+            <DataTableColumn
+              sortDirection={this.state.sortColumnDirection.region}
+              sortable isSorted={this.state.sortColumn === 'region'}
+              label="Region"
+              property="region"
+            />
             <DataTableColumn
               isSorted={this.state.sortColumn === 'startDate'}
               label="Start date"
