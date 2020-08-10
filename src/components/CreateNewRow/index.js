@@ -25,40 +25,15 @@ const CreateNewRow = ({
   getFormData
 }) => {
 
-  const themeModel = themes.map((el, index)=>{
-    const elementJson = {}
-    elementJson.label = el
-    elementJson.id = index.toString();
-    return elementJson
-  })
-
-  const programModel = programs.map((el, index)=>{
-    const elementJson = {}
-    elementJson.label = el
-    elementJson.id = index.toString();
-    return elementJson
-  })
-
-  const formatModel = formats.map((el, index)=>{
-    const elementJson = {}
-    elementJson.label = el
-    elementJson.id = index.toString();
-    return elementJson
-  })
-
-  const personaModel = personas.map((el, index)=>{
-    const elementJson = {}
-    elementJson.label = el
-    elementJson.id = index.toString();
-    return elementJson
-  })
-
-  const regionModel = regions.map((el, index)=>{
-    const elementJson = {}
-    elementJson.label = el
-    elementJson.id = index.toString();
-    return elementJson
-  })
+  const createModelData = (modelData) => {
+    const modelResult = modelData.map((el, index)=>{
+      const elementJson = {}
+      elementJson.label = el
+      elementJson.id = index.toString();
+      return elementJson
+    })
+    return modelResult
+  }
 
   const checkDataModel = (model, modelSelection) => {
     let selection = model.filter(el => el.label === modelSelection)
@@ -66,11 +41,11 @@ const CreateNewRow = ({
   }
 
   const [row, setRow] = useState({
-    theme: checkDataModel(themeModel, themeSelection),
-    program: checkDataModel(programModel, programSelection),
-    format: checkDataModel(formatModel, formatSelection),
-    persona: checkDataModel(personaModel, personaSelection),
-    region: checkDataModel(regionModel, regionSelection),
+    theme: checkDataModel(createModelData(themes), themeSelection),
+    program: checkDataModel(createModelData(programs), programSelection),
+    format: checkDataModel(createModelData(formats), formatSelection),
+    persona: checkDataModel(createModelData(personas), personaSelection),
+    region: checkDataModel(createModelData(regions), regionSelection),
     title: title,
     abstract: abstract,
     startDate: startDate,
@@ -103,7 +78,7 @@ const CreateNewRow = ({
                     label: 'Theme'
                   }}
                   name="theme"
-                  options={themeModel}
+                  options={createModelData(themes)}
                   selection={row.theme}
                   value={"theme"}
                   variant="readonly"
@@ -119,7 +94,7 @@ const CreateNewRow = ({
                     label: 'Program'
                   }}
                   name="program"
-                  options={programModel}
+                  options={createModelData(programs)}
                   selection={row.program}
                   value={"program"}
                   variant="readonly"
@@ -136,7 +111,7 @@ const CreateNewRow = ({
                     label: 'Format'
                   }}
                   name="format"
-                  options={formatModel}
+                  options={createModelData(formats)}
                   selection={row.format}
                   value={"format"}
                   variant="readonly"
@@ -152,7 +127,7 @@ const CreateNewRow = ({
                     label: 'Persona'
                   }}
                   name="persona"
-                  options={personaModel}
+                  options={createModelData(personas)}
                   selection={row.persona}
                   value={"persona"}
                   variant="readonly"
@@ -169,7 +144,7 @@ const CreateNewRow = ({
                     label: 'Region'
                   }}
                   name="region"
-                  options={regionModel}
+                  options={createModelData(regions)}
                   selection={row.region}
                   value={"region"}
                   variant="readonly"
