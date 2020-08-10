@@ -1,3 +1,5 @@
+import moment from 'moment';
+
 export const theme = [
     {
         text: 'Artificial Intelligence',

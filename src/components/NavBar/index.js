@@ -98,7 +98,7 @@ const NavBar = () => (
       <GlobalNavigationBar>
         <GlobalNavigationBarRegion region="primary">
           <AppLauncher
-            triggerName="App Name"
+            triggerName="Sara    "
           />
         </GlobalNavigationBarRegion>
         <GlobalNavigationBarRegion region="secondary" navigation>
@@ -106,7 +106,7 @@ const NavBar = () => (
           <GlobalNavigationBarDropdown 
             assistiveText={{ icon: 'Open menu item submenu' }}
             id="primaryDropdown"
-            label="Menu Item"
+            label="See reports"
             options={dropdownCollection}
           />
         </GlobalNavigationBarRegion>
