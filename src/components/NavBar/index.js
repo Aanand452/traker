@@ -8,12 +8,30 @@ import {
   GlobalHeaderButton,
   GlobalHeaderProfile,
   GlobalNavigationBar,
-  GlobalNavigationBarRegion
+  GlobalNavigationBarRegion,
+  GlobalNavigationBarDropdown
 } from '@salesforce/design-system-react';
 import logo from '@salesforce-ux/design-system/assets/images/logo.svg';
 
 import { NavContainer } from './styles';
 import NavigationBarLink from './NavigationBarLink';
+
+const dropdownCollection = [
+  {
+    label: 'My Report',
+    value: '1',
+    iconCategory: 'utility',
+    iconName: 'table',
+    href: '/my-report',
+  },
+  {
+    label: 'Team Report',
+    value: '2',
+    iconCategory: 'utility',
+    iconName: 'kanban',
+    href: '/team-report',
+  }
+]
 
 const HeaderProfileCustomContent = (props) => (
   <div id="header-profile-custom-popover-content">
@@ -86,9 +104,12 @@ const NavBar = () => (
         </GlobalNavigationBarRegion>
         <GlobalNavigationBarRegion region="secondary" navigation>
           <NavigationBarLink to="/admin" title="Home" />
-          <NavigationBarLink to="/mandatory-1" title="Mandatory 1" />
-          <NavigationBarLink to="/mandatory-2" title="Mandatory 2" />
-          <NavigationBarLink to="/mandatory-3" title="Mandatory 3" />
+          <GlobalNavigationBarDropdown 
+            assistiveText={{ icon: 'Open menu item submenu' }}
+            id="primaryDropdown"
+            label="Menu Item"
+            options={dropdownCollection}
+          />
         </GlobalNavigationBarRegion>
       </GlobalNavigationBar>
     </IconSettings>
