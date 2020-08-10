@@ -16,8 +16,7 @@ const newRow = () => {
   const [row, setRow] = useState({})
 
   const getFormData = (data) => {
-    console.log(data)
-    setRow({row: data})
+    setRow({data})
   }
 
   const table = e => {
@@ -31,17 +30,17 @@ const newRow = () => {
       pathname: '/my-report',
       newRow:{
         id: 10000,
-        theme: row.theme[0] && row.theme[0].label,
-        program: row.program[0] && row.program[0].label,
-        format: row.format[0] && row.format[0].label,
-        persona: row.persona[0] && row.persona[0].label,
-        region: row.region[0] && row.region[0].label,
-        title: row.title,
-        abstract: row.abstract,
-        startDate: row.startDate,
-        endDate: row.endDate,
-        results: row.results,
-        asset: row.asset
+        theme: row.data.theme[0] && row.data.theme[0].label,
+        program: row.data.program[0] && row.data.program[0].label,
+        format: row.data.format[0] && row.data.format[0].label,
+        persona: row.data.persona[0] && row.data.persona[0].label,
+        region: row.data.region[0] && row.data.region[0].label,
+        title: row.data.title,
+        abstract: row.data.abstract,
+        startDate: row.data.startDate,
+        endDate: row.data.endDate,
+        results: row.data.results,
+        asset: row.data.asset
       }
     })
     
