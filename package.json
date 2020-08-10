@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@reduxjs/toolkit": "^1.4.0",
     "@salesforce-ux/design-system": "^2.12.2",
     "@salesforce/design-system-react": "^0.10.21",
     "autoprefixer": "7.1.6",
@@ -39,6 +40,7 @@
     "jade": "1.11.0",
     "jest": "20.0.4",
     "lodash": "^4.17.4",
+    "moment": "^2.27.0",
     "morgan": "1.7.0",
     "nodemon": "1.9.2",
     "object-assign": "4.1.1",

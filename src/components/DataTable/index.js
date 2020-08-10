@@ -1,38 +1,50 @@
 import React, { Component, Fragment } from 'react';
+import Moment from 'moment';
 import {
-    Button,
-    ButtonGroup,
-    DataTable,
-    DataTableColumn,
-    DataTableCell,
-    DataTableRowActions,
-    Dropdown,
-    DropdownTrigger,
-    Icon,
-    IconSettings,
-    PageHeader,
-    PageHeaderControl
+  Button,
+  ButtonGroup,
+  DataTable,
+  DataTableColumn,
+  DataTableCell,
+  DataTableRowActions,
+  Dropdown,
+  DropdownTrigger,
+  Icon,
+  IconSettings,
+  PageHeader,
+  PageHeaderControl
 } from '@salesforce/design-system-react';
 
+import Modal from '../Modal';
+
 import data from '../../data';
+import { TableContainer } from './styles.js';
 
 const CustomDataTableCell = ({ children, ...props }) => (
-	<DataTableCell title={children} {...props}>
-		<a
-			href="javascript:void(0);"
-			onClick={(event) => {
-				event.preventDefault();
-			}}
-		>
-			{children}
-		</a>
-	</DataTableCell>
+  <DataTableCell title={children} {...props}>
+    <a
+      href="javascript:void(0);"
+      onClick={(event) => {
+        event.preventDefault();
+      }}
+    >
+      {children}
+    </a>
+  </DataTableCell>
 );
 
 CustomDataTableCell.displayName = DataTableCell.displayName;
 
 
 class Table extends Component {
+  state = {
+    sortColumn: 'opportunityName',
+    sortColumnDirection: {
+      opportunityName: 'asc',
+    },
+    items: [...data],
+    selection: [],
+  };
 
 	state = {
 		sortColumn: 'opportunityName',
@@ -40,7 +52,9 @@ class Table extends Component {
 			opportunityName: 'asc',
 		},
 		items: [...data],
-		selection: [],
+        selection: [],
+        editModalIsOPen: false,
+        editRow: {}
     };
 
     actions = () => (
@@ -120,15 +134,6 @@ class Table extends Component {
             </PageHeaderControl>
             {this.state.selection.length > 0 ? <PageHeaderControl>
                 <Button
-                    assistiveText={{ icon: 'Edit List' }}
-                    iconCategory="utility"
-                    iconName="edit"
-                    iconVariant="border"
-                    variant="icon"
-                />
-            </PageHeaderControl> : null}
-            {this.state.selection.length > 0 ? <PageHeaderControl>
-                <Button
                     onClick={this.handleDeleteSelection}
                     assistiveText={{ icon: 'Delete List' }}
                     iconCategory="utility"
@@ -167,6 +172,10 @@ class Table extends Component {
         </Fragment>
     );
 
+    toggleOpen = () => {
+		this.setState({ editModalIsOPen: !this.state.editModalIsOPen });
+	};
+
     handleDeleteSelection = () => {
         let items = this.state.items.filter(el => !this.state.selection.includes(el))
         this.setState({ selection: [], items });
@@ -174,12 +183,20 @@ class Table extends Component {
 
 	handleChanged = (event, data) => {
 		this.setState({ selection: data.selection });
-	};
+    };
+    
+    editData = row => {
+        let items = [...this.state.items];
+        items.splice(row.id, 1, row)
+        this.setState({items});
+        this.toggleOpen();
+    }
 
 	handleRowAction = (item, { id }) => {
         switch(id) {
             case 0:
-                console.log('Edit');
+                this.setState({editRow: item});
+                this.toggleOpen();
                 break;
             case 1:
                 let items = this.state.items.filter((el, idx) => el.id !== item.id);
@@ -190,40 +207,40 @@ class Table extends Component {
         }
 	};
 
-	handleSort = (sortColumn, ...rest) => {
-		if (this.props.log) {
-			this.props.log('sort')(sortColumn, ...rest);
-		}
+  handleSort = (sortColumn, ...rest) => {
+    if (this.props.log) {
+      this.props.log('sort')(sortColumn, ...rest);
+    }
 
-		const sortProperty = sortColumn.property;
-		const { sortDirection } = sortColumn;
-		const newState = {
-			sortColumn: sortProperty,
-			sortColumnDirection: {
-				[sortProperty]: sortDirection,
-			},
-			items: [...this.state.items],
-		};
+    const sortProperty = sortColumn.property;
+    const { sortDirection } = sortColumn;
+    const newState = {
+      sortColumn: sortProperty,
+      sortColumnDirection: {
+        [sortProperty]: sortDirection,
+      },
+      items: [...this.state.items],
+    };
 
-		// needs to work in both directions
-		newState.items = newState.items.sort((a, b) => {
-			let val = 0;
+    // needs to work in both directions
+    newState.items = newState.items.sort((a, b) => {
+      let val = 0;
 
-			if (a[sortProperty] > b[sortProperty]) {
-				val = 1;
-			}
-			if (a[sortProperty] < b[sortProperty]) {
-				val = -1;
-			}
+      if (a[sortProperty] > b[sortProperty]) {
+        val = 1;
+      }
+      if (a[sortProperty] < b[sortProperty]) {
+        val = -1;
+      }
 
-			if (sortDirection === 'desc') {
-				val *= -1;
-			}
+      if (sortDirection === 'desc') {
+        val *= -1;
+      }
 
-			return val;
-		});
+      return val;
+    });
 
-		this.setState(newState);
+    this.setState(newState);
     };
 
 	render() {
@@ -231,9 +248,10 @@ class Table extends Component {
 			<div
 				style={{
 					width: '100%',
-					marginBottom: '150px',
+					marginTop: '90px',
 				}}
 			>
+                {this.state.editModalIsOPen && <Modal onSubmit={this.editData} data={this.state.editRow} title='Edit row' isOpen={this.state.editModalIsOPen} toggleOpen={this.toggleOpen} />}
 				<IconSettings iconPath="/assets/icons">
 					<PageHeader
 						onRenderActions={this.actions}
@@ -327,9 +345,7 @@ class Table extends Component {
 							sortDirection={this.state.sortColumnDirection.endDate}
 						/>
 						<DataTableColumn label="Results" property="results" />
-						<DataTableColumn label="Assets" property="assets">
-							<CustomDataTableCell />
-						</DataTableColumn>
+						<DataTableColumn label="Assets" property="asset" />
 						<DataTableRowActions
 							options={[
 								{
