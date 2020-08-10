@@ -182,7 +182,7 @@ const CreateNewRow = ({
               <Datepicker
                 id="endDate"
                 labels={{
-                  label: 'Start Date',
+                  label: 'End Date',
                 }}
                 triggerClassName="slds-col slds-size_1-of-2"
                 onChange={(event, data) => {
