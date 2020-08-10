@@ -68,6 +68,7 @@ const CreateNewRow = ({
     return (
           <div className="slds-admin-view">
             <form >
+            <div className="slds-m-bottom_large">
               <IconSettings iconPath="assets/icons">
                 <Combobox
                   id="theme"
@@ -84,6 +85,8 @@ const CreateNewRow = ({
                   variant="readonly"
                 />
               </IconSettings>
+            </div>
+            <div className="slds-m-bottom_large">
               <IconSettings iconPath="assets/icons">
                 <Combobox
                   id="program"
@@ -100,7 +103,11 @@ const CreateNewRow = ({
                   variant="readonly"
                 />
               </IconSettings>
-              <Input onChange={(event, data) => {handleCHange("title", data.value)}} defaultValue={row.title} id="title" label="Title"/>
+            </div>
+            <div className="slds-m-bottom_large">
+              <Input placeholder="Enter title" onChange={(event, data) => {handleCHange("title", data.value)}} defaultValue={row.title} id="title" label="Title"/>
+            </div>
+            <div className="slds-m-bottom_large">
               <IconSettings iconPath="assets/icons">
                 <Combobox
                   id="format"
@@ -117,6 +124,8 @@ const CreateNewRow = ({
                   variant="readonly"
                 />
               </IconSettings>
+            </div>
+            <div className="slds-m-bottom_large">
               <IconSettings iconPath="assets/icons">
                 <Combobox
                   id="persona"
@@ -133,7 +142,11 @@ const CreateNewRow = ({
                   variant="readonly"
                 />
               </IconSettings>
+            </div>
+            <div className="slds-m-bottom_large">
               <Input onChange={(event, data) => {handleCHange("abstract", data.value)}} defaultValue={row.abstract} id="abstract" label="Abstract"/>
+            </div>
+            <div className="slds-m-bottom_large">
               <IconSettings iconPath="assets/icons">
                 <Combobox
                   id="region"
@@ -150,6 +163,8 @@ const CreateNewRow = ({
                   variant="readonly"
                 />
               </IconSettings>
+            </div>
+            <div className="slds-m-bottom_large">
               <IconSettings iconPath="assets/icons">
               <Datepicker
                 id="startDate"
@@ -200,8 +215,13 @@ const CreateNewRow = ({
                 value={row.endDate}
               />
               </IconSettings>
-              <Input onChange={(event, data) => {handleCHange("results", data.value)}} defaultValue={row.results} id="results" label="Result"/>
-              <Input onChange={(event, data) => {handleCHange("asset", data.value)}} defaultValue={row.asset} id="asset" label="Asset"/>
+            </div>
+            <div className="slds-m-bottom_large">
+              <Input placeholder="Enter results" onChange={(event, data) => {handleCHange("results", data.value)}} defaultValue={row.results} id="results" label="Result"/>
+            </div>
+            <div className="slds-m-bottom_large">
+              <Input placeholder="Enter assets" onChange={(event, data) => {handleCHange("asset", data.value)}} defaultValue={row.asset} id="asset" label="Asset"/>
+            </div>
             </form>
           </div>
     )
