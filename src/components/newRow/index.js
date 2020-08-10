@@ -8,6 +8,7 @@ import {
   Sfdch1NewRow
 } from './styles';
 import { useHistory  } from 'react-router-dom'
+import NavBar from '../NavBar';
 
 const newRow = () => {
   const history = useHistory();
@@ -22,21 +23,43 @@ const newRow = () => {
     history.push('/table')
   }
 
+  const onSubmit = () =>{
+    history.push({
+      pathname: '/table',
+      id: 10000,
+      theme: row.theme[0] && row.theme[0].label,
+      program: row.program[0] && row.program[0].label,
+      format: row.format[0] && row.format[0].label,
+      persona: row.persona[0] && row.persona[0].label,
+      region: row.region[0] && row.region[0].label,
+      title: row.title,
+      abstract: row.abstract,
+      startDate: row.startDate,
+      endDate: row.endDate,
+      results: row.results,
+      asset: row.asset
+    })
+    
+  }
+
     return (
-      <SfdcFlexCenter>
-        <section class="slds-grid slds-wrap">
-          <div className="slds-grid slds-wrap slds-p-around_medium slds_full-width">
-            <div className="slds-col slds-size_12-of-12">
-              <Sfdch1NewRow>Create new row</Sfdch1NewRow>
-              <CreateNewRow
-                  getFormData = {getFormData}
-              />
-              <Button label="Cancel" onClick={e => table(e)}/>
-              <Button label="Save" variant="brand" onClick={e => table(e)} />
+      <section>
+        <NavBar />
+        <SfdcFlexCenter>
+          <section class="slds-grid slds-wrap">
+            <div className="slds-grid slds-wrap slds-p-around_medium slds_full-width">
+              <div className="slds-col slds-size_12-of-12">
+                <Sfdch1NewRow>Create new row</Sfdch1NewRow>
+                <CreateNewRow
+                    getFormData = {getFormData}
+                />
+                <Button label="Cancel" onClick={e => table(e)}/>
+                <Button label="Save" variant="brand" onClick={e => table(e)} />
+              </div>
             </div>
-          </div>
-        </section>
-      </SfdcFlexCenter>
+          </section>
+        </SfdcFlexCenter>
+      </section>
     )
 }
 
