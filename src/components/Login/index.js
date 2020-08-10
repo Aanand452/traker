@@ -13,7 +13,7 @@ const Login = () => {
 
     const login = e => {
       e.preventDefault();
-      history.push('/report')
+      history.push('/home')
     }
 
     return(

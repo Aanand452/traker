@@ -27,8 +27,8 @@ function App({closeSettingsMenu, user}) {
       <SfdcPageAppWrapper className="app" onClick={closeSettingsMenu}>
         <Switch>
           <Route exact path="/" component={Login} />
-          <Route exact path="/create-new-row" component={newRow} />
-          <Route exact path="/home" component={List} />
+          <Route exact path="/home" component={newRow} />
+          <Route exact path="/table" component={List} />
           <Route exact path="*" component={NotFoundPage} />
         </Switch>
       </SfdcPageAppWrapper>
