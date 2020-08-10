@@ -6,7 +6,7 @@ import {
   Button
 } from '@salesforce/design-system-react';
 import {
-  SfdcFlexCenter,
+  SfdcFlexPaddingTop,
   Sfdch1NewRow
 } from './styles';
 import { useHistory  } from 'react-router-dom'
@@ -28,7 +28,7 @@ const newRow = () => {
   const onSubmit = e =>{
     e.preventDefault();
     history.push({
-      pathname: '/table',
+      pathname: '/my-report',
       newRow:{
         id: 10000,
         theme: row.theme[0] && row.theme[0].label,
@@ -48,9 +48,9 @@ const newRow = () => {
   }
 
     return (
-      <section>
-        <SfdcFlexCenter>
-          <section class="slds-grid slds-wrap">
+      <SfdcFlexPaddingTop>
+        <section className="slds-grid slds-wrap">
+          <div className="slds-col slds-size_1-of-2">
             <IconSettings iconPath="/assets/icons">
               <Panel>
                 <div className="slds-grid slds-wrap slds-p-around_medium slds_full-width">
@@ -66,9 +66,9 @@ const newRow = () => {
                 </div>
               </Panel>
             </IconSettings>
-          </section>
-        </SfdcFlexCenter>
-      </section>
+          </div>
+        </section>
+      </SfdcFlexPaddingTop>
     )
 }
 
