@@ -197,7 +197,12 @@ class Table extends Component {
 
   render() {
 
-    let filtered = this.state.items && this.state.items.filter(e => e.theme.toLowerCase().indexOf(this.state.searchByTitle.toLowerCase()) !== -1);
+    let filtered = this.state.items && this.state.items.filter(e => {
+      if(e && e.title)
+        return e.title.toLowerCase().indexOf(this.state.searchByTitle.toLowerCase()) !== -1
+      else
+        return [];
+    });
 
     return (
       <div
@@ -284,12 +289,14 @@ class Table extends Component {
             <DataTableColumn label="Format" property="format" />
             <DataTableColumn label="Persona" property="persona" />
             <DataTableColumn label="Abstract" property="abstract" />
-            <DataTableColumn
-              sortDirection={this.state.sortColumnDirection.region}
-              sortable isSorted={this.state.sortColumn === 'region'}
-              label="Region"
-              property="region"
-            />
+            { this.props.type === "2" &&
+              <DataTableColumn
+                sortDirection={this.state.sortColumnDirection.region}
+                sortable isSorted={this.state.sortColumn === 'region'}
+                label="Region"
+                property="region"
+              />
+            }
             <DataTableColumn
               isSorted={this.state.sortColumn === 'startDate'}
               label="Start date"
