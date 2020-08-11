@@ -13,6 +13,7 @@ const APP_LOCKED_ALLOWED_USERS = APP_LOCKED.split(',') || [];
 module.exports = function (app, config, passport) {
 
   const isAuthenticated = (req, res, next) => {
+    next();
     if (req.isAuthenticated()){
       res.cookie('user', JSON.stringify(req.user || ''), {
         domain: process.env.APP_DOMAIN || DEFAULT_DOMAIN
