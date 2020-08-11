@@ -21,17 +21,17 @@ app.get('/', function (req, res) {
 });
 
 app.set('port', config.app.port);
-app.use(cookieParser());
+//app.use(cookieParser());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
-app.use(session(
-  {
-    resave: true,
-    saveUninitialized: true,
-    secret: 'this secret hits'
-  }));
-app.use(passport.initialize());
-app.use(passport.session());
+// app.use(session(
+//   {
+//     resave: true,
+//     saveUninitialized: true,
+//     secret: 'this secret hits'
+//   }));
+//app.use(passport.initialize());
+//app.use(passport.session());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.static(path.resolve(__dirname, '../build')));
 app.use(express.static(path.resolve(__dirname, 'static')));
