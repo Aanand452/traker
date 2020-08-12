@@ -1,7 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import NotFoundPage from '../containers/NotFoundPage';
-import { toggleSettingsMenu } from '../actions';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import { css } from 'glamor';
 import { SfdcPageAppWrapper } from './styles/page';
