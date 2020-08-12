@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import moment from 'moment';
+
 import {
   IconSettings,
   Modal,
@@ -7,6 +9,11 @@ import {
   Combobox,
   Datepicker
 } from '@salesforce/design-system-react';
+
+// ACTIONS
+import {
+  editItem
+} from '../../actions/DataTable';
 
 const theme = [
   { id: 1, label: 'State of" Research', value: 'State of" Research' },
@@ -162,28 +169,33 @@ class ModalComponent extends Component {
     this.setState({ endDate: data.formattedDate });
   }
 
+  editTable = () => {
+    this.props.editItem(this.props.dataTable.items, {
+      id: this.props.data.id,
+      theme: this.state.themeSelection[0] && this.state.themeSelection[0].label,
+      program: this.state.programSelection[0] && this.state.programSelection[0].label,
+      format: this.state.formatSelection[0] && this.state.formatSelection[0].label,
+      persona: this.state.personaSelection[0] && this.state.personaSelection[0].label,
+      region: this.state.regionSelection[0] && this.state.regionSelection[0].label,
+      title: this.state.title,
+      abstract: this.state.abstract,
+      startDate: this.state.startDate,
+      endDate: this.state.endDate,
+      results: this.state.results,
+      asset: this.state.asset
+    });
+    this.props.toggleOpen();
+  }
+
 	render() {
         
 		return (
       <IconSettings iconPath="/assets/icons">
         <Modal
-          isOpen={this.props.isOpen}
+          isOpen={true}
           footer={[
             <Button label="Cancel" onClick={this.props.toggleOpen} />,
-            <Button label="Save" variant="brand" onClick={() => this.props.onSubmit({
-              id: this.props.data.id,
-              theme: this.state.themeSelection[0] && this.state.themeSelection[0].label,
-              program: this.state.programSelection[0] && this.state.programSelection[0].label,
-              format: this.state.formatSelection[0] && this.state.formatSelection[0].label,
-              persona: this.state.personaSelection[0] && this.state.personaSelection[0].label,
-              region: this.state.regionSelection[0] && this.state.regionSelection[0].label,
-              title: this.state.title,
-              abstract: this.state.abstract,
-              startDate: this.state.startDate,
-              endDate: this.state.endDate,
-              results: this.state.results,
-              asset: this.state.asset
-            })} />,
+            <Button label="Save" variant="brand" onClick={this.editTable} />,
           ]}
           onRequestClose={this.props.toggleOpen}
           heading={this.props.title}
@@ -429,4 +441,8 @@ class ModalComponent extends Component {
 	}
 };
 
-export default ModalComponent;
+let mapState = ({ dataTable }) => ({
+  dataTable
+});
+
+export default connect(mapState, { editItem })(ModalComponent);

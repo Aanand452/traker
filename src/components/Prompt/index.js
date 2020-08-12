@@ -6,15 +6,18 @@ import {
   Button
 } from '@salesforce/design-system-react';
 
-import { closeDeletePrompt, handleDeleteSelection } from '../../actions/DataTable';
+// ACTIONS
+import {
+  closeDeletePrompt,
+  handleDeleteSelection
+} from '../../actions/DataTable';
 
 class Prompt extends Component {
-
   
   render() {
 
     let {item, items, selection} = this.props.dataTable;
-    
+
 		return (
       <Modal
         footer={[
@@ -24,7 +27,7 @@ class Prompt extends Component {
             onClick={this.props.closeDeletePrompt}
           />,
           <Button
-            variant="destructive"
+            variant="brand"
             key="promptBtn"
             label="Delete"
             onClick={() => this.props.handleDeleteSelection(items, item, selection)}

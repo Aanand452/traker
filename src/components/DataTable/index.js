@@ -27,10 +27,11 @@ import Prompt from '../Prompt';
 import {
   openDeletePrompt,
   selectItem,
-  handleDeleteSelection
+  handleDeleteSelection,
+  resetItems,
+  setItem
 } from '../../actions/DataTable';
 
-import data from '../../data';
 import { PagerContainer } from './styles.js';
 
 const CustomDataTableCell = ({ children, ...props }) => (
@@ -88,9 +89,9 @@ class Table extends Component {
           assistiveText={{ icon: 'Refresh' }}
           iconCategory="utility"
           iconName="refresh"
-          iconVariant="border-filled"
+          iconVariant="border"
           variant="icon"
-          onClick={this.resetItems}
+          onClick={this.props.resetItems}
         />
       </PageHeaderControl>
       <PageHeaderControl>
@@ -117,10 +118,6 @@ class Table extends Component {
     </Fragment>
   );
 
-  resetItems = () => {
-    this.setState({ items: [...data] });
-  }
-
   toggleOpen = () => {
     this.setState({ editModalIsOPen: !this.state.editModalIsOPen });
   };
@@ -135,7 +132,7 @@ class Table extends Component {
   handleRowAction = (item, { id }) => {
     switch(id) {
       case 0:
-        this.setState({ item });
+        this.props.setItem(item);
         this.toggleOpen();
         break;
       case 1:
@@ -202,8 +199,8 @@ class Table extends Component {
           marginTop: '90px',
         }}
       >
-          {this.state.editModalIsOPen && <Modal onSubmit={this.editData} data={this.state.item} title='Edit row' isOpen={this.state.editModalIsOPen} toggleOpen={this.toggleOpen} />}
-          {this.props.dataTable.isDeletePromptOpen && <Prompt onDelete={true} />}
+          {this.state.editModalIsOPen && <Modal data={this.props.dataTable.item} title='Edit row' toggleOpen={this.toggleOpen} />}
+          {this.props.dataTable.isDeletePromptOpen && <Prompt />}
           <IconSettings iconPath="/assets/icons">
             <PageHeader
               onRenderActions={this.actions}
@@ -336,4 +333,4 @@ let mapState = ({ dataTable }) => ({
   dataTable
 });
 
-export default withRouter(connect(mapState, { openDeletePrompt, selectItem, handleDeleteSelection })(Table));
+export default withRouter(connect(mapState, { openDeletePrompt, selectItem, handleDeleteSelection, resetItems, setItem })(Table));
