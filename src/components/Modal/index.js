@@ -93,7 +93,7 @@ const format = [
   { id: 20, label: 'Organic Social', value: 'Organic Social' },
   { id: 21, label: 'Paid Social', value: 'Paid Social' },
   { id: 22, label: 'Podcast', value: 'Podcast' },
-  { id: 23, label: 'Report', value: 'Report' },
+  { id: 23, label: 'View', value: 'View' },
   { id: 24, label: 'Research', value: 'Research' },
   { id: 25, label: 'SIC', value: 'SIC' },
   { id: 26, label: 'Telenuture', value: 'Telenuture' },

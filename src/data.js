@@ -122,7 +122,7 @@ export const format = [
         disabled: false
     },
     {
-        text: 'Report',
+        text: 'View',
         disabled: false
     },
     {
@@ -410,7 +410,7 @@ export const formats = [
   'Organic Social',
   'Paid Social',
   'Podcast',
-  'Report',
+  'View',
   'Research',
   'SIC',
   'Telenuture',
