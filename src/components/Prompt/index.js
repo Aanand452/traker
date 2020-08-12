@@ -15,9 +15,6 @@ class Prompt extends Component {
 
     let {item, items, selection} = this.props.dataTable;
     
-    console.log('items', items)
-    console.log('item', item)
-    console.log('selection', selection)
 		return (
       <Modal
         footer={[

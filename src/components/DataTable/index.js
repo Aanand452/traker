@@ -56,8 +56,6 @@ class Table extends Component {
     sortColumnDirection: {
       opportunityName: 'asc',
     },
-    item: undefined,
-    selection: [],
     editModalIsOPen: false,
     isPanelOpen: false,
     searchByTitle: '',
@@ -126,16 +124,6 @@ class Table extends Component {
   toggleOpen = () => {
     this.setState({ editModalIsOPen: !this.state.editModalIsOPen });
   };
-
-  handleDeleteSelection = item => {
-    if(item) {
-      let items = this.props.dataTable.items.filter(el => el.id !== item.id);
-      this.setState({ items, item: undefined, isDeletePromptOpen: false });
-    } else {
-      let items = this.props.dataTable.items.filter(el => !this.state.selection.includes(el))
-      this.setState({ selection: [], items, isDeletePromptOpen: false, item: undefined });
-    }
-  }
   
   editData = row => {
     let items = [...this.props.dataTable.items];
@@ -152,7 +140,6 @@ class Table extends Component {
         break;
       case 1:
         this.props.openDeletePrompt(item);
-        // this.setState({ item, isDeletePromptOpen: !this.state.isDeletePromptOpen });
         break;
       default:
         break;

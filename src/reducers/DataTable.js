@@ -36,7 +36,6 @@ const dataTable = (state = INITIAL_STATE, action) => {
         isDeletePromptOpen: false
       }
     case 'DELETE_ITEMS':
-      console.log(action.items)
       return {
         ...state,
         selection: [],
