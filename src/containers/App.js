@@ -44,8 +44,8 @@ function App({closeSettingsMenu, user}) {
       <SfdcPageAppWrapper className="app" onClick={closeSettingsMenu}>
         <Switch>
           <Route exact path="/" component={Login} />
-          <Route exact path="/my-report" component={MyList} />
-          <Route exact path="/team-report" component={TeamList} />
+          <Route exact path="/my-view" component={MyList} />
+          <Route exact path="/team-view" component={TeamList} />
           <Route exact path="/home" component={Layout} />
           <Route exact path="*" component={NotFoundPage} />
         </Switch>

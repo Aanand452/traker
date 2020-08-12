@@ -13,15 +13,16 @@ const APP_LOCKED_ALLOWED_USERS = APP_LOCKED.split(',') || [];
 module.exports = function (app, config, passport) {
 
   const isAuthenticated = (req, res, next) => {
-    if (req.isAuthenticated()){
-      res.cookie('user', JSON.stringify(req.user || ''), {
-        domain: process.env.APP_DOMAIN || DEFAULT_DOMAIN
-      });
-      return next();
-    }
-    else{
-      res.redirect(LOGIN_URL);
-    }
+    next();
+    // if (req.isAuthenticated()){
+    //   res.cookie('user', JSON.stringify(req.user || ''), {
+    //     domain: process.env.APP_DOMAIN || DEFAULT_DOMAIN
+    //   });
+    //   return next();
+    // }
+    // else{
+    //   res.redirect(LOGIN_URL);
+    // }
   }
 
   const goToApp = (req, res) => {
@@ -61,24 +62,24 @@ module.exports = function (app, config, passport) {
   });
 
   app.get(LOGIN_URL,
-    passport.authenticate(config.passport.strategy,
-      {
-        successRedirect: HOME_URL,
-        failureRedirect: LOGIN_URL
-      }
-    )
+    // passport.authenticate(config.passport.strategy,
+    //   {
+    //     successRedirect: HOME_URL,
+    //     failureRedirect: LOGIN_URL
+    //   }
+    // )
   );
 
-  app.post(config.passport.saml.path,
-    passport.authenticate(config.passport.strategy,
-      {
-        failureRedirect: HOME_URL,
-        failureFlash: true
-      }),
-    function (req, res) {
-      res.redirect(HOME_URL);
-    }
-  );
+  // app.post(config.passport.saml.path,
+  //   passport.authenticate(config.passport.strategy,
+  //     {
+  //       failureRedirect: HOME_URL,
+  //       failureFlash: true
+  //     }),
+  //   function (req, res) {
+  //     res.redirect(HOME_URL);
+  //   }
+  // );
 
   app.get('/upload', isAuthenticated, isUserAllowed, (req, res) => {
     if (!isUploadAllowed(req.user.email)) {

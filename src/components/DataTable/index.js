@@ -248,7 +248,7 @@ class Table extends Component {
                         iconCategory="utility"
                         iconName="down"
                         iconPosition="right"
-                        label="Sales report"
+                        label="Sales view"
                         responsive
                         variant="base"
                       />
