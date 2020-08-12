@@ -96,8 +96,8 @@ const NavBar = () => {
         </GlobalNavigationBarRegion>
         <GlobalNavigationBarRegion region="secondary" navigation>
           <NavigationBarLink to="/home" title="Home" />
-          <NavigationBarLink to="/my-report" title="My report" />
-          <NavigationBarLink to="/team-report" title="Team report" />
+          <NavigationBarLink to="/my-view" title="My view" />
+          <NavigationBarLink to="/team-view" title="Team view" />
           
         </GlobalNavigationBarRegion>
       </GlobalNavigationBar>
