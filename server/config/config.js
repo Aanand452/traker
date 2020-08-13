@@ -1,7 +1,7 @@
 const config = {
   app: {
     name: 'Passport SAML strategy example',
-    port: process.env.PORT || 3000
+    port: process.env.PORT || 3001
   },
   passport: {
     strategy: 'saml',

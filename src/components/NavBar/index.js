@@ -1,4 +1,4 @@
-import React from 'react';
+import React , {Component}from 'react';
 import {
   Icon,
   IconSettings,
@@ -14,7 +14,7 @@ import {
 
 import { NavContainer } from './styles';
 import NavigationBarLink from './NavigationBarLink';
-import { useHistory  } from 'react-router-dom';
+import { withRouter } from 'react-router-dom';
 
 const HeaderProfileCustomContent = (props) => (
   <div id="header-profile-custom-popover-content">
@@ -41,68 +41,88 @@ const HeaderProfileCustomContent = (props) => (
 );
 HeaderProfileCustomContent.displayName = 'HeaderProfileCustomContent';
 
-const NavBar = () => {
-  const history = useHistory();
 
-  const toHome = e => {
-    e.preventDefault();
-    history.push('/home')
+class NavBar extends Component{
+  state = {
+    tableauUrl: '/'
+  };
+
+  configUrls(data){
+    this.setState({
+      tableauUrl: data.tablaeu
+    },
+    ...this.state);
   }
 
-  return (
-  <NavContainer>
-    <IconSettings iconPath="/assets/icons">
-      <GlobalHeader
-        logoSrc='assets/images/logo.svg'
-      >
-        <GlobalHeaderButton onClick={toHome}>
-          <Icon
-            assistiveText={{ label: 'Add Registry' }}
-            category="utility"
-            name="add"
-            size="x-small"
-          />
-        </GlobalHeaderButton>
-        <GlobalHeaderButton onClick={toHome}>
-          <Icon
-            assistiveText={{ label: 'Upload CSV' }}
-            category="utility"
-            name="upload"
-            size="x-small"
-          />  
-        </GlobalHeaderButton> 
-        {/*<GlobalHeaderButton>
-          <Icon
-            assistiveText={{ label: 'Error' }}
-            category="utility"
-            name="error"
-            size="x-small"
-          />
-        </GlobalHeaderButton>
-        */}
-        <GlobalHeaderProfile 
-          popover={
-            <Popover
-              body={<HeaderProfileCustomContent />}
-              id="header-profile-popover-id"
-            />
-        } />
-      </GlobalHeader>
-      <GlobalNavigationBar>
-        <GlobalNavigationBarRegion region="primary">
-          <AppLauncher
-            triggerName="SARA"
-          />
-        </GlobalNavigationBarRegion>
-        <GlobalNavigationBarRegion region="secondary" navigation>
-          <NavigationBarLink to="/home" title="Home" />
-          <NavigationBarLink to="/my-view" title="My view" />
-          <NavigationBarLink to="/team-view" title="Team view" />
-          
-        </GlobalNavigationBarRegion>
-      </GlobalNavigationBar>
-    </IconSettings>
-  </NavContainer>
-)};
+  async componentDidMount() {
+    try{
+      let response = await fetch('http://localhost:3001/config');
+      let data = await response.json();
+      response.status === 200 && this.configUrls(data);
 
-export default NavBar;
+    } catch(e) {
+      console.error('ERROR: cannot get the url config: ', e);
+    }
+  }
+
+  render(){
+    return (
+      <NavContainer>
+        <IconSettings iconPath="/assets/icons">
+          <GlobalHeader
+            logoSrc='assets/images/logo.svg'
+          >
+            <GlobalHeaderButton onClick={() => this.props.history.push('/home')}>
+              <Icon
+                assistiveText={{ label: 'Add Registry' }}
+                category="utility"
+                name="add"
+                size="x-small"
+              />
+            </GlobalHeaderButton>
+            <GlobalHeaderButton onClick={() => this.props.history.push('/home')}>
+              <Icon
+                assistiveText={{ label: 'Upload CSV' }}
+                category="utility"
+                name="upload"
+                size="x-small"
+              />  
+            </GlobalHeaderButton> 
+            {/*<GlobalHeaderButton>
+              <Icon
+                assistiveText={{ label: 'Error' }}
+                category="utility"
+                name="error"
+                size="x-small"
+              />
+            </GlobalHeaderButton>
+            */}
+            <GlobalHeaderProfile 
+              popover={
+                <Popover
+                  body={<HeaderProfileCustomContent />}
+                  id="header-profile-popover-id"
+                />
+            } />
+          </GlobalHeader>
+          <GlobalNavigationBar>
+            <GlobalNavigationBarRegion region="primary">
+              <AppLauncher
+                triggerName="SARA"
+              />
+            </GlobalNavigationBarRegion>
+            <GlobalNavigationBarRegion region="secondary" navigation>
+              <NavigationBarLink to="/home" title="Home" />
+              <NavigationBarLink to="/my-view" title="My view" />
+              <NavigationBarLink to="/team-view" title="Team view" />
+              {this.state.tableauUrl !== '/' && <NavigationBarLink title="Go to reports" href={this.state.tableauUrl}/>}
+              
+            </GlobalNavigationBarRegion>
+          </GlobalNavigationBar>
+        </IconSettings>
+      </NavContainer>
+    )
+  }
+}
+
+export default withRouter(NavBar);
