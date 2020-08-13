@@ -54,7 +54,7 @@ class NavBar extends Component{
     ...this.state);
   }
 
-  async componentDidMount() {
+  async getConfig(){
     try{
       let response = await fetch('http://localhost:3001/config');
       let data = await response.json();
@@ -63,6 +63,10 @@ class NavBar extends Component{
     } catch(e) {
       console.error('ERROR: cannot get the url config: ', e);
     }
+  }
+
+  componentDidMount() {
+    this.getConfig();
   }
 
   render(){
