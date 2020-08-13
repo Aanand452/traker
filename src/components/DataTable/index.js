@@ -1,5 +1,6 @@
 import React, { Component, Fragment } from 'react';
 import { withRouter } from 'react-router-dom';
+import { connect } from 'react-redux';
 
 import {
   Button,
@@ -20,9 +21,18 @@ import {
 import Modal from '../Modal';
 import Panel from '../Panel';
 import Pager from '../Pager';
+import Prompt from '../Prompt';
 
-import data from '../../data';
-import { TableContainer, PagerContainer } from './styles.js';
+// ACTIONS
+import {
+  openDeletePrompt,
+  selectItem,
+  handleDeleteSelection,
+  resetItems,
+  setItem
+} from '../../actions/DataTable';
+
+import { PagerContainer } from './styles.js';
 
 const CustomDataTableCell = ({ children, ...props }) => (
   <DataTableCell title={children} {...props}>
@@ -47,17 +57,11 @@ class Table extends Component {
     sortColumnDirection: {
       opportunityName: 'asc',
     },
-    items: [...data],
-    selection: [],
     editModalIsOPen: false,
-    editRow: {},
     isPanelOpen: false,
-    searchByTitle: ''
+    searchByTitle: '',
+    isDeletePromptOpen: false
   };
-
-  componentDidMount() {
-    this.resetItems();
-  }
 
   actions = () => (
     <PageHeaderControl>
@@ -70,9 +74,9 @@ class Table extends Component {
 
   controls = () => (
     <Fragment>
-      {this.state.selection.length > 0 ? <PageHeaderControl>
+      {this.props.dataTable.selection.length > 0 ? <PageHeaderControl>
         <Button
-          onClick={this.handleDeleteSelection}
+          onClick={this.props.openDeletePrompt}
           assistiveText={{ icon: 'Delete List' }}
           iconCategory="utility"
           iconName="delete"
@@ -85,8 +89,9 @@ class Table extends Component {
           assistiveText={{ icon: 'Refresh' }}
           iconCategory="utility"
           iconName="refresh"
-          iconVariant="border-filled"
+          iconVariant="border"
           variant="icon"
+          onClick={this.props.resetItems}
         />
       </PageHeaderControl>
       <PageHeaderControl>
@@ -105,10 +110,7 @@ class Table extends Component {
             iconVariant="border-filled"
             variant="icon"
             onClick={() => {
-              this.setState({isPanelOpen: !this.state.isPanelOpen});
-              if(this.state.isPanelOpen) {
-                  this.resetItems();
-              }
+              this.setState({ isPanelOpen: !this.state.isPanelOpen });
             }}
           />
         </ButtonGroup>
@@ -116,39 +118,25 @@ class Table extends Component {
     </Fragment>
   );
 
-  resetItems = () => {
-    this.setState({items: [...data]});
-  }
-
   toggleOpen = () => {
     this.setState({ editModalIsOPen: !this.state.editModalIsOPen });
   };
-
-  handleDeleteSelection = () => {
-    let items = this.state.items.filter(el => !this.state.selection.includes(el))
-    this.setState({ selection: [], items });
-  }
-
-  handleChanged = (event, data) => {
-    this.setState({ selection: data.selection });
-  };
   
   editData = row => {
-    let items = [...this.state.items];
+    let items = [...this.props.dataTable.items];
     items.splice(row.id, 1, row)
-    this.setState({items});
+    this.setState({ items });
     this.toggleOpen();
   }
 
   handleRowAction = (item, { id }) => {
     switch(id) {
       case 0:
-        this.setState({editRow: item});
+        this.props.setItem(item);
         this.toggleOpen();
         break;
       case 1:
-        let items = this.state.items.filter((el, idx) => el.id !== item.id);
-        this.setState({items});
+        this.props.openDeletePrompt(item);
         break;
       default:
         break;
@@ -156,7 +144,7 @@ class Table extends Component {
   };
   
   handleSearch = text => {
-    this.setState({searchByTitle: text});
+    this.setState({ searchByTitle: text });
   }
 
   handleSort = (sortColumn, ...rest) => {
@@ -171,7 +159,7 @@ class Table extends Component {
       sortColumnDirection: {
           [sortProperty]: sortDirection,
       },
-      items: [...this.state.items],
+      items: [...this.props.dataTable.items],
     };
 
     // needs to work in both directions
@@ -197,7 +185,7 @@ class Table extends Component {
 
   render() {
 
-    let filtered = this.state.items && this.state.items.filter(e => {
+    let filtered = this.props.dataTable.items && this.props.dataTable.items.filter(e => {
       if(e && e.title)
         return e.title.toLowerCase().indexOf(this.state.searchByTitle.toLowerCase()) !== -1
       else
@@ -211,7 +199,8 @@ class Table extends Component {
           marginTop: '90px',
         }}
       >
-          {this.state.editModalIsOPen && <Modal onSubmit={this.editData} data={this.state.editRow} title='Edit row' isOpen={this.state.editModalIsOPen} toggleOpen={this.toggleOpen} />}
+          {this.state.editModalIsOPen && <Modal data={this.props.dataTable.item} title='Edit row' toggleOpen={this.toggleOpen} />}
+          {this.props.dataTable.isDeletePromptOpen && <Prompt />}
           <IconSettings iconPath="/assets/icons">
             <PageHeader
               onRenderActions={this.actions}
@@ -222,7 +211,7 @@ class Table extends Component {
                   name="lead"
                 />
               }
-              info={`${this.state.items.length} ${this.state.items.length === 1 ? 'item' : 'items'}`}
+              info={`${this.props.dataTable.items.length} ${this.props.dataTable.items.length === 1 ? 'item' : 'items'}`}
               joined
               label="Leads"
               onRenderControls={this.controls}
@@ -269,9 +258,9 @@ class Table extends Component {
             items={filtered}
             id="DataTableExample-FixedHeaders"
             joined
-            onRowChange={this.handleChanged}
+            onRowChange={this.props.selectItem}
             onSort={this.handleSort}
-            selection={this.state.selection}
+            selection={this.props.dataTable.selection}
             selectRows="checkbox"
           >
             <DataTableColumn
@@ -340,4 +329,8 @@ class Table extends Component {
   }
 }
 
-export default withRouter(Table);
+let mapState = ({ dataTable }) => ({
+  dataTable
+});
+
+export default withRouter(connect(mapState, { openDeletePrompt, selectItem, handleDeleteSelection, resetItems, setItem })(Table));
