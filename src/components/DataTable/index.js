@@ -263,6 +263,7 @@ class Table extends Component {
             selection={this.props.dataTable.selection}
             selectRows="checkbox"
           >
+            <DataTableColumn label="ID" property="id" />
             <DataTableColumn
               isSorted={this.state.sortColumn === 'theme'}
               label="Theme"
@@ -313,7 +314,7 @@ class Table extends Component {
                   id: 1,
                   label: 'Delete',
                   value: '2',
-                },
+                }
               ]}
               menuPosition="overflowBoundaryElement"
               onAction={this.handleRowAction}
