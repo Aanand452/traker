@@ -14,7 +14,7 @@ import {
 
 import { NavContainer } from './styles';
 import NavigationBarLink from './NavigationBarLink';
-import { useHistory  } from 'react-router-dom';
+import { withRouter } from 'react-router-dom';
 
 const HeaderProfileCustomContent = (props) => (
   <div id="header-profile-custom-popover-content">
@@ -61,7 +61,7 @@ class NavBar extends Component{
       response.status === 200 && this.configUrls(data);
 
     } catch(e) {
-      console.error('Error getting the cconfig: ', e);
+      console.error('ERROR: cannot get the url config: ', e);
     }
   }
 
@@ -125,4 +125,4 @@ class NavBar extends Component{
   }
 }
 
-export default NavBar;
+export default withRouter(NavBar);
