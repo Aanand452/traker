@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import CreateNewRow from '../CreateNewRow';
+import CreateActivity from '../CreateActivity';
 import {
   IconSettings,
   Panel,
@@ -11,7 +11,7 @@ import {
 } from './styles';
 import { useHistory  } from 'react-router-dom'
 
-const newRow = () => {
+const CreateActivityPage = () => {
   const history = useHistory();
   const [row, setRow] = useState({})
 
@@ -21,13 +21,13 @@ const newRow = () => {
 
   const table = e => {
     e.preventDefault();
-    history.push('/my-report')
+    history.push('/my-view')
   }
 
   const onSubmit = e =>{
     e.preventDefault();
     history.push({
-      pathname: '/my-report',
+      pathname: '/my-view',
       newRow:{
         id: 10000,
         theme: row.data.theme[0] && row.data.theme[0].label,
@@ -49,13 +49,13 @@ const newRow = () => {
     return (
       <SfdcFlexPaddingTop>
         <section className="slds-grid slds-wrap">
-          <div className="slds-col slds-size_1-of-2">
+          <div className="slds-col slds-size_1-of-1">
             <IconSettings iconPath="/assets/icons">
               <Panel>
                 <div className="slds-grid slds-wrap slds-p-around_medium slds_full-width">
                   <div className="slds-col slds-size_12-of-12">
-                    <Sfdch1NewRow>Create new row</Sfdch1NewRow>
-                    <CreateNewRow
+                    <Sfdch1NewRow>Create new activity</Sfdch1NewRow>
+                    <CreateActivity
                         getFormData = {getFormData}
                         abstract = {'"To help infuse our Salesforce community with joy and inspiration, today we launched our #FeelGoodFridays series across our social channels. 🙌The aim of this series is to share how our community is keeping spirits high with positive vibes every week. Our first #FeelGoodFriday story is about one of our education Trailblazers, A Team Tuition. No doubt, many of us can relate to Hayden’s story of being stereotyped at school as a particular type of learner. Well, Hayden has turned this on its head with his business A Team Tuition."'}
                     />
@@ -71,4 +71,4 @@ const newRow = () => {
     )
 }
 
-export default newRow
+export default CreateActivityPage
