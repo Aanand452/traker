@@ -3,8 +3,7 @@ import CreateActivity from '../CreateActivity';
 import {
   IconSettings,
   Panel,
-  Button,
-  ProgressBar
+  Button
 } from '@salesforce/design-system-react';
 import {
   SfdcFlexPaddingTop,
