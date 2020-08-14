@@ -26,7 +26,7 @@ const CreateActivityPage = () => {
     e.preventDefault();
     setShowLoader(true);
     try {
-      await mockAPICall(false);
+      await mockAPICall(true);
       history.push({
         pathname: '/my-view',
         newRow:{
@@ -65,20 +65,18 @@ const CreateActivityPage = () => {
           </SpinnerWrapper>
         )}
         <section className="slds-grid slds-wrap">
-          <div className="slds-col slds-size_1-of-1">
-            <Panel>
-              <div className="slds-grid slds-wrap slds-p-around_medium slds_full-width">
-                <div className="slds-col slds-size_12-of-12">
-                    <Sfdch1NewRow>Create new activity</Sfdch1NewRow>
-                    <CreateActivity
-                      getFormData = {getFormData}
-                      handleSubmit={(e)=>onSubmit(e)}
-                      abstract = {'"To help infuse our Salesforce community with joy and inspiration, today we launched our #FeelGoodFridays series across our social channels. 🙌The aim of this series is to share how our community is keeping spirits high with positive vibes every week. Our first #FeelGoodFriday story is about one of our education Trailblazers, A Team Tuition. No doubt, many of us can relate to Hayden’s story of being stereotyped at school as a particular type of learner. Well, Hayden has turned this on its head with his business A Team Tuition."'}
-                    />
-                </div>
+          <Panel>
+            <div className="slds-grid slds-wrap slds-p-around_medium slds_full-width">
+              <div className="slds-col slds-size_12-of-12">
+                  <Sfdch1NewRow>Create new activity</Sfdch1NewRow>
+                  <CreateActivity
+                    getFormData = {getFormData}
+                    handleSubmit={(e)=>onSubmit(e)}
+                    abstract = {'"To help infuse our Salesforce community with joy and inspiration, today we launched our #FeelGoodFridays series across our social channels. 🙌The aim of this series is to share how our community is keeping spirits high with positive vibes every week. Our first #FeelGoodFriday story is about one of our education Trailblazers, A Team Tuition. No doubt, many of us can relate to Hayden’s story of being stereotyped at school as a particular type of learner. Well, Hayden has turned this on its head with his business A Team Tuition."'}
+                  />
               </div>
-            </Panel>
-          </div>
+            </div>
+          </Panel>
         </section>
         {showToast && (
           <ToastContainer>
