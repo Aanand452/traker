@@ -22,8 +22,7 @@ const CreateActivity = ({
   endDate,
   results,
   asset,
-  getFormData,
-  customRowClass
+  getFormData
 }) => {
 
   const createModelData = (modelData) => {
@@ -70,7 +69,7 @@ const CreateActivity = ({
       <IconSettings iconPath="assets/icons">
         <div>
           <form className="slds-grid slds-wrap">
-            <div className={customRowClass ? customRowClass : "slds-col slds-size_1-of-1 slds-m-bottom_large"}>
+            <div className={"slds-m-bottom_large slds-col slds-size_1-of-2"}>
                 <Combobox
                   id="theme"
                   events={{
@@ -86,7 +85,7 @@ const CreateActivity = ({
                   variant="readonly"
                 />
             </div>
-            <div className={customRowClass ? customRowClass : "slds-col slds-size_1-of-1 slds-m-bottom_large"}>
+            <div className={"slds-m-bottom_large slds-col slds-size_1-of-2"}>
                 <Combobox
                   id="program"
                   events={{
@@ -102,10 +101,10 @@ const CreateActivity = ({
                   variant="readonly"
                 />
             </div>
-            <div className={customRowClass ? customRowClass : "slds-col slds-size_1-of-1 slds-m-bottom_large"}>
+            <div className={"slds-m-bottom_large slds-col slds-size_1-of-2"}>
               <Input placeholder="Enter title" onChange={(event, data) => {handleCHange("title", data.value)}} defaultValue={row.title} id="title" label="Title"/>
             </div>
-            <div className={customRowClass ? customRowClass : "slds-col slds-size_1-of-1 slds-m-bottom_large"}>
+            <div className={"slds-m-bottom_large slds-col slds-size_1-of-2"}>
                 <Combobox
                   id="format"
                   events={{
@@ -121,7 +120,7 @@ const CreateActivity = ({
                   variant="readonly"
                 />
             </div>
-            <div className={customRowClass ? customRowClass : "slds-col slds-size_1-of-1 slds-m-bottom_large"}>
+            <div className={"slds-m-bottom_large slds-col slds-size_1-of-2"}>
                 <Combobox
                   id="persona"
                   events={{
@@ -137,10 +136,10 @@ const CreateActivity = ({
                   variant="readonly"
                 />
             </div>
-            <div className={customRowClass ? customRowClass : "slds-col slds-size_1-of-1 slds-m-bottom_large"}>
+            <div className={"slds-m-bottom_large slds-col slds-size_1-of-2"}>
               <Input onChange={(event, data) => {handleCHange("abstract", data.value)}} defaultValue={row.abstract} id="abstract" label="Abstract"/>
             </div>
-            <div className={customRowClass ? customRowClass : "slds-col slds-size_1-of-1 slds-m-bottom_large"}>
+            <div className={"slds-m-bottom_large slds-col slds-size_1-of-2"}>
                 <Combobox
                   id="region"
                   events={{
@@ -156,7 +155,7 @@ const CreateActivity = ({
                   variant="readonly"
                 />
             </div>
-            <div className={customRowClass ? customRowClass : "slds-col slds-size_1-of-1 slds-m-bottom_large"}>
+            <div className={"slds-m-bottom_large slds-col slds-size_1-of-2"}>
               <Datepicker
                 id="startDate"
                 labels={{
@@ -204,10 +203,10 @@ const CreateActivity = ({
                 value={row.endDate}
               />
             </div>
-            <div className={customRowClass ? customRowClass : "slds-col slds-size_1-of-1 slds-m-bottom_large"}>
+            <div className={"slds-m-bottom_large slds-col slds-size_1-of-2"}>
               <Input placeholder="Enter results" onChange={(event, data) => {handleCHange("results", data.value)}} defaultValue={row.results} id="results" label="Result"/>
             </div>
-            <div className={customRowClass ? customRowClass : "slds-col slds-size_1-of-1 slds-m-bottom_large"}>
+            <div className={"slds-m-bottom_large slds-col slds-size_1-of-2"}>
               <Input placeholder="Enter assets" onChange={(event, data) => {handleCHange("asset", data.value)}} defaultValue={row.asset} id="asset" label="Asset"/>
             </div>
           </form>

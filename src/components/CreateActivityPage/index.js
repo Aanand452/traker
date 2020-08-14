@@ -56,7 +56,6 @@ const CreateActivityPage = () => {
                   <div className="slds-col slds-size_12-of-12">
                     <Sfdch1NewRow>Create new activity</Sfdch1NewRow>
                     <CreateActivity
-                        customRowClass = {"slds-m-bottom_large slds-col slds-size_1-of-2"}
                         getFormData = {getFormData}
                         abstract = {'"To help infuse our Salesforce community with joy and inspiration, today we launched our #FeelGoodFridays series across our social channels. 🙌The aim of this series is to share how our community is keeping spirits high with positive vibes every week. Our first #FeelGoodFriday story is about one of our education Trailblazers, A Team Tuition. No doubt, many of us can relate to Hayden’s story of being stereotyped at school as a particular type of learner. Well, Hayden has turned this on its head with his business A Team Tuition."'}
                     />
