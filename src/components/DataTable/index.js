@@ -265,7 +265,7 @@ class Table extends Component {
             selection={this.props.dataTable.selection}
             selectRows="checkbox"
           >
-            <DataTableColumn label="Campaign ID" property="id" />
+            <DataTableColumn label="Campaign ID" property="campaignId" />
             <DataTableColumn
               isSorted={this.state.sortColumn === 'theme'}
               label="Theme"

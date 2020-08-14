@@ -127,6 +127,7 @@ class ModalComponent extends Component {
     results: this.props.data.results,
     asset: this.props.data.asset,
     kpi: this.props.data.kpi,
+    campaignId: this.props.data.campaignId,
     kpiValue: '',
     kpiKey: '',
     editValue: '',
@@ -176,7 +177,7 @@ class ModalComponent extends Component {
 
   editTable = () => {
     this.props.editItem(this.props.dataTable.items, {
-      id: this.props.data.id,
+      campaignId: this.state.campaignId,
       theme: this.state.themeSelection[0] && this.state.themeSelection[0].label,
       program: this.state.programSelection[0] && this.state.programSelection[0].label,
       format: this.state.formatSelection[0] && this.state.formatSelection[0].label,
@@ -224,6 +225,18 @@ class ModalComponent extends Component {
     this.setState({kpi, editValue: '', editKey: ''});
   }
 
+  idGenerator = len => {
+    let maxlen = 8,
+      min = Math.pow(16,Math.min(len,maxlen)-1) ,
+      max = Math.pow(16,Math.min(len,maxlen)) - 1,
+      n   = Math.floor( Math.random() * (max-min+1) ) + min,
+      r   = n.toString(16);
+    while ( r.length < len ) {
+        r = r + this.idGenerator( len - maxlen );
+    }
+    return r;
+  }
+
 	render() {
         
 		return (
@@ -240,6 +253,34 @@ class ModalComponent extends Component {
         >
           <section className="slds-p-around_large">
             <div className="slds-form-element slds-m-bottom_large">
+            <div className="slds-form-element slds-m-bottom_large">
+              <label className="slds-form-element__label">
+                Campaign ID
+              </label>
+              <div className="slds-form-element__control slds-grid slds-gutters">
+                <div className="slds-col slds-size_11-of-12">
+                  <div className="slds-form-element__control">
+                    <input
+                      className="slds-input"
+                      type="text"
+                      placeholder="Enter campaign id"
+                      value={this.state.campaignId}
+                      onChange={e => this.setState({campaignId: e.target.value})}
+                    />
+                  </div>
+                </div>
+                <div className="slds-col slds-size_1-of-12">
+                  <Button
+                    onClick={() => this.setState({campaignId: this.idGenerator(12)})}
+                    assistiveText={{ icon: 'Icon Border-filled medium' }}
+                    iconCategory="utility"
+                    iconName="refresh"
+                    iconVariant="border-filled"
+                    title="Generate new Campaign ID"
+                    variant="icon" />
+                </div>
+              </div>
+            </div>
               <Combobox
                 events={{
                   onSelect: (event, data) => {
@@ -481,10 +522,10 @@ class ModalComponent extends Component {
                     {
                       el.edit === false ? (
                         <Fragment>
-                          <div className="slds-col slds-size_1-of-3">
+                          <div className="slds-col slds-size_2-of-5">
                             {el.key}
                           </div>
-                          <div className="slds-col slds-size_1-of-3">
+                          <div className="slds-col slds-size_2-of-5">
                             {el.value}
                           </div>
                         </Fragment>
@@ -516,7 +557,7 @@ class ModalComponent extends Component {
                       )
                     }
                     
-                    <div className="slds-col slds-size_1-of-3">
+                    <div className={`slds-col slds-size_${el.edit === false ? '1-of-5' : '1-of-3'}`}>
                       {
                         el.edit ? (
                           <Button 
@@ -526,8 +567,11 @@ class ModalComponent extends Component {
                         ) : (
                           <Button 
                             onClick={() => this.setEditKpi(i)}
-                            label="Edit"
-                            variant="brand" />
+                            assistiveText={{ icon: 'Icon Border-filled medium' }}
+                            iconCategory="utility"
+                            iconName="edit"
+                            iconVariant="border-filled"
+                            variant="icon" />
                         )
                       }
                       {
@@ -535,12 +579,15 @@ class ModalComponent extends Component {
                           <Button 
                             onClick={this.cancelEdit}
                             label="Cancel"
-                            variant="destructive" />
+                            variant="neutral" />
                         ) : (
                           <Button 
                             onClick={() => this.deleteKpi(i)}
-                            label="Delete"
-                            variant="destructive" />
+                            assistiveText={{ icon: 'Icon Border-filled medium' }}
+                            iconCategory="utility"
+                            iconName="delete"
+                            iconVariant="border-filled"
+                            variant="icon" />
                         )
                       }
                       
