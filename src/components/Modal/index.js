@@ -126,7 +126,7 @@ class ModalComponent extends Component {
     endDate: this.props.data.endDate,
     results: this.props.data.results,
     asset: this.props.data.asset,
-    kpi: [],
+    kpi: this.props.data.kpi,
     kpiValue: '',
     kpiKey: '',
     editValue: '',

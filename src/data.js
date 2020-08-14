@@ -470,6 +470,7 @@ let titles = [
 ]
 
 for(var i = 0; i < 15; i++){
+  let kpi = [];
   let theme = themes[Math.round(Math.random() * themes.length)];
   let region = regions[Math.round(Math.random() * regions.length)];
   let program = programs[Math.round(Math.random() * programs.length)];
@@ -492,6 +493,7 @@ for(var i = 0; i < 15; i++){
   row.endDate = endDate;
   row.title = title;
   row.id = i;
+  row.kpi = kpi;
   
   data.push(row);
 }  
