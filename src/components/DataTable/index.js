@@ -185,6 +185,8 @@ class Table extends Component {
 
   render() {
 
+    console.log(this.props.dataTable)
+
     let filtered = this.props.dataTable.items && this.props.dataTable.items.filter(e => {
       if(e && e.title)
         return e.title.toLowerCase().indexOf(this.state.searchByTitle.toLowerCase()) !== -1
@@ -263,7 +265,7 @@ class Table extends Component {
             selection={this.props.dataTable.selection}
             selectRows="checkbox"
           >
-            <DataTableColumn label="ID" property="id" />
+            <DataTableColumn label="Campaign ID" property="id" />
             <DataTableColumn
               isSorted={this.state.sortColumn === 'theme'}
               label="Theme"

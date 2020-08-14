@@ -125,7 +125,10 @@ class ModalComponent extends Component {
     startDate: this.props.data.startDate,
     endDate: this.props.data.endDate,
     results: this.props.data.results,
-    asset: this.props.data.asset
+    asset: this.props.data.asset,
+    kpi: [],
+    kpiValue: '',
+    kpiKey: ''
   };
 
   componentDidMount() {
@@ -182,9 +185,21 @@ class ModalComponent extends Component {
       startDate: this.state.startDate,
       endDate: this.state.endDate,
       results: this.state.results,
-      asset: this.state.asset
+      asset: this.state.asset,
+      kpi: this.state.kpi
     });
     this.props.toggleOpen();
+  }
+
+  addKpi = () => {
+    if(this.state.kpiKey === '' || this.state.kpiValue === '') return;
+    let kpi = [...this.state.kpi, {key: this.state.kpiKey, value: this.state.kpiValue}];
+    this.setState({kpi, kpiKey: '', kpiValue: ''});
+  }
+
+  deleteKpi = idx => {
+    let kpi = this.state.kpi.filter((el, i) => idx !== i)
+    this.setState({kpi});
   }
 
 	render() {
@@ -432,6 +447,74 @@ class ModalComponent extends Component {
                   defaultValue={this.state.asset}
                   onChange={e => this.setState({asset: e.target.value})}
                 />
+              </div>
+            </div>
+            <label className="slds-form-element__label">
+              KPI
+            </label>
+            {
+              this.state.kpi.map((el, i) => {
+                return(
+                  <div key={i} className="slds-grid slds-gutters slds-m-bottom_large">
+                    <div className="slds-col slds-size_2-of-5">
+                      <div className="slds-form-element__control">
+                        <input
+                          className="slds-input"
+                          type="text"
+                          value={el.key}
+                          placeholder="Enter kpi key"
+                        />
+                      </div>
+                    </div>
+                    <div className="slds-col slds-size_2-of-5">
+                      <div className="slds-form-element__control">
+                        <input
+                          className="slds-input"
+                          type="text"
+                          value={el.value}
+                          placeholder="Enter kpi value"
+                        />
+                      </div>
+                    </div>
+                    <div className="slds-col slds-size_1-of-5">
+                      <Button 
+                        onClick={() => this.deleteKpi(i)}
+                        className="slds-button_stretch"
+                        label="Delete"
+                        iconCategory="utility"
+                        iconName="delete"
+                        iconPosition="left"
+                        variant="destructive icon" />
+                    </div>
+                  </div>
+                )
+              })
+            }
+            <div className="slds-grid slds-gutters slds-m-bottom_large">
+              <div className="slds-col slds-size_2-of-5">
+                <div className="slds-form-element__control">
+                  <input
+                    className="slds-input"
+                    type="text"
+                    value={this.state.kpiKey}
+                    placeholder="Enter kpi key"
+                    onChange={e => this.setState({kpiKey: e.target.value})}
+                  />
+                </div>
+              </div>
+              <div className="slds-col slds-size_2-of-5">
+                <div className="slds-form-element__control">
+                  <input
+                    className="slds-input"
+                    type="text"
+                    value={this.state.kpiValue}
+                    placeholder="Enter kpi value"
+                    onChange={e => this.setState({kpiValue: e.target.value})}
+                  />
+                </div>
+              </div>
+              <div className="slds-col slds-size_1-of-5">
+                <Button onClick={this.addKpi} className="slds-button_stretch" label="Add" disabled={this.state.kpiKey && this.state.kpiValue ? false : true} variant="brand" />  
               </div>
             </div>
           </section>
