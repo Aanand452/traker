@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import { connect } from 'react-redux';
 import moment from 'moment';
 
@@ -128,7 +128,9 @@ class ModalComponent extends Component {
     asset: this.props.data.asset,
     kpi: [],
     kpiValue: '',
-    kpiKey: ''
+    kpiKey: '',
+    editValue: '',
+    editKey: ''
   };
 
   componentDidMount() {
@@ -193,13 +195,33 @@ class ModalComponent extends Component {
 
   addKpi = () => {
     if(this.state.kpiKey === '' || this.state.kpiValue === '') return;
-    let kpi = [...this.state.kpi, {key: this.state.kpiKey, value: this.state.kpiValue}];
+    let kpi = [...this.state.kpi, {key: this.state.kpiKey, value: this.state.kpiValue, edit: false}];
     this.setState({kpi, kpiKey: '', kpiValue: ''});
   }
 
   deleteKpi = idx => {
     let kpi = this.state.kpi.filter((el, i) => idx !== i)
     this.setState({kpi});
+  }
+
+  setEditKpi = idx => {
+    let kpi = this.state.kpi.map(el => ({...el, edit: false}));
+    let item = kpi[idx];
+    item.edit = true;
+    kpi.splice(idx, 1, item);
+    this.setState({kpi, editValue: item.value, editKey: item.key});
+  }
+
+  cancelEdit = () => {
+    let kpi = this.state.kpi.map(el => ({...el, edit: false}));
+    this.setState({kpi});
+  }
+
+  editKpi = idx => {
+    let kpi = [...this.state.kpi];
+    let item = {key: this.state.editKey, value: this.state.editValue, edit: false};
+    kpi.splice(idx, 1, item);
+    this.setState({kpi, editValue: '', editKey: ''});
   }
 
 	render() {
@@ -456,35 +478,72 @@ class ModalComponent extends Component {
               this.state.kpi.map((el, i) => {
                 return(
                   <div key={i} className="slds-grid slds-gutters slds-m-bottom_large">
-                    <div className="slds-col slds-size_2-of-5">
-                      <div className="slds-form-element__control">
-                        <input
-                          className="slds-input"
-                          type="text"
-                          value={el.key}
-                          placeholder="Enter kpi key"
-                        />
-                      </div>
-                    </div>
-                    <div className="slds-col slds-size_2-of-5">
-                      <div className="slds-form-element__control">
-                        <input
-                          className="slds-input"
-                          type="text"
-                          value={el.value}
-                          placeholder="Enter kpi value"
-                        />
-                      </div>
-                    </div>
-                    <div className="slds-col slds-size_1-of-5">
-                      <Button 
-                        onClick={() => this.deleteKpi(i)}
-                        className="slds-button_stretch"
-                        label="Delete"
-                        iconCategory="utility"
-                        iconName="delete"
-                        iconPosition="left"
-                        variant="destructive icon" />
+                    {
+                      el.edit === false ? (
+                        <Fragment>
+                          <div className="slds-col slds-size_1-of-3">
+                            {el.key}
+                          </div>
+                          <div className="slds-col slds-size_1-of-3">
+                            {el.value}
+                          </div>
+                        </Fragment>
+                      ) : (
+                        <Fragment>
+                        <div className="slds-col slds-size_1-of-3">
+                          <div className="slds-form-element__control">
+                            <input
+                              className="slds-input"
+                              type="text"
+                              defaultValue={this.state.editKey}
+                              placeholder="Enter kpi key"
+                              onChange={e => this.setState({editKey: e.target.value})}
+                            />
+                          </div>
+                        </div>
+                        <div className="slds-col slds-size_1-of-3">
+                          <div className="slds-form-element__control">
+                            <input
+                              className="slds-input"
+                              type="text"
+                              defaultValue={this.state.editValue}
+                              placeholder="Enter kpi value"
+                              onChange={e => this.setState({editValue: e.target.value})}
+                            />
+                          </div>
+                        </div>
+                        </Fragment>
+                      )
+                    }
+                    
+                    <div className="slds-col slds-size_1-of-3">
+                      {
+                        el.edit ? (
+                          <Button 
+                            onClick={() => this.editKpi(i)}
+                            label="Save"
+                            variant="brand" />
+                        ) : (
+                          <Button 
+                            onClick={() => this.setEditKpi(i)}
+                            label="Edit"
+                            variant="brand" />
+                        )
+                      }
+                      {
+                        el.edit ? (
+                          <Button 
+                            onClick={this.cancelEdit}
+                            label="Cancel"
+                            variant="destructive" />
+                        ) : (
+                          <Button 
+                            onClick={() => this.deleteKpi(i)}
+                            label="Delete"
+                            variant="destructive" />
+                        )
+                      }
+                      
                     </div>
                   </div>
                 )
