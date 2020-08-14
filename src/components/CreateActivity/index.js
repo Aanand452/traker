@@ -10,7 +10,7 @@ import {
 
 import { themes, programs, formats, personas, regions } from '../../utils/data';
 
-const CreateNewRow = ({
+const CreateActivity = ({
   themeSelection,
   programSelection,
   formatSelection,
@@ -67,9 +67,9 @@ const CreateNewRow = ({
 
     return (
       <IconSettings iconPath="assets/icons">
-        <div className="slds-admin-view">
-          <form >
-            <div className="slds-m-bottom_large">
+        <div>
+          <form className="slds-grid slds-wrap">
+            <div className={"slds-m-bottom_large slds-col slds-size_1-of-2"}>
                 <Combobox
                   id="theme"
                   events={{
@@ -85,7 +85,7 @@ const CreateNewRow = ({
                   variant="readonly"
                 />
             </div>
-            <div className="slds-m-bottom_large">
+            <div className={"slds-m-bottom_large slds-col slds-size_1-of-2"}>
                 <Combobox
                   id="program"
                   events={{
@@ -101,10 +101,10 @@ const CreateNewRow = ({
                   variant="readonly"
                 />
             </div>
-            <div className="slds-m-bottom_large">
+            <div className={"slds-m-bottom_large slds-col slds-size_1-of-2"}>
               <Input placeholder="Enter title" onChange={(event, data) => {handleCHange("title", data.value)}} defaultValue={row.title} id="title" label="Title"/>
             </div>
-            <div className="slds-m-bottom_large">
+            <div className={"slds-m-bottom_large slds-col slds-size_1-of-2"}>
                 <Combobox
                   id="format"
                   events={{
@@ -120,7 +120,7 @@ const CreateNewRow = ({
                   variant="readonly"
                 />
             </div>
-            <div className="slds-m-bottom_large">
+            <div className={"slds-m-bottom_large slds-col slds-size_1-of-2"}>
                 <Combobox
                   id="persona"
                   events={{
@@ -136,10 +136,10 @@ const CreateNewRow = ({
                   variant="readonly"
                 />
             </div>
-            <div className="slds-m-bottom_large">
+            <div className={"slds-m-bottom_large slds-col slds-size_1-of-2"}>
               <Input onChange={(event, data) => {handleCHange("abstract", data.value)}} defaultValue={row.abstract} id="abstract" label="Abstract"/>
             </div>
-            <div className="slds-m-bottom_large">
+            <div className={"slds-m-bottom_large slds-col slds-size_1-of-2"}>
                 <Combobox
                   id="region"
                   events={{
@@ -155,7 +155,7 @@ const CreateNewRow = ({
                   variant="readonly"
                 />
             </div>
-            <div className="slds-m-bottom_large">
+            <div className={"slds-m-bottom_large slds-col slds-size_1-of-2"}>
               <Datepicker
                 id="startDate"
                 labels={{
@@ -203,10 +203,10 @@ const CreateNewRow = ({
                 value={row.endDate}
               />
             </div>
-            <div className="slds-m-bottom_large">
+            <div className={"slds-m-bottom_large slds-col slds-size_1-of-2"}>
               <Input placeholder="Enter results" onChange={(event, data) => {handleCHange("results", data.value)}} defaultValue={row.results} id="results" label="Result"/>
             </div>
-            <div className="slds-m-bottom_large">
+            <div className={"slds-m-bottom_large slds-col slds-size_1-of-2"}>
               <Input placeholder="Enter assets" onChange={(event, data) => {handleCHange("asset", data.value)}} defaultValue={row.asset} id="asset" label="Asset"/>
             </div>
           </form>
@@ -215,4 +215,4 @@ const CreateNewRow = ({
     )
 }
 
-export default CreateNewRow;
+export default CreateActivity;
