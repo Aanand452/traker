@@ -15,7 +15,9 @@ import {
   Icon,
   IconSettings,
   PageHeader,
-  PageHeaderControl
+  PageHeaderControl,
+  ToastContainer,
+  Toast
 } from '@salesforce/design-system-react';
 
 import Modal from '../Modal';
@@ -51,7 +53,6 @@ CustomDataTableCell.displayName = DataTableCell.displayName;
 
 
 class Table extends Component {
-
   state = {
     sortColumn: 'opportunityName',
     sortColumnDirection: {
@@ -60,7 +61,8 @@ class Table extends Component {
     editModalIsOPen: false,
     isPanelOpen: false,
     searchByTitle: '',
-    isDeletePromptOpen: false
+    isDeletePromptOpen: false,
+    showToast: this.props.location.newRow ? true : false
   };
 
   actions = () => (
@@ -196,53 +198,53 @@ class Table extends Component {
       <div
         style={{
           width: '100%',
-          marginTop: '90px',
+          marginTop: '90px',  
         }}
       >
+        <IconSettings iconPath="/assets/icons">
           {this.state.editModalIsOPen && <Modal data={this.props.dataTable.item} title='Edit row' toggleOpen={this.toggleOpen} />}
           {this.props.dataTable.isDeletePromptOpen && <Prompt />}
-          <IconSettings iconPath="/assets/icons">
-            <PageHeader
-              onRenderActions={this.actions}
-              icon={
-                <Icon
-                  assistiveText={{ label: 'User' }}
-                  category="standard"
-                  name="lead"
-                />
-              }
-              info={`${this.props.dataTable.items.length} ${this.props.dataTable.items.length === 1 ? 'item' : 'items'}`}
-              joined
-              label="Leads"
-              onRenderControls={this.controls}
-              title={
-                <h1 className="slds-page-header__title slds-p-right_x-small">
-                  <Dropdown
-                    options={[
-                      { label: 'Menu Item One', value: 'A0' },
-                      { label: 'Menu Item Two', value: 'B0' },
-                      { label: 'Menu Item Three', value: 'C0' },
-                      { type: 'divider' },
-                      { label: 'Menu Item Four', value: 'D0' },
-                    ]}
-                  >
-                    <DropdownTrigger>
-                      <Button
-                        className="slds-button_reset slds-type-focus"
-                        iconCategory="utility"
-                        iconName="down"
-                        iconPosition="right"
-                        label="Sales view"
-                        responsive
-                        variant="base"
-                      />
-                    </DropdownTrigger>
-                  </Dropdown>
-                </h1>
-              }
-              truncate
-              variant="object-home"
-            />
+          <PageHeader
+            onRenderActions={this.actions}
+            icon={
+              <Icon
+                assistiveText={{ label: 'User' }}
+                category="standard"
+                name="lead"
+              />
+            }
+            info={`${this.props.dataTable.items.length} ${this.props.dataTable.items.length === 1 ? 'item' : 'items'}`}
+            joined
+            label="Leads"
+            onRenderControls={this.controls}
+            title={
+              <h1 className="slds-page-header__title slds-p-right_x-small">
+                <Dropdown
+                  options={[
+                    { label: 'Menu Item One', value: 'A0' },
+                    { label: 'Menu Item Two', value: 'B0' },
+                    { label: 'Menu Item Three', value: 'C0' },
+                    { type: 'divider' },
+                    { label: 'Menu Item Four', value: 'D0' },
+                  ]}
+                >
+                  <DropdownTrigger>
+                    <Button
+                      className="slds-button_reset slds-type-focus"
+                      iconCategory="utility"
+                      iconName="down"
+                      iconPosition="right"
+                      label="Sales view"
+                      responsive
+                      variant="base"
+                    />
+                  </DropdownTrigger>
+                </Dropdown>
+              </h1>
+            }
+            truncate
+            variant="object-home"
+          />
           {this.state.isPanelOpen && <Panel searchByTitle={this.state.searchByTitle} handleSearch={this.handleSearch} />}
           <DataTable
             assistiveText={{
@@ -321,10 +323,20 @@ class Table extends Component {
               dropdown={<Dropdown length="7" />}
             />
           </DataTable>
+          <PagerContainer>
+              <Pager />
+          </PagerContainer>
+          {this.state.showToast && (
+            <ToastContainer>
+              <Toast 
+                labels={{heading: ["A new campaign was added successfully"]}}
+                variant="success"
+                duration={5000}
+                onRequestClose={() => this.setState({showToast: false})}
+              />
+            </ToastContainer>
+          )}
         </IconSettings>
-        <PagerContainer>
-            <Pager />
-        </PagerContainer>
       </div>
     );
   }
