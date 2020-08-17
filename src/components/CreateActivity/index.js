@@ -98,10 +98,6 @@ const CreateActivity = ({
     setError(errors);
   };
 
-  useEffect(() => {
-    console.log(error);
-  }, [error])
-
   const addKPI = () => {
     const newRow = {...row};
     newRow.kpi = [...newRow.kpi, {key: KPIKey, value: KPIValue}];
