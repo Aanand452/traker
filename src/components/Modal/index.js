@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import { connect } from 'react-redux';
 import moment from 'moment';
 
@@ -125,7 +125,13 @@ class ModalComponent extends Component {
     startDate: this.props.data.startDate,
     endDate: this.props.data.endDate,
     results: this.props.data.results,
-    asset: this.props.data.asset
+    asset: this.props.data.asset,
+    kpi: this.props.data.kpi,
+    campaignId: this.props.data.campaignId,
+    kpiValue: '',
+    kpiKey: '',
+    editValue: '',
+    editKey: ''
   };
 
   componentDidMount() {
@@ -171,7 +177,7 @@ class ModalComponent extends Component {
 
   editTable = () => {
     this.props.editItem(this.props.dataTable.items, {
-      id: this.props.data.id,
+      campaignId: this.state.campaignId,
       theme: this.state.themeSelection[0] && this.state.themeSelection[0].label,
       program: this.state.programSelection[0] && this.state.programSelection[0].label,
       format: this.state.formatSelection[0] && this.state.formatSelection[0].label,
@@ -182,9 +188,53 @@ class ModalComponent extends Component {
       startDate: this.state.startDate,
       endDate: this.state.endDate,
       results: this.state.results,
-      asset: this.state.asset
+      asset: this.state.asset,
+      kpi: this.state.kpi
     });
     this.props.toggleOpen();
+  }
+
+  addKpi = () => {
+    if(this.state.kpiKey === '' || this.state.kpiValue === '') return;
+    let kpi = [...this.state.kpi, {key: this.state.kpiKey, value: this.state.kpiValue, edit: false}];
+    this.setState({kpi, kpiKey: '', kpiValue: ''});
+  }
+
+  deleteKpi = idx => {
+    let kpi = this.state.kpi.filter((el, i) => idx !== i)
+    this.setState({kpi});
+  }
+
+  setEditKpi = idx => {
+    let kpi = this.state.kpi.map(el => ({...el, edit: false}));
+    let item = kpi[idx];
+    item.edit = true;
+    kpi.splice(idx, 1, item);
+    this.setState({kpi, editValue: item.value, editKey: item.key});
+  }
+
+  cancelEdit = () => {
+    let kpi = this.state.kpi.map(el => ({...el, edit: false}));
+    this.setState({kpi});
+  }
+
+  editKpi = idx => {
+    let kpi = [...this.state.kpi];
+    let item = {key: this.state.editKey, value: this.state.editValue, edit: false};
+    kpi.splice(idx, 1, item);
+    this.setState({kpi, editValue: '', editKey: ''});
+  }
+
+  idGenerator = len => {
+    let maxlen = 8,
+      min = Math.pow(16,Math.min(len,maxlen)-1) ,
+      max = Math.pow(16,Math.min(len,maxlen)) - 1,
+      n   = Math.floor( Math.random() * (max-min+1) ) + min,
+      r   = n.toString(16);
+    while ( r.length < len ) {
+        r = r + this.idGenerator( len - maxlen );
+    }
+    return r;
   }
 
 	render() {
@@ -203,6 +253,34 @@ class ModalComponent extends Component {
         >
           <section className="slds-p-around_large">
             <div className="slds-form-element slds-m-bottom_large">
+            <div className="slds-form-element slds-m-bottom_large">
+              <label className="slds-form-element__label">
+                Campaign ID
+              </label>
+              <div className="slds-form-element__control slds-grid slds-gutters">
+                <div className="slds-col slds-size_11-of-12">
+                  <div className="slds-form-element__control">
+                    <input
+                      className="slds-input"
+                      type="text"
+                      placeholder="Enter campaign id"
+                      value={this.state.campaignId}
+                      onChange={e => this.setState({campaignId: e.target.value})}
+                    />
+                  </div>
+                </div>
+                <div className="slds-col slds-size_1-of-12">
+                  <Button
+                    onClick={() => this.setState({campaignId: this.idGenerator(12)})}
+                    assistiveText={{ icon: 'Icon Border-filled medium' }}
+                    iconCategory="utility"
+                    iconName="refresh"
+                    iconVariant="border-filled"
+                    title="Generate new Campaign ID"
+                    variant="icon" />
+                </div>
+              </div>
+            </div>
               <Combobox
                 events={{
                   onSelect: (event, data) => {
@@ -432,6 +510,117 @@ class ModalComponent extends Component {
                   defaultValue={this.state.asset}
                   onChange={e => this.setState({asset: e.target.value})}
                 />
+              </div>
+            </div>
+            <label className="slds-form-element__label">
+              KPI
+            </label>
+            {
+              this.state.kpi.map((el, i) => {
+                return(
+                  <div key={i} className="slds-grid slds-gutters slds-m-bottom_large">
+                    {
+                      el.edit === false ? (
+                        <Fragment>
+                          <div className="slds-col slds-size_2-of-5">
+                            {el.key}
+                          </div>
+                          <div className="slds-col slds-size_2-of-5">
+                            {el.value}
+                          </div>
+                        </Fragment>
+                      ) : (
+                        <Fragment>
+                        <div className="slds-col slds-size_1-of-3">
+                          <div className="slds-form-element__control">
+                            <input
+                              className="slds-input"
+                              type="text"
+                              defaultValue={this.state.editKey}
+                              placeholder="Enter kpi key"
+                              onChange={e => this.setState({editKey: e.target.value})}
+                            />
+                          </div>
+                        </div>
+                        <div className="slds-col slds-size_1-of-3">
+                          <div className="slds-form-element__control">
+                            <input
+                              className="slds-input"
+                              type="text"
+                              defaultValue={this.state.editValue}
+                              placeholder="Enter kpi value"
+                              onChange={e => this.setState({editValue: e.target.value})}
+                            />
+                          </div>
+                        </div>
+                        </Fragment>
+                      )
+                    }
+                    
+                    <div className={`slds-col slds-size_${el.edit === false ? '1-of-5' : '1-of-3'}`}>
+                      {
+                        el.edit ? (
+                          <Button 
+                            onClick={() => this.editKpi(i)}
+                            label="Save"
+                            variant="brand" />
+                        ) : (
+                          <Button 
+                            onClick={() => this.setEditKpi(i)}
+                            assistiveText={{ icon: 'Icon Border-filled medium' }}
+                            iconCategory="utility"
+                            iconName="edit"
+                            iconVariant="border-filled"
+                            variant="icon" />
+                        )
+                      }
+                      {
+                        el.edit ? (
+                          <Button 
+                            onClick={this.cancelEdit}
+                            label="Cancel"
+                            variant="neutral" />
+                        ) : (
+                          <Button 
+                            onClick={() => this.deleteKpi(i)}
+                            assistiveText={{ icon: 'Icon Border-filled medium' }}
+                            iconCategory="utility"
+                            iconName="delete"
+                            iconVariant="border-filled"
+                            variant="icon" />
+                        )
+                      }
+                      
+                    </div>
+                  </div>
+                )
+              })
+            }
+            <div className="slds-grid slds-gutters slds-m-bottom_large">
+              <div className="slds-col slds-size_2-of-5">
+                <div className="slds-form-element__control">
+                  <input
+                    className="slds-input"
+                    type="text"
+                    value={this.state.kpiKey}
+                    placeholder="Enter kpi key"
+                    onChange={e => this.setState({kpiKey: e.target.value})}
+                  />
+                </div>
+              </div>
+              <div className="slds-col slds-size_2-of-5">
+                <div className="slds-form-element__control">
+                  <input
+                    className="slds-input"
+                    type="text"
+                    value={this.state.kpiValue}
+                    placeholder="Enter kpi value"
+                    onChange={e => this.setState({kpiValue: e.target.value})}
+                  />
+                </div>
+              </div>
+              <div className="slds-col slds-size_1-of-5">
+                <Button onClick={this.addKpi} className="slds-button_stretch" label="Add" disabled={this.state.kpiKey && this.state.kpiValue ? false : true} variant="brand" />  
               </div>
             </div>
           </section>
