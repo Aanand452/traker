@@ -175,6 +175,7 @@ const CreateActivity = ({
               id="title"
               label="Title"
               errorText={error.title}
+              required
             />
           </div>
           <div className="slds-m-bottom_large slds-col slds-size_1-of-2">
