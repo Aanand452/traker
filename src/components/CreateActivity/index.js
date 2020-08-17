@@ -76,15 +76,31 @@ const CreateActivity = ({
   };
 
   const validations = (input, data) => {
-    const Errors = {...error};
+    let errors = {...error};
     const inputs = ["theme", "program", "title", "format", "persona", "region"];
 
-    if(inputs.includes(input) && !data) {
-      setError({...Errors, [input]: `Enter a ${input}`})
+    if (input) {
+      if(inputs.includes(input) && !data) {
+        errors = {...errors, [input]: `Enter a ${input}`};
+      } else {
+        delete errors[input];
+      }
     } else {
-      setError(delete Errors[input]);
+      inputs.forEach((input) => {
+        if(row[input]) {
+          delete errors[input];
+        } else {
+          errors = {...errors, [input]: `Enter a ${input}`};
+        }
+      })
     }
+
+    setError(errors);
   };
+
+  useEffect(() => {
+    console.log(error);
+  }, [error])
 
   const addKPI = () => {
     const newRow = {...row};
@@ -92,13 +108,13 @@ const CreateActivity = ({
     setRow(newRow);
     setKPIKey("");
     setKPIValue("");
-  }
+  };
 
   const deleteKPI = id => {
     const newRow = {...row};
     newRow.kpi = newRow.kpi.filter((el, index) => id !== index)
     setRow(newRow);
-  }
+  };
 
   const editKPI = id => {
     const newRow = {...row};
@@ -107,7 +123,7 @@ const CreateActivity = ({
     setRow(newRow);
     setEditKey("");
     setEditValue("");
-  }
+  };
 
   const setEditKPI = id => {
     const newRow = {...row};
@@ -116,15 +132,21 @@ const CreateActivity = ({
     setEditKey(newRow.kpi[id].key);
     setEditValue(newRow.kpi[id].value);
     setRow(newRow);
-  }
+  };
 
   const cancelEdit = () => {
     const newRow = {...row};
     newRow.kpi = newRow.kpi.map(el => ({key: el.key, value: el.value}));
     
     setRow(newRow);
-  }
+  };
 
+  const validateSubmit = () => {
+    validations();
+
+    if (Object.keys(error).length > 0) return handleSubmit;
+    else return false;
+  }
 
   return (
     <IconSettings iconPath="assets/icons">
@@ -312,7 +334,7 @@ const CreateActivity = ({
           </div>
           <div className="slds-col slds-size_1-of-1">
             <Button label="Cancel" />
-            <Button label="Save" variant="brand" onClick={handleSubmit} />
+            <Button label="Save" variant="brand" onClick={validateSubmit} />
           </div>
         </form>
       </FormContainer>
