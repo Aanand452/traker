@@ -185,8 +185,6 @@ class Table extends Component {
 
   render() {
 
-    console.log(this.props.dataTable)
-
     let filtered = this.props.dataTable.items && this.props.dataTable.items.filter(e => {
       if(e && e.title)
         return e.title.toLowerCase().indexOf(this.state.searchByTitle.toLowerCase()) !== -1
