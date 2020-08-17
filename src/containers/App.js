@@ -6,7 +6,7 @@ import { css } from 'glamor';
 import { SfdcPageAppWrapper } from './styles/page';
 
 import Login from '../components/Login'
-import NewRow from '../components/newRow'
+import CreateActivityPage from '../components/CreateActivityPage'
 import NavBar from '../components/NavBar';
 import Table from '../components/DataTable';
 
@@ -32,7 +32,7 @@ function Layout(){
   return(
     <div>
       <NavBar />
-      <NewRow />
+      <CreateActivityPage />
     </div>
   )
 }

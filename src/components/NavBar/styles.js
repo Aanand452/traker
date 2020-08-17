@@ -8,4 +8,16 @@ export const NavContainer = styled.div`
     left: 0;
     z-index: 99;
   }
+
+  & .progress-bar {
+    position: fixed;
+    width: 100%;
+    top: 90px;
+    left: 0;
+    z-index: 99;
+  }
+
+  > .slds-notification-bar > .slds-media__body {
+    flex: inherit;
+  }
 `;

@@ -1,4 +1,4 @@
-import React , {Component}from 'react';
+import React, {Component} from 'react';
 import {
   Icon,
   IconSettings,
@@ -9,7 +9,10 @@ import {
   GlobalHeaderProfile,
   GlobalNavigationBar,
   GlobalNavigationBarRegion,
+  ProgressBar,
+  ScopedNotification,
   GlobalNavigationBarDropdown
+  
 } from '@salesforce/design-system-react';
 
 import { NavContainer } from './styles';
@@ -44,7 +47,9 @@ HeaderProfileCustomContent.displayName = 'HeaderProfileCustomContent';
 
 class NavBar extends Component{
   state = {
-    tableauUrl: '/'
+    tableauUrl: '/',
+    progress:{active:false, percentage: 0},
+    notification:{active:false, message:'', type: '', icon: '' }
   };
 
   configUrls(data){
@@ -52,6 +57,28 @@ class NavBar extends Component{
       tableauUrl: data.tablaeu
     },
     ...this.state);
+  }
+
+  fileUpload = (e) => {
+   this.setState({progress:{active: true}});
+    console.log(e.target.files)
+    let number = 0
+    let interval = setInterval(() => {      
+      this.setState({progress:{active: true, percentage: number}});
+      number += 1
+      if(this.state.progress.percentage === 101) {
+        this.setState({progress:{active: false, percentage: 0}});
+        this.handleNotification(true, "CSV file Uploaded successfully", "success", "success");
+        clearInterval(interval);
+      }
+    }, 20);
+  }
+
+  handleNotification = (active, message, type, icon) => {
+    this.setState({notification:{active, message, type, icon}});
+    setTimeout(() => {
+      this.setState({notification:{active: false, message: '', type: '', icon: ''}});
+    }, 4000);
   }
 
   async getConfig(){
@@ -84,14 +111,25 @@ class NavBar extends Component{
                 size="x-small"
               />
             </GlobalHeaderButton>
-            <GlobalHeaderButton onClick={() => this.props.history.push('/home')}>
-              <Icon
-                assistiveText={{ label: 'Upload CSV' }}
-                category="utility"
-                name="upload"
-                size="x-small"
-              />  
-            </GlobalHeaderButton> 
+            <GlobalHeaderButton>
+              <label className="slds_cursor-pointer" htmlFor="uploadCSV" id="file-selector-secondary-label">
+                <Icon
+                  assistiveText={{ label: 'Upload CSV' }}
+                  category="utility"
+                  name="upload"
+                  size="x-small"
+                  style={{cursor:'pointer'}}
+                />
+              </label>
+              <input
+                type="file"
+                accept=".csv"
+                id="uploadCSV"
+                onChange={this.fileUpload}
+                className="slds-file-selector__input slds-assistive-text" 
+                aria-labelledby="file-selector-secondary-label"
+              />
+            </GlobalHeaderButton>
             {/*<GlobalHeaderButton>
               <Icon
                 assistiveText={{ label: 'Error' }}
@@ -123,6 +161,23 @@ class NavBar extends Component{
               
             </GlobalNavigationBarRegion>
           </GlobalNavigationBar>
+          {this.state.progress.active && <ProgressBar color="success" className="progress-bar" value={this.state.progress.percentage ? this.state.progress.percentage : 0} />}
+          {this.state.notification.active && <ScopedNotification
+            icon={
+              <Icon
+                assistiveText={{
+                  label: 'Success',
+                }}
+                category="utility"
+                name={this.state.notification.icon}
+                size="small"
+                inverse={true}
+              />
+            }
+            className={`slds-notification-bar slds-box slds-box_x-small slds-align_absolute-center progress-bar slds-box slds-theme_shade slds-theme_alert-texture slds-theme_${this.state.notification.type}`}
+            >
+            {this.state.notification.message}
+          </ScopedNotification>}
         </IconSettings>
       </NavContainer>
     )
