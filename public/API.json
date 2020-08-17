@@ -1,0 +1,7 @@
+{
+  "info": {
+    "status": "Status HTTP Code",
+    "code": 200
+  },
+  "message": "mock API call"
+}
