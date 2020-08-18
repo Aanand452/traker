@@ -4,10 +4,9 @@
   "version": "1.0.0",
   "description": "",
   "private": "true",
-  "npmClient": "yarn",
   "main": "server.js",
   "scripts": {
-    "start": "yarn compile:ts && NODE_ENV=stable node ./packages/app/dist/server.js"
+    "test": "yarn lerna run test"
   },
   "workspaces": [
     "packages/*"
