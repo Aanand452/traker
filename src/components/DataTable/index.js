@@ -29,10 +29,13 @@ import {
   selectItem,
   handleDeleteSelection,
   resetItems,
-  setItem
+  setItem,
+  setPages,
+  sortItems
 } from '../../actions/DataTable';
 
 import { PagerContainer } from './styles.js';
+import { filter } from 'lodash';
 
 const CustomDataTableCell = ({ children, ...props }) => (
   <DataTableCell title={children} {...props}>
@@ -181,11 +184,21 @@ class Table extends Component {
     });
 
     this.setState(newState);
+    this.props.sortItems(newState.items)
   };
+
+  componentDidMount() {
+    let { items, limit } = this.props.dataTable;
+    this.props.setPages(items, limit);
+  }
 
   render() {
 
-    let filtered = this.props.dataTable.items && this.props.dataTable.items.filter(e => {
+    let { limit, currentPage } = this.props.dataTable;
+    let start = (currentPage - 1) * limit;
+    let end = currentPage * limit;
+
+    let filtered = this.props.dataTable.items && this.props.dataTable.items.filter((e, i) => {
       if(e && e.title)
         return e.title.toLowerCase().indexOf(this.state.searchByTitle.toLowerCase()) !== -1
       else
@@ -256,7 +269,7 @@ class Table extends Component {
             fixedHeader
             fixedLayout
             items={filtered}
-            id="DataTableExample-FixedHeaders"
+            id="DataTableExample-FixedHeaders123456789"
             joined
             onRowChange={this.props.selectItem}
             onSort={this.handleSort}
@@ -334,4 +347,4 @@ let mapState = ({ dataTable }) => ({
   dataTable
 });
 
-export default withRouter(connect(mapState, { openDeletePrompt, selectItem, handleDeleteSelection, resetItems, setItem })(Table));
+export default withRouter(connect(mapState, { openDeletePrompt, selectItem, handleDeleteSelection, resetItems, setItem, setPages, sortItems })(Table));

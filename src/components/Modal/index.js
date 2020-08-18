@@ -189,7 +189,8 @@ class ModalComponent extends Component {
       endDate: this.state.endDate,
       results: this.state.results,
       asset: this.state.asset,
-      kpi: this.state.kpi
+      kpi: this.state.kpi,
+      id: this.props.data.id
     });
     this.props.toggleOpen();
   }

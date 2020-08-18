@@ -7,18 +7,24 @@ import {
   SELECT_ITEMS,
   RESET_ITEMS,
   SET_ITEM,
-  EDIT_ITEM
+  EDIT_ITEM,
+  SET_PAGES,
+  SET_CURRENT_PAGE,
+  SORT_ITEMS
 } from '../types/DataTable';
 
 const INITIAL_STATE = {
   items: [...data],
   item: null,
   selection: [],
-  isDeletePromptOpen: false
+  isDeletePromptOpen: false,
+  currentPage: 1,
+  limit: 10,
+  pages: [],
 };
 
 const dataTable = (state = INITIAL_STATE, action) => {
-  let { type, items, item, selection } = action;
+  let { type, items, item, selection, currentPage, pages, sortColumn, sortColumnDirection } = action;
   switch(type) {
     case OPEN_DELETE_MODAL:
       return {
@@ -64,6 +70,21 @@ const dataTable = (state = INITIAL_STATE, action) => {
         item
       }
     case EDIT_ITEM:
+      return {
+        ...state,
+        items
+      }
+    case SET_PAGES:
+      return {
+        ...state,
+        pages
+      }
+    case SET_CURRENT_PAGE:
+      return {
+        ...state,
+        currentPage
+      }
+    case SORT_ITEMS:
       return {
         ...state,
         items
