@@ -1,0 +1,10 @@
+node_modules
+dist
+data
+yarn-error.log
+lib
+.env
+.DS_store
+.keys
+APIRestaurantKP.pem
+config.json

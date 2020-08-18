@@ -1,6 +1,18 @@
 {
-  "name": "salesforce-reporter-api-master",
+  "name": "salesforce-reporter-api",
+  "license": "MIT",
   "version": "1.0.0",
-  "main": "index.js",
-  "license": "MIT"
+  "description": "",
+  "private": "true",
+  "npmClient": "yarn",
+  "main": "server.js",
+  "scripts": {
+    "start": "yarn compile:ts && NODE_ENV=stable node ./packages/app/dist/server.js"
+  },
+  "workspaces": [
+    "packages/*"
+  ],
+  "devDependencies": {
+    "lerna": "^3.22.1"
+  }
 }
