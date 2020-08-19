@@ -1,4 +1,4 @@
-FROM node:14
+FROM node:12
 
 WORKDIR /app
 
@@ -12,4 +12,4 @@ COPY . .
 
 EXPOSE 3000
 
-CMD yarn watch:dev
+CMD cd packages/server/ && yarn watch:dev

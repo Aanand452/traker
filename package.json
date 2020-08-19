@@ -6,7 +6,8 @@
   "private": "true",
   "main": "server.js",
   "scripts": {
-    "test": "yarn lerna run test"
+    "test": "yarn lerna run test",
+    "watch:dev": "DEBUG=swagger-tools* && NODE_ENV=development nodemon -L --exec babel-node ./packages/server/src/index.js"
   },
   "workspaces": [
     "packages/*"

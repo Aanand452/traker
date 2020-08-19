@@ -4,14 +4,17 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
-    "test": "echo test",
-    "watch:dev": "nodemon src/index.js"
+    "test": "echo test"
   },
   "dependencies": {
     "@sara/db": "1.0.0",
     "express": "^4.17.1"
   },
   "devDependencies": {
+    "@babel/cli": "^7.10.5",
+    "@babel/core": "^7.11.1",
+    "@babel/node": "^7.10.5",
+    "@babel/preset-env": "^7.11.0",
     "nodemon": "^2.0.4"
   }
 }

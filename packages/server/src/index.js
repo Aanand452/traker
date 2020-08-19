@@ -1,3 +1,4 @@
-const test = require('@sara/db/src');
+import express from 'express';
+import test from '@sara/db/src'
 
 test();
