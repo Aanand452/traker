@@ -20,7 +20,6 @@ import {
 
 import Modal from '../Modal';
 import Panel from '../Panel';
-import Pager from '../Pager';
 import Prompt from '../Prompt';
 
 // ACTIONS
@@ -335,9 +334,6 @@ class Table extends Component {
             />
           </DataTable>
         </IconSettings>
-        <PagerContainer>
-            <Pager />
-        </PagerContainer>
       </div>
     );
   }
