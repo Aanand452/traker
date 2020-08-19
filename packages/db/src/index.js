@@ -1,3 +1,5 @@
-export default () => {
-  console.log("hello from db");
-};
+const test = () => {
+  console.log("hello from db module");
+}; 
+
+export default test;
