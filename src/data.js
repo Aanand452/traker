@@ -483,6 +483,8 @@ const randHex = len => {
 };
 
 for(var i = 0; i < 15; i++){
+  let kpi = [];
+  let theme = themes[Math.round(Math.random() * themes.length)];
   let region = regions[Math.round(Math.random() * regions.length)];
   let program = programs[Math.round(Math.random() * programs.length)];
   let format = formats[Math.round(Math.random() * formats.length)];
@@ -495,6 +497,7 @@ for(var i = 0; i < 15; i++){
   
   let row = {...dataModel};
   
+  row.theme = theme;
   row.region = region;
   row.program = program;
   row.format = format;
@@ -504,6 +507,7 @@ for(var i = 0; i < 15; i++){
   row.title = title;
   row.id = i;
   row.campaignId = randHex(12);
+  row.kpi = kpi;
   
   data.push(row);
 }  
