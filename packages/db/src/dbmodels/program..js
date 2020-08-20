@@ -3,7 +3,7 @@ import { sequelize } from '../db';
 
 class Program extends Model {}
 
-Program.init( {
+Program.init({
   name: {
     type: DataTypes.STRING,
     allowNull: false
