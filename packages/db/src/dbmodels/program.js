@@ -1,28 +1,31 @@
 import { Model, DataTypes } from 'sequelize';
 import { sequelize } from '../db';
 
-class Format extends Model {}
+class Program extends Model {}
 
-Format.init({
-  formatId: {
+Program.init({
+  programId: {
     allowNull: false,
     primaryKey: true,
     type: DataTypes.STRING,
-    field: 'format_id',
+    field: 'program_id',
   },
   name: {
-    type: DataTypes.STRING,
     allowNull: false,
+    type: DataTypes.STRING,
     field: 'name',
   },
+  owner: {
+    allowNull: false,
+    type: DataTypes.STRING,
+    field: 'owner',
+  }
 }, {
-  tableName: 'format',
+  tableName: 'program',
   sequelize: sequelize,
   timestamps: false
 });
 
-Format.associate = models => {
-  Format.belongsTo(models.Tactic);
-}
+export default Program;
 
-export default Format;
+

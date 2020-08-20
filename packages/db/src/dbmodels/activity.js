@@ -7,57 +7,58 @@ Activity.init({
   activityId: {
     allowNull: false,
     primaryKey: true,
-    type: Sequelize.STRING,
+    type: DataTypes.STRING,
     field: 'activity_id',
   },
   title: {
     allowNull: false,
-    type: Sequelize.STRING,
+    type: DataTypes.STRING,
     field: 'title',
   },
   campaignId: {
     allowNull: false,
-    type: Sequelize.STRING,
+    type: DataTypes.STRING,
     field: 'campaign_id',
   },
   tacticId: {
     allowNull: false,
-    type: Sequelize.STRING,
+    type: DataTypes.STRING,
     field: 'tactic_id',
   },
   formatId: {
     allowNull: false,
-    type: Sequelize.STRING,
+    type: DataTypes.STRING,
     field: 'format_id',
   },
   abstract: {
     allowNull: false,
-    type: Sequelize.TEXT,
+    type: DataTypes.TEXT,
     field: 'abstract',
   },
   regionId: {
     allowNull: false,
-    type: Sequelize.TEXT,
+    type: DataTypes.TEXT,
     field: 'region_id',
   },
   startDate: {
     allowNull: false,
-    type: Sequelize.DATE,
+    type: DataTypes.DATE,
     field: 'start_date',
   },
   endDate: {
     allowNull: false,
-    type: Sequelize.DATE,
+    type: DataTypes.DATE,
     field: 'end_date',
   },
   asset: {
     allowNull: false,
-    type: Sequelize.TEXT,
+    type: DataTypes.TEXT,
     field: 'asset',
   }
 }, {
   tableName: 'activity',
   sequelize: sequelize, 
+  timestamps: false
 });
 
 export default Activity;

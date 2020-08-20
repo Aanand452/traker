@@ -7,7 +7,7 @@ Tactic.init({
   tacticId: {
     allowNull: false,
     primaryKey: true,
-    type: Sequelize.STRING,
+    type: DataTypes.STRING,
     field: 'tactic_id',
   },
   name: {
@@ -18,6 +18,7 @@ Tactic.init({
 }, {
   tableName: 'tactic',
   sequelize: sequelize, 
+  timestamps: false
 });
 
 Tactic.associate = models => {
