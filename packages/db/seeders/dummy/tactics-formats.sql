@@ -26,7 +26,7 @@ insert into format (format_id,name,tactic_id) values
 
 insert into format (format_id,name,tactic_id) values
   (uuid_generate_v4(), 'Paid Social', (select tactic_id from tactic where name = 'Digital')),
-  (uuid_generate_v4(), 'SEM', (select tactic_id from tactic where name = 'Digital'))
+  (uuid_generate_v4(), 'SEM', (select tactic_id from tactic where name = 'Digital')),
   (uuid_generate_v4(), 'Display', (select tactic_id from tactic where name = 'Digital')),
   (uuid_generate_v4(), 'Email', (select tactic_id from tactic where name = 'Digital')),
   (uuid_generate_v4(), 'Organic Social', (select tactic_id from tactic where name = 'Digital')),
