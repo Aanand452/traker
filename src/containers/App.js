@@ -1,38 +1,47 @@
 import React from 'react';
-import { connect } from 'react-redux';
 import NotFoundPage from '../containers/NotFoundPage';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
-import { css } from 'glamor';
 import { SfdcPageAppWrapper } from './styles/page';
 
 import Login from '../components/Login'
 import CreateActivityPage from '../components/CreateActivityPage'
 import NavBar from '../components/NavBar';
-import Table from '../components/DataTable';
+import EditActivityPage from '../components/EditActivityPage';
+import EditProgramPage from '../components/EditProgramPage';
+import HomePage from '../components/HomePage';
 
-function MyList() {
+function EditActivity() {
   return (
     <div>
       <NavBar />
-      <Table type="1" />
+      <EditActivityPage />
     </div>
   )
 } 
 
-function TeamList() {
+function EditProgram() {
   return (
     <div>
       <NavBar />
-      <Table type="2" />
+      <EditProgramPage />
     </div>
   )
 } 
 
-function Layout(){
+function CreateActivity(){
   return(
     <div>
       <NavBar />
       <CreateActivityPage />
+    </div>
+  )
+}
+
+function Home(){
+  return(
+    <div>
+      <NavBar />
+      <HomePage />
     </div>
   )
 }
@@ -44,9 +53,10 @@ function App({closeSettingsMenu, user}) {
       <SfdcPageAppWrapper className="app" onClick={closeSettingsMenu}>
         <Switch>
           <Route exact path="/" component={Login} />
-          <Route exact path="/my-view" component={MyList} />
-          <Route exact path="/team-view" component={TeamList} />
-          <Route exact path="/home" component={Layout} />
+          <Route exact path="/home" component={Home} />
+          <Route exact path="/my-view" component={EditActivity} />
+          <Route exact path="/edit-program" component={EditProgram} />
+          <Route exact path="/create-activity" component={CreateActivity} />
           <Route exact path="*" component={NotFoundPage} />
         </Switch>
       </SfdcPageAppWrapper>

@@ -516,7 +516,7 @@ class ModalComponent extends Component {
               KPI
             </label>
             {
-              this.state.kpi.map((el, i) => {
+              this.state.kpi && this.state.kpi.map((el, i) => {
                 return(
                   <div key={i} className="slds-grid slds-gutters slds-m-bottom_large">
                     {

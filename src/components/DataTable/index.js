@@ -34,7 +34,7 @@ import {
   setItem
 } from '../../actions/DataTable';
 
-import { PagerContainer } from './styles.js';
+// import { PagerContainer } from './styles.js';
 
 const CustomDataTableCell = ({ children, ...props }) => (
   <DataTableCell title={children} {...props}>
@@ -48,7 +48,6 @@ const CustomDataTableCell = ({ children, ...props }) => (
     </a>
   </DataTableCell>
 );
-
 CustomDataTableCell.displayName = DataTableCell.displayName;
 
 
@@ -186,14 +185,6 @@ class Table extends Component {
   };
 
   render() {
-
-    let filtered = this.props.dataTable.items && this.props.dataTable.items.filter(e => {
-      if(e && e.title)
-        return e.title.toLowerCase().indexOf(this.state.searchByTitle.toLowerCase()) !== -1
-      else
-        return [];
-    });
-
     return (
       <div
         style={{
@@ -246,86 +237,131 @@ class Table extends Component {
             variant="object-home"
           />
           {this.state.isPanelOpen && <Panel searchByTitle={this.state.searchByTitle} handleSearch={this.handleSearch} />}
-          <DataTable
-            assistiveText={{
-              actionsHeader: 'actions',
-              columnSort: 'sort this column',
-              columnSortedAscending: 'asc',
-              columnSortedDescending: 'desc',
-              selectAllRows: 'Select all rows',
-              selectRow: 'Select this row',
-            }}
-            fixedHeader
-            fixedLayout
-            items={filtered}
-            id="DataTableExample-FixedHeaders"
-            joined
-            onRowChange={this.props.selectItem}
-            onSort={this.handleSort}
-            selection={this.props.dataTable.selection}
-            selectRows="checkbox"
-          >
-            <DataTableColumn label="Campaign ID" property="campaignId" />
-            <DataTableColumn
-              isSorted={this.state.sortColumn === 'theme'}
-              label="Theme"
-              primaryColumn
-              property="theme"
-              sortable
-              sortDirection={this.state.sortColumnDirection.theme}
+          {this.props.type === "activity" && (
+            <DataTable
+              assistiveText={{
+                actionsHeader: 'actions',
+                columnSort: 'sort this column',
+                columnSortedAscending: 'asc',
+                columnSortedDescending: 'desc',
+                selectAllRows: 'Select all rows',
+                selectRow: 'Select this row',
+              }}
+              fixedHeader
+              fixedLayout
+              items={this.props.data}
+              id="DataTableExample-FixedHeaders"
+              joined
+              onRowChange={this.props.selectItem}
+              onSort={this.handleSort}
+              selection={this.props.dataTable.selection}
+              selectRows="checkbox"
             >
-              <CustomDataTableCell />
-            </DataTableColumn>
-            <DataTableColumn label="Program" property="program" />
-            <DataTableColumn label="Title" property="title" />
-            <DataTableColumn label="Format" property="format" />
-            <DataTableColumn label="Persona" property="persona" />
-            <DataTableColumn label="Abstract" property="abstract" />
-            { this.props.type === "2" &&
+              <DataTableColumn label="Program" property="program" />
+              <DataTableColumn label="Campaign ID" property="campaignId" />
+              <DataTableColumn label="Title" property="title" />
+              <DataTableColumn label="Tactic" property="tactic" />
+              <DataTableColumn label="Format" property="format" />
+              <DataTableColumn label="Abstract" property="abstract" />
               <DataTableColumn
                 sortDirection={this.state.sortColumnDirection.region}
-                sortable isSorted={this.state.sortColumn === 'region'}
+                sortable
+                isSorted={this.state.sortColumn === 'region'}
                 label="Region"
                 property="region"
               />
-            }
-            <DataTableColumn
-              isSorted={this.state.sortColumn === 'startDate'}
-              label="Start date"
-              property="startDate"
-              sortable
-              sortDirection={this.state.sortColumnDirection.startDate}
-            />
-            <DataTableColumn
-              isSorted={this.state.sortColumn === 'endDate'}
-              label="End date"
-              property="endDate"
-              sortable
-              sortDirection={this.state.sortColumnDirection.endDate}
-            />
-            <DataTableColumn label="Results" property="results" />
-            <DataTableColumn label="Assets" property="asset" />
-            <DataTableRowActions
-              options={[
-                {
-                  id: 0,
-                  label: 'Edit',
-                  value: '1',
-                },
-                {
-                  id: 1,
-                  label: 'Delete',
-                  value: '2',
-                }
-              ]}
-              menuPosition="overflowBoundaryElement"
-              onAction={this.handleRowAction}
-              dropdown={<Dropdown length="7" />}
-            />
-          </DataTable>
-          <PagerContainer>
+              <DataTableColumn
+                isSorted={this.state.sortColumn === 'startDate'}
+                label="Start date"
+                property="startDate"
+                sortable
+                sortDirection={this.state.sortColumnDirection.startDate}
+              />
+              <DataTableColumn
+                isSorted={this.state.sortColumn === 'endDate'}
+                label="End date"
+                property="endDate"
+                sortable
+                sortDirection={this.state.sortColumnDirection.endDate}
+              />
+              <DataTableColumn label="Assets" property="asset" />
+
+              <DataTableRowActions
+                options={[
+                  {
+                    id: 0,
+                    label: 'Edit',
+                    value: '1',
+                  },
+                  {
+                    id: 1,
+                    label: 'Delete',
+                    value: '2',
+                  }
+                ]}
+                menuPosition="overflowBoundaryElement"
+                onAction={this.handleRowAction}
+                dropdown={<Dropdown length="7" />}
+              />
+            </DataTable>
+          )}
+          {this.props.type === "program" && (
+            <DataTable
+              assistiveText={{
+                actionsHeader: 'actions',
+                columnSort: 'sort this column',
+                columnSortedAscending: 'asc',
+                columnSortedDescending: 'desc',
+                selectAllRows: 'Select all rows',
+                selectRow: 'Select this row',
+              }}
+              fixedHeader
+              fixedLayout
+              items={this.props.data}
+              id="DataTableExample-FixedHeaders"
+              joined
+              onRowChange={this.props.selectItem}
+              onSort={this.handleSort}
+              selection={this.props.dataTable.selection}
+              selectRows="checkbox"
+            >
+              <DataTableColumn label="Program Name" property="programName" />
+              <DataTableColumn label="Program Owner" property="programOwner" />
+              <DataTableColumn label="Budget" property="budget" />
+              <DataTableColumn label="Metrics" property="metrics" />
+              <DataTableColumn label="Parent Campaign ID" property="parentCampaignId" />
+              <DataTableColumn label="Target Region" property="targetRegion" />
+              <DataTableColumn label="Lifecycle Stage" property="lifecycleStage" />
+              <DataTableColumn label="APM1" property="apm1" />
+              <DataTableColumn label="APM2" property="apm2" />
+              <DataTableColumn label="Industry" property="industry" />
+              <DataTableColumn label="Segment" property="segment" />
+              <DataTableColumn label="Persona" property="persona" />
+              <DataTableColumn label="Customer Message" property="customerMessage" />
+              <DataTableColumn label="Business Goal" property="businessGoal" />
+
+              <DataTableRowActions
+                options={[
+                  {
+                    id: 0,
+                    label: 'Edit',
+                    value: '1',
+                  },
+                  {
+                    id: 1,
+                    label: 'Delete',
+                    value: '2',
+                  }
+                ]}
+                menuPosition="overflowBoundaryElement"
+                onAction={{}}
+                dropdown={<Dropdown length="7" />}
+              />
+            </DataTable>
+          )}
+          {/* <PagerContainer>
               <Pager />
-          </PagerContainer>
+          </PagerContainer> */}
           {this.state.showToast && (
             <ToastContainer>
               <Toast 
