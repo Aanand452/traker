@@ -4,6 +4,17 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
-    "test": "echo test"
+    "test": "echo test",
+    "db:init": "yarn sequelize db:create",
+    "db:migrate": "yarn sequelize db:migrate --debug",
+    "db:new-migration": "yarn sequelize migration:generate --name"
+  },
+  "dependencies": {
+    "pg": "^8.3.2",
+    "pg-hstore": "^2.3.3",
+    "sequelize": "^6.3.4"
+  },
+  "devDependencies": {
+    "sequelize-cli": "^6.2.0"
   }
 }
