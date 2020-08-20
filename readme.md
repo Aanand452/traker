@@ -85,6 +85,10 @@ module.exports = {
 
 ```
 
+## Seegin dummy data
+
+Run the scripts given in the directory `./packages/db/seed/dummy` , these are required to get dropdowns data
+
 
 ## Swagger  documentation
 
