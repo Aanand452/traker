@@ -2,12 +2,9 @@ import styled from 'styled-components';
 
 export const Container = styled.div`
   background-color: #f4f6f9;
-  padding-top: 3.2rem;
 `;
 
-export const Banner = styled.div`
-  min-height: 200px;
-`;
+export const Banner = styled.img``;
 
 export const CardsContainer = styled.ul`
   display: flex;

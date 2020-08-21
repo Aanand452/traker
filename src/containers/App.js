@@ -54,8 +54,8 @@ function App({closeSettingsMenu, user}) {
         <Switch>
           <Route exact path="/" component={Login} />
           <Route exact path="/home" component={Home} />
-          <Route exact path="/my-view" component={EditActivity} />
-          <Route exact path="/edit-program" component={EditProgram} />
+          <Route exact path="/my-activities" component={EditActivity} />
+          <Route exact path="/programs-view" component={EditProgram} />
           <Route exact path="/create-activity" component={CreateActivity} />
           <Route exact path="*" component={NotFoundPage} />
         </Switch>

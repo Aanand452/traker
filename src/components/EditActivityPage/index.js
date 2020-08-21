@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Spinner } from '@salesforce/design-system-react';
 
 import { Container } from './styles';
-import DataTable from '../DataTable';
+import ActivitiesTable from '../ActivitiesTable';
 
 class EditActivityPage extends Component {
   state = {
@@ -30,7 +30,7 @@ class EditActivityPage extends Component {
     return (
       <Container>
         {this.state.showLoader && <Spinner size="small" variant="brand" assistiveText={{ label: "Loading..." }} />}
-        <DataTable type="activity" data={this.state.activities} />
+        <ActivitiesTable data={this.state.activities} />
       </Container>
     );
   }

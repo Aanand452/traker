@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { BrandBand, Button } from '@salesforce/design-system-react';
+import { Button } from '@salesforce/design-system-react';
 
 import {
   Container,
@@ -15,9 +15,7 @@ import {
 
 const HomePage = () => (
   <Container>
-    <Banner>
-      <BrandBand image="default" theme="lightning-blue" />
-    </Banner>
+    <Banner src="images/background.png" />
     <CardsContainer>
       <Card>
         <CardImage src="assets/images/placeholder-img-horizontal.jpg" alt="placeholder" />
@@ -46,25 +44,25 @@ const HomePage = () => (
       </Card>
       <Card>
         <CardImage src="assets/images/placeholder-img-horizontal.jpg" alt="placeholder" />
-        <CardTitle>Edit</CardTitle>
+        <CardTitle>Edit Activities / My Activities</CardTitle>
         <CardBody>
           a brief description
         </CardBody>
         <CardAction>
-          <Link to="/edit-program">
-            <Button variant="brand" label="Go to Edit" />
+          <Link to="/my-activities">
+            <Button variant="brand" label="Go to My Activities" />
           </Link>
         </CardAction>
       </Card>
       <Card>
         <CardImage src="assets/images/placeholder-img-horizontal.jpg" alt="placeholder" />
-        <CardTitle>My View</CardTitle>
+        <CardTitle>Programs View</CardTitle>
         <CardBody>
           a brief description
         </CardBody>
         <CardAction>
-          <Link to="/my-view">
-            <Button variant="brand" label="Go to My View" />
+          <Link to="/programs-view">
+            <Button variant="brand" label="Go to Programs View" />
           </Link>
         </CardAction>
       </Card>
