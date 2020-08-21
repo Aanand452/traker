@@ -385,40 +385,39 @@ export var regions = [
   'APAC',
   'ASEAN',
   'GCR',
-  'INDIA'
+  'IN'
 ];
 
 export const formats = [
-  'ABM',
   'Blog',
-  'Content',
-  'Creative',
-  'Customer Story',
-  'Data Purchase',
-  'Demo',
-  'Digital',
-  'Direct Mail',
-  'eBook',
-  'Email',
-  '3rd Party - Email',
-  '3rd Party - Virtual Event',
-  'Exec Engagement',
-  'Executive Visit',
-  'Keynote',
-  'Launch',
-  'Lead Buy',
-  'Organic Social',
-  'Paid Social',
-  'Podcast',
-  'Report',
-  'Research',
-  'SIC',
-  'Telenuture',
   'Video',
-  'Virtual Event',
-  'Webinar',
-  'Webinar - 3rd Party',
+  'Demo',
+  'Report',
+  'Infographic',
+  'Podcast',
+  'Research',
+  'Direct Mail',
+  'Paid Social',
+  'SEM',
+  'Display',
+  'Email',
+  'Organic Social',
   'Website',
+  'Rountable',
+  'SIC',
+  'Exec Visit',
+  'Strategic',
+  'Virtual',
+  '3rd Party',
+  'Keynote',
+  'Webinar',
+  'Enablement',
+  'Films',
+  'Lead Buy',
+  'Data Purchase',
+  'Telenurture',
+  'Email',
+  '3rd Party - Email'
 ];
 
 export const personas = [
@@ -437,21 +436,34 @@ export const personas = [
   'HR/Employees',
 ];
 
+export const tactics = [
+  'Content',
+  'Digital',
+  'Exec Engagement',
+  'Event',
+  'Webinar',
+  'Enablement',
+  'Customer Stories',
+  'Lead Gen',
+];
+
 let dataModel = {
   theme: 'Stablise Your Company',
   program: 'Work.com',
   title: '',
-  format: 'Organic Social',
+  format: '',
   persona: 'All',
   abstract: '"To help infuse our Salesforce community with joy and inspiration, today we launched our #FeelGoodFridays series across our social channels. 🙌The aim of this series is to share how our community is keeping spirits high with positive vibes every week. Our first #FeelGoodFriday story is about one of our education Trailblazers, A Team Tuition. No doubt, many of us can relate to Hayden’s story of being stereotyped at school as a particular type of learner. Well, Hayden has turned this on its head with his business A Team Tuition."',
   region: 'APAC',
   startDate: '01/01/2020',
   endDate: '06/30/2020',
   results: '',
-  asset: ''
+  asset: '',
+  tactic: ''
 };
 
 let data = [];
+
 let titles = [
   'Lorem ipsum dolor sit amet, consectetur adipiscing elit',
   'Aenean in ipsum ac eros tincidunt porttitor non sit amet tellus.',
@@ -484,12 +496,13 @@ const randHex = len => {
 
 for(var i = 0; i < 15; i++){
   let kpi = [];
-  let theme = themes[Math.round(Math.random() * themes.length)];
-  let region = regions[Math.round(Math.random() * regions.length)];
-  let program = programs[Math.round(Math.random() * programs.length)];
-  let format = formats[Math.round(Math.random() * formats.length)];
-  let persona = personas[Math.round(Math.random() * personas.length)];
-  let title = titles[Math.round(Math.random() * titles.length)] 
+  let tactic = tactics[Math.floor(Math.random() * tactics.length)];
+  let theme = themes[Math.floor(Math.random() * themes.length)];
+  let region = regions[Math.floor(Math.random() * regions.length)];
+  let program = programs[Math.floor(Math.random() * programs.length)];
+  let format = formats[Math.floor(Math.random() * formats.length)];
+  let persona = personas[Math.floor(Math.random() * personas.length)];
+  let title = titles[Math.floor(Math.random() * titles.length)] 
   let startDate = moment(new Date(+(new Date()) - Math.floor(Math.random()*10000000000)))
   .format('MM/DD/YYYY');
   let endDate = moment(new Date(+(new Date()) - Math.floor(Math.random()*10000000000)))
@@ -506,8 +519,9 @@ for(var i = 0; i < 15; i++){
   row.endDate = endDate;
   row.title = title;
   row.id = i;
-  row.campaignId = randHex(12);
+  row.campaignId = randHex(18);
   row.kpi = kpi;
+  row.tactic = tactic;
   
   data.push(row);
 }  

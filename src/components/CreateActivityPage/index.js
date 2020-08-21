@@ -23,16 +23,13 @@ class CreateActivityPage extends Component {
     const newRow = {
       id: 10000,
       campaignId: this.state.row.campaignId,
-      theme: this.state.row.theme[0] && this.state.row.theme[0].label,
       program: this.state.row.program[0] && this.state.row.program[0].label,
       format: this.state.row.format[0] && this.state.row.format[0].label,
-      persona: this.state.row.persona[0] && this.state.row.persona[0].label,
       region: this.state.row.region[0] && this.state.row.region[0].label,
       title: this.state.row.title,
       abstract: this.state.row.abstract,
       startDate: this.state.row.startDate,
       endDate: this.state.row.endDate,
-      results: this.state.row.results,
       asset: this.state.row.asset,
       kpi: this.state.row.kpi 
     };

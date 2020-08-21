@@ -78,17 +78,17 @@ class Table extends Component {
 
   controls = () => (
     <Fragment>
-      {this.props.dataTable.selection.length > 0 ? <PageHeaderControl>
-        <Button
+      <PageHeaderControl>
+        <ButtonGroup id="button-group-page-header-controls">
+        {this.props.dataTable.selection.length > 0 ? <Button
           onClick={this.props.openDeletePrompt}
           assistiveText={{ icon: 'Delete List' }}
           iconCategory="utility"
           iconName="delete"
           iconVariant="border"
           variant="icon"
-        />
-      </PageHeaderControl> : null}
-      <PageHeaderControl>
+        /> : null}
+      
         <ButtonStateful
           assistiveText={{ icon: 'Refresh' }}
           iconCategory="utility"
@@ -97,16 +97,6 @@ class Table extends Component {
           variant="icon"
           onClick={this.props.resetItems}
         />
-      </PageHeaderControl>
-      <PageHeaderControl>
-        <ButtonGroup id="button-group-page-header-controls">
-          <ButtonStateful
-            assistiveText={{ icon: 'Charts' }}
-            iconCategory="utility"
-            iconName="chart"
-            iconVariant="border-filled"
-            variant="icon"
-          />
           <ButtonStateful
             assistiveText={{ icon: 'Filters' }}
             iconCategory="utility"
@@ -195,10 +185,6 @@ class Table extends Component {
 
   render() {
 
-    let { limit, currentPage } = this.props.dataTable;
-    let start = (currentPage - 1) * limit;
-    let end = currentPage * limit;
-
     let filtered = this.props.dataTable.items && this.props.dataTable.items.filter((e, i) => {
       if(e && e.title)
         return e.title.toLowerCase().indexOf(this.state.searchByTitle.toLowerCase()) !== -1
@@ -214,10 +200,9 @@ class Table extends Component {
         }}
       >
         <IconSettings iconPath="/assets/icons">
-          {this.state.editModalIsOPen && <Modal data={this.props.dataTable.item} title='Edit row' toggleOpen={this.toggleOpen} />}
+          {this.state.editModalIsOPen && <Modal data={this.props.dataTable.item} title='Edit activity' toggleOpen={this.toggleOpen} />}
           {this.props.dataTable.isDeletePromptOpen && <Prompt />}
           <PageHeader
-            onRenderActions={this.actions}
             icon={
               <Icon
                 assistiveText={{ label: 'User' }}
@@ -227,31 +212,18 @@ class Table extends Component {
             }
             info={`${this.props.dataTable.items.length} ${this.props.dataTable.items.length === 1 ? 'item' : 'items'}`}
             joined
-            label="Leads"
+            label="Activities"
             onRenderControls={this.controls}
             title={
               <h1 className="slds-page-header__title slds-p-right_x-small">
-                <Dropdown
-                  options={[
-                    { label: 'Menu Item One', value: 'A0' },
-                    { label: 'Menu Item Two', value: 'B0' },
-                    { label: 'Menu Item Three', value: 'C0' },
-                    { type: 'divider' },
-                    { label: 'Menu Item Four', value: 'D0' },
-                  ]}
-                >
-                  <DropdownTrigger>
-                    <Button
-                      className="slds-button_reset slds-type-focus"
-                      iconCategory="utility"
-                      iconName="down"
-                      iconPosition="right"
-                      label="Sales view"
-                      responsive
-                      variant="base"
-                    />
-                  </DropdownTrigger>
-                </Dropdown>
+                <Button
+                  className="slds-button_reset slds-type-focus"
+                  iconCategory="utility"
+                  iconPosition="right"
+                  label="Report data"
+                  responsive
+                  variant="base"
+                />
               </h1>
             }
             truncate
@@ -278,25 +250,16 @@ class Table extends Component {
             selectRows="checkbox"
           >
             <DataTableColumn label="Campaign ID" property="campaignId" />
-            <DataTableColumn
-              isSorted={this.state.sortColumn === 'theme'}
-              label="Theme"
-              primaryColumn
-              property="theme"
-              sortable
-              sortDirection={this.state.sortColumnDirection.theme}
-            >
-              <CustomDataTableCell />
-            </DataTableColumn>
             <DataTableColumn label="Program" property="program" />
             <DataTableColumn label="Title" property="title" />
+            <DataTableColumn label="Tactics" property="tactic" />
             <DataTableColumn label="Format" property="format" />
-            <DataTableColumn label="Persona" property="persona" />
             <DataTableColumn label="Abstract" property="abstract" />
             { this.props.type === "2" &&
               <DataTableColumn
                 sortDirection={this.state.sortColumnDirection.region}
-                sortable isSorted={this.state.sortColumn === 'region'}
+                sortable
+                isSorted={this.state.sortColumn === 'region'}
                 label="Region"
                 property="region"
               />
@@ -315,7 +278,6 @@ class Table extends Component {
               sortable
               sortDirection={this.state.sortColumnDirection.endDate}
             />
-            <DataTableColumn label="Results" property="results" />
             <DataTableColumn label="Assets" property="asset" />
             <DataTableRowActions
               options={[
@@ -335,9 +297,6 @@ class Table extends Component {
               dropdown={<Dropdown length="7" />}
             />
           </DataTable>
-          <PagerContainer>
-              <Pager />
-          </PagerContainer>
           {this.state.showToast && (
             <ToastContainer>
               <Toast 

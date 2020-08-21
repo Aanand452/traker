@@ -24,7 +24,7 @@ const INITIAL_STATE = {
 };
 
 const dataTable = (state = INITIAL_STATE, action) => {
-  let { type, items, item, selection, currentPage, pages, sortColumn, sortColumnDirection } = action;
+  let { type, items, item, selection, currentPage, pages } = action;
   switch(type) {
     case OPEN_DELETE_MODAL:
       return {

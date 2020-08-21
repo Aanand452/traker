@@ -1,0 +1,16 @@
+{
+  "info": {
+    "status": "Status HTTP Code",
+    "code": 200
+  },
+  "result": [
+    { "id": 1, "label": "Content" },
+    { "id": 2, "label": "Digital" },
+    { "id": 3, "label": "Exec Engagement" },
+    { "id": 4, "label": "Event" },
+    { "id": 5, "label": "Webinar" },
+    { "id": 6, "label": "Enablement" },
+    { "id": 7, "label": "Customer Stories" },
+    { "id": 8, "label": "Lead Gen" }
+  ]
+}

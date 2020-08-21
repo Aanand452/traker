@@ -1,0 +1,16 @@
+{
+  "info": {
+    "status": "Status HTTP Code",
+    "code": 200
+  },
+  "result": [
+    { "id": 1, "label": "Artificial Intelligence" },
+    { "id": 2, "label": "Business as a Platform for Change" },
+    { "id": 3, "label": "Customer Engagement" },
+    { "id": 4, "label": "Digital Transformation" },
+    { "id": 5, "label": "Future of Work" },
+    { "id": 6, "label": "Grow Your Business" },
+    { "id": 7, "label": "Reopen Your Workplace" },
+    { "id": 8, "label": "Stablise Your Company" }
+  ]
+}
