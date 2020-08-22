@@ -24,9 +24,7 @@ const CustomDataTableCell = ({ children, ...props }) => (
   <DataTableCell title={children} {...props}>
     <a
       href="javascript:void(0);"
-      onClick={(event) => {
-        event.preventDefault();
-      }}
+      onClick={(event) => event.preventDefault()}
     >
       {children}
     </a>
@@ -37,14 +35,19 @@ CustomDataTableCell.displayName = DataTableCell.displayName;
 
 class Table extends Component {
   state = {
-    sortColumn: 'opportunityName',
-    sortColumnDirection: {
-      opportunityName: 'asc',
-    },
-    searchByTitle: '',
+    sortProperty: '',
+    sortDirection: '',
+    search: '',
     showToast: this.props.location.newRow ? true : false,
     isPanelOpen: false,
+    data: []
   };
+
+  componentDidUpdate(prevProps) {
+    if (this.props.data !== prevProps.data) {
+      this.setState({data: this.props.data});
+    }
+  }
 
   actions = () => (
     <PageHeaderControl>
@@ -59,13 +62,13 @@ class Table extends Component {
   controls = () => (
     <Fragment>
       <PageHeaderControl>
-        <ButtonStateful
+        <Button
           assistiveText={{ icon: 'Refresh' }}
           iconCategory="utility"
           iconName="refresh"
           iconVariant="border"
           variant="icon"
-          onClick={this.props.resetItems}
+          onClick={this.resetTable}
         />
       </PageHeaderControl>
       <PageHeaderControl>
@@ -85,44 +88,43 @@ class Table extends Component {
     </Fragment>
   );
   
-  handleSearch = text => {
-    this.setState({ searchByTitle: text });
-  }
-
-  handleSort = (sortColumn, ...rest) => {
-    if (this.props.log) {
-      this.props.log('sort')(sortColumn, ...rest);
+  onSearch = text => {
+    this.setState({search: text});
+    if (!text){
+      this.setState({data: this.props.data});
+      return false;
     }
 
-    const sortProperty = sortColumn.property;
-    const { sortDirection } = sortColumn;
-    const newState = {
-      sortColumn: sortProperty,
-      sortColumnDirection: {
-          [sortProperty]: sortDirection,
-      },
-      items: [...this.props.dataTable.items],
-    };
+    let data = [...this.props.data];
+    data = data.filter(item => item.programName.includes(text))
+    this.setState({data});
+  }
 
-    // needs to work in both directions
-    newState.items = newState.items.sort((a, b) => {
+  onSort = (sortInfo) => {
+    const {property, sortDirection} = sortInfo;
+    let data = [...this.state.data];
+
+    data = data.sort((a, b) => {
       let val = 0;
 
-      if (a[sortProperty] > b[sortProperty]) {
-        val = 1;
-      }
-      if (a[sortProperty] < b[sortProperty]) {
-        val = -1;
-      }
-
-      if (sortDirection === 'desc') {
-        val *= -1;
-      }
-
+      if (a[property] > b[property]) val = 1;
+      if (a[property] < b[property]) val = -1;
+      if (sortDirection === 'desc') val *= -1;
+    
       return val;
     });
 
-    this.setState(newState);
+    this.setState({data, sortProperty: property, sortDirection });
+  };
+
+  resetTable = () => {
+    this.setState({
+      data: this.props.data,
+      sortProperty: '',
+      sortDirection: '',
+      search: '',
+      isPanelOpen: false
+    })
   };
 
   render() {
@@ -138,14 +140,16 @@ class Table extends Component {
                 name="lead"
               />
             }
-            info={`${this.props.data.length} ${this.props.data.length === 1 ? 'item' : 'items'}`}
+            info={`${this.state.data.length} ${this.state.data.length === 1 ? 'item' : 'items'}`}
             joined
             onRenderControls={this.controls}
             title={<h1>Programs</h1>}
             truncate
             variant="object-home"
           />
-          {this.state.isPanelOpen && <Panel searchByTitle={this.state.searchByTitle} handleSearch={this.handleSearch} />}
+          {this.state.isPanelOpen && (
+            <Panel label="Search by Name" search={this.state.search} handleSearch={(e) => this.onSearch(e)} />
+          )}
           <DataTable
             assistiveText={{
               actionsHeader: 'actions',
@@ -157,12 +161,18 @@ class Table extends Component {
             }}
             fixedHeader
             fixedLayout
-            items={this.props.data}
+            items={this.state.data}
             id="DataTableExample-FixedHeaders"
             joined
-            onSort={this.handleSort}
+            onSort={this.onSort}
           >
-            <DataTableColumn label="Program Name" property="programName" />
+            <DataTableColumn
+              label="Program Name"
+              property="programName"
+              sortDirection={this.state.sortDirection}
+              sortable
+              isSorted={this.state.sortProperty === 'programName'}
+            />
             <DataTableColumn label="Program Owner" property="programOwner" />
             <DataTableColumn label="Budget" property="budget" />
             <DataTableColumn label="Metrics" property="metrics" />
