@@ -84,7 +84,7 @@ class Table extends Component {
 
   controls = () => (
     <Fragment>
-      {this.props.dataTable.selection.length > 0 ? <PageHeaderControl>
+      {this.props.dataTable.selection.length > 0 && <PageHeaderControl>
         <Button
           onClick={this.props.openDeletePrompt}
           assistiveText={{ icon: 'Delete List' }}
@@ -93,7 +93,7 @@ class Table extends Component {
           iconVariant="border"
           variant="icon"
         />
-      </PageHeaderControl> : null}
+      </PageHeaderControl>}
       <PageHeaderControl>
         <Button
           assistiveText={{ icon: 'Refresh' }}
