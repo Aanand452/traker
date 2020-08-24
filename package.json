@@ -21,10 +21,10 @@
     "@babel/node": "^7.10.5",
     "@babel/preset-env": "^7.11.0",
     "babel-plugin-module-resolver": "^4.0.0",
-    "lerna": "^3.22.1",
     "nodemon": "^2.0.4"
   },
   "dependencies": {
-    "core-js": "2"
+    "core-js": "2",
+    "lerna": "^3.22.1"
   }
 }
