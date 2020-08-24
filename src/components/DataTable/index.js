@@ -11,7 +11,6 @@ import {
   DataTableCell,
   DataTableRowActions,
   Dropdown,
-  DropdownTrigger,
   Icon,
   IconSettings,
   PageHeader,
@@ -34,9 +33,6 @@ import {
   setPages,
   sortItems
 } from '../../actions/DataTable';
-
-import { PagerContainer } from './styles.js';
-import { filter } from 'lodash';
 
 const CustomDataTableCell = ({ children, ...props }) => (
   <DataTableCell title={children} {...props}>
@@ -80,14 +76,14 @@ class Table extends Component {
     <Fragment>
       <PageHeaderControl>
         <ButtonGroup id="button-group-page-header-controls">
-        {this.props.dataTable.selection.length > 0 ? <Button
+        {this.props.dataTable.selection.length > 0 && <Button
           onClick={this.props.openDeletePrompt}
           assistiveText={{ icon: 'Delete List' }}
           iconCategory="utility"
           iconName="delete"
           iconVariant="border"
           variant="icon"
-        /> : null}
+        />}
       
         <ButtonStateful
           assistiveText={{ icon: 'Refresh' }}

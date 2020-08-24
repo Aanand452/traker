@@ -5,7 +5,8 @@ import {
   Combobox,
   Input,
   Datepicker,
-  Button
+  Button,
+  Textarea
 } from '@salesforce/design-system-react';
 
 import { FormContainer } from './styles';
@@ -86,6 +87,8 @@ class CreateActivity extends Component {
   async populateTactic(selection) {
     let response = await fetch('/assets/data/format.json');
     let { result } = await response.json();
+    // In order to populate, the Format model has a "tactic" property that is filtered in the implementation below.
+    // A better way would be to have a "tactic" id.
     return result.filter(el => el.tactic === selection[0].label);
   }
 
@@ -119,6 +122,7 @@ class CreateActivity extends Component {
 
   handleChange = async (value, data) => {
     let newRow = {};
+    console.log(data)
     
     if(value === "tactic") {
       let format = await this.populateTactic(data);
@@ -227,11 +231,13 @@ class CreateActivity extends Component {
                 id="campaignId"
                 maxLength="18"
                 minLength="18"
+                required
                 errorText={this.state.error.campaignId}
               />
             </div>
             <div className="slds-m-bottom_large slds-col slds-size_1-of-2">
               <Combobox
+                required
                 id="program"
                 events={{onSelect: (event, data) => data.selection.length && this.handleChange("program", data.selection)}}
                 labels={{label: 'Program'}}
@@ -246,6 +252,7 @@ class CreateActivity extends Component {
             </div>
             <div className="slds-m-bottom_large slds-col slds-size_1-of-2">
               <Combobox
+                required
                 id="tactic"
                 events={{onSelect: (event, data) => data.selection.length && this.handleChange("tactic", data.selection)}}
                 labels={{label: 'Tactic'}}
@@ -260,6 +267,7 @@ class CreateActivity extends Component {
             </div>
             <div className="slds-m-bottom_large slds-col slds-size_1-of-2">
               <Combobox
+                required
                 id="format"
                 events={{onSelect: (event, data) => data.selection.length && this.handleChange("format", data.selection)}}
                 labels={{label: 'Format'}}
@@ -273,21 +281,30 @@ class CreateActivity extends Component {
               />
             </div>
             <div className="slds-m-bottom_large slds-col slds-size_1-of-2">
-              <Input
-                placeholder="Enter title"
-                onChange={(event, data) => this.handleChange("title", data.value)}
-                defaultValue={this.state.row.title}
+              <Textarea
+                required
                 id="title"
                 label="Title"
                 errorText={this.state.error.title}
-                
+                placeholder="Enter title"
+                defaultValue={this.state.title}
+                onChange={(event) => this.handleChange("title", event.target.value)}
               />
             </div>
             <div className="slds-m-bottom_large slds-col slds-size_1-of-2">
-              <Input onChange={(event, data) => this.handleChange("abstract", data.value)} defaultValue={this.state.row.abstract} placeholder="Enter abstract" id="abstract" label="Abstract" errorText={this.state.error.abstract}/>
+              <Textarea
+                required
+                id="abstract"
+                label="Abstract"
+                errorText={this.state.error.abstract}
+                placeholder="Enter abstract"
+                defaultValue={this.state.row.abstract}
+                onChange={(event) => this.handleChange("abstract", event.target.value)}
+              />
             </div>
             <div className="slds-m-bottom_large slds-col slds-size_1-of-2">
               <Combobox
+                required
                 id="region"
                 events={{onSelect: (event, data) => data.selection.length && this.handleChange("region", data.selection)}}
                 labels={{label: 'Region'}}
@@ -301,6 +318,7 @@ class CreateActivity extends Component {
             </div>
             <div className="slds-m-bottom_large slds-col slds-size_1-of-2">
               <Datepicker
+                required
                 id="startDate"
                 labels={{label: 'Start Date'}}
                 triggerClassName="slds-col slds-size_1-of-2"
@@ -310,6 +328,7 @@ class CreateActivity extends Component {
                 value={this.state.row.startDate}
               />
               <Datepicker
+                required
                 id="endDate"
                 labels={{label: 'End Date'}}
                 triggerClassName="slds-col slds-size_1-of-2"
@@ -321,67 +340,6 @@ class CreateActivity extends Component {
             </div>
             <div className="slds-m-bottom_large slds-col slds-size_1-of-2">
               <Input placeholder="Enter assets" onChange={(event, data) => this.handleChange("asset", data.value)} defaultValue={this.state.row.asset} id="asset" label="Asset"/>
-            </div>
-            {this.state.row.kpi && this.state.row.kpi.map((el, index) => (
-              <div key={index} className="slds-grid slds-m-bottom_large slds-col slds-size_1-of-2">
-                <div className="slds-col slds-size_2-of-5">
-                  <Input
-                    placeholder="Enter KPI key"
-                    label="KPI key"
-                    value={el.edit ? this.state.editKey : el.key}
-                    id={`KPIKey${index}`}
-                    readOnly={!el.edit}
-                    onChange={(event, data) => this.setState({editKey: data.value})}
-                  />
-                </div>
-                <div className="slds-col slds-size_2-of-5">
-                  <Input
-                    placeholder="Enter KPI value"
-                    label="KPI Value"
-                    value={el.edit ? this.state.editValue : el.value}
-                    id={`KPIValue${index}`}
-                    readOnly={!el.edit}
-                    onChange={(event, data) => this.setState({editValue: data.value})}
-                  />
-                </div>
-                <div className="slds-col slds-size_1-of-5">
-                  <Button 
-                    onClick={el.edit ? () => this.editKPI(index) : () => this.setEditKPI(index)}
-                    className="vertical-center"
-                    label={el.edit ? "Save" : "Edit"}
-                    variant="brand"
-                  />
-                  <Button 
-                    onClick={el.edit ? this.cancelEdit : () => this.deleteKPI(index)}
-                    className="vertical-center"
-                    label={el.edit ? "Cancel" : "Delete"}
-                    variant="destructive"
-                  />
-                </div>
-              </div>
-            ))}
-            <div className="slds-grid slds-m-bottom_large slds-col slds-size_1-of-2">
-              <div className="slds-col slds-size_2-of-5">
-                <Input
-                  placeholder="Enter KPI key"
-                  label="KPI Key"
-                  onChange={(event, data) => this.setState({KPIKey: data.value})}
-                  value={this.state.KPIKey}
-                  id="KPIKey"
-                />
-              </div>
-              <div className="slds-col slds-size_2-of-5">
-                <Input
-                  placeholder="Enter KPI value"
-                  label="KPI Value"
-                  onChange={(event, data) => this.setState({KPIValue: data.value})}
-                  value={this.state.KPIValue}
-                  id="KPIValue"
-                />
-              </div>
-              <div className="slds-col slds-size_1-of-5">
-                <Button onClick={this.addKPI} className="slds-button_stretch vertical-center" label="Add" disabled={!this.state.KPIKey || !this.state.KPIValue} variant="brand" />  
-              </div>
             </div>
             <div className="slds-col slds-size_1-of-1">
               <Button label="Cancel" />

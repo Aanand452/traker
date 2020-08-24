@@ -7,7 +7,9 @@ import {
   Modal,
   Button,
   Combobox,
-  Datepicker
+  Datepicker,
+  Input,
+  Textarea
 } from '@salesforce/design-system-react';
 
 // ACTIONS
@@ -32,16 +34,8 @@ class ModalComponent extends Component {
     startDate: this.props.data.startDate,
     endDate: this.props.data.endDate,
     asset: this.props.data.asset,
-    kpi: this.props.data.kpi,
     campaignId: this.props.data.campaignId,
-    kpiValue: '',
-    kpiKey: '',
-    editValue: '',
-    editKey: '',
-    campaignError: {
-      empty: false,
-      char: false
-    }
+    errors: {}
   };
 
   componentDidMount() {
@@ -103,18 +97,8 @@ class ModalComponent extends Component {
     }
   }
 
-  handleCampaignId = e => {
-    this.setState({campaignId: e.target.value});  
-    if(this.state.campaignId.length > 0) {
-      this.setState({campaignError:{empty: false}});
-      return;
-    } else if(this.state.campaignId.length === 18) {
-      this.setState({campaignError:{char: false}});
-      return;
-    }
-  }
-
   handleStartDate = (event, data) => {
+    console.log(event.target.value)
     this.setState({ startDate: data.formattedDate });
   }
 
@@ -122,14 +106,34 @@ class ModalComponent extends Component {
     this.setState({ endDate: data.formattedDate });
   }
 
+  handleChange = e => {
+    if(e.target.value.length > 0) {
+      let errors = {...this.state.errors, [e.target.id]: false};
+      this.setState({errors})
+    }
+    this.setState({[e.target.id]: e.target.value});
+  }
+
   editTable = () => {
-    if(this.state.campaignId.length === 0) {
-      this.setState({campaignError:{empty: true}});
-      return;
-    } else if(this.state.campaignId.length < 18) {
-      this.setState({campaignError:{char: true}});
+    let { title, abstract, campaignId } = this.state;
+    let errors = {...this.state.errors};
+    
+    if(campaignId.length === 0 || campaignId.length < 18) {
+      errors = {...errors, campaignId: true};
+      this.setState({errors});
       return;
     }
+    if(title.length === 0) {
+      errors = {...errors, title: true};
+      this.setState({errors});
+      return;
+    }
+    if(abstract.length === 0) {
+      errors = {...errors, abstract: true};
+      this.setState({errors});
+      return;
+    }
+
     this.props.editItem(this.props.dataTable.items, {
       campaignId: this.state.campaignId,
       program: this.state.programSelection[0] && this.state.programSelection[0].label,
@@ -141,45 +145,9 @@ class ModalComponent extends Component {
       startDate: this.state.startDate,
       endDate: this.state.endDate,
       asset: this.state.asset,
-      kpi: this.state.kpi,
-      id: this.props.data.id,
-      campaignError: {
-        empty: false,
-        char: false
-      }
+      id: this.props.data.id
     });
     this.props.toggleOpen();
-  }
-
-  addKpi = () => {
-    if(this.state.kpiKey === '' || this.state.kpiValue === '') return;
-    let kpi = [...this.state.kpi, {key: this.state.kpiKey, value: this.state.kpiValue, edit: false}];
-    this.setState({kpi, kpiKey: '', kpiValue: ''});
-  }
-
-  deleteKpi = idx => {
-    let kpi = this.state.kpi.filter((el, i) => idx !== i)
-    this.setState({kpi});
-  }
-
-  setEditKpi = idx => {
-    let kpi = this.state.kpi.map(el => ({...el, edit: false}));
-    let item = kpi[idx];
-    item.edit = true;
-    kpi.splice(idx, 1, item);
-    this.setState({kpi, editValue: item.value, editKey: item.key});
-  }
-
-  cancelEdit = () => {
-    let kpi = this.state.kpi.map(el => ({...el, edit: false}));
-    this.setState({kpi});
-  }
-
-  editKpi = idx => {
-    let kpi = [...this.state.kpi];
-    let item = {key: this.state.editKey, value: this.state.editValue, edit: false};
-    kpi.splice(idx, 1, item);
-    this.setState({kpi, editValue: '', editKey: ''});
   }
 
   idGenerator = len => {
@@ -194,15 +162,14 @@ class ModalComponent extends Component {
     return r;
   }
 
-	render() {
-        
+	render() {        
 		return (
       <IconSettings iconPath="/assets/icons">
         <Modal
           isOpen={true}
           footer={[
             <Button label="Cancel" onClick={this.props.toggleOpen} />,
-            <Button label="Save" variant="brand" onClick={this.editTable} />,
+            <Button type="submit" label="Save" variant="brand" onClick={this.editTable} />,
           ]}
           onRequestClose={this.props.toggleOpen}
           heading={this.props.title}
@@ -210,25 +177,21 @@ class ModalComponent extends Component {
         >
           <section className="slds-p-around_large">
             <div className="slds-form-element slds-m-bottom_large">
-              <label className="slds-form-element__label">
-                Campaign ID
-              </label>
               <div className="slds-form-element__control slds-grid slds-gutters">
-                <div className={`slds-col slds-size_11-of-12 ${(this.state.campaignError.empty || this.state.campaignError.char) && 'slds-has-error'}`}>
-                  <div className="slds-form-element__control">
-                    <input
-                      className="slds-input"
-                      type="text"
-                      placeholder="Enter campaign id"
-                      value={this.state.campaignId}
-                      maxLength="18"
-                      onChange={this.handleCampaignId}
-                    />
-                  </div>
-                  {this.state.campaignError.empty && <div className="slds-form-element__help">This field is required</div>}
-                  {this.state.campaignError.char && <div className="slds-form-element__help">This field must contain 18 characters</div>}
+                <div className="slds-col slds-size_11-of-12">
+                  <Input
+                    id="campaignId"
+                    label="Campaign ID"
+                    errorText={(this.state.errors.campaignId && "This field is required") || (this.state.campaignId.length < 18 && "This field must contain 18 characters")}
+                    placeholder="Placeholder Text"
+                    value={this.state.campaignId}
+                    maxLength="18"
+                    minLength="18"
+                    required
+                    onChange={e => this.handleChange(e)}
+                  />
                 </div>
-                <div className="slds-col slds-size_1-of-12">
+                <div className="slds-col slds-size_1-of-12 slds-m-top_large">
                   <Button
                     onClick={() => this.setState({campaignId: this.idGenerator(18)})}
                     assistiveText={{ icon: 'Icon Border-filled medium' }}
@@ -242,6 +205,7 @@ class ModalComponent extends Component {
             </div>
             <div className="slds-form-element slds-m-bottom_large">
               <Combobox
+                required
                 events={{
                   onSelect: (event, data) => {
                     const selection =
@@ -263,21 +227,19 @@ class ModalComponent extends Component {
               />
             </div>
             <div className="slds-form-element slds-m-bottom_large">
-              <label className="slds-form-element__label">
-                Title
-              </label>
-              <div className="slds-form-element__control">
-                <input
-                  className="slds-input"
-                  type="text"
-                  placeholder="Enter title"
-                  defaultValue={this.state.title}
-                  onChange={e => this.setState({title: e.target.value})}
-                />
-              </div>
+              <Textarea
+                required
+                id="title"
+                label="Title"
+                errorText={this.state.errors.title && "This field is required"}
+                placeholder="Enter title"
+                defaultValue={this.state.title}
+                onChange={e => this.handleChange(e)}
+              />
             </div>
             <div className="slds-form-element slds-m-bottom_large">
               <Combobox
+                required
                 events={{
                   onSelect: (event, data) => {
                     const selection =
@@ -300,6 +262,7 @@ class ModalComponent extends Component {
             </div>
             <div className="slds-form-element slds-m-bottom_large">
               <Combobox
+                required
                 events={{
                   onSelect: (event, data) => {
                     const selection =
@@ -321,21 +284,19 @@ class ModalComponent extends Component {
               />
             </div>
             <div className="slds-form-element slds-m-bottom_large">
-              <label className="slds-form-element__label">
-                Abstract
-              </label>
-              <div className="slds-form-element__control">
-                <input
-                  className="slds-input"
-                  type="text"
-                  placeholder="Enter abstract"
-                  defaultValue={this.state.abstract}
-                  onChange={e => this.setState({abstract: e.target.value})}
-                />
-              </div>
+              <Textarea
+                required
+                id="abstract"
+                label="Abstract"
+                errorText={this.state.errors.abstract && "This field is required"}
+                placeholder="Enter abstract"
+                defaultValue={this.state.abstract}
+                onChange={e => this.handleChange(e)}
+              />
             </div>
             <div className="slds-form-element slds-m-bottom_large">
               <Combobox
+                required
                 events={{
                   onSelect: (event, data) => {
                     const selection =
@@ -359,6 +320,7 @@ class ModalComponent extends Component {
             <div className="slds-grid slds-gutters slds-m-bottom_large">
               <div className="slds-col slds-size_1-of-2">
                 <Datepicker
+                  required
                   labels={{
                     label: 'Start date',
                   }}
@@ -391,6 +353,7 @@ class ModalComponent extends Component {
               </div>
               <div className="slds-col slds-size_1-of-2">
                 <Datepicker
+                  required
                   labels={{
                     label: 'End date',
                   }}
@@ -434,117 +397,6 @@ class ModalComponent extends Component {
                   defaultValue={this.state.asset}
                   onChange={e => this.setState({asset: e.target.value})}
                 />
-              </div>
-            </div>
-            <label className="slds-form-element__label">
-              KPI
-            </label>
-            {
-              this.state.kpi.map((el, i) => {
-                return(
-                  <div key={i} className="slds-grid slds-gutters slds-m-bottom_large">
-                    {
-                      el.edit === false ? (
-                        <Fragment>
-                          <div className="slds-col slds-size_2-of-5">
-                            {el.key}
-                          </div>
-                          <div className="slds-col slds-size_2-of-5">
-                            {el.value}
-                          </div>
-                        </Fragment>
-                      ) : (
-                        <Fragment>
-                        <div className="slds-col slds-size_1-of-3">
-                          <div className="slds-form-element__control">
-                            <input
-                              className="slds-input"
-                              type="text"
-                              defaultValue={this.state.editKey}
-                              placeholder="Enter kpi key"
-                              onChange={e => this.setState({editKey: e.target.value})}
-                            />
-                          </div>
-                        </div>
-                        <div className="slds-col slds-size_1-of-3">
-                          <div className="slds-form-element__control">
-                            <input
-                              className="slds-input"
-                              type="text"
-                              defaultValue={this.state.editValue}
-                              placeholder="Enter kpi value"
-                              onChange={e => this.setState({editValue: e.target.value})}
-                            />
-                          </div>
-                        </div>
-                        </Fragment>
-                      )
-                    }
-                    
-                    <div className={`slds-col slds-size_${el.edit === false ? '1-of-5' : '1-of-3'}`}>
-                      {
-                        el.edit ? (
-                          <Button 
-                            onClick={() => this.editKpi(i)}
-                            label="Save"
-                            variant="brand" />
-                        ) : (
-                          <Button 
-                            onClick={() => this.setEditKpi(i)}
-                            assistiveText={{ icon: 'Icon Border-filled medium' }}
-                            iconCategory="utility"
-                            iconName="edit"
-                            iconVariant="border-filled"
-                            variant="icon" />
-                        )
-                      }
-                      {
-                        el.edit ? (
-                          <Button 
-                            onClick={this.cancelEdit}
-                            label="Cancel"
-                            variant="neutral" />
-                        ) : (
-                          <Button 
-                            onClick={() => this.deleteKpi(i)}
-                            assistiveText={{ icon: 'Icon Border-filled medium' }}
-                            iconCategory="utility"
-                            iconName="delete"
-                            iconVariant="border-filled"
-                            variant="icon" />
-                        )
-                      }
-                      
-                    </div>
-                  </div>
-                )
-              })
-            }
-            <div className="slds-grid slds-gutters slds-m-bottom_large">
-              <div className="slds-col slds-size_2-of-5">
-                <div className="slds-form-element__control">
-                  <input
-                    className="slds-input"
-                    type="text"
-                    value={this.state.kpiKey}
-                    placeholder="Enter kpi key"
-                    onChange={e => this.setState({kpiKey: e.target.value})}
-                  />
-                </div>
-              </div>
-              <div className="slds-col slds-size_2-of-5">
-                <div className="slds-form-element__control">
-                  <input
-                    className="slds-input"
-                    type="text"
-                    value={this.state.kpiValue}
-                    placeholder="Enter kpi value"
-                    onChange={e => this.setState({kpiValue: e.target.value})}
-                  />
-                </div>
-              </div>
-              <div className="slds-col slds-size_1-of-5">
-                <Button onClick={this.addKpi} className="slds-button_stretch" label="Add" disabled={this.state.kpiKey && this.state.kpiValue ? false : true} variant="brand" />  
               </div>
             </div>
           </section>
