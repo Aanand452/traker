@@ -1,5 +1,5 @@
 import React, { Component, Fragment } from 'react';
-import { withRouter } from 'react-router-dom';
+import { withRouter, Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 
 import {
@@ -11,7 +11,6 @@ import {
   DataTableCell,
   DataTableRowActions,
   Dropdown,
-  DropdownTrigger,
   Icon,
   IconSettings,
   PageHeader,
@@ -33,8 +32,9 @@ import {
   resetItems,
   setItem
 } from '../../actions/DataTable';
+import { Container } from './styles';
 
-import { PagerContainer } from './styles.js';
+// import { PagerContainer } from './styles.js';
 
 const CustomDataTableCell = ({ children, ...props }) => (
   <DataTableCell title={children} {...props}>
@@ -48,28 +48,33 @@ const CustomDataTableCell = ({ children, ...props }) => (
     </a>
   </DataTableCell>
 );
-
 CustomDataTableCell.displayName = DataTableCell.displayName;
 
 
 class Table extends Component {
   state = {
-    sortColumn: 'opportunityName',
-    sortColumnDirection: {
-      opportunityName: 'asc',
-    },
-    editModalIsOPen: false,
+    sortProperty: '',
+    sortDirection: '',
+    search: '',
+    showToast: this.props.location.newRow ? true : false,
     isPanelOpen: false,
-    searchByTitle: '',
-    isDeletePromptOpen: false,
-    showToast: this.props.location.newRow ? true : false
+    data: [],
+    editModalIsOPen: false,
+    isDeletePromptOpen: false
   };
+
+  componentDidUpdate(prevProps) {
+    if (this.props.data !== prevProps.data) {
+      this.setState({data: this.props.data});
+    }
+  }
 
   actions = () => (
     <PageHeaderControl>
       <ButtonGroup id="button-group-page-header-actions">
-        <Button label="New" onClick={() => this.props.history.push('/home')} />
-        <Button label="Import data" onClick={() => this.props.history.push('/home')} />
+        <Link to="/create-activity">
+          <Button label="New" />
+        </Link>
       </ButtonGroup>
     </PageHeaderControl>
   )
@@ -87,33 +92,24 @@ class Table extends Component {
         />
       </PageHeaderControl> : null}
       <PageHeaderControl>
-        <ButtonStateful
+        <Button
           assistiveText={{ icon: 'Refresh' }}
           iconCategory="utility"
           iconName="refresh"
           iconVariant="border"
           variant="icon"
-          onClick={this.props.resetItems}
+          onClick={this.resetTable}
         />
       </PageHeaderControl>
       <PageHeaderControl>
         <ButtonGroup id="button-group-page-header-controls">
-          <ButtonStateful
-            assistiveText={{ icon: 'Charts' }}
-            iconCategory="utility"
-            iconName="chart"
-            iconVariant="border-filled"
-            variant="icon"
-          />
           <ButtonStateful
             assistiveText={{ icon: 'Filters' }}
             iconCategory="utility"
             iconName="filterList"
             iconVariant="border-filled"
             variant="icon"
-            onClick={() => {
-              this.setState({ isPanelOpen: !this.state.isPanelOpen });
-            }}
+            onClick={() => this.setState({isPanelOpen: !this.state.isPanelOpen })}
           />
         </ButtonGroup>
       </PageHeaderControl>
@@ -145,62 +141,48 @@ class Table extends Component {
     }
   };
   
-  handleSearch = text => {
-    this.setState({ searchByTitle: text });
-  }
-
-  handleSort = (sortColumn, ...rest) => {
-    if (this.props.log) {
-      this.props.log('sort')(sortColumn, ...rest);
+  onSearch = text => {
+    this.setState({search: text});
+    if (!text){
+      this.setState({data: this.props.data});
+      return false;
     }
 
-    const sortProperty = sortColumn.property;
-    const { sortDirection } = sortColumn;
-    const newState = {
-      sortColumn: sortProperty,
-      sortColumnDirection: {
-          [sortProperty]: sortDirection,
-      },
-      items: [...this.props.dataTable.items],
-    };
+    let data = [...this.props.data];
+    data = data.filter(item => item.title.includes(text))
+    this.setState({data});
+  }
 
-    // needs to work in both directions
-    newState.items = newState.items.sort((a, b) => {
+  onSort = (sortInfo) => {
+    const {property, sortDirection} = sortInfo;
+    let data = [...this.state.data];
+
+    data = data.sort((a, b) => {
       let val = 0;
 
-      if (a[sortProperty] > b[sortProperty]) {
-        val = 1;
-      }
-      if (a[sortProperty] < b[sortProperty]) {
-        val = -1;
-      }
-
-      if (sortDirection === 'desc') {
-        val *= -1;
-      }
-
+      if (a[property] > b[property]) val = 1;
+      if (a[property] < b[property]) val = -1;
+      if (sortDirection === 'desc') val *= -1;
+    
       return val;
     });
 
-    this.setState(newState);
+    this.setState({data, sortProperty: property, sortDirection });
+  };
+
+  resetTable = () => {
+    this.setState({
+      data: this.props.data,
+      sortProperty: '',
+      sortDirection: '',
+      search: '',
+      isPanelOpen: false
+    })
   };
 
   render() {
-
-    let filtered = this.props.dataTable.items && this.props.dataTable.items.filter(e => {
-      if(e && e.title)
-        return e.title.toLowerCase().indexOf(this.state.searchByTitle.toLowerCase()) !== -1
-      else
-        return [];
-    });
-
     return (
-      <div
-        style={{
-          width: '100%',
-          marginTop: '90px',  
-        }}
-      >
+      <Container>
         <IconSettings iconPath="/assets/icons">
           {this.state.editModalIsOPen && <Modal data={this.props.dataTable.item} title='Edit row' toggleOpen={this.toggleOpen} />}
           {this.props.dataTable.isDeletePromptOpen && <Prompt />}
@@ -213,39 +195,16 @@ class Table extends Component {
                 name="lead"
               />
             }
-            info={`${this.props.dataTable.items.length} ${this.props.dataTable.items.length === 1 ? 'item' : 'items'}`}
+            info={`${this.state.data.length} ${this.state.data.length === 1 ? 'item' : 'items'}`}
             joined
-            label="Leads"
             onRenderControls={this.controls}
-            title={
-              <h1 className="slds-page-header__title slds-p-right_x-small">
-                <Dropdown
-                  options={[
-                    { label: 'Menu Item One', value: 'A0' },
-                    { label: 'Menu Item Two', value: 'B0' },
-                    { label: 'Menu Item Three', value: 'C0' },
-                    { type: 'divider' },
-                    { label: 'Menu Item Four', value: 'D0' },
-                  ]}
-                >
-                  <DropdownTrigger>
-                    <Button
-                      className="slds-button_reset slds-type-focus"
-                      iconCategory="utility"
-                      iconName="down"
-                      iconPosition="right"
-                      label="Sales view"
-                      responsive
-                      variant="base"
-                    />
-                  </DropdownTrigger>
-                </Dropdown>
-              </h1>
-            }
+            title={<h1>Activities</h1>}
             truncate
             variant="object-home"
           />
-          {this.state.isPanelOpen && <Panel searchByTitle={this.state.searchByTitle} handleSearch={this.handleSearch} />}
+          {this.state.isPanelOpen && (
+            <Panel label="Search by title" search={this.state.search} handleSearch={(e) => this.onSearch(e)} />
+          )}
           <DataTable
             assistiveText={{
               actionsHeader: 'actions',
@@ -257,54 +216,43 @@ class Table extends Component {
             }}
             fixedHeader
             fixedLayout
-            items={filtered}
-            id="DataTableExample-FixedHeaders"
+            items={this.state.data}
+            id="activitiesTable"
             joined
             onRowChange={this.props.selectItem}
-            onSort={this.handleSort}
+            onSort={this.onSort}
             selection={this.props.dataTable.selection}
             selectRows="checkbox"
           >
-            <DataTableColumn label="Campaign ID" property="campaignId" />
-            <DataTableColumn
-              isSorted={this.state.sortColumn === 'theme'}
-              label="Theme"
-              primaryColumn
-              property="theme"
-              sortable
-              sortDirection={this.state.sortColumnDirection.theme}
-            >
-              <CustomDataTableCell />
-            </DataTableColumn>
             <DataTableColumn label="Program" property="program" />
+            <DataTableColumn label="Campaign ID" property="campaignId" />
             <DataTableColumn label="Title" property="title" />
+            <DataTableColumn label="Tactic" property="tactic" />
             <DataTableColumn label="Format" property="format" />
-            <DataTableColumn label="Persona" property="persona" />
             <DataTableColumn label="Abstract" property="abstract" />
-            { this.props.type === "2" &&
-              <DataTableColumn
-                sortDirection={this.state.sortColumnDirection.region}
-                sortable isSorted={this.state.sortColumn === 'region'}
-                label="Region"
-                property="region"
-              />
-            }
             <DataTableColumn
-              isSorted={this.state.sortColumn === 'startDate'}
+              sortDirection={this.state.sortDirection}
+              sortable
+              isSorted={this.state.sortProperty === 'region'}
+              label="Region"
+              property="region"
+            />
+            <DataTableColumn
+              isSorted={this.state.sortProperty === 'startDate'}
               label="Start date"
               property="startDate"
               sortable
-              sortDirection={this.state.sortColumnDirection.startDate}
+              sortDirection={this.state.sortDirection}
             />
             <DataTableColumn
-              isSorted={this.state.sortColumn === 'endDate'}
+              isSorted={this.state.sortProperty === 'endDate'}
               label="End date"
               property="endDate"
               sortable
-              sortDirection={this.state.sortColumnDirection.endDate}
+              sortDirection={this.state.sortDirection}
             />
-            <DataTableColumn label="Results" property="results" />
             <DataTableColumn label="Assets" property="asset" />
+
             <DataTableRowActions
               options={[
                 {
@@ -323,9 +271,9 @@ class Table extends Component {
               dropdown={<Dropdown length="7" />}
             />
           </DataTable>
-          <PagerContainer>
+          {/* <PagerContainer>
               <Pager />
-          </PagerContainer>
+          </PagerContainer> */}
           {this.state.showToast && (
             <ToastContainer>
               <Toast 
@@ -337,7 +285,7 @@ class Table extends Component {
             </ToastContainer>
           )}
         </IconSettings>
-      </div>
+      </Container>
     );
   }
 }
