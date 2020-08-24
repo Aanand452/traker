@@ -12,7 +12,7 @@ class Server {
   }
 
   start() {
-    dotenv.config();
+    dotenv.config({ path: __dirname  + '/../../db/.env' });
     let options = {
       controllers: __dirname  + '/controllers', 
     };
