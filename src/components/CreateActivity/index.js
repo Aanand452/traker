@@ -147,10 +147,12 @@ class CreateActivity extends Component {
       }
     } else {
       inputs.forEach((input) => {
-        if(this.state.row[input]) {
-          delete errors[input];
-        } else {
+        if(!this.state.row[input]) {
           errors = {...errors, [input]: `Enter ${input === "abstract" ? "an" : "a"} ${input}`};
+        } else if(input === "campaignId" && this.state.row.campaignId.length > 0 && this.state.row.campaignId.length < 18) {
+          errors = {...errors, [input]: "This field must contain 18 characters"};
+        } else {
+          delete errors[input];
         }
       })
     }
@@ -229,14 +231,11 @@ class CreateActivity extends Component {
                 defaultValue={this.state.row.campaignId}
                 id="campaignId"
                 maxLength="18"
-                minLength="18"
-                required
                 errorText={this.state.error.campaignId}
               />
             </div>
             <div className="slds-m-bottom_large slds-col slds-size_1-of-2">
               <Combobox
-                required
                 id="program"
                 events={{onSelect: (event, data) => data.selection.length && this.handleChange("program", data.selection)}}
                 labels={{label: 'Program'}}
@@ -246,12 +245,10 @@ class CreateActivity extends Component {
                 value="program"
                 variant="readonly"
                 errorText={this.state.error.program}
-                
               />
             </div>
             <div className="slds-m-bottom_large slds-col slds-size_1-of-2">
               <Combobox
-                required
                 id="tactic"
                 events={{onSelect: (event, data) => data.selection.length && this.handleChange("tactic", data.selection)}}
                 labels={{label: 'Tactic'}}
@@ -261,12 +258,10 @@ class CreateActivity extends Component {
                 value="tactic"  
                 variant="readonly"
                 errorText={this.state.error.tactic}
-                
               />
             </div>
             <div className="slds-m-bottom_large slds-col slds-size_1-of-2">
               <Combobox
-                required
                 id="format"
                 events={{onSelect: (event, data) => data.selection.length && this.handleChange("format", data.selection)}}
                 labels={{label: 'Format'}}
@@ -276,12 +271,10 @@ class CreateActivity extends Component {
                 value="format"  
                 variant="readonly"
                 errorText={this.state.error.format}
-                
               />
             </div>
             <div className="slds-m-bottom_large slds-col slds-size_1-of-2">
               <Textarea
-                required
                 id="title"
                 label="Title"
                 errorText={this.state.error.title}
@@ -292,7 +285,6 @@ class CreateActivity extends Component {
             </div>
             <div className="slds-m-bottom_large slds-col slds-size_1-of-2">
               <Textarea
-                required
                 id="abstract"
                 label="Abstract"
                 errorText={this.state.error.abstract}
@@ -303,7 +295,6 @@ class CreateActivity extends Component {
             </div>
             <div className="slds-m-bottom_large slds-col slds-size_1-of-2">
               <Combobox
-                required
                 id="region"
                 events={{onSelect: (event, data) => data.selection.length && this.handleChange("region", data.selection)}}
                 labels={{label: 'Region'}}

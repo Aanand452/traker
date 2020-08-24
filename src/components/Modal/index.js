@@ -1,4 +1,4 @@
-import React, { Component, Fragment } from 'react';
+import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import moment from 'moment';
 
@@ -9,8 +9,7 @@ import {
   Combobox,
   Datepicker,
   Input,
-  Textarea,
-  ToastContainer
+  Textarea
 } from '@salesforce/design-system-react';
 
 // ACTIONS
@@ -99,7 +98,6 @@ class ModalComponent extends Component {
   }
 
   handleStartDate = (event, data) => {
-    console.log(event.target.value)
     this.setState({ startDate: data.formattedDate });
   }
 
@@ -326,9 +324,9 @@ class ModalComponent extends Component {
               />
             </div>
             <div className="slds-grid slds-gutters slds-m-bottom_large">
-              <div className="slds-col slds-size_1-of-2">
                 <Datepicker
                   required
+                  triggerClassName="slds-col slds-size_1-of-2"
                   labels={{
                     label: 'Start date',
                   }}
@@ -358,10 +356,9 @@ class ModalComponent extends Component {
                   }}
                   value={this.state.startDate}
                 />
-              </div>
-              <div className="slds-col slds-size_1-of-2">
                 <Datepicker
                   required
+                  triggerClassName="slds-col slds-size_1-of-2"
                   labels={{
                     label: 'End date',
                   }}
@@ -391,7 +388,6 @@ class ModalComponent extends Component {
                   }}
                   value={this.state.endDate}
                 />
-              </div>
             </div>
             <div className="slds-form-element slds-m-bottom_large">
               <label className="slds-form-element__label">

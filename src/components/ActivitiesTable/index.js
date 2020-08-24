@@ -59,7 +59,6 @@ class Table extends Component {
       message: "A new campaign was added successfully",
       variant: "success"
     },
-    // showToast: this.props.location.newRow ? true : false,
     isPanelOpen: false,
     data: [],
     editModalIsOPen: false,
