@@ -30,7 +30,7 @@ paths:
   #FORMS  
   /program:
     get:
-      x-swagger-router-controller: User
+      x-swagger-router-controller: program
       operationId: "getPrograms"
       summary: Returns the list of probrams.
       description: This will be used to populate the insert and update dropdowns
@@ -436,7 +436,7 @@ definitions:
     required: ['theme', 'program', 'title', 'format', 'persona', 'abstract', 'region', 'start_date', 'end_date', 'highlights', 'asset']
   
   ProgramListResponse:
-    description: A list of users.
+    description: A list of programs.
     type: object
     properties:
       result:
@@ -670,10 +670,8 @@ definitions:
         
   Program:
     type: object
-    required:
-      - id
     properties:
-      id:
+      program_id:
         type: string
       name:
         type: string
