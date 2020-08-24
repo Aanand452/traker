@@ -6,7 +6,8 @@
   "private": "true",
   "main": "server.js",
   "scripts": {
-    "start": "node babel-node ./packages/server/src/index.js",
+    "start:local": "yarn build && node ./packages/server/build/index.js",
+    "start": "yarn build && node ./packages/server/build/index.js",
     "test": "yarn lerna run test",
     "build": "yarn lerna run build",
     "watch:dev": "nodemon -L --exec babel-node  ./packages/server/src/index.js"
