@@ -9,7 +9,8 @@ import {
   Combobox,
   Datepicker,
   Input,
-  Textarea
+  Textarea,
+  ToastContainer
 } from '@salesforce/design-system-react';
 
 // ACTIONS
@@ -114,7 +115,7 @@ class ModalComponent extends Component {
     this.setState({[e.target.id]: e.target.value});
   }
 
-  editTable = () => {
+  editTable = async () => {
     let { title, abstract, campaignId } = this.state;
     let errors = {...this.state.errors};
     
@@ -133,21 +134,28 @@ class ModalComponent extends Component {
       this.setState({errors});
       return;
     }
+    try {
+      await fetch('/assets/data/edit_activity.json');
 
-    this.props.editItem(this.props.dataTable.items, {
-      campaignId: this.state.campaignId,
-      program: this.state.programSelection[0] && this.state.programSelection[0].label,
-      format: this.state.formatSelection[0] && this.state.formatSelection[0].label,
-      region: this.state.regionSelection[0] && this.state.regionSelection[0].label,
-      tactic: this.state.tacticSelection[0] && this.state.tacticSelection[0].label,
-      title: this.state.title,
-      abstract: this.state.abstract,
-      startDate: this.state.startDate,
-      endDate: this.state.endDate,
-      asset: this.state.asset,
-      id: this.props.data.id
-    });
-    this.props.toggleOpen();
+      this.props.editItem(this.props.dataTable.items, {
+        campaignId: this.state.campaignId,
+        program: this.state.programSelection[0] && this.state.programSelection[0].label,
+        format: this.state.formatSelection[0] && this.state.formatSelection[0].label,
+        region: this.state.regionSelection[0] && this.state.regionSelection[0].label,
+        tactic: this.state.tacticSelection[0] && this.state.tacticSelection[0].label,
+        title: this.state.title,
+        abstract: this.state.abstract,
+        startDate: this.state.startDate,
+        endDate: this.state.endDate,
+        asset: this.state.asset,
+        id: this.props.data.id
+      });
+      this.props.toggleOpen();
+      this.props.onToast(true, "The campaign was edited successfully", "success");
+      
+    } catch (err) {
+      this.props.onToast(true, "Something went wrong, please try again", "error");
+    }
   }
 
   idGenerator = len => {
