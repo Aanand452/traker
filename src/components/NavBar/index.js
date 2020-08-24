@@ -3,16 +3,13 @@ import {
   Icon,
   IconSettings,
   AppLauncher,
-  Popover,
-  GlobalHeader,
-  GlobalHeaderButton,
-  GlobalHeaderProfile,
   GlobalNavigationBar,
   GlobalNavigationBarRegion,
   ProgressBar,
   ScopedNotification,
-  GlobalNavigationBarDropdown
-  
+  GlobalHeaderProfile,
+  GlobalHeader,
+  Popover
 } from '@salesforce/design-system-react';
 
 import { NavContainer } from './styles';
@@ -60,7 +57,7 @@ class NavBar extends Component{
   }
 
   fileUpload = (e) => {
-   this.setState({progress:{active: true}});
+    this.setState({progress:{active: true}});
     console.log(e.target.files)
     let number = 0
     let interval = setInterval(() => {      
@@ -100,45 +97,7 @@ class NavBar extends Component{
     return (
       <NavContainer>
         <IconSettings iconPath="/assets/icons">
-          <GlobalHeader
-            logoSrc='assets/images/logo.svg'
-          >
-            <GlobalHeaderButton onClick={() => this.props.history.push('/home')}>
-              <Icon
-                assistiveText={{ label: 'Add Registry' }}
-                category="utility"
-                name="add"
-                size="x-small"
-              />
-            </GlobalHeaderButton>
-            <GlobalHeaderButton>
-              <label className="slds_cursor-pointer" htmlFor="uploadCSV" id="file-selector-secondary-label">
-                <Icon
-                  assistiveText={{ label: 'Upload CSV' }}
-                  category="utility"
-                  name="upload"
-                  size="x-small"
-                  style={{cursor:'pointer'}}
-                />
-              </label>
-              <input
-                type="file"
-                accept=".csv"
-                id="uploadCSV"
-                onChange={this.fileUpload}
-                className="slds-file-selector__input slds-assistive-text" 
-                aria-labelledby="file-selector-secondary-label"
-              />
-            </GlobalHeaderButton>
-            {/*<GlobalHeaderButton>
-              <Icon
-                assistiveText={{ label: 'Error' }}
-                category="utility"
-                name="error"
-                size="x-small"
-              />
-            </GlobalHeaderButton>
-            */}
+          <GlobalHeader logoSrc='assets/images/logo.svg' >
             <GlobalHeaderProfile 
               popover={
                 <Popover
@@ -147,20 +106,20 @@ class NavBar extends Component{
                 />
             } />
           </GlobalHeader>
-          <GlobalNavigationBar>
-            <GlobalNavigationBarRegion region="primary">
-              <AppLauncher
-                triggerName="SARA"
-              />
-            </GlobalNavigationBarRegion>
-            <GlobalNavigationBarRegion region="secondary" navigation>
-              <NavigationBarLink to="/home" title="Home" />
-              <NavigationBarLink to="/my-view" title="My view" />
-              <NavigationBarLink to="/team-view" title="Team view" />
-              {this.state.tableauUrl !== '/' && <NavigationBarLink title="Go to reports" href={this.state.tableauUrl}/>}
-              
-            </GlobalNavigationBarRegion>
-          </GlobalNavigationBar>
+          {this.props.match.path !== "/home" && (
+            <GlobalNavigationBar>
+              <GlobalNavigationBarRegion region="primary">
+                <AppLauncher triggerName="SARA" />
+              </GlobalNavigationBarRegion>
+              <GlobalNavigationBarRegion region="secondary" navigation>
+                <NavigationBarLink to="/home" title="Home" />
+                <NavigationBarLink to="/my-activities" title="My Activities" />
+                <NavigationBarLink to="/programs-view" title="Programs View" />
+                {this.state.tableauUrl !== '/' && <NavigationBarLink title="Go to reports" href={this.state.tableauUrl}/>}
+                
+              </GlobalNavigationBarRegion>
+            </GlobalNavigationBar>
+          )}
           {this.state.progress.active && <ProgressBar color="success" className="progress-bar" value={this.state.progress.percentage ? this.state.progress.percentage : 0} />}
           {this.state.notification.active && <ScopedNotification
             icon={

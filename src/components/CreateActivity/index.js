@@ -122,7 +122,6 @@ class CreateActivity extends Component {
 
   handleChange = async (value, data) => {
     let newRow = {};
-    console.log(data)
     
     if(value === "tactic") {
       let format = await this.populateTactic(data);
