@@ -5,6 +5,6 @@
   "license": "MIT",
   "scripts": {
     "test": "echo test",
-    "build": "yarn babel src --out-dir build"
+    "build": "rm -fr build && yarn babel --config-file ../../babel.config.js src --out-dir build"
   }
 }
