@@ -20,4 +20,8 @@ export const NavContainer = styled.div`
   > .slds-notification-bar > .slds-media__body {
     flex: inherit;
   }
+
+  & .slds-context-bar__icon-action {
+    display: none;
+  }
 `;

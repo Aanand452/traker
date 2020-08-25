@@ -1,0 +1,37 @@
+{
+  "info": {
+    "status": "Status HTTP Code",
+    "code": 200
+  },
+  "result": [
+    { "id": 1, "label": "Blog", "tactic": "Content" },
+    { "id": 2, "label": "Video", "tactic": "Content" },
+    { "id": 3, "label": "Demo", "tactic": "Content" },
+    { "id": 4, "label": "Report", "tactic": "Content" },
+    { "id": 5, "label": "Infographic", "tactic": "Content" },
+    { "id": 6, "label": "Podcast", "tactic": "Content" },
+    { "id": 7, "label": "Research", "tactic": "Content" },
+    { "id": 8, "label": "Direct Mail", "tactic": "Content" },
+    { "id": 9, "label": "Paid Social", "tactic": "Digital" },
+    { "id": 10, "label": "SEM", "tactic": "Digital" },
+    { "id": 11, "label": "Display", "tactic": "Digital" },
+    { "id": 12, "label": "Email", "tactic": "Digital" },
+    { "id": 13, "label": "Organic Social", "tactic": "Digital" },
+    { "id": 14, "label": "Website", "tactic": "Digital" },
+    { "id": 15, "label": "Rountable", "tactic": "Exec Engagement" },
+    { "id": 16, "label": "SIC", "tactic": "Exec Engagement" },
+    { "id": 17, "label": "Exec Visit", "tactic": "Exec Engagement" },
+    { "id": 18, "label": "Strategic", "tactic": "Event" },
+    { "id": 19, "label": "Virtual", "tactic": "Event" },
+    { "id": 20, "label": "3rd Party", "tactic": "Event" },
+    { "id": 21, "label": "Keynote", "tactic": "Event" },
+    { "id": 22, "label": "Webinar", "tactic": "Webinar" },
+    { "id": 23, "label": "Enablement", "tactic": "Enablement" },
+    { "id": 24, "label": "Films", "tactic": "Customer Stories" },
+    { "id": 25, "label": "Lead Buy", "tactic": "Lead Gen" },
+    { "id": 26, "label": "Data Purchase", "tactic": "Lead Gen" },
+    { "id": 27, "label": "Telenurture", "tactic": "Lead Gen" },
+    { "id": 28, "label": "Email", "tactic": "Lead Gen" },
+    { "id": 29, "label": "3rd Party - Email", "tactic": "Lead Gen" }
+  ]
+}
