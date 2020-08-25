@@ -16,9 +16,7 @@ import {
   Toast
 } from '@salesforce/design-system-react';
 import Panel from '../Panel';
-import Pager from '../Pager';
 import { Container } from './styles';
-// import { PagerContainer } from './styles.js';
 
 const CustomDataTableCell = ({ children, ...props }) => (
   <DataTableCell title={children} {...props}>
@@ -187,9 +185,6 @@ class Table extends Component {
             <DataTableColumn label="Customer Message" property="customerMessage" />
             <DataTableColumn label="Business Goal" property="businessGoal" />
           </DataTable>
-          {/* <PagerContainer>
-              <Pager />
-          </PagerContainer> */}
           {this.state.showToast && (
             <ToastContainer>
               <Toast 

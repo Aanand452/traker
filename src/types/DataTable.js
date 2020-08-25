@@ -6,3 +6,6 @@ export const SELECT_ITEMS = 'SELECT_ITEMS';
 export const RESET_ITEMS = 'RESET_ITEMS';
 export const SET_ITEM = 'SET_ITEM';
 export const EDIT_ITEM = 'EDIT_ITEM';
+export const SET_PAGES = 'SET_PAGES';
+export const SET_CURRENT_PAGE = 'SET_CURRENT_PAGE';
+export const SORT_ITEMS = 'SORT_ITEMS';

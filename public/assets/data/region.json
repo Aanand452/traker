@@ -1,0 +1,13 @@
+{
+  "info": {
+    "status": "Status HTTP Code",
+    "code": 200
+  },
+  "result": [
+    { "id": 1, "label": "ANZ" },
+    { "id": 2, "label": "APAC" },
+    { "id": 3, "label": "ASEAN" },
+    { "id": 4, "label": "IN" },
+    { "id": 5, "label": "GCR" }
+  ]
+}

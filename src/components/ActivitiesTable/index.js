@@ -21,7 +21,6 @@ import {
 
 import Modal from '../Modal';
 import Panel from '../Panel';
-import Pager from '../Pager';
 import Prompt from '../Prompt';
 
 // ACTIONS
@@ -34,7 +33,6 @@ import {
 } from '../../actions/DataTable';
 import { Container } from './styles';
 
-// import { PagerContainer } from './styles.js';
 
 const CustomDataTableCell = ({ children, ...props }) => (
   <DataTableCell title={children} {...props}>
@@ -56,7 +54,11 @@ class Table extends Component {
     sortProperty: '',
     sortDirection: '',
     search: '',
-    showToast: this.props.location.newRow ? true : false,
+    toast: {
+      show: this.props.location.newRow ? true : false,
+      message: "A new campaign was added successfully",
+      variant: "success"
+    },
     isPanelOpen: false,
     data: [],
     editModalIsOPen: false,
@@ -81,7 +83,7 @@ class Table extends Component {
 
   controls = () => (
     <Fragment>
-      {this.props.dataTable.selection.length > 0 ? <PageHeaderControl>
+      {this.props.dataTable.selection.length > 0 && <PageHeaderControl>
         <Button
           onClick={this.props.openDeletePrompt}
           assistiveText={{ icon: 'Delete List' }}
@@ -90,7 +92,7 @@ class Table extends Component {
           iconVariant="border"
           variant="icon"
         />
-      </PageHeaderControl> : null}
+      </PageHeaderControl>}
       <PageHeaderControl>
         <Button
           assistiveText={{ icon: 'Refresh' }}
@@ -141,6 +143,10 @@ class Table extends Component {
     }
   };
   
+  onToast = (show, message, variant) => {
+    this.setState({toast: {show, message, variant}});
+  }
+
   onSearch = text => {
     this.setState({search: text});
     if (!text){
@@ -184,7 +190,7 @@ class Table extends Component {
     return (
       <Container>
         <IconSettings iconPath="/assets/icons">
-          {this.state.editModalIsOPen && <Modal data={this.props.dataTable.item} title='Edit row' toggleOpen={this.toggleOpen} />}
+          {this.state.editModalIsOPen && <Modal data={this.props.dataTable.item} onToast={this.onToast} title='Edit row' toggleOpen={this.toggleOpen} />}
           {this.props.dataTable.isDeletePromptOpen && <Prompt />}
           <PageHeader
             onRenderActions={this.actions}
@@ -271,16 +277,13 @@ class Table extends Component {
               dropdown={<Dropdown length="7" />}
             />
           </DataTable>
-          {/* <PagerContainer>
-              <Pager />
-          </PagerContainer> */}
-          {this.state.showToast && (
+          {this.state.toast.show && (
             <ToastContainer>
               <Toast 
-                labels={{heading: ["A new campaign was added successfully"]}}
-                variant="success"
+                labels={{heading: [this.state.toast.message]}}
+                variant={this.state.toast.variant}
                 duration={5000}
-                onRequestClose={() => this.setState({showToast: false})}
+                onRequestClose={() => this.setState({toast: {show: false}})}
               />
             </ToastContainer>
           )}

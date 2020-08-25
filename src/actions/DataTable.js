@@ -6,7 +6,10 @@ import {
   SELECT_ITEMS,
   RESET_ITEMS,
   SET_ITEM,
-  EDIT_ITEM
+  EDIT_ITEM,
+  SET_PAGES,
+  SET_CURRENT_PAGE,
+  SORT_ITEMS
 } from '../types/DataTable';
 
 export const openDeletePrompt = item => ({
@@ -59,5 +62,30 @@ export const editItem = (items, item) => {
   return {
     type: EDIT_ITEM,
     items: itemsEdited
+  }
+}
+
+export const setCurrentPage = page => {
+  return {
+    type: SET_CURRENT_PAGE,
+    currentPage: page
+  }
+}
+
+export const sortItems = items => {
+  return {
+    type: SORT_ITEMS,
+    items
+  }
+}
+
+export const setPages = (items, limit) => {
+  let pages = [];
+  for(let i = 0; i < Math.ceil(items.length/limit); i++) {
+    pages.push(i+1);
+  }
+  return {
+    type: SET_PAGES,
+    pages
   }
 }
