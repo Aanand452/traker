@@ -18,7 +18,7 @@ class Server {
     };
     
     let swaggerDoc = jsyaml.safeLoad(fs.readFileSync(__dirname  + '/../api.yaml', 'utf8'));
-    let serverPort = process.env.NODE_ENV === 'stable' || process.env.NODE_ENV === 'test' ? 80 : 3000;
+    let serverPort = process.env.NODE_ENV === 'stable' || process.env.NODE_ENV === 'test' ? process.env.PORT : 3000;
 
     swaggerTools.initializeMiddleware(swaggerDoc,  (middleware) => {
       this.app.use(middleware.swaggerMetadata());
