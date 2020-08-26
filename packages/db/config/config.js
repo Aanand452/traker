@@ -9,7 +9,7 @@ module.exports = {
     username: "user",
     password: "pass",
     database: "db",
-    host: process.env.DB_HOST || "postgres",
+    host: "postgres",
     dialect: "postgres"
   },
   test: {

@@ -4,16 +4,10 @@ import config from '../config/config';
 
 let env = process.env.NODE_ENV || 'development'; 
 
-const db = process.env.DB_DB || 'db'
-const username = process.env.DB_USER || config[env].username;
-const password = process.env.DB_PWD || config[env].password
-const host = process.env.DB_HOST || config[env].host
-
-console.log(db, username, password, {
-  dialect: "postgres",
-  port: 5432,
-  host: host || 'postgres'
-});
+const db = config[env].database
+const username = config[env].username;
+const password = config[env].password
+const host = config[env].host
 
 export const sequelize = new Sequelize.Sequelize(db, username, password, {
   dialect: "postgres",
