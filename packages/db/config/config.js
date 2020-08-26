@@ -1,9 +1,5 @@
 const dotenv = require('dotenv');
 
-if(!process.env.PORT) dotenv.config();
-
-console.log(process.env.DB_USER, process.env.DB_PWD, process.env.DB_DB, process.env.DB_HOST);
-
 module.exports = {
   development: {
     username: "user",
