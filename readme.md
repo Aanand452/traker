@@ -48,7 +48,7 @@ run db migration command, this will bring up all the tables required to run te p
 db:migrate
 ```
 
-## Modifing the DB model
+## Modifing the DB model locally
 
 Sometimes is required modify the DB model, for this follow the documentation given in [https://sequelize.org/master/manual/migrations.html](https://sequelize.org/master/manual/migrations.html) , basically the only task you need to run are this 
 
@@ -83,6 +83,22 @@ module.exports = {
   }
 };
 
+```
+
+##  Running db migrations over HEROKU env
+
+Heroku will be used as a cloud service to host this web app, for that, we created 2 environments: one for testing and one for stable. When a change is performed in the database schema a migration might be required to implement these changes over this environments database. To perform these changes please run the nexts commands
+
+make sure you are a colaborator in the heroku app
+
+```
+heroku login
+```
+
+to perform a new migration run this command over you local terminal
+
+```
+heroku run yarn workspace @sara/db db:migrate
 ```
 
 ## Seegin dummy data
