@@ -8,13 +8,18 @@ const db = process.env.DB_DB || 'db'
 const username = process.env.DB_USER || config[env].username;
 const password = process.env.DB_PWD || config[env].password
 const host = process.env.DB_HOST || config[env].host
-let options = {
+
+console.log(db, username, password, {
   dialect: "postgres",
   port: 5432,
   host: host || 'postgres'
-}
+});
 
-export const sequelize = new Sequelize.Sequelize(db, username, password, options);
+export const sequelize = new Sequelize.Sequelize(db, username, password, {
+  dialect: "postgres",
+  port: 5432,
+  host: host || 'postgres'
+});
 
 sequelize.authenticate().then(data => {
   console.info('sucesss');
