@@ -16,8 +16,6 @@ class Server {
     let options = {
       controllers: __dirname  + '/controllers', 
     };
-
-    console.log(options);
     
     let swaggerDoc = jsyaml.safeLoad(fs.readFileSync(__dirname  + '/../api.yaml', 'utf8'));
     let serverPort = process.env.NODE_ENV === 'stable' || process.env.NODE_ENV === 'test' ? process.env.PORT : 3000;
