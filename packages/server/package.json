@@ -4,7 +4,8 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
-    "test": "echo test"
+    "test": "echo test",
+    "build": "rm -fr build && yarn babel --config-file ../../babel.config.stable.js src --out-dir build"
   },
   "dependencies": {
     "@sara/db": "1.0.0",

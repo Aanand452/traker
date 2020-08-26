@@ -9,4 +9,10 @@ const presets = [
   ],
 ];
 
-module.exports = { presets };
+
+module.exports = { 
+  presets,
+  "ignore": [
+    "node_modules"
+  ]
+};
