@@ -1,11 +1,13 @@
 const dotenv = require('dotenv');
 
+if(!process.env.PORT) dotenv.config();
+
 module.exports = {
   development: {
-    username: "user",
-    password: "pass",
-    database: "db",
-    host: "postgres",
+    username: process.env.DB_USER || "user",
+    password: process.env.DB_PWD || "pass",
+    database: process.env.DB_DB || "db",
+    host: process.env.DB_HOST || "postgres",
     dialect: "postgres"
   },
   test: {
