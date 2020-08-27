@@ -16,6 +16,12 @@ This project is built using docker containers to development porpuses, the final
 
 executing the next command will bring up 2 containers will allow run the app, this project uses nodemon to the automatically restart the node server once a change is done in the project.
 
+if it is the firts time run
+```
+yarn && docker-compose up -d && docker-compose logs -f
+```  
+
+if you already had ran the fisrt time command just use
 ```
 docker-compose up -d && docker-compose logs -f
 ```  
