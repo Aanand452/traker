@@ -26,6 +26,12 @@ Program.init({
   timestamps: false
 });
 
+Program.associate = models => {
+  Program.hasMany(models.Format, {
+    foreignKey: 'program_id'
+  });
+}
+
 export default Program;
 
 

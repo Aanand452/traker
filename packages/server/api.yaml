@@ -91,8 +91,31 @@ paths:
             allOf: 
               - $ref: '#/definitions/ResponseStatus'
               - $ref: '#/definitions/Error'
- 
-  #REPORTS
+
+  /login:
+    post:
+      x-swagger-router-controller: user
+      operationId: "doLogin"
+      summary: Returns login ok if the pwd and user match
+      description: Used temporaly for the login endpoint
+      parameters:
+        - name: body
+          in: body
+          schema:
+            $ref: '#/definitions/DoLoginBody'
+      responses:
+        200:
+          description: Success
+          schema:
+            allOf:
+              - $ref: '#/definitions/ResponseStatus'
+
+        default:
+          description: Invalid request.
+          schema:
+            allOf: 
+              - $ref: '#/definitions/ResponseStatus'
+              - $ref: '#/definitions/Error'
 
 #RESPONSES
 definitions:
@@ -141,6 +164,16 @@ definitions:
         required:
           - status
           - code
+  
+  DoLoginBody:
+    description: Body used for creating a new user.
+    type: object
+    properties:
+      username:
+        type: string
+      password:
+        type: string
+        
   
   Error:
     properties:
@@ -192,5 +225,5 @@ schemes: ['http', 'https']
 consumes: ['application/json']
 produces: ['application/json']
 
-host: localhost:8080
+host: localhost:3000
 basePath: /api/v1
