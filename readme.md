@@ -61,7 +61,7 @@ Sometimes is required modify the DB model, for this follow the documentation giv
 create new migration
 
 ```
-db:new-migration
+db:new-migration {migration name here}
 ``` 
 
 this will generate a new file inside of `./packages/db/migrations` that will look like this 
