@@ -4,6 +4,7 @@ import http from 'http';
 import fs from 'fs';
 import jsyaml from 'js-yaml';
 import dotenv from 'dotenv';
+import cors from 'cors';
 
 class Server {
   
@@ -19,6 +20,7 @@ class Server {
     
     let swaggerDoc = jsyaml.safeLoad(fs.readFileSync(__dirname  + '/../api.yaml', 'utf8'));
     let serverPort = process.env.NODE_ENV === 'stable' || process.env.NODE_ENV === 'test' ? process.env.PORT : 3000;
+    process.env.NODE_ENV === 'development' && this.app.use(cors());
 
     swaggerTools.initializeMiddleware(swaggerDoc,  (middleware) => {
       this.app.use(middleware.swaggerMetadata());
