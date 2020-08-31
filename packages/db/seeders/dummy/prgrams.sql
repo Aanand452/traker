@@ -1,7 +1,7 @@
 -- run first the extension
 create extension if not exists  "uuid-ossp";
 
-insert into program (program_id, name, owner) values
+insert into program (program_id, label, owner) values
   (uuid_generate_v4(), 'Salesforce Customer 360', 'miller.gonzalez@salesforce.com'),
   (uuid_generate_v4(), 'Moments Made by Marketing ANZ', 'miller.gonzalez@salesforce.com'),
   (uuid_generate_v4(), 'Moments Made by Marketing IN', 'miller.gonzalez@salesforce.com'),

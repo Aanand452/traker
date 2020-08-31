@@ -199,6 +199,7 @@ paths:
               
   /format:
     get:
+      x-swagger-router-controller: format
       operationId: "getFormats"
       summary: Returns the list of formats.
       description: This will be used to populate the insert and update dropdowns
@@ -211,6 +212,28 @@ paths:
             allOf:
               - $ref: '#/definitions/ResponseStatus'
               - $ref: '#/definitions/FormatListResponse'
+        default:
+          description: Invalid request.
+          schema:
+            allOf: 
+              - $ref: '#/definitions/ResponseStatus'
+              - $ref: '#/definitions/Error'
+
+  /tactic:
+    get:
+      x-swagger-router-controller: tactic
+      operationId: "getTactics"
+      summary: Returns the list of tactics.
+      description: This will be used to populate the insert and update dropdowns
+      produces:
+        - application/json
+      responses:
+        200:
+          description: Success
+          schema:
+            allOf:
+              - $ref: '#/definitions/ResponseStatus'
+              - $ref: '#/definitions/TacticListResponse'
         default:
           description: Invalid request.
           schema:
@@ -502,13 +525,22 @@ definitions:
           $ref: '#/definitions/Industry'
           
   FormatListResponse:
-    description: A list of users.
+    description: A list of formats.
     type: object
     properties:
       result:
         type: array
         items:
           $ref: '#/definitions/Format'
+
+  TacticListResponse:
+    description: A list of tactics.
+    type: object
+    properties:
+      result:
+        type: array
+        items:
+          $ref: '#/definitions/Tactic'
           
   ThemeListResponse:
     description: A list of users.
@@ -667,7 +699,7 @@ definitions:
     properties:
       program_id:
         type: string
-      name:
+      label:
         type: string
         
   Format:
@@ -677,7 +709,17 @@ definitions:
     properties:
       id:
         type: string
-      name:
+      label:
+        type: string
+
+  Tactic:
+    type: object
+    required:
+      - id
+    properties:
+      id:
+        type: string
+      label:
         type: string
         
   Customer360Area:
@@ -727,7 +769,7 @@ definitions:
     properties:
       id:
         type: string
-      name:
+      label:
         type: string
         
   TargetAudience:
@@ -765,5 +807,5 @@ schemes: ['http', 'https']
 consumes: ['application/json']
 produces: ['application/json']
 
-host: localhost:8080
+host: localhost:3000
 basePath: /api/v1

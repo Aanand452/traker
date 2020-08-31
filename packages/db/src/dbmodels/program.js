@@ -10,10 +10,10 @@ Program.init({
     type: DataTypes.STRING,
     field: 'program_id',
   },
-  name: {
+  label: {
     allowNull: false,
     type: DataTypes.STRING,
-    field: 'name',
+    field: 'label',
   },
   owner: {
     allowNull: false,

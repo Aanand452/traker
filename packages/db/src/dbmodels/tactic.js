@@ -10,10 +10,10 @@ Tactic.init({
     type: DataTypes.STRING,
     field: 'tactic_id',
   },
-  name: {
+  label: {
     type: DataTypes.STRING,
     allowNull: false,
-    field: 'name',
+    field: 'label',
   }
 }, {
   tableName: 'tactic',

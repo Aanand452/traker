@@ -10,11 +10,16 @@ Format.init({
     type: DataTypes.STRING,
     field: 'format_id',
   },
-  name: {
+  label: {
     type: DataTypes.STRING,
     allowNull: false,
-    field: 'name',
+    field: 'label',
   },
+  tacticId: {
+    allowNull: false,
+    type: DataTypes.STRING,
+    field: 'tactic_id',
+  }
 }, {
   tableName: 'format',
   sequelize: sequelize,
