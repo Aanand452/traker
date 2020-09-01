@@ -24,7 +24,7 @@ INSERT INTO program (
   program_id,
   name,
   owner,
-  budget,
+  budget, 
   metrics,
   parent_campaign_id,
   target_region,
