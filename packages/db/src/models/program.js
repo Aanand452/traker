@@ -3,9 +3,7 @@ import db from '../dbmodels/';
 class ProgramModel {
   static async getAllPrograms() {
     try{
-      const program = await db.Program.findAll({
-        include: db.User
-      });
+      const program = await db.Program.findAll();
       
       return program;
     } catch (err) {

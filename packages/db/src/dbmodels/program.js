@@ -27,7 +27,11 @@ Program.init({
 });
 
 Program.associate = models => {
-  Program.hasMany(models.User, {foreignKey: 'program_id'});
+  Program.belongsToMany(models.User, { 
+    through: 'program_user',
+    foreignKey: 'program_id'
+  });
+  //Program.hasMany(models.User, {foreignKey: 'program_id'});
 }
 
 export default Program;
