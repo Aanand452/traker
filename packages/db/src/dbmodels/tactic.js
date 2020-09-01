@@ -27,4 +27,8 @@ Tactic.associate = models => {
   });
 }
 
+Tactic.associate = models => {
+  Tactic.belongsTo(models.Program);
+}
+
 export default Tactic;
