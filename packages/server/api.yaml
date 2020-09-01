@@ -284,6 +284,29 @@ paths:
               - $ref: '#/definitions/Error'
  
   #REPORTS
+  /activity:  
+    post:
+      operationId: "createActivity"
+      summary: Create a new activity
+      description: N/A
+      parameters:
+      - name: body
+        in: body
+        schema:
+          $ref: '#/definitions/ActivityCreateBody'
+      responses:
+        200:
+          description: Success
+          schema:
+            allOf:
+              - $ref: '#/definitions/ResponseStatus'
+        default:
+          description: Invalid request.
+          schema:
+            allOf:
+              - $ref: '#/definitions/ResponseStatus'
+              - $ref: '#/definitions/Error'
+
   /mandatory:  
     post:
       operationId: "createMandatory"
@@ -424,6 +447,28 @@ paths:
     
 definitions:
   #RESPONSES
+  ActivityCreateBody:
+    description: Body used for creating a new activity.
+    type: object
+    properties:
+      program:
+        type: string
+      title:
+        type: string
+      format:
+        type: string
+      abstract:
+        type: string
+      region:
+        type: string
+      start_date:
+        type: string
+      end_date:
+        type: string
+      asset:
+        type: string
+    required: ['program', 'title', 'format', 'abstract', 'region', 'start_date', 'end_date', 'asset']
+  
   MandatoryCreateBody:
     description: Body used for creating a new user.
     type: object
