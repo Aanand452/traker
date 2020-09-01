@@ -1,5 +1,5 @@
 import { Model, DataTypes } from 'sequelize';
-import { sequelize } from '../db';
+import { sequelize } from '../connector';
 
 class User extends Model {}
 
@@ -27,7 +27,7 @@ User.init({
 });
 
 User.associate = models => {
-  User.belongsTo(models.Program);
+  User.belongsTo(models.Program, {foreignKey: 'program_id'});
 }
 
 export default User;
