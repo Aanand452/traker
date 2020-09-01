@@ -1,6 +1,6 @@
 swagger: '2.0'
 info:
-  description: App SARA REST API definition
+  description: SARA REST API definition
   version: 1.0.0
   title: SARA (Sales Reporter Applicaltion) REST services
   contact:
@@ -50,69 +50,6 @@ paths:
               - $ref: '#/definitions/ResponseStatus'
               - $ref: '#/definitions/Error'
   
-  /segment:
-    get:
-      operationId: "getSegments"
-      summary: Returns the list of segments.
-      description: This will be used to populate the insert and update dropdowns
-      produces:
-        - application/json
-      responses:
-        200:
-          description: Success
-          schema:
-            allOf:
-              - $ref: '#/definitions/ResponseStatus'
-              - $ref: '#/definitions/SegmentListResponse'
-        default:
-          description: Invalid request.
-          schema:
-            allOf: 
-              - $ref: '#/definitions/ResponseStatus'
-              - $ref: '#/definitions/Error'
-
-  /status:
-    get:
-      operationId: "getStatus"
-      summary: Returns the list of status.
-      description: This will be used to populate the insert and update dropdowns
-      produces:
-        - application/json
-      responses:
-        200:
-          description: Success
-          schema:
-            allOf:
-              - $ref: '#/definitions/ResponseStatus'
-              - $ref: '#/definitions/StatusListResponse'
-        default:
-          description: Invalid request.
-          schema:
-            allOf: 
-              - $ref: '#/definitions/ResponseStatus'
-              - $ref: '#/definitions/Error'
-  
-  /target:
-    get:
-      operationId: "getTargetAudience"
-      summary: Returns the list of targets.
-      description: This will be used to populate the insert and update dropdowns
-      produces:
-        - application/json
-      responses:
-        200:
-          description: Success
-          schema:
-            allOf:
-              - $ref: '#/definitions/ResponseStatus'
-              - $ref: '#/definitions/TargetAudienceListResponse'
-        default:
-          description: Invalid request.
-          schema:
-            allOf: 
-              - $ref: '#/definitions/ResponseStatus'
-              - $ref: '#/definitions/Error'
-  
   /region:
     get:
       operationId: "getRegion"
@@ -133,70 +70,7 @@ paths:
             allOf: 
               - $ref: '#/definitions/ResponseStatus'
               - $ref: '#/definitions/Error'
-  
-  /persona:
-    get:
-      operationId: "getPersons"
-      summary: Returns the list of persons.
-      description: This will be used to populate the insert and update dropdowns
-      produces:
-        - application/json
-      responses:
-        200:
-          description: Success
-          schema:
-            allOf:
-              - $ref: '#/definitions/ResponseStatus'
-              - $ref: '#/definitions/PersonaListResponse'
-        default:
-          description: Invalid request.
-          schema:
-            allOf: 
-              - $ref: '#/definitions/ResponseStatus'
-              - $ref: '#/definitions/Error'
-              
-  /team:
-    get:
-      operationId: "getTeams"
-      summary: Returns the list of teams.
-      description: This will be used to populate the insert and update dropdowns
-      produces:
-        - application/json
-      responses:
-        200:
-          description: Success
-          schema:
-            allOf:
-              - $ref: '#/definitions/ResponseStatus'
-              - $ref: '#/definitions/TeamListResponse'
-        default:
-          description: Invalid request.
-          schema:
-            allOf: 
-              - $ref: '#/definitions/ResponseStatus'
-              - $ref: '#/definitions/Error'
-              
-  /industry:
-    get:
-      operationId: "getIndustries"
-      summary: Returns the list of Industries.
-      description: This will be used to populate the insert and update dropdowns
-      produces:
-        - application/json
-      responses:
-        200:
-          description: Success
-          schema:
-            allOf:
-              - $ref: '#/definitions/ResponseStatus'
-              - $ref: '#/definitions/IndustryListResponse'
-        default:
-          description: Invalid request.
-          schema:
-            allOf: 
-              - $ref: '#/definitions/ResponseStatus'
-              - $ref: '#/definitions/Error'
-              
+                   
   /format:
     get:
       x-swagger-router-controller: format
@@ -240,48 +114,6 @@ paths:
             allOf: 
               - $ref: '#/definitions/ResponseStatus'
               - $ref: '#/definitions/Error'
-  
-  /theme:
-    get:
-      operationId: "geThemes"
-      summary: Returns the list of themes.
-      description: This will be used to populate the insert and update dropdowns
-      produces:
-        - application/json
-      responses:
-        200:
-          description: Success
-          schema:
-            allOf:
-              - $ref: '#/definitions/ResponseStatus'
-              - $ref: '#/definitions/ThemeListResponse'
-        default:
-          description: Invalid request.
-          schema:
-            allOf: 
-              - $ref: '#/definitions/ResponseStatus'
-              - $ref: '#/definitions/Error'
- 
-  /customer-area:
-    get:
-      operationId: "geCustomerAreas"
-      summary: Returns the list of customer 360 areas.
-      description: This will be used to populate the insert and update dropdowns
-      produces:
-        - application/json
-      responses:
-        200:
-          description: Success
-          schema:
-            allOf:
-              - $ref: '#/definitions/ResponseStatus'
-              - $ref: '#/definitions/Customer360AreaListResponse'
-        default:
-          description: Invalid request.
-          schema:
-            allOf: 
-              - $ref: '#/definitions/ResponseStatus'
-              - $ref: '#/definitions/Error'
  
   #REPORTS
   /activity:  
@@ -309,142 +141,30 @@ paths:
 
   /mandatory:  
     post:
-      operationId: "createMandatory"
-      summary: Create a new mandatory
-      description: N/A
+      x-swagger-router-controller: user
+      operationId: "doLogin"
+      summary: Returns login ok if the pwd and user match
+      description: Used temporaly for the login endpoint
       parameters:
-      - name: body
-        in: body
-        schema:
-          $ref: '#/definitions/MandatoryCreateBody'
+        - name: body
+          in: body
+          schema:
+            $ref: '#/definitions/DoLoginBody'
       responses:
         200:
           description: Success
           schema:
             allOf:
               - $ref: '#/definitions/ResponseStatus'
+
         default:
           description: Invalid request.
           schema:
-            allOf:
+            allOf: 
               - $ref: '#/definitions/ResponseStatus'
               - $ref: '#/definitions/Error'
-              
-  /mandatory/{id}:  
-    put:
-      operationId: "updateMandatory"
-      summary: Update mandatory by id given
-      description: N/A
-      parameters:
-      - name: id
-        in: path
-        description: Given the mandatory id the registry can be updated
-        required: true
-        type: string
-      - name: body
-        in: body
-        schema:
-          $ref: '#/definitions/MandatoryCreateBody'
-      responses:
-        200:
-          description: Success
-          schema:
-            allOf:
-              - $ref: '#/definitions/ResponseStatus'
-        404:
-          description: Not found
-          schema:
-            allOf:
-              - $ref: '#/definitions/ResponseStatus'
-        default:
-          description: Invalid request.
-          schema:
-            allOf:
-              - $ref: '#/definitions/ResponseStatus'
-              - $ref: '#/definitions/Error'
-    delete:
-      operationId: "deletMandatory"
-      summary: Delete a mandatory.
-      description: N/A
-      parameters:
-      - name: id
-        in: path
-        description: Given the mandatory id the registry can be deleted
-        required: true
-        type: string
-      responses:
-        202:
-          description: Success
-          schema:
-            allOf:
-              - $ref: '#/definitions/ResponseStatus'
-        default:
-          description: Invalid request.
-          schema:
-            allOf:
-              - $ref: '#/definitions/ResponseStatus'
-              - $ref: '#/definitions/Error'  
-  
-  /mandatory1:
-    get:
-      operationId: "getMandatory1List"
-      summary: List the mandatory 1 list
-      produces:
-        - application/json
-      responses:
-        200:
-          description: Success
-          schema:
-            allOf:
-              - $ref: '#/definitions/ResponseStatus'
-              - $ref: '#/definitions/Mandatory1AreaListResponse'
-        default:
-          description: Invalid request.
-          schema:
-            allOf:
-              - $ref: '#/definitions/ResponseStatus'
-              - $ref: '#/definitions/Error'
-              
-  /mandatory2:
-    get:
-      operationId: "getMandatory2List"
-      summary: List the mandatory 1 list
-      produces:
-        - application/json
-      responses:
-        200:
-          description: Success
-          schema:
-            allOf:
-              - $ref: '#/definitions/ResponseStatus'
-              - $ref: '#/definitions/Mandatory2AreaListResponse'
-        default:
-          description: Invalid request.
-          schema:
-            allOf:
-              - $ref: '#/definitions/ResponseStatus'
-              - $ref: '#/definitions/Error'
-              
-  /mandatory3:
-    get:
-      operationId: "getMandatory3List"
-      summary: List the mandatory 1 list
-      produces:
-        - application/json
-      responses:
-        200:
-          description: Success
-          schema:
-            allOf:
-              - $ref: '#/definitions/ResponseStatus'
-              - $ref: '#/definitions/Mandatory3AreaListResponse'
-        default:
-          description: Invalid request.
-          schema:
-            allOf:
-              - $ref: '#/definitions/ResponseStatus'
-              - $ref: '#/definitions/Error'
-    
+
+#RESPONSES
 definitions:
   #RESPONSES
   ActivityCreateBody:
@@ -468,35 +188,7 @@ definitions:
       asset:
         type: string
     required: ['program', 'title', 'format', 'abstract', 'region', 'start_date', 'end_date', 'asset']
-  
-  MandatoryCreateBody:
-    description: Body used for creating a new user.
-    type: object
-    properties:
-      theme:
-        type: string
-      program:
-        type: string
-      title:
-        type: string
-      format:
-        type: string
-      persona:
-        type: string
-      abstract:
-        type: string
-      region:
-        type: string
-      start_date:
-        type: string
-      end_date:
-        type: string
-      highlights:
-        type: string
-      asset:
-        type: string
-    required: ['theme', 'program', 'title', 'format', 'persona', 'abstract', 'region', 'start_date', 'end_date', 'highlights', 'asset']
-  
+
   ProgramListResponse:
     description: A list of programs.
     type: object
@@ -505,70 +197,7 @@ definitions:
         type: array
         items:
           $ref: '#/definitions/Program'
-    
-  SegmentListResponse:
-    description: A list of users.
-    type: object
-    properties:
-      result:
-        type: array
-        items:
-          $ref: '#/definitions/Segment'
-    
-  StatusListResponse:
-    description: A list of users.
-    type: object
-    properties:
-      result:
-        type: array
-        items:
-          $ref: '#/definitions/Status'
-          
-  TargetAudienceListResponse:
-    description: A list of users.
-    type: object
-    properties:
-      result:
-        type: array
-        items:
-          $ref: '#/definitions/TargetAudience'
-  
-  RegionListResponse:
-    description: A list of users.
-    type: object
-    properties:
-      result:
-        type: array
-        items:
-          $ref: '#/definitions/Region'
-  
-  PersonaListResponse:
-    description: A list of users.
-    type: object
-    properties:
-      result:
-        type: array
-        items:
-          $ref: '#/definitions/Persona'
-          
-  TeamListResponse:
-    description: A list of users.
-    type: object
-    properties:
-      result:
-        type: array
-        items:
-          $ref: '#/definitions/Team'
-          
-  IndustryListResponse:
-    description: A list of users.
-    type: object
-    properties:
-      result:
-        type: array
-        items:
-          $ref: '#/definitions/Industry'
-          
+                    
   FormatListResponse:
     description: A list of formats.
     type: object
@@ -587,51 +216,15 @@ definitions:
         items:
           $ref: '#/definitions/Tactic'
           
-  ThemeListResponse:
+  RegionListResponse:
     description: A list of users.
     type: object
     properties:
       result:
         type: array
         items:
-          $ref: '#/definitions/Theme'
-  
-  Customer360AreaListResponse:
-    description: A list of users.
-    type: object
-    properties:
-      result:
-        type: array
-        items:
-          $ref: '#/definitions/Customer360Area'
-          
-  Mandatory1AreaListResponse:
-    description: A list of users.
-    type: object
-    properties:
-      result:
-        type: array
-        items:
-          $ref: '#/definitions/MandatoryView1'
-  
-  Mandatory2AreaListResponse:
-    description: A list of users.
-    type: object
-    properties:
-      result:
-        type: array
-        items:
-          $ref: '#/definitions/MandatoryView2'
-          
-  Mandatory3AreaListResponse:
-    description: A list of users.
-    type: object
-    properties:
-      result:
-        type: array
-        items:
-          $ref: '#/definitions/MandatoryView3'
-  
+          $ref: '#/definitions/Region'
+
   ResponseStatus:
     type: object
     properties:
@@ -651,6 +244,16 @@ definitions:
           - status
           - code
   
+  DoLoginBody:
+    description: Body used for creating a new user.
+    type: object
+    properties:
+      username:
+        type: string
+      password:
+        type: string
+        
+  
   Error:
     properties:
       message:
@@ -658,87 +261,7 @@ definitions:
     required:
       - message
   
-  #MODELS
-  MandatoryView1:
-    type: object
-    properties:
-      theme:
-        type: string
-      program:
-        type: string
-      title:
-        type: string
-      format:
-        type: string
-      persona:
-        type: string
-      abstract:
-        type: string
-      region:
-        type: string
-      start_date:
-        type: string
-      end_date:
-        type: string
-      highlights:
-        type: string
-      asset:
-        type: string
-  
-  MandatoryView2:
-    type: object
-    properties:
-      businessPlatformChange:
-        type: string
-      program:
-        type: string
-      title:
-        type: string
-      format:
-        type: string
-      persona:
-        type: string
-      abstract:
-        type: string
-      region:
-        type: string
-      start_date:
-        type: string
-      end_date:
-        type: string
-      highlights:
-        type: string
-      asset:
-        type: string
-  
-  MandatoryView3:
-    type: object
-    properties:
-      ia:
-        type: string
-      program:
-        type: string
-      title:
-        type: string
-      format:
-        type: string
-      persona:
-        type: string
-      abstract:
-        type: string
-      region:
-        type: string
-  
-  Theme:
-    type: object
-    required:
-      - id
-    properties:
-      id:
-        type: string
-      name:
-        type: string
-        
+  #MODELS     
   Program:
     type: object
     properties:
@@ -766,47 +289,7 @@ definitions:
         type: string
       label:
         type: string
-        
-  Customer360Area:
-    type: object
-    required:
-      - id
-    properties:
-      id:
-        type: string
-      name:
-        type: string
-        
-  Industry:
-    type: object
-    required:
-      - id
-    properties:
-      id:
-        type: string
-      name:
-        type: string
-        
-  Team:
-    type: object
-    required:
-      - id
-    properties:
-      id:
-        type: string
-      name:
-        type: string
-        
-  Persona:
-    type: object
-    required:
-      - id
-    properties:
-      id:
-        type: string
-      name:
-        type: string
-        
+              
   Region:
     type: object
     required:
@@ -816,17 +299,7 @@ definitions:
         type: string
       label:
         type: string
-        
-  TargetAudience:
-    type: object
-    required:
-      - id
-    properties:
-      id:
-        type: string
-      name:
-        type: string
-  
+
   Status:
     type: object
     required:
@@ -836,17 +309,6 @@ definitions:
         type: string
       name:
         type: string
-  
-  Segment:
-    type: object
-    required:
-      - id
-    properties:
-      id:
-        type: string
-      name:
-        type: string
-  
             
 schemes: ['http', 'https']
 consumes: ['application/json']
