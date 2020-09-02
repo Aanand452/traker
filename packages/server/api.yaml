@@ -145,6 +145,35 @@ paths:
             allOf:
               - $ref: '#/definitions/ResponseStatus'
               - $ref: '#/definitions/Error'
+  
+  /activity/{id}:  
+    put:
+      x-swagger-router-controller: activity
+      operationId: "updateActivity"
+      summary: Update an activity by id
+      description: N/A
+      parameters:
+        - in: path
+          name: id
+          description: ID of activity to update
+          required: true
+          type: string
+        - name: body
+          in: body
+          schema:
+            $ref: '#/definitions/ActivityCreateBody'
+      responses:
+        200:
+          description: Success
+          schema:
+            allOf:
+              - $ref: '#/definitions/ResponseStatus'
+        default:
+          description: Invalid request.
+          schema:
+            allOf:
+              - $ref: '#/definitions/ResponseStatus'
+              - $ref: '#/definitions/Error'
                
   /login:
     post:

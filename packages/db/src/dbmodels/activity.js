@@ -59,6 +59,11 @@ Activity.init({
     allowNull: false,
     type: DataTypes.TEXT,
     field: 'asset',
+  },
+  programId: {
+    allowNull: false,
+    type: DataTypes.TEXT,
+    field: 'program_id',
   }
 }, {
   tableName: 'activity',
