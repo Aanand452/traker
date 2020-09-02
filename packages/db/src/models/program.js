@@ -4,6 +4,9 @@ class ProgramModel {
   static async getAllPrograms() {
     try{
       const program = await db.Program.findAll({attributes: ['program_id', ['name', 'label']]});
+      // const program = await db.Program.findAll({
+      //   include: [db.User, db.Region]
+      // });
       
       return program;
     } catch (err) {
