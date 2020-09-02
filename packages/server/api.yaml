@@ -70,12 +70,18 @@ paths:
             allOf: 
               - $ref: '#/definitions/ResponseStatus'
               - $ref: '#/definitions/Error'
-                   
-  /format:
+
+  /format/{tacticId}:
     get:
       x-swagger-router-controller: format
-      operationId: "getFormats"
-      summary: Returns the list of formats.
+      operationId: "getFilteredFormats"
+      summary: Returns the list of formats filtered by tacticId.
+      parameters:
+        - in: path
+          name: tacticId
+          description: ID of tactic to fetch
+          required: true
+          type: string
       description: This will be used to populate the insert and update dropdowns
       produces:
         - application/json
@@ -118,6 +124,7 @@ paths:
   #REPORTS
   /activity:  
     post:
+      x-swagger-router-controller: activity
       operationId: "createActivity"
       summary: Create a new activity
       description: N/A
@@ -138,8 +145,8 @@ paths:
             allOf:
               - $ref: '#/definitions/ResponseStatus'
               - $ref: '#/definitions/Error'
-
-  /mandatory:  
+               
+  /login:
     post:
       x-swagger-router-controller: user
       operationId: "doLogin"
@@ -166,7 +173,6 @@ paths:
 
 #RESPONSES
 definitions:
-  #RESPONSES
   ActivityCreateBody:
     description: Body used for creating a new activity.
     type: object
@@ -187,7 +193,7 @@ definitions:
         type: string
       asset:
         type: string
-    required: ['program', 'title', 'format', 'abstract', 'region', 'start_date', 'end_date', 'asset']
+    required: ['program', 'title', 'format', 'abstract', 'region', 'start_date', 'end_date']
 
   ProgramListResponse:
     description: A list of programs.
@@ -203,7 +209,7 @@ definitions:
     type: object
     properties:
       result:
-        type: array
+        type: object
         items:
           $ref: '#/definitions/Format'
 
@@ -215,7 +221,7 @@ definitions:
         type: array
         items:
           $ref: '#/definitions/Tactic'
-          
+
   RegionListResponse:
     description: A list of users.
     type: object
