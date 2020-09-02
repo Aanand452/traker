@@ -147,6 +147,31 @@ paths:
               - $ref: '#/definitions/Error'
   
   /activity/{id}:  
+    get:
+      x-swagger-router-controller: activity
+      operationId: "getActivityById"
+      summary: get an activity by id
+      description: N/A
+      parameters:
+        - in: path
+          name: id
+          description: ID of activity to fetch
+          required: true
+          type: string
+      responses:
+        200:
+          description: Success
+          schema:
+            allOf:
+              - $ref: '#/definitions/ResponseStatus'
+              - $ref: '#/definitions/ActivityResponse'
+        default:
+          description: Invalid request.
+          schema:
+            allOf:
+              - $ref: '#/definitions/ResponseStatus'
+              - $ref: '#/definitions/Error'
+    
     put:
       x-swagger-router-controller: activity
       operationId: "updateActivity"
@@ -280,7 +305,15 @@ definitions:
         required:
           - status
           - code
-  
+
+  ActivityResponse:
+    description: Single activity
+    type: object
+    properties:
+      result:
+        $ref: '#/definitions/Activity'
+          
+
   DoLoginBody:
     description: Body used for creating a new user.
     type: object
@@ -299,6 +332,32 @@ definitions:
       - message
   
   #MODELS     
+  Activity:
+    type: object
+    properties:
+      title:
+        type: string
+      campaignId:
+        type: string
+      tacticId:
+        type: string
+      formatId:
+        type: string
+      abstract:
+        type: string
+      regionId:
+        type: string
+      startDate:
+        type: string
+      endDate:
+        type: string
+      asset:
+        type: string
+      userId:
+        type: string
+      programId:
+        type: string
+
   Program:
     type: object
     properties:
