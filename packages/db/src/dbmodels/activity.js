@@ -10,6 +10,11 @@ Activity.init({
     type: DataTypes.STRING,
     field: 'activity_id',
   },
+  userId: {
+    allowNull: false,
+    type: DataTypes.STRING,
+    field: 'user_id',
+  },
   title: {
     allowNull: false,
     type: DataTypes.STRING,
