@@ -18,6 +18,18 @@ class ActivityModel {
       console.error('Error creating activity', err);
     }
   }
+
+  static async getActivityById(id) {
+    try{
+      console.log('activity')
+      const activity = await Activity.findByPk(id);
+      console.log(activity)
+      return activity;
+    } catch (err) {
+      console.error('Error getting activity', err);
+      return 'error';
+    }
+  }
 }
 
 export default ActivityModel;
