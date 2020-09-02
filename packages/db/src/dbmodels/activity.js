@@ -10,6 +10,11 @@ Activity.init({
     type: DataTypes.STRING,
     field: 'activity_id',
   },
+  userId: {
+    allowNull: false,
+    type: DataTypes.STRING,
+    field: 'user_id',
+  },
   title: {
     allowNull: false,
     type: DataTypes.STRING,
@@ -54,6 +59,11 @@ Activity.init({
     allowNull: false,
     type: DataTypes.TEXT,
     field: 'asset',
+  },
+  programId: {
+    allowNull: false,
+    type: DataTypes.TEXT,
+    field: 'program_id',
   }
 }, {
   tableName: 'activity',
