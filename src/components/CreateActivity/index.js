@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { withRouter } from 'react-router-dom';
 import moment from 'moment';
 import {
   IconSettings,
@@ -23,25 +24,19 @@ class CreateActivity extends Component {
       startDate: this.props.startDate,
       endDate: this.props.endDate,
       asset: "",
-      campaignId: "",
-      kpi: []
+      campaignId: ""
     },
     regions: [],
     programs: [],
     tactics: [],
     formats: [],
-    error: {},
-    KPIKey: "",
-    KPIValue: "",
-    editKey: "",
-    editValue: ""
+    error: {}
   };
 
   componentDidMount() {
     this.checkTactic();
     this.checkRegion();
     this.checkProgram();
-    this.checkFormat();
     this.props.getFormData(this.state.row);
   };
 
@@ -52,56 +47,39 @@ class CreateActivity extends Component {
       let regions = result.map(el => el.label);
       this.setState({ regions, row: {...this.state.row, region: this.checkDataModel(this.createModelData(regions), this.props.regionSelection) }});
     } catch(err) {
-      // TODO
-      // A correct error response
-      console.log(err)
+      console.error(err)
     }
   }
 
   async checkProgram() {
     try {
-      let response = await fetch('/assets/data/program.json');
+      let response = await fetch('http://localhost:3000/api/v1/program');
       let { result } = await response.json();
       let programs = result.map(el => el.label);
       this.setState({ programs, row: {...this.state.row, program: this.checkDataModel(this.createModelData(programs), this.props.programSelection) } });
     } catch(err) {
-      // TODO
-      // A correct error response
-      console.log(err)
+      console.error(err)
     }
   }
 
   async checkTactic() {
     try {
-      let response = await fetch('/assets/data/tactic.json');
+      let response = await fetch('http://localhost:3000/api/v1/tactic');
       let { result } = await response.json();
-      let tactics = result.map(el => el.label);
-      this.setState({ tactics, row: {...this.state.row, tactic: this.checkDataModel(this.createModelData(tactics), this.props.tacticSelection) } });
+      let format = await this.populateTactic(result[0]);
+      this.setState({ tactics: result, row: {...this.state.row, tactic: [result[0]], format } });
     } catch(err) {
-      // TODO
-      // A correct error response
-      console.log(err)
+      console.error(err)
     }
   }
 
   async populateTactic(selection) {
-    let response = await fetch('/assets/data/format.json');
-    let { result } = await response.json();
-    // In order to populate, the Format model has a "tactic" property that is filtered in the implementation below.
-    // A better way would be to have a "tactic" id.
-    return result.filter(el => el.tactic === selection[0].label);
-  }
-
-  async checkFormat() {
     try {
-      let response = await fetch('/assets/data/format.json');
+      let response = await fetch(`http://localhost:3000/api/v1/format/${selection.tactic_id}`);
       let { result } = await response.json();
-      let formats = result.filter(el => el.tactic === this.state.row.tactic[0].label).map(e => e.label);
-      this.setState({ formats, row: {...this.state.row, format: this.checkDataModel(this.createModelData(formats), this.props.formatSelection) } });
-    } catch(err) {
-      // TODO
-      // A correct error response
-      console.log(err)
+      return result;
+    } catch (err) {
+      console.error(err);
     }
   }
 
@@ -122,22 +100,23 @@ class CreateActivity extends Component {
 
   handleChange = async (value, data) => {
     let newRow = {};
+    let formats = this.state.formats;
     
     if(value === "tactic") {
-      let format = await this.populateTactic(data);
-      newRow = {...this.state.row, tactic: data, format};
+      formats = await this.populateTactic(data[0]);
+      newRow = {...this.state.row, tactic: data, format: [formats[0]]};
     } else {
       newRow = {...this.state.row, [value]: data};
     }
 
     this.validations(value, data);
-    this.setState({row: newRow})
+    this.setState({row: newRow, formats})
     this.props.getFormData(newRow);
   };
 
   validations = (input, data) => {
     let errors = {...this.state.error};
-    const inputs = ["campaignId", "program", "title", "format", "region", "tactic", "abstract"];
+    const inputs = ["program", "title", "format", "region", "tactic", "abstract"];
 
     if (input) {
       if(inputs.includes(input) && !data) {
@@ -147,12 +126,10 @@ class CreateActivity extends Component {
       }
     } else {
       inputs.forEach((input) => {
-        if(!this.state.row[input]) {
-          errors = {...errors, [input]: `Enter ${input === "abstract" ? "an" : "a"} ${input}`};
-        } else if(input === "campaignId" && this.state.row.campaignId.length > 0 && this.state.row.campaignId.length < 18) {
-          errors = {...errors, [input]: "This field must contain 18 characters"};
-        } else {
+        if(this.state.row[input]) {
           delete errors[input];
+        } else {
+          errors = {...errors, [input]: `Enter ${input === "abstract" ? "an" : "a"} ${input}`};
         }
       })
     }
@@ -161,62 +138,47 @@ class CreateActivity extends Component {
     return errors;
   };
 
-  addKPI = () => {
-    const newRow = {...this.state.row};
-    newRow.kpi = [...newRow.kpi, {key: this.state.KPIKey, value: this.state.KPIValue}];
-    this.setState({
-      row: newRow,
-      KPIKey: "",
-      KPIValue: ""
-    });
-  };
-
-  deleteKPI = (id) => {
-    const newRow = {...this.state.row};
-    newRow.kpi = newRow.kpi.filter((el, index) => id !== index)
-    this.setState({row: newRow});
-  };
-
-  editKPI = (id) => {
-    const newRow = {...this.state.row};
-    newRow.kpi[id] = {key: this.state.editKey, value: this.state.editValue};
-
-    this.setState({
-      row: newRow,
-      editKey: "",
-      editValue: ""
-    });
-  };
-
-  setEditKPI = (id) => {
-    const newRow = {...this.state.row};
-    newRow.kpi[id].edit = true;
-
-    this.setState({
-      row: newRow,
-      editKey: newRow.kpi[id].key,
-      editValue: newRow.kpi[id].value
-    });
-  };
-
-  cancelEdit = () => {
-    const newRow = {...this.state.row};
-    newRow.kpi = newRow.kpi.map(el => ({key: el.key, value: el.value}));
-    
-    this.setState({row: newRow});
-  };
-
   validateSubmit = (e) => {
     e.preventDefault();
     const errors = this.validations();
+    let { abstract, asset, format, endDate, program, region, startDate, tactic, title, campaignId } = this.state.row;
+    let row = {
+      abstract,
+      asset,
+      format: format[0].label,
+      end_date: endDate,
+      program: program[0].label,
+      region: region[0].label,
+      start_date: startDate,
+      tactic: tactic[0].label,
+      title,
+      campaignId
+    }
 
     if (Object.keys(errors).length === 0) {
-      this.props.getFormData(this.state.row);
-      return this.props.handleSubmit(e);
+      this.onSubmit(row);
+      //return this.props.handleSubmit(e);
     }
     
     return false;
   };
+
+  onSubmit = async body => {
+    try {
+      const config = {
+        method: 'POST',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(body)
+      }
+      const response = await fetch('http://localhost:3000/api/v1/activity', config)
+      console.log(response)
+    } catch (err) {
+      console.error(err)
+    }
+  }
 
   render() {
     return (
@@ -231,20 +193,19 @@ class CreateActivity extends Component {
                 defaultValue={this.state.row.campaignId}
                 id="campaignId"
                 maxLength="18"
-                errorText={this.state.error.campaignId}
               />
             </div>
             <div className="slds-m-bottom_large slds-col slds-size_1-of-2">
               <Combobox
-                id="program"
-                events={{onSelect: (event, data) => data.selection.length && this.handleChange("program", data.selection)}}
-                labels={{label: 'Program'}}
-                name="program"
-                options={this.createModelData(this.state.programs)}
-                selection={this.state.row.program}
-                value="program"
+                id="region"
+                events={{onSelect: (event, data) => data.selection.length && this.handleChange("region", data.selection)}}
+                labels={{label: 'Region'}}
+                name="region"
+                options={this.createModelData(this.state.regions)}
+                selection={this.state.row.region}
+                value="region"
                 variant="readonly"
-                errorText={this.state.error.program}
+                errorText={this.state.error.region}
               />
             </div>
             <div className="slds-m-bottom_large slds-col slds-size_1-of-2">
@@ -253,7 +214,7 @@ class CreateActivity extends Component {
                 events={{onSelect: (event, data) => data.selection.length && this.handleChange("tactic", data.selection)}}
                 labels={{label: 'Tactic'}}
                 name="tactic"
-                options={this.createModelData(this.state.tactics)}
+                options={this.state.tactics}
                 selection={this.state.row.tactic}
                 value="tactic"  
                 variant="readonly"
@@ -266,7 +227,7 @@ class CreateActivity extends Component {
                 events={{onSelect: (event, data) => data.selection.length && this.handleChange("format", data.selection)}}
                 labels={{label: 'Format'}}
                 name="format"
-                options={this.createModelData(this.state.formats)}
+                options={this.state.formats}
                 selection={this.state.row.format}
                 value="format"  
                 variant="readonly"
@@ -295,15 +256,15 @@ class CreateActivity extends Component {
             </div>
             <div className="slds-m-bottom_large slds-col slds-size_1-of-2">
               <Combobox
-                id="region"
-                events={{onSelect: (event, data) => data.selection.length && this.handleChange("region", data.selection)}}
-                labels={{label: 'Region'}}
-                name="region"
-                options={this.createModelData(this.state.regions)}
-                selection={this.state.row.region}
-                value="region"
+                id="program"
+                events={{onSelect: (event, data) => data.selection.length && this.handleChange("program", data.selection)}}
+                labels={{label: 'Program'}}
+                name="program"
+                options={this.createModelData(this.state.programs)}
+                selection={this.state.row.program}
+                value="program"
                 variant="readonly"
-                errorText={this.state.error.region}
+                errorText={this.state.error.program}
               />
             </div>
             <div className="slds-m-bottom_large slds-col slds-size_1-of-2">
@@ -332,7 +293,7 @@ class CreateActivity extends Component {
               <Input placeholder="Enter assets" onChange={(event, data) => this.handleChange("asset", data.value)} defaultValue={this.state.row.asset} id="asset" label="Asset"/>
             </div>
             <div className="slds-col slds-size_1-of-1">
-              <Button label="Cancel" />
+              <Button label="Cancel" onClick={() => this.props.history.push('/home')} />
               <Button label="Save" variant="brand" type="submit" />
             </div>
           </form>
@@ -342,4 +303,4 @@ class CreateActivity extends Component {
   };
 };
 
-export default CreateActivity;
+export default withRouter(CreateActivity);
