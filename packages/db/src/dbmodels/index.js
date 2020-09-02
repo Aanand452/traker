@@ -3,6 +3,7 @@ import Format from './format';
 import Program from './program';
 import Tactic from './tactic';
 import User from './user';
+import ProgramUser from './programUser';
 
 let db = {};
 
@@ -18,6 +19,7 @@ db.Format = Format;
 db.Program = Program;
 db.Tactic = Tactic;
 db.User = User;
+db.ProgramUser = ProgramUser;
 
 /**
  * 

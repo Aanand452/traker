@@ -9,7 +9,10 @@ class UserModel {
           username: usr,
           password: pwd
         },
-        include: db.Program
+        include: [
+          { model: db.Program }
+        ],
+        timestamps: false
       });
       
       return user;
