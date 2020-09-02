@@ -11,13 +11,13 @@ const getFormats = async (req, res) => {
   }
 }
 
-const getFilteredFormats = async (req, res) => {
+const getFormatsByTacticId = async (req, res) => {
   try {
-    const formats = await FormatModel.getFilteredFormats(req.swagger.params.tacticId.value);
+    const formats = await FormatModel.getFormatsByTacticId(req.swagger.params.tacticId.value);
     ApiUtils.reposeWithhSuccess(res, formats, httpStatus.OK);
   } catch (err) {
     ApiUtils.responseWithError(res, httpStatus.INTERNAL_SERVER_ERROR, err.toString());
   }
 }
 
-export { getFormats, getFilteredFormats }
+export { getFormats, getFormatsByTacticId }

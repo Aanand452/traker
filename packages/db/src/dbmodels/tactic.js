@@ -1,5 +1,5 @@
 import { Model, DataTypes } from 'sequelize';
-import { sequelize } from '../db';
+import { sequelize } from '../connector';
 
 class Tactic extends Model {}
 

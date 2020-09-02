@@ -1,4 +1,4 @@
-import Program from '../dbmodels/program';
+import db from '../dbmodels/';
 
 class ProgramModel {
   static async getAllPrograms() {

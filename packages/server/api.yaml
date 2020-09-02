@@ -74,7 +74,7 @@ paths:
   /format/{tacticId}:
     get:
       x-swagger-router-controller: format
-      operationId: "getFilteredFormats"
+      operationId: "getFormatsByTacticId"
       summary: Returns the list of formats filtered by tacticId.
       parameters:
         - in: path
@@ -125,7 +125,7 @@ paths:
   /activity:  
     post:
       x-swagger-router-controller: activity
-      operationId: "createActivity"
+      operationId: "addNewActivity"
       summary: Create a new activity
       description: N/A
       parameters:
@@ -177,15 +177,17 @@ definitions:
     description: Body used for creating a new activity.
     type: object
     properties:
-      program:
+      program_id:
         type: string
       title:
         type: string
-      format:
+      format_id:
         type: string
       abstract:
         type: string
-      region:
+      region_id:
+        type: string
+      tactic_id:
         type: string
       start_date:
         type: string
@@ -193,7 +195,7 @@ definitions:
         type: string
       asset:
         type: string
-    required: ['program', 'title', 'format', 'abstract', 'region', 'start_date', 'end_date']
+    required: ['program_id', 'title', 'format_id', 'abstract', 'region_id', 'tactic_id', 'start_date', 'end_date']
 
   ProgramListResponse:
     description: A list of programs.
@@ -209,7 +211,7 @@ definitions:
     type: object
     properties:
       result:
-        type: object
+        type: array
         items:
           $ref: '#/definitions/Format'
 

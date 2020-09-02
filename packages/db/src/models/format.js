@@ -12,7 +12,7 @@ class FormatModel {
     }
   }
 
-  static async getFilteredFormats(tactic_id) {
+  static async getFormatsByTacticId(tactic_id) {
     try {
       const format = await Format.findAll({
         attributes: ['format_id', ['name', 'label']],

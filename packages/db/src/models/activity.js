@@ -1,7 +1,7 @@
 import Activity from '../dbmodels/activity';
 
 class ActivityModel {
-  static async createActivity(body) {
+  static async addNewActivity(body) {
     try{
       const activity = await Activity.create(body);
       return activity;

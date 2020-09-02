@@ -7,6 +7,7 @@
     "test": "echo test",
     "db:init": "yarn sequelize db:create --debug",
     "db:migrate": "yarn sequelize db:migrate --debug",
+    "db:undo-migration": "yarn sequelize db:migrate:undo --debug",
     "db:new-migration": "yarn sequelize migration:generate --name",
     "build": "rm -fr build && yarn babel --config-file ../../babel.config.stable.js src --out-dir build"
   },

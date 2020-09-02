@@ -1,5 +1,5 @@
 import { Model, DataTypes } from 'sequelize';
-import { sequelize } from '../db';
+import { sequelize } from '../connector';
 
 class Program extends Model {}
 
@@ -10,10 +10,10 @@ Program.init({
     type: DataTypes.STRING,
     field: 'program_id',
   },
-  label: {
+  name: {
     allowNull: false,
     type: DataTypes.STRING,
-    field: 'label',
+    field: 'name',
   },
   owner: {
     allowNull: false,
@@ -27,9 +27,11 @@ Program.init({
 });
 
 Program.associate = models => {
-  Program.hasMany(models.Format, {
+  Program.belongsToMany(models.User, { 
+    through: 'program_user',
     foreignKey: 'program_id'
   });
+  //Program.hasMany(models.User, {foreignKey: 'program_id'});
 }
 
 export default Program;

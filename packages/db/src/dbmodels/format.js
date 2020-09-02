@@ -1,5 +1,5 @@
 import { Model, DataTypes } from 'sequelize';
-import { sequelize } from '../db';
+import { sequelize } from '../connector';
 
 class Format extends Model {}
 
@@ -10,10 +10,10 @@ Format.init({
     type: DataTypes.STRING,
     field: 'format_id',
   },
-  label: {
+  name: {
     type: DataTypes.STRING,
     allowNull: false,
-    field: 'label',
+    field: 'name',
   },
   tacticId: {
     allowNull: false,
