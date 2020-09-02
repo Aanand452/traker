@@ -176,7 +176,6 @@ paths:
       x-swagger-router-controller: activity
       operationId: "updateActivity"
       summary: Update an activity by id
-      description: N/A
       parameters:
         - in: path
           name: id
@@ -231,25 +230,28 @@ definitions:
     description: Body used for creating a new activity.
     type: object
     properties:
-      program_id:
-        type: string
       title:
         type: string
-      format_id:
+      campaignId:
+        type: string
+      tacticId:
+        type: string
+      formatId:
         type: string
       abstract:
         type: string
-      region_id:
+      regionId:
         type: string
-      tactic_id:
+      startDate:
         type: string
-      start_date:
-        type: string
-      end_date:
+      endDate:
         type: string
       asset:
         type: string
-    required: ['program_id', 'title', 'format_id', 'abstract', 'region_id', 'tactic_id', 'start_date', 'end_date']
+      userId:
+        type: string
+      programId:
+        type: string
 
   ProgramListResponse:
     description: A list of programs.

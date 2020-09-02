@@ -3,7 +3,6 @@ import httpStatus from 'http-status-codes';
 import ActivityModel from '@sara/db/src/models/activity';
 
 
-
 const addNewActivity = async (req, res) => {  
   try {
     const activities = req.body && await ActivityModel.addNewActivity(req.body)
@@ -15,10 +14,20 @@ const addNewActivity = async (req, res) => {
 
 const updateActivity = async (req, res) => {  
   try {
-    const activities = req.body && await ActivityModel.addNewActivity(req.body)
-    ApiUtils.reposeWithhSuccess(res, activities, httpStatus.OK);
+    var activityId = req.swagger.params.id.value;
+    var body = req.body
+    
+    const activityToCheck = await ActivityModel.getActivityById(activityId)
+    if(!activityToCheck) {
+      ApiUtils.reposeWithhSuccess(res, null, httpStatus.NOT_FOUND);
+    } else {
+      const activity = await ActivityModel.updateActivity(activityId, body);
+      
+      if(activity === 'error') ApiUtils.responseWithError(res, httpStatus.INTERNAL_SERVER_ERROR);
+      else ApiUtils.reposeWithhSuccess(res, activity, httpStatus.OK);
+    }    
   } catch (err) {
-    ApiUtils.responseWithError(res, httpStatus.INTERNAL_SERVER_ERROR, err.toString());
+    ApiUtils.responseWithError(res, httpStatus.INTERNAL_SERVER_ERROR, err);
   }
 }
 

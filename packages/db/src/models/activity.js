@@ -1,4 +1,5 @@
 import Activity from '../dbmodels/activity';
+import db from '../dbmodels/';
 
 class ActivityModel {
   static async addNewActivity(body) {
@@ -10,20 +11,25 @@ class ActivityModel {
     }
   }
 
-  static async updateActivity(body) {
+  static async updateActivity(id, body) {
     try{
-      const activity = await Activity.create(body);
-      return activity;
+      await db.Activity.update(body, {
+        where: {
+          activity_id: id
+        }
+      });
+
+      return await db.Activity.findByPk(id);
     } catch (err) {
-      console.error('Error creating activity', err);
+      console.error('Error updating an activity', err);
+      return 'error';
     }
   }
 
   static async getActivityById(id) {
     try{
-      console.log('activity')
-      const activity = await Activity.findByPk(id);
-      console.log(activity)
+      const activity = await db.Activity.findByPk(id);
+
       return activity;
     } catch (err) {
       console.error('Error getting activity', err);
