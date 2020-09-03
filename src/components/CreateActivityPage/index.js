@@ -30,8 +30,7 @@ class CreateActivityPage extends Component {
       abstract: this.state.row.abstract,
       startDate: this.state.row.startDate,
       endDate: this.state.row.endDate,
-      asset: this.state.row.asset,
-      kpi: this.state.row.kpi 
+      asset: this.state.row.asset
     };
 
     try {

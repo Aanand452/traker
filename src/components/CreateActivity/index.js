@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { withRouter } from 'react-router-dom';
 import moment from 'moment';
+import { v4 as uuidv4 } from 'uuid';
 import {
   IconSettings,
   Combobox,
@@ -10,10 +11,13 @@ import {
   Textarea
 } from '@salesforce/design-system-react';
 
+import Prompt from '../Prompt';
+
 import { FormContainer } from './styles';
 
 class CreateActivity extends Component {
   state = {
+    baseURL: 'http://localhost:3000',
     row: {
       format: [],
       region: [],
@@ -21,8 +25,8 @@ class CreateActivity extends Component {
       program: [],
       title: "",
       abstract: "",
-      startDate: this.props.startDate,
-      endDate: this.props.endDate,
+      startDate: "",
+      endDate: "",
       asset: "",
       campaignId: ""
     },
@@ -30,22 +34,40 @@ class CreateActivity extends Component {
     programs: [],
     tactics: [],
     formats: [],
-    error: {}
+    error: {},
+    isDeletePromptOpen: false
   };
 
   componentDidMount() {
+    this.loggedUser();
+    this.getBaseUrl();
     this.checkTactic();
     this.checkRegion();
     this.checkProgram();
     this.props.getFormData(this.state.row);
   };
 
+  async getBaseUrl() {
+    try {
+      let response = await fetch('https://salesforce-sara-client.herokuapp.com/config');
+      let data = await response.json();
+      this.setState({
+        baseURL: data.api
+      });
+    } catch (err) {
+      console.error('ERROR: cannot get the url config: ', err);
+    }
+  }
+
+  loggedUser = () => {
+    localStorage.setItem("userId", "1");
+  }
+
   async checkRegion() {
     try {
-      let response = await fetch('/assets/data/region.json');
+      let response = await fetch(`${this.state.baseURL}/api/v1/region`);
       let { result } = await response.json();
-      let regions = result.map(el => el.label);
-      this.setState({ regions, row: {...this.state.row, region: this.checkDataModel(this.createModelData(regions), this.props.regionSelection) }});
+      this.setState({ regions: result, row: {...this.state.row, region: [result[0]]}});
     } catch(err) {
       console.error(err)
     }
@@ -53,10 +75,9 @@ class CreateActivity extends Component {
 
   async checkProgram() {
     try {
-      let response = await fetch('http://localhost:3000/api/v1/program');
+      let response = await fetch(`${this.state.baseURL}/api/v1/program`);
       let { result } = await response.json();
-      let programs = result.map(el => el.label);
-      this.setState({ programs, row: {...this.state.row, program: this.checkDataModel(this.createModelData(programs), this.props.programSelection) } });
+      this.setState({ programs: result, row: {...this.state.row, program: [result[0]]}});
     } catch(err) {
       console.error(err)
     }
@@ -64,10 +85,10 @@ class CreateActivity extends Component {
 
   async checkTactic() {
     try {
-      let response = await fetch('http://localhost:3000/api/v1/tactic');
+      let response = await fetch(`${this.state.baseURL}/api/v1/tactic`);
       let { result } = await response.json();
       let format = await this.populateTactic(result[0]);
-      this.setState({ tactics: result, row: {...this.state.row, tactic: [result[0]], format } });
+      this.setState({ formats: format, tactics: result, row: {...this.state.row, tactic: [result[0]], format: [format[0]] } });
     } catch(err) {
       console.error(err)
     }
@@ -75,7 +96,7 @@ class CreateActivity extends Component {
 
   async populateTactic(selection) {
     try {
-      let response = await fetch(`http://localhost:3000/api/v1/format/${selection.tactic_id}`);
+      let response = await fetch(`${this.state.baseURL}/api/v1/format/${selection.tactic_id}`);
       let { result } = await response.json();
       return result;
     } catch (err) {
@@ -143,21 +164,23 @@ class CreateActivity extends Component {
     const errors = this.validations();
     let { abstract, asset, format, endDate, program, region, startDate, tactic, title, campaignId } = this.state.row;
     let row = {
+      userId: '1',
       abstract,
       asset,
-      format: format[0].label,
-      end_date: endDate,
-      program: program[0].label,
-      region: region[0].label,
-      start_date: startDate,
-      tactic: tactic[0].label,
+      formatId: format[0].format_id,
+      endDate,
+      programId: program[0].program_id,
+      regionId: region[0].region_id,
+      startDate,
+      tacticId: tactic[0].tactic_id,
       title,
-      campaignId
+      campaignId,
+      activityId: '1'
     }
 
     if (Object.keys(errors).length === 0) {
       this.onSubmit(row);
-      //return this.props.handleSubmit(e);
+      return this.props.handleSubmit(e);
     }
     
     return false;
@@ -173,16 +196,18 @@ class CreateActivity extends Component {
         },
         body: JSON.stringify(body)
       }
-      const response = await fetch('http://localhost:3000/api/v1/activity', config)
+      const response = await fetch(`http://localhost:3000/api/v1/activity`, config);
       console.log(response)
     } catch (err) {
-      console.error(err)
+      this.setState({isDeletePromptOpen: true});
+      console.error(err);
     }
   }
 
   render() {
     return (
       <IconSettings iconPath="assets/icons">
+        {this.state.isDeletePromptOpen && <Prompt closeErrorHandler={() => this.setState({isDeletePromptOpen: false})} error={true} message='Interval server error' title='Error' />}
         <FormContainer>
           <form className="slds-grid slds-wrap" onSubmit={e => this.validateSubmit(e)}>
             <div className="slds-m-bottom_large slds-col slds-size_1-of-2">
@@ -201,7 +226,7 @@ class CreateActivity extends Component {
                 events={{onSelect: (event, data) => data.selection.length && this.handleChange("region", data.selection)}}
                 labels={{label: 'Region'}}
                 name="region"
-                options={this.createModelData(this.state.regions)}
+                options={this.state.regions}
                 selection={this.state.row.region}
                 value="region"
                 variant="readonly"
@@ -260,7 +285,7 @@ class CreateActivity extends Component {
                 events={{onSelect: (event, data) => data.selection.length && this.handleChange("program", data.selection)}}
                 labels={{label: 'Program'}}
                 name="program"
-                options={this.createModelData(this.state.programs)}
+                options={this.state.programs}
                 selection={this.state.row.program}
                 value="program"
                 variant="readonly"

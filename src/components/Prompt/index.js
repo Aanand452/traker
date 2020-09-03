@@ -21,23 +21,28 @@ class Prompt extends Component {
 		return (
       <Modal
         isOpen={true}
-        onRequestClose={this.props.closeDeletePrompt}
+        onRequestClose={this.props.closeErrorHandler ? this.props.closeErrorHandler : this.props.closeDeletePrompt}
       >
         <div className="slds-m-around_medium slds-text-align_center">
-          <h2 className="slds-m-bottom_medium slds-text-color_destructive slds-text-heading_large">Warning!</h2>
-          <p>Are you sure you want to delete this activity?</p>
+          <h2 className="slds-m-bottom_medium slds-text-color_destructive slds-text-heading_large">{this.props.title ? this.props.title :'Warning!'}</h2>
+          <p>{this.props.message ? this.props.message :'Are you sure you want to delete this activity?'}</p>
           <div className="slds-m-top_x-large">
             <Button
               key="promptBtn"
               label="Cancel"
-              onClick={this.props.closeDeletePrompt}
+              onClick={this.props.closeErrorHandler ? this.props.closeErrorHandler : this.props.closeDeletePrompt}
             />
-            <Button
-            variant="brand"
-            key="promptBtn"
-            label="Delete"
-            onClick={() => this.props.handleDeleteSelection(items, item, selection)}
-          />
+            {
+              !this.props.closeErrorHandler && (
+                <Button
+                  variant="brand"
+                  key="promptBtn"
+                  label="Delete"
+                  onClick={() => this.props.handleDeleteSelection(items, item, selection)}
+                />
+              )
+            }
+            
           </div>
         </div>
       </Modal>

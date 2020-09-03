@@ -90,7 +90,10 @@ module.exports = function (app, config, passport) {
   });
 
   app.get('/config', isAuthenticated, isUserAllowed, (req, res) => {
-    res.send({tablaeu: process.env.TABLAEU || '/' });
+    res.send({
+      tablaeu: process.env.TABLAEU || '/',
+      api: process.env.API || 'http://localhost:3000'
+    });
   });
 
   app.get('/*', isAuthenticated, isUserAllowed, (req, res) => {
