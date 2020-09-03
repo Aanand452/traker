@@ -49,6 +49,28 @@ paths:
             allOf: 
               - $ref: '#/definitions/ResponseStatus'
               - $ref: '#/definitions/Error'
+
+  /activity:
+    get:
+      x-swagger-router-controller: activity
+      operationId: "getActivities"
+      summary: Returns the list of activities.
+      description: This will be used to populate the activities table
+      produces:
+        - application/json
+      responses:
+        200:
+          description: Success
+          schema:
+            allOf:
+              - $ref: '#/definitions/ResponseStatus'
+              - $ref: '#/definitions/ProgramListResponse'
+        default:
+          description: Invalid request.
+          schema:
+            allOf: 
+              - $ref: '#/definitions/ResponseStatus'
+              - $ref: '#/definitions/Error'
   
   /region:
     get:
@@ -264,6 +286,15 @@ definitions:
         type: array
         items:
           $ref: '#/definitions/Program'
+
+  activityListResponse:
+    description: a list of activities.
+    type: object
+    properties:
+      result:
+        type: array
+        items:
+          $ref: '#/definitions/Activity'
                     
   FormatListResponse:
     description: A list of formats.
@@ -369,6 +400,34 @@ definitions:
       program_id:
         type: string
       label:
+        type: string
+
+  Activity:
+    type: object
+    properties:
+      activity_id:
+        type: string
+      title:
+        type: string
+      campaign_id:
+        type: string
+      tactic_id:
+        type: string
+      format_id:
+        type: string
+      abstract:
+        type: string
+      region_id:
+        type: string
+      start_date:
+        type: string
+      end_date:
+        type: string
+      asset:
+        type: string
+      program_id:
+        type: string
+      user_id:
         type: string
         
   Format:

@@ -92,7 +92,7 @@ Program.associate = models => {
     foreignKey: 'program_id'
   });
   //Program.hasMany(models.User, {foreignKey: 'program_id'});
-  Program.belongsTo(models.Region);
+  Program.belongsTo(models.Region, {foreignKey: 'target_region'});
 }
 
 export default Program;

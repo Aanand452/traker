@@ -3,6 +3,16 @@ import db from '../dbmodels/';
 import uuid from 'uuid';
 
 class ActivityModel {
+  static async getAllActivities() {
+    try{
+      const activity = await db.Activity.findAll();
+      
+      return activity;
+    } catch (err) {
+      console.error('Error getting activity list', err);
+    }
+  }
+  
   static async addNewActivity(body) {
     try{
       body.activityId = uuid.v4();
@@ -37,8 +47,6 @@ class ActivityModel {
     } catch (err) {
       console.error('Error getting activity', err);
       return 'error';
-    }
-  }
-}
+import db from '../dbmodels/';
 
 export default ActivityModel;
