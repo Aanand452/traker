@@ -1,9 +1,11 @@
 import Activity from '../dbmodels/activity';
 import db from '../dbmodels/';
+import uuid from 'uuid';
 
 class ActivityModel {
   static async addNewActivity(body) {
     try{
+      body.activityId = uuid.v4();
       const activity = await Activity.create(body);
       return activity;
     } catch (err) {
