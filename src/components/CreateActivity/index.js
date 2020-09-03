@@ -174,8 +174,7 @@ class CreateActivity extends Component {
       startDate,
       tacticId: tactic[0].tactic_id,
       title,
-      campaignId,
-      activityId: '1'
+      campaignId
     }
 
     if (Object.keys(errors).length === 0) {
@@ -197,7 +196,6 @@ class CreateActivity extends Component {
         body: JSON.stringify(body)
       }
       const response = await fetch(`http://localhost:3000/api/v1/activity`, config);
-      console.log(response)
     } catch (err) {
       this.setState({isDeletePromptOpen: true});
       console.error(err);
