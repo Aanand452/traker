@@ -29,20 +29,55 @@ class EditActivityModalComponent extends Component {
     programSelection: [],
     formatSelection: [],
     regionSelection: [],
-    title: this.props.data.title,
-    abstract: this.props.data.abstract,
-    startDate: this.props.data.startDate,
-    endDate: this.props.data.endDate,
-    asset: this.props.data.asset,
-    campaignId: this.props.data.campaignId,
+    activityId: null,
+    title: null,
+    abstract: null,
+    startDate: null,
+    endDate: null,
+    asset: null,
+    campaignId: null,
     errors: {}
-  };
+  }
+
+  constructor(props){
+    super(props);
+
+    this.baseUrl = 'http://localhost:3000/api/v1';
+  }
 
   componentDidMount() {
-    this.baseUrl = 'http://localhost:3000/api/v1'
     this.checkProgram();
     this.checkTactic();
     this.checkRegion();
+
+    this.getActicityById(this.props.data.activityId)
+  }
+
+  getActicityById = async id => {
+    let response = await fetch(`${this.baseUrl}/activity/${id}`);
+    let { result } = await response.json();
+
+    try{
+      var activityProgram = this.state.program.filter(el => el.program_id === result.programId);
+      var activityTactic = this.state.tactic.filter(el => el.tactic_id === result.tacticId);
+      var activityRegion = this.state.region.filter(el => el.region_id === result.regionId);
+
+      this.setState({...this.state,
+        title: result.title,
+        abstract: result.abstract,
+        startDate: result.startDate,
+        endtDate: result.endDate,
+        asset: result.asset,
+        campaignId: result.campaignId,
+        programSelection: activityProgram,
+        tacticSelection: activityTactic,
+        regionSelection: activityRegion,
+      });
+    } catch(err) {
+      console.error(err);
+    }
+
+    
   }
 
   checkTactic = async () => {
@@ -60,8 +95,8 @@ class EditActivityModalComponent extends Component {
     try {
       let response = await fetch(`${this.baseUrl}/program`);
       let { result } = await response.json()
-      let formatSelection = result[0];
-      this.setState({ program: result, formatSelection });
+
+      this.setState({ program: result });
     } catch(err) {
       console.error(err)
     }
@@ -106,7 +141,7 @@ class EditActivityModalComponent extends Component {
   }
 
   editTable = async () => {
-    let { title, abstract, campaignId } = this.state;
+    /*let { title, abstract, campaignId } = this.state;
     let errors = {...this.state.errors};
     
     if(campaignId.length === 0 || campaignId.length < 18) {
@@ -123,16 +158,17 @@ class EditActivityModalComponent extends Component {
       errors = {...errors, abstract: true};
       this.setState({errors});
       return;
-    }
+    }*/
+    
     try {
-      await fetch('/assets/data/edit_activity.json');
+      await fetch(`${this.baseUrl}/activity/${this.state.activityId}`);
 
       this.props.editItem(this.props.dataTable.items, {
         campaignId: this.state.campaignId,
-        program: this.state.programSelection[0] && this.state.programSelection[0].label,
-        format: this.state.formatSelection[0] && this.state.formatSelection[0].label,
-        region: this.state.regionSelection[0] && this.state.regionSelection[0].label,
-        tactic: this.state.tacticSelection[0] && this.state.tacticSelection[0].label,
+        program: this.state.programSelection[0].programId,
+        format: this.state.formatSelection[0].formatId,
+        region: this.state.regionSelection[0].regionId,
+        tactic: this.state.tacticSelection[0].tacticId,
         title: this.state.title,
         abstract: this.state.abstract,
         startDate: this.state.startDate,
@@ -179,6 +215,7 @@ class EditActivityModalComponent extends Component {
                 id="campaignId"
                 label="Campaign ID"
                 placeholder="Placeholder Text"
+                defaultValue={this.state.campaignId}
               />
             </div>
             <div className="slds-form-element slds-m-bottom_large">
@@ -204,7 +241,7 @@ class EditActivityModalComponent extends Component {
               />
             </div>
             <div className="slds-form-element slds-m-bottom_large">
-              <Textarea
+              <Input
                 required
                 id="title"
                 label="Title"
@@ -225,7 +262,6 @@ class EditActivityModalComponent extends Component {
                         : data.selection;
                     
                     this.setState({ tacticSelection: selection });
-                    console.log('MILLER', selection[0].tactic_id);
                     this.checkFormat(selection[0].tactic_id);
                   }
                 }}
