@@ -230,6 +230,8 @@ definitions:
     description: Body used for creating a new activity.
     type: object
     properties:
+      activityId:
+        type: string
       title:
         type: string
       campaignId:

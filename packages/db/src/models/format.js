@@ -9,6 +9,7 @@ class FormatModel {
       return format;
     } catch (err) {
       console.error('Error getting format list', err);
+      return 'error';
     }
   }
 
@@ -21,6 +22,7 @@ class FormatModel {
       return format;
     } catch (err) {
       console.error('Error getting format list', err);
+      return 'error';
     }
   }
 }

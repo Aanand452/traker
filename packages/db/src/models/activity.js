@@ -8,6 +8,7 @@ class ActivityModel {
       return activity;
     } catch (err) {
       console.error('Error creating activity', err);
+      return 'error';
     }
   }
 
