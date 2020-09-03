@@ -52,6 +52,7 @@ paths:
   
   /region:
     get:
+      x-swagger-router-controller: region
       operationId: "getRegion"
       summary: Returns the list of regions.
       description: This will be used to populate the insert and update dropdowns
