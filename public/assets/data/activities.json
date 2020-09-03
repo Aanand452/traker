@@ -5,7 +5,8 @@
   },
   "result": [
     {
-      "program": "Stablise Your Company",
+      "activityId": "9d740a56-ae8a-412d-bdfd-77319940b29d",
+      "program": "Salesforce Customer 360",
       "campaignId": "b34445c752d2",
       "title": "Some title a",
       "tactic": "Content",
@@ -16,6 +17,7 @@
       "endDate": "06/13/2020",
       "asset": "Some asset"
     },{
+      "activityId": "b6578be2-bb9a-4639-8f0d-09ee5beb349f",
       "program": "Stablise Your Company",
       "campaignId": "b34445c752d2",
       "title": "Some title b",

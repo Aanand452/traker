@@ -18,7 +18,7 @@ import {
 } from '../../actions/DataTable';
 
 
-class ModalComponent extends Component {
+class EditActivityModalComponent extends Component {
 
   state = {
     program: [],
@@ -39,61 +39,53 @@ class ModalComponent extends Component {
   };
 
   componentDidMount() {
+    this.baseUrl = 'http://localhost:3000/api/v1'
     this.checkProgram();
     this.checkTactic();
-    this.checkFormat();
     this.checkRegion();
   }
 
   checkTactic = async () => {
     try {
-      let response = await fetch('/assets/data/tactic.json');
-      let { result } = await response.json()
-      let tacticSelection = result.filter(el => el.label === this.props.data.tactic);
-      this.setState({ tacticSelection, tactic: result });
+      let response = await fetch(`${this.baseUrl}/tactic`);
+      let { result } = await response.json(); 
+      this.setState({ tactic: result });
+      this.checkFormat(result[0].tactic_id);
     } catch(err) {
-      console.log(err)
+      console.error(err)
     }
   }
 
   checkProgram = async () => {
     try {
-      let response = await fetch('/assets/data/program.json');
+      let response = await fetch(`${this.baseUrl}/program`);
       let { result } = await response.json()
-      let programSelection = result.filter(el => el.label === this.props.data.program);
-      this.setState({ programSelection, program: result });
+      let formatSelection = result[0];
+      this.setState({ program: result, formatSelection });
     } catch(err) {
-      console.log(err)
+      console.error(err)
     }
   }
 
-  populateTactic = async selection => {
-    let response = await fetch('/assets/data/format.json');
-    let { result } = await response.json();
-    let format = result.filter(el => el.tactic === selection[0].label);
-    this.setState({ tacticSelection: selection, format, formatSelection: [format[0]] });
-  }
-
-  checkFormat = async () => {
+  checkFormat = async (tacticId) => {
     try {
-      let response = await fetch('/assets/data/format.json');
+      let response = await fetch(`${this.baseUrl}/format/${tacticId}`);
       let { result } = await response.json();
-      let format = result.filter(el => el.tactic === this.state.tacticSelection[0].label);
-      let formatSelection = result.filter(el => el.label === this.props.data.format);
-      this.setState({ formatSelection, format });
+      let formatSelection = result[0];
+      
+      this.setState({ format: result, formatSelection });
     } catch(err) {
-      console.log(err)
+      console.error(err)
     }
   }
 
   checkRegion = async () => {
     try {
-      let response = await fetch('/assets/data/region.json');
-      let { result } = await response.json()
-      let regionSelection = result.filter(el => el.label === this.props.data.region);
-      this.setState({ regionSelection, region: result });
+      let response = await fetch(`${this.baseUrl}/region`);
+      let { result } = await response.json();
+      this.setState({ region: result });
     } catch(err) {
-      console.log(err)
+      console.error(err)
     }
   }
 
@@ -193,7 +185,6 @@ class ModalComponent extends Component {
                     value={this.state.campaignId}
                     maxLength="18"
                     minLength="18"
-                    required
                     onChange={e => this.handleChange(e)}
                   />
                 </div>
@@ -218,7 +209,6 @@ class ModalComponent extends Component {
                       data.selection.length === 0
                         ? this.state.programSelection
                         : data.selection;
-                    console.log('selected: ', selection[0].label);
                     this.setState({ programSelection: selection });
                   },
                 }}
@@ -252,8 +242,10 @@ class ModalComponent extends Component {
                       data.selection.length === 0
                         ? this.state.tacticSelection
                         : data.selection;
-                    console.log('selected: ', selection[0].label);
-                    this.populateTactic(selection)
+                    
+                    this.setState({ tacticSelection: selection });
+                    console.log('MILLER', selection[0].tactic_id);
+                    this.checkFormat(selection[0].tactic_id);
                   }
                 }}
                 labels={{
@@ -275,7 +267,6 @@ class ModalComponent extends Component {
                       data.selection.length === 0
                         ? this.state.formatSelection
                         : data.selection;
-                    console.log('selected: ', selection[0].label);
                     this.setState({ formatSelection: selection });
                   }
                 }}
@@ -309,7 +300,6 @@ class ModalComponent extends Component {
                       data.selection.length === 0
                         ? this.state.regionSelection
                         : data.selection;
-                    console.log('selected: ', selection[0].label);
                     this.setState({ regionSelection: selection });
                   },
                 }}
@@ -414,4 +404,4 @@ let mapState = ({ dataTable }) => ({
   dataTable
 });
 
-export default connect(mapState, { editItem })(ModalComponent);
+export default connect(mapState, { editItem })(EditActivityModalComponent);

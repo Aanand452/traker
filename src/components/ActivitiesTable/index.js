@@ -19,7 +19,7 @@ import {
   Toast
 } from '@salesforce/design-system-react';
 
-import Modal from '../Modal';
+import Modal from '../EditActivityModal';
 import Panel from '../Panel';
 import Prompt from '../Prompt';
 
