@@ -175,30 +175,11 @@ class EditActivityModalComponent extends Component {
         >
           <section className="slds-p-around_large">
             <div className="slds-form-element slds-m-bottom_large">
-              <div className="slds-form-element__control slds-grid slds-gutters">
-                <div className="slds-col slds-size_11-of-12">
-                  <Input
-                    id="campaignId"
-                    label="Campaign ID"
-                    errorText={(this.state.errors.campaignId && "This field is required") || (this.state.campaignId.length < 18 && "This field must contain 18 characters")}
-                    placeholder="Placeholder Text"
-                    value={this.state.campaignId}
-                    maxLength="18"
-                    minLength="18"
-                    onChange={e => this.handleChange(e)}
-                  />
-                </div>
-                <div className="slds-col slds-size_1-of-12 slds-m-top_large">
-                  <Button
-                    onClick={() => this.setState({campaignId: this.idGenerator(18)})}
-                    assistiveText={{ icon: 'Icon Border-filled medium' }}
-                    iconCategory="utility"
-                    iconName="refresh"
-                    iconVariant="border-filled"
-                    title="Generate new Campaign ID"
-                    variant="icon" />
-                </div>
-              </div>
+              <Input
+                id="campaignId"
+                label="Campaign ID"
+                placeholder="Placeholder Text"
+              />
             </div>
             <div className="slds-form-element slds-m-bottom_large">
               <Combobox
