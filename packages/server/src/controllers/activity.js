@@ -6,7 +6,8 @@ import ActivityModel from '@sara/db/src/models/activity';
 const addNewActivity = async (req, res) => {  
   try {
     const activity = await ActivityModel.addNewActivity(req.body);
-    ApiUtils.reposeWithhSuccess(res, activity, httpStatus.OK);
+    if(activity === 'error') ApiUtils.responseWithError(res, httpStatus.INTERNAL_SERVER_ERROR);
+    else ApiUtils.reposeWithhSuccess(res, activity, httpStatus.OK);
   } catch (err) {
     ApiUtils.responseWithError(res, httpStatus.INTERNAL_SERVER_ERROR, err.toString());
   }
