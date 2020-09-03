@@ -3,7 +3,9 @@ import db from '../dbmodels/';
 class RegionModel {
   static async getAllRegions() {
     try{
-      const region = await db.Region.findAll({});
+      const region = await db.Region.findAll({
+        attributes: ['region_id', ['name', 'label']]
+      });
 
       return region;
     } catch (err) {
