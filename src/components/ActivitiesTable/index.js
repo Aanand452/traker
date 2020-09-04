@@ -1,7 +1,6 @@
 import React, { Component, Fragment } from 'react';
 import { withRouter, Link } from 'react-router-dom';
 import { connect } from 'react-redux';
-
 import {
   Button,
   ButtonGroup,
@@ -22,6 +21,7 @@ import {
 import Modal from '../EditActivityModal';
 import Panel from '../Panel';
 import Prompt from '../Prompt';
+import Pager from '../Pager';
 
 // ACTIONS
 import {
@@ -32,6 +32,7 @@ import {
   setItem
 } from '../../actions/DataTable';
 import { Container } from './styles';
+import { data } from 'autoprefixer';
 
 
 const CustomDataTableCell = ({ children, ...props }) => (
@@ -62,7 +63,7 @@ class Table extends Component {
     isPanelOpen: false,
     data: [],
     editModalIsOPen: false,
-    isDeletePromptOpen: false
+    isDeletePromptOpen: false,
   };
 
   componentDidUpdate(prevProps) {
@@ -130,6 +131,7 @@ class Table extends Component {
   }
 
   handleRowAction = (item, { id }) => {
+    debugger;
     switch(id) {
       case 0:
         this.props.setItem(item);
@@ -230,18 +232,18 @@ class Table extends Component {
             selection={this.props.dataTable.selection}
             selectRows="checkbox"
           >
-            <DataTableColumn label="Program" property="program" />
+            <DataTableColumn label="Program" property="programId" />
             <DataTableColumn label="Campaign ID" property="campaignId" />
             <DataTableColumn label="Title" property="title" />
-            <DataTableColumn label="Tactic" property="tactic" />
-            <DataTableColumn label="Format" property="format" />
+            <DataTableColumn label="Tactic" property="tacticId" />
+            <DataTableColumn label="Format" property="formatId" />
             <DataTableColumn label="Abstract" property="abstract" />
             <DataTableColumn
               sortDirection={this.state.sortDirection}
               sortable
               isSorted={this.state.sortProperty === 'region'}
               label="Region"
-              property="region"
+              property="regionId"
             />
             <DataTableColumn
               isSorted={this.state.sortProperty === 'startDate'}
@@ -277,6 +279,7 @@ class Table extends Component {
               dropdown={<Dropdown length="7" />}
             />
           </DataTable>
+          {/* <Pager data={this.state.data} itemsPerPage={20} /> */}
           {this.state.toast.show && (
             <ToastContainer>
               <Toast 

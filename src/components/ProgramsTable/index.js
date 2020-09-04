@@ -166,12 +166,12 @@ class Table extends Component {
           >
             <DataTableColumn
               label="Program Name"
-              property="programName"
+              property="name"
               sortDirection={this.state.sortDirection}
               sortable
               isSorted={this.state.sortProperty === 'programName'}
             />
-            <DataTableColumn label="Program Owner" property="programOwner" />
+            <DataTableColumn label="Program Owner" property="owner" />
             <DataTableColumn label="Budget" property="budget" />
             <DataTableColumn label="Metrics" property="metrics" />
             <DataTableColumn label="Parent Campaign ID" property="parentCampaignId" />
@@ -185,6 +185,7 @@ class Table extends Component {
             <DataTableColumn label="Customer Message" property="customerMessage" />
             <DataTableColumn label="Business Goal" property="businessGoal" />
           </DataTable>
+          
           {this.state.showToast && (
             <ToastContainer>
               <Toast 

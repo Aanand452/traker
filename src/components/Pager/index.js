@@ -1,46 +1,59 @@
-import React from 'react';
-import { connect } from 'react-redux';
-import {
-  ButtonGroup,
-  Button
-} from '@salesforce/design-system-react';
+import React, { useState, useEffect } from 'react';
+import { ButtonGroup, Button } from '@salesforce/design-system-react';
 
-import { setCurrentPage } from '../../actions/DataTable';
+import { PagerContainer } from './styles';
+import { get } from 'lodash';
 
 const Pager = props => {
-  
-  let { currentPage, pages, limit, items } = props.dataTable;
-  let end = items.length/limit;
+  const { data, itemsPerPage, setDisplayedItems } = props;
 
-  let prevBtn = () => {
-    if(currentPage <= 1) {
-      return
-    }
-    props.setCurrentPage(currentPage - 1);
-  }
+  const [page, setPage] = useState(1);
+  const [pages, setPages] = useState([1]);
 
-  let nextBtn = () => {
-    if(currentPage >= end) {
-      return
+  // let end = items.length/limit;
+
+  // let prevBtn = () => {
+  //   if(currentPage <= 1) {
+  //     return
+  //   }
+  //   props.setCurrentPage(currentPage - 1);
+  // }
+
+  // let nextBtn = () => {
+  //   if(currentPage >= end) {
+  //     return
+  //   }
+  //   props.setCurrentPage(currentPage + 1);
+  // }
+
+  const getPages = () => {
+    const newPage = [];
+
+    for (let i = 0; i < Math.ceil(data.length/itemsPerPage); i++) {
+      newPage.push(i+1);
     }
-    props.setCurrentPage(currentPage + 1);
-  }
+
+    return newPage;
+  };
+
+  useEffect(() => {
+    setPages(getPages);
+  }, [data]);
 
   return (
-    <ButtonGroup>
-      <Button onClick={prevBtn} disabled={!(currentPage > 1)} label="Prev" />
-      {
-        pages.map(el => {
-          return <Button disabled={el === currentPage} onClick={() => props.setCurrentPage(el)} label={el} />
-        })
-      }
-      <Button onClick={nextBtn} disabled={!(currentPage < end)} label="Next" />
-    </ButtonGroup>
-  )
-}
+    <PagerContainer>
+      {(pages.length > 1) && (
+        <ButtonGroup>
+          <Button onClick={() => {}} label="Prev" />
+          {pages.map((el, index) => {
+            console.log(index);
+            return <Button disabled={false} onClick={() => {}} label={el} />
+          })}
+          <Button onClick={() => {}} disabled={false} label="Next" />
+        </ButtonGroup>
+      )}
+    </PagerContainer>
+  );
+};
 
-let mapState = ({ dataTable }) => ({
-  dataTable
-});
-
-export default connect(mapState, { setCurrentPage })(Pager);
+export default Pager;
