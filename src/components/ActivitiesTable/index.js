@@ -32,8 +32,6 @@ import {
   setItem
 } from '../../actions/DataTable';
 import { Container } from './styles';
-import { data } from 'autoprefixer';
-
 
 const CustomDataTableCell = ({ children, ...props }) => (
   <DataTableCell title={children} {...props}>
