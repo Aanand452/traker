@@ -18,6 +18,7 @@ import { FormContainer } from './styles';
 class CreateActivity extends Component {
   state = {
     baseURL: 'http://localhost:3000',
+    loggedUser: '',
     row: {
       format: [],
       region: [],
@@ -39,13 +40,17 @@ class CreateActivity extends Component {
   };
 
   componentDidMount() {
-    this.loggedUser();
-    this.getBaseUrl();
+    this.getUser();
     this.checkTactic();
     this.checkRegion();
     this.checkProgram();
     this.props.getFormData(this.state.row);
   };
+
+  getUser = () => {
+    let loggedUser = localStorage.getItem("userId");
+    this.setState({ loggedUser });
+  }
 
   async getBaseUrl() {
     try {
@@ -57,10 +62,6 @@ class CreateActivity extends Component {
     } catch (err) {
       console.error('ERROR: cannot get the url config: ', err);
     }
-  }
-
-  loggedUser = () => {
-    localStorage.setItem("userId", "1");
   }
 
   async checkRegion() {
@@ -88,6 +89,7 @@ class CreateActivity extends Component {
       let response = await fetch(`${this.state.baseURL}/api/v1/tactic`);
       let { result } = await response.json();
       let format = await this.populateTactic(result[0]);
+      console.log(format)
       this.setState({ formats: format, tactics: result, row: {...this.state.row, tactic: [result[0]], format: [format[0]] } });
     } catch(err) {
       console.error(err)
@@ -162,9 +164,10 @@ class CreateActivity extends Component {
   validateSubmit = (e) => {
     e.preventDefault();
     const errors = this.validations();
+    let { loggedUser } = this.state;
     let { abstract, asset, format, endDate, program, region, startDate, tactic, title, campaignId } = this.state.row;
     let row = {
-      userId: '1',
+      userId: loggedUser,
       abstract,
       asset,
       formatId: format[0].format_id,
@@ -174,8 +177,7 @@ class CreateActivity extends Component {
       startDate,
       tacticId: tactic[0].tactic_id,
       title,
-      campaignId,
-      activityId: '1'
+      campaignId
     }
 
     if (Object.keys(errors).length === 0) {
@@ -197,7 +199,6 @@ class CreateActivity extends Component {
         body: JSON.stringify(body)
       }
       const response = await fetch(`http://localhost:3000/api/v1/activity`, config);
-      console.log(response)
     } catch (err) {
       this.setState({isDeletePromptOpen: true});
       console.error(err);
@@ -205,6 +206,7 @@ class CreateActivity extends Component {
   }
 
   render() {
+    console.log()
     return (
       <IconSettings iconPath="assets/icons">
         {this.state.isDeletePromptOpen && <Prompt closeErrorHandler={() => this.setState({isDeletePromptOpen: false})} error={true} message='Interval server error' title='Error' />}
