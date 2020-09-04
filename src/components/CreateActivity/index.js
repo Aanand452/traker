@@ -49,7 +49,7 @@ class CreateActivity extends Component {
 
   async getBaseUrl() {
     try {
-      let response = await fetch('https://salesforce-sara-client.herokuapp.com/config');
+      let response = await fetch('/config');
       let data = await response.json();
       this.setState({
         baseURL: data.api
