@@ -96,7 +96,7 @@ class Table extends Component {
     }
 
     let data = [...this.props.data];
-    data = data.filter(item => item.programName.includes(text))
+    data = data.filter(item => item.name.includes(text))
     this.setState({data});
   }
 
@@ -175,7 +175,7 @@ class Table extends Component {
               property="name"
               sortDirection={this.state.sortDirection}
               sortable
-              isSorted={this.state.sortProperty === 'programName'}
+              isSorted={this.state.sortProperty === 'name'}
             />
             <DataTableColumn label="Program Owner" property="owner" />
             <DataTableColumn label="Budget" property="budget" />
