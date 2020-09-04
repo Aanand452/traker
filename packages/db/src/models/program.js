@@ -3,7 +3,7 @@ import db from '../dbmodels/';
 class ProgramModel {
   static async getAllPrograms() {
     try{
-      const program = await db.Program.findAll();
+      const program = await db.Program.findAll({attributes: ['program_id', ['name', 'label']]});
       
       return program;
     } catch (err) {

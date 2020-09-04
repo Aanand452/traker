@@ -8,6 +8,7 @@
   ],
   "watch": [
     "./packages/server/src/",
+    "./packages/common/src/",
     "./packages/server/api.yaml",
     "./packages/db/src/",
     "nodemon.json"
