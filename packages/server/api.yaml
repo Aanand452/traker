@@ -49,6 +49,50 @@ paths:
             allOf: 
               - $ref: '#/definitions/ResponseStatus'
               - $ref: '#/definitions/Error'
+
+  /programs:
+    get:
+      x-swagger-router-controller: program
+      operationId: "getProgramsFull"
+      summary: Returns the list of programs.
+      description: This will be used to populate the activity table
+      produces:
+        - application/json
+      responses:
+        200:
+          description: Success
+          schema:
+            allOf:
+              - $ref: '#/definitions/ResponseStatus'
+              - $ref: '#/definitions/ProgramListResponse'
+        default:
+          description: Invalid request.
+          schema:
+            allOf: 
+              - $ref: '#/definitions/ResponseStatus'
+              - $ref: '#/definitions/Error'
+
+  /activities:
+    get:
+      x-swagger-router-controller: activity
+      operationId: "getActivities"
+      summary: Returns the list of activities.
+      description: This will be used to populate the activities table
+      produces:
+        - application/json
+      responses:
+        200:
+          description: Success
+          schema:
+            allOf:
+              - $ref: '#/definitions/ResponseStatus'
+              - $ref: '#/definitions/ProgramListResponse'
+        default:
+          description: Invalid request.
+          schema:
+            allOf: 
+              - $ref: '#/definitions/ResponseStatus'
+              - $ref: '#/definitions/Error'
   
   /region:
     get:
@@ -121,7 +165,7 @@ paths:
             allOf: 
               - $ref: '#/definitions/ResponseStatus'
               - $ref: '#/definitions/Error'
- 
+
   #REPORTS
   /activity:  
     post:
@@ -264,6 +308,15 @@ definitions:
         type: array
         items:
           $ref: '#/definitions/Program'
+
+  activityListResponse:
+    description: a list of activities.
+    type: object
+    properties:
+      result:
+        type: array
+        items:
+          $ref: '#/definitions/Activity'
                     
   FormatListResponse:
     description: A list of formats.

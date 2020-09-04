@@ -8,7 +8,6 @@ import Region from './region';
 
 let db = {};
 
-
 /**
  * 
  * TBD, Implement for logic to pull all models inside of this folder instead one by one
