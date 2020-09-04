@@ -62,6 +62,7 @@ class Table extends Component {
     data: [],
     editModalIsOPen: false,
     isDeletePromptOpen: false,
+    displayedData: [],
   };
 
   componentDidUpdate(prevProps) {
@@ -185,6 +186,10 @@ class Table extends Component {
     })
   };
 
+  handlePagination = (newData) => {
+    this.setState({displayedData: newData});
+  };
+
   render() {
     return (
       <Container>
@@ -200,7 +205,7 @@ class Table extends Component {
                 name="lead"
               />
             }
-            info={`${this.state.data.length} ${this.state.data.length === 1 ? 'item' : 'items'}`}
+            info={`${this.state.displayedData.length} of ${this.state.data.length} ${this.state.data.length === 1 ? 'item' : 'items'}`}
             joined
             onRenderControls={this.controls}
             title={<h1>Activities</h1>}
@@ -221,7 +226,7 @@ class Table extends Component {
             }}
             fixedHeader
             fixedLayout
-            items={this.state.data}
+            items={this.state.displayedData}
             id="activitiesTable"
             joined
             onRowChange={this.props.selectItem}
@@ -276,7 +281,7 @@ class Table extends Component {
               dropdown={<Dropdown length="7" />}
             />
           </DataTable>
-          {/* <Pager data={this.state.data} itemsPerPage={20} /> */}
+          <Pager data={this.state.data} itemsPerPage={20} setDisplayedItems={this.handlePagination} />
           {this.state.toast.show && (
             <ToastContainer>
               <Toast 
