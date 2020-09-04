@@ -39,7 +39,6 @@ class CreateActivity extends Component {
   };
 
   componentDidMount() {
-    this.loggedUser();
     this.getBaseUrl();
     this.checkTactic();
     this.checkRegion();
@@ -57,10 +56,6 @@ class CreateActivity extends Component {
     } catch (err) {
       console.error('ERROR: cannot get the url config: ', err);
     }
-  }
-
-  loggedUser = () => {
-    localStorage.setItem("userId", "1");
   }
 
   async checkRegion() {
