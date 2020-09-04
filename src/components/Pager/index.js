@@ -1,46 +1,71 @@
-import React from 'react';
-import { connect } from 'react-redux';
-import {
-  ButtonGroup,
-  Button
-} from '@salesforce/design-system-react';
+import React, { useState, useEffect } from 'react';
+import { ButtonGroup, Button } from '@salesforce/design-system-react';
 
-import { setCurrentPage } from '../../actions/DataTable';
+import { PagerContainer } from './styles';
 
 const Pager = props => {
-  
-  let { currentPage, pages, limit, items } = props.dataTable;
-  let end = items.length/limit;
+  const { data, itemsPerPage, setDisplayedItems } = props;
 
-  let prevBtn = () => {
-    if(currentPage <= 1) {
-      return
-    }
-    props.setCurrentPage(currentPage - 1);
-  }
+  const [page, setPage] = useState(1);
+  const [pages, setPages] = useState([1]);
 
-  let nextBtn = () => {
-    if(currentPage >= end) {
-      return
+  const getPages = () => {
+    const newPage = [];
+
+    for (let i = 0; i < Math.ceil(data.length/itemsPerPage); i++) {
+      newPage.push(i+1);
     }
-    props.setCurrentPage(currentPage + 1);
-  }
+
+    return newPage;
+  };
+
+  const nextPage = () => {
+    let newPage = 1;
+    if (page+1 <= Math.ceil(data.length/itemsPerPage)) newPage = page+1;
+
+    setPage(newPage);
+    getCurrentData(newPage);
+  };
+
+  const prevPage = () => {
+    let newPage = 1;
+    if (page-1 >= 1) newPage = page-1; 
+
+    setPage(newPage);
+    getCurrentData(newPage);
+  };
+
+  const goToPage = (currentPage) => {
+    setPage(currentPage);
+    getCurrentData(currentPage);
+  };
+
+  const getCurrentData = (currentPage) => {
+    const start = (itemsPerPage*currentPage)-itemsPerPage;
+    const end = (itemsPerPage*currentPage);
+    const newData = data.slice(start, end);
+    
+    setDisplayedItems(newData);
+  };
+
+  useEffect(() => {
+    setPages(getPages);
+    getCurrentData(page);
+  }, [data]);
 
   return (
-    <ButtonGroup>
-      <Button onClick={prevBtn} disabled={!(currentPage > 1)} label="Prev" />
-      {
-        pages.map(el => {
-          return <Button disabled={el === currentPage} onClick={() => props.setCurrentPage(el)} label={el} />
-        })
-      }
-      <Button onClick={nextBtn} disabled={!(currentPage < end)} label="Next" />
-    </ButtonGroup>
-  )
-}
+    <PagerContainer>
+      {(pages.length > 1) && (
+        <ButtonGroup>
+          <Button disabled={page === 1} onClick={prevPage} label="Prev" />
+          {pages.map((el, index) => (
+            <Button className={page === index+1 && 'active'} disabled={page === index+1} onClick={() => goToPage(index+1)} label={el} />
+          ))}
+          <Button onClick={nextPage} disabled={page === Math.ceil(data.length/itemsPerPage)} label="Next" />
+        </ButtonGroup>
+      )}
+    </PagerContainer>
+  );
+};
 
-let mapState = ({ dataTable }) => ({
-  dataTable
-});
-
-export default connect(mapState, { setCurrentPage })(Pager);
+export default Pager;
