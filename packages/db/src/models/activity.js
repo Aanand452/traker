@@ -47,6 +47,8 @@ class ActivityModel {
     } catch (err) {
       console.error('Error getting activity', err);
       return 'error';
-import db from '../dbmodels/';
+    }
+  }
+};
 
 export default ActivityModel;
