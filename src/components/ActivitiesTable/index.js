@@ -129,7 +129,6 @@ class Table extends Component {
   }
 
   handleRowAction = (item, { id }) => {
-    debugger;
     switch(id) {
       case 0:
         this.props.setItem(item);
