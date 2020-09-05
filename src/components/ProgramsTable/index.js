@@ -178,14 +178,32 @@ class Table extends Component {
               isSorted={this.state.sortProperty === 'name'}
             />
             <DataTableColumn label="Program Owner" property="owner" />
-            <DataTableColumn label="Budget" property="budget" />
+            <DataTableColumn 
+              label="Budget"
+              property="budget"
+              sortDirection={this.state.sortDirection}
+              sortable
+              isSorted={this.state.sortProperty === 'budget'}
+            />
             <DataTableColumn label="Metrics" property="metrics" />
             <DataTableColumn label="Parent Campaign ID" property="parentCampaignId" />
-            <DataTableColumn label="Target Region" property="targetRegion" />
+            <DataTableColumn
+              label="Target Region"
+              property="targetRegion"
+              sortDirection={this.state.sortDirection}
+              sortable
+              isSorted={this.state.sortProperty === 'targetRegion'}
+            />
             <DataTableColumn label="Lifecycle Stage" property="lifecycleStage" />
             <DataTableColumn label="APM1" property="apm1" />
             <DataTableColumn label="APM2" property="apm2" />
-            <DataTableColumn label="Industry" property="industry" />
+            <DataTableColumn 
+              label="Industry"
+              property="industry"
+              sortDirection={this.state.sortDirection}
+              sortable
+              isSorted={this.state.sortProperty === 'industry'}
+            />
             <DataTableColumn label="Segment" property="segment" />
             <DataTableColumn label="Persona" property="persona" />
             <DataTableColumn label="Customer Message" property="customerMessage" />
