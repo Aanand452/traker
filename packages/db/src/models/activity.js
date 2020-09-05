@@ -49,6 +49,18 @@ class ActivityModel {
       return 'error';
     }
   }
+
+  static async deleteActivity(id) {
+    try {
+      const activity = await db.Activity.findByPk(id);
+      await activity.destroy();
+
+      return activity;
+    } catch (err) {
+      console.error('Error deleting activity', err);
+      return 'error';
+    }
+  }
 };
 
 export default ActivityModel;

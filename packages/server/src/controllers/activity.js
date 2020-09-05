@@ -1,6 +1,7 @@
 import ApiUtils from '@sara/common/src/api/ApiUtils';
 import httpStatus from 'http-status-codes';
 import ActivityModel from '@sara/db/src/models/activity';
+import Activity from '@sara/db/src/dbmodels/activity';
 
 const getActivities = async (req, res) => {  
   try {
@@ -53,4 +54,15 @@ const getActivityById = async (req, res) => {
   }
 }
 
-export { getActivities, addNewActivity, updateActivity, getActivityById };
+const deleteActivity = async (req, res) => {
+  try {
+    const activityId = req.body.activityId;
+    const request = await ActivityModel.deleteActivity(activityId);
+
+    ApiUtils.reposeWithhSuccess(res, request, httpStatus.OK);
+  } catch (err) {
+    ApiUtils.responseWithError(res, httpStatus.INTERNAL_SERVER_ERROR, err);
+  }
+};
+
+export { getActivities, addNewActivity, updateActivity, getActivityById, deleteActivity };
