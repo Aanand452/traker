@@ -1,6 +1,6 @@
 swagger: '2.0'
 info:
-  description: App SARA REST API definition
+  description: SARA REST API definition
   version: 1.0.0
   title: SARA (Sales Reporter Applicaltion) REST services
   contact:
@@ -49,12 +49,13 @@ paths:
             allOf: 
               - $ref: '#/definitions/ResponseStatus'
               - $ref: '#/definitions/Error'
-  
-  /segment:
+
+  /programs:
     get:
-      operationId: "getSegments"
-      summary: Returns the list of segments.
-      description: This will be used to populate the insert and update dropdowns
+      x-swagger-router-controller: program
+      operationId: "getProgramsFull"
+      summary: Returns the list of programs.
+      description: This will be used to populate the activity table
       produces:
         - application/json
       responses:
@@ -63,7 +64,7 @@ paths:
           schema:
             allOf:
               - $ref: '#/definitions/ResponseStatus'
-              - $ref: '#/definitions/SegmentListResponse'
+              - $ref: '#/definitions/ProgramListResponse'
         default:
           description: Invalid request.
           schema:
@@ -71,11 +72,12 @@ paths:
               - $ref: '#/definitions/ResponseStatus'
               - $ref: '#/definitions/Error'
 
-  /status:
+  /activities:
     get:
-      operationId: "getStatus"
-      summary: Returns the list of status.
-      description: This will be used to populate the insert and update dropdowns
+      x-swagger-router-controller: activity
+      operationId: "getActivities"
+      summary: Returns the list of activities.
+      description: This will be used to populate the activities table
       produces:
         - application/json
       responses:
@@ -84,28 +86,7 @@ paths:
           schema:
             allOf:
               - $ref: '#/definitions/ResponseStatus'
-              - $ref: '#/definitions/StatusListResponse'
-        default:
-          description: Invalid request.
-          schema:
-            allOf: 
-              - $ref: '#/definitions/ResponseStatus'
-              - $ref: '#/definitions/Error'
-  
-  /target:
-    get:
-      operationId: "getTargetAudience"
-      summary: Returns the list of targets.
-      description: This will be used to populate the insert and update dropdowns
-      produces:
-        - application/json
-      responses:
-        200:
-          description: Success
-          schema:
-            allOf:
-              - $ref: '#/definitions/ResponseStatus'
-              - $ref: '#/definitions/TargetAudienceListResponse'
+              - $ref: '#/definitions/ProgramListResponse'
         default:
           description: Invalid request.
           schema:
@@ -115,6 +96,7 @@ paths:
   
   /region:
     get:
+      x-swagger-router-controller: region
       operationId: "getRegion"
       summary: Returns the list of regions.
       description: This will be used to populate the insert and update dropdowns
@@ -133,74 +115,18 @@ paths:
             allOf: 
               - $ref: '#/definitions/ResponseStatus'
               - $ref: '#/definitions/Error'
-  
-  /persona:
+
+  /format/{tacticId}:
     get:
-      operationId: "getPersons"
-      summary: Returns the list of persons.
-      description: This will be used to populate the insert and update dropdowns
-      produces:
-        - application/json
-      responses:
-        200:
-          description: Success
-          schema:
-            allOf:
-              - $ref: '#/definitions/ResponseStatus'
-              - $ref: '#/definitions/PersonaListResponse'
-        default:
-          description: Invalid request.
-          schema:
-            allOf: 
-              - $ref: '#/definitions/ResponseStatus'
-              - $ref: '#/definitions/Error'
-              
-  /team:
-    get:
-      operationId: "getTeams"
-      summary: Returns the list of teams.
-      description: This will be used to populate the insert and update dropdowns
-      produces:
-        - application/json
-      responses:
-        200:
-          description: Success
-          schema:
-            allOf:
-              - $ref: '#/definitions/ResponseStatus'
-              - $ref: '#/definitions/TeamListResponse'
-        default:
-          description: Invalid request.
-          schema:
-            allOf: 
-              - $ref: '#/definitions/ResponseStatus'
-              - $ref: '#/definitions/Error'
-              
-  /industry:
-    get:
-      operationId: "getIndustries"
-      summary: Returns the list of Industries.
-      description: This will be used to populate the insert and update dropdowns
-      produces:
-        - application/json
-      responses:
-        200:
-          description: Success
-          schema:
-            allOf:
-              - $ref: '#/definitions/ResponseStatus'
-              - $ref: '#/definitions/IndustryListResponse'
-        default:
-          description: Invalid request.
-          schema:
-            allOf: 
-              - $ref: '#/definitions/ResponseStatus'
-              - $ref: '#/definitions/Error'
-              
-  /format:
-    get:
-      operationId: "getFormats"
-      summary: Returns the list of formats.
+      x-swagger-router-controller: format
+      operationId: "getFormatsByTacticId"
+      summary: Returns the list of formats filtered by tacticId.
+      parameters:
+        - in: path
+          name: tacticId
+          description: ID of tactic to fetch
+          required: true
+          type: string
       description: This will be used to populate the insert and update dropdowns
       produces:
         - application/json
@@ -217,11 +143,12 @@ paths:
             allOf: 
               - $ref: '#/definitions/ResponseStatus'
               - $ref: '#/definitions/Error'
-  
-  /theme:
+
+  /tactic:
     get:
-      operationId: "geThemes"
-      summary: Returns the list of themes.
+      x-swagger-router-controller: tactic
+      operationId: "getTactics"
+      summary: Returns the list of tactics.
       description: This will be used to populate the insert and update dropdowns
       produces:
         - application/json
@@ -231,46 +158,26 @@ paths:
           schema:
             allOf:
               - $ref: '#/definitions/ResponseStatus'
-              - $ref: '#/definitions/ThemeListResponse'
+              - $ref: '#/definitions/TacticListResponse'
         default:
           description: Invalid request.
           schema:
             allOf: 
               - $ref: '#/definitions/ResponseStatus'
               - $ref: '#/definitions/Error'
- 
-  /customer-area:
-    get:
-      operationId: "geCustomerAreas"
-      summary: Returns the list of customer 360 areas.
-      description: This will be used to populate the insert and update dropdowns
-      produces:
-        - application/json
-      responses:
-        200:
-          description: Success
-          schema:
-            allOf:
-              - $ref: '#/definitions/ResponseStatus'
-              - $ref: '#/definitions/Customer360AreaListResponse'
-        default:
-          description: Invalid request.
-          schema:
-            allOf: 
-              - $ref: '#/definitions/ResponseStatus'
-              - $ref: '#/definitions/Error'
- 
+
   #REPORTS
-  /mandatory:  
+  /activity:  
     post:
-      operationId: "createMandatory"
-      summary: Create a new mandatory
+      x-swagger-router-controller: activity
+      operationId: "addNewActivity"
+      summary: Create a new activity
       description: N/A
       parameters:
       - name: body
         in: body
         schema:
-          $ref: '#/definitions/MandatoryCreateBody'
+          $ref: '#/definitions/ActivityCreateBody'
       responses:
         200:
           description: Success
@@ -283,115 +190,26 @@ paths:
             allOf:
               - $ref: '#/definitions/ResponseStatus'
               - $ref: '#/definitions/Error'
-              
-  /mandatory/{id}:  
-    put:
-      operationId: "updateMandatory"
-      summary: Update mandatory by id given
-      description: N/A
-      parameters:
-      - name: id
-        in: path
-        description: Given the mandatory id the registry can be updated
-        required: true
-        type: string
-      - name: body
-        in: body
-        schema:
-          $ref: '#/definitions/MandatoryCreateBody'
-      responses:
-        200:
-          description: Success
-          schema:
-            allOf:
-              - $ref: '#/definitions/ResponseStatus'
-        404:
-          description: Not found
-          schema:
-            allOf:
-              - $ref: '#/definitions/ResponseStatus'
-        default:
-          description: Invalid request.
-          schema:
-            allOf:
-              - $ref: '#/definitions/ResponseStatus'
-              - $ref: '#/definitions/Error'
-    delete:
-      operationId: "deletMandatory"
-      summary: Delete a mandatory.
-      description: N/A
-      parameters:
-      - name: id
-        in: path
-        description: Given the mandatory id the registry can be deleted
-        required: true
-        type: string
-      responses:
-        202:
-          description: Success
-          schema:
-            allOf:
-              - $ref: '#/definitions/ResponseStatus'
-        default:
-          description: Invalid request.
-          schema:
-            allOf:
-              - $ref: '#/definitions/ResponseStatus'
-              - $ref: '#/definitions/Error'  
   
-  /mandatory1:
+  /activity/{id}:  
     get:
-      operationId: "getMandatory1List"
-      summary: List the mandatory 1 list
-      produces:
-        - application/json
+      x-swagger-router-controller: activity
+      operationId: "getActivityById"
+      summary: get an activity by id
+      description: N/A
+      parameters:
+        - in: path
+          name: id
+          description: ID of activity to fetch
+          required: true
+          type: string
       responses:
         200:
           description: Success
           schema:
             allOf:
               - $ref: '#/definitions/ResponseStatus'
-              - $ref: '#/definitions/Mandatory1AreaListResponse'
-        default:
-          description: Invalid request.
-          schema:
-            allOf:
-              - $ref: '#/definitions/ResponseStatus'
-              - $ref: '#/definitions/Error'
-              
-  /mandatory2:
-    get:
-      operationId: "getMandatory2List"
-      summary: List the mandatory 1 list
-      produces:
-        - application/json
-      responses:
-        200:
-          description: Success
-          schema:
-            allOf:
-              - $ref: '#/definitions/ResponseStatus'
-              - $ref: '#/definitions/Mandatory2AreaListResponse'
-        default:
-          description: Invalid request.
-          schema:
-            allOf:
-              - $ref: '#/definitions/ResponseStatus'
-              - $ref: '#/definitions/Error'
-              
-  /mandatory3:
-    get:
-      operationId: "getMandatory3List"
-      summary: List the mandatory 1 list
-      produces:
-        - application/json
-      responses:
-        200:
-          description: Success
-          schema:
-            allOf:
-              - $ref: '#/definitions/ResponseStatus'
-              - $ref: '#/definitions/Mandatory3AreaListResponse'
+              - $ref: '#/definitions/ActivityResponse'
         default:
           description: Invalid request.
           schema:
@@ -399,36 +217,89 @@ paths:
               - $ref: '#/definitions/ResponseStatus'
               - $ref: '#/definitions/Error'
     
+    put:
+      x-swagger-router-controller: activity
+      operationId: "updateActivity"
+      summary: Update an activity by id
+      parameters:
+        - in: path
+          name: id
+          description: ID of activity to update
+          required: true
+          type: string
+        - name: body
+          in: body
+          schema:
+            $ref: '#/definitions/ActivityCreateBody'
+      responses:
+        200:
+          description: Success
+          schema:
+            allOf:
+              - $ref: '#/definitions/ResponseStatus'
+        default:
+          description: Invalid request.
+          schema:
+            allOf:
+              - $ref: '#/definitions/ResponseStatus'
+              - $ref: '#/definitions/Error'
+               
+  /login:
+    post:
+      x-swagger-router-controller: user
+      operationId: "doLogin"
+      summary: Returns login ok if the pwd and user match
+      description: Used temporaly for the login endpoint
+      parameters:
+        - name: body
+          in: body
+          schema:
+            $ref: '#/definitions/DoLoginBody'
+      responses:
+        200:
+          description: Success
+          schema:
+            allOf:
+              - $ref: '#/definitions/ResponseStatus'
+
+        default:
+          description: Invalid request.
+          schema:
+            allOf: 
+              - $ref: '#/definitions/ResponseStatus'
+              - $ref: '#/definitions/Error'
+
+#RESPONSES
 definitions:
-  #RESPONSES
-  MandatoryCreateBody:
-    description: Body used for creating a new user.
+  ActivityCreateBody:
+    description: Body used for creating a new activity.
     type: object
     properties:
-      theme:
-        type: string
-      program:
+      activityId:
         type: string
       title:
         type: string
-      format:
+      campaignId:
         type: string
-      persona:
+      tacticId:
+        type: string
+      formatId:
         type: string
       abstract:
         type: string
-      region:
+      regionId:
         type: string
-      start_date:
+      startDate:
         type: string
-      end_date:
-        type: string
-      highlights:
+      endDate:
         type: string
       asset:
         type: string
-    required: ['theme', 'program', 'title', 'format', 'persona', 'abstract', 'region', 'start_date', 'end_date', 'highlights', 'asset']
-  
+      userId:
+        type: string
+      programId:
+        type: string
+
   ProgramListResponse:
     description: A list of programs.
     type: object
@@ -437,34 +308,34 @@ definitions:
         type: array
         items:
           $ref: '#/definitions/Program'
-    
-  SegmentListResponse:
-    description: A list of users.
+
+  activityListResponse:
+    description: a list of activities.
     type: object
     properties:
       result:
         type: array
         items:
-          $ref: '#/definitions/Segment'
-    
-  StatusListResponse:
-    description: A list of users.
+          $ref: '#/definitions/Activity'
+                    
+  FormatListResponse:
+    description: A list of formats.
     type: object
     properties:
       result:
         type: array
         items:
-          $ref: '#/definitions/Status'
-          
-  TargetAudienceListResponse:
-    description: A list of users.
+          $ref: '#/definitions/Format'
+
+  TacticListResponse:
+    description: A list of tactics.
     type: object
     properties:
       result:
         type: array
         items:
-          $ref: '#/definitions/TargetAudience'
-  
+          $ref: '#/definitions/Tactic'
+
   RegionListResponse:
     description: A list of users.
     type: object
@@ -473,88 +344,7 @@ definitions:
         type: array
         items:
           $ref: '#/definitions/Region'
-  
-  PersonaListResponse:
-    description: A list of users.
-    type: object
-    properties:
-      result:
-        type: array
-        items:
-          $ref: '#/definitions/Persona'
-          
-  TeamListResponse:
-    description: A list of users.
-    type: object
-    properties:
-      result:
-        type: array
-        items:
-          $ref: '#/definitions/Team'
-          
-  IndustryListResponse:
-    description: A list of users.
-    type: object
-    properties:
-      result:
-        type: array
-        items:
-          $ref: '#/definitions/Industry'
-          
-  FormatListResponse:
-    description: A list of users.
-    type: object
-    properties:
-      result:
-        type: array
-        items:
-          $ref: '#/definitions/Format'
-          
-  ThemeListResponse:
-    description: A list of users.
-    type: object
-    properties:
-      result:
-        type: array
-        items:
-          $ref: '#/definitions/Theme'
-  
-  Customer360AreaListResponse:
-    description: A list of users.
-    type: object
-    properties:
-      result:
-        type: array
-        items:
-          $ref: '#/definitions/Customer360Area'
-          
-  Mandatory1AreaListResponse:
-    description: A list of users.
-    type: object
-    properties:
-      result:
-        type: array
-        items:
-          $ref: '#/definitions/MandatoryView1'
-  
-  Mandatory2AreaListResponse:
-    description: A list of users.
-    type: object
-    properties:
-      result:
-        type: array
-        items:
-          $ref: '#/definitions/MandatoryView2'
-          
-  Mandatory3AreaListResponse:
-    description: A list of users.
-    type: object
-    properties:
-      result:
-        type: array
-        items:
-          $ref: '#/definitions/MandatoryView3'
-  
+
   ResponseStatus:
     type: object
     properties:
@@ -573,6 +363,24 @@ definitions:
         required:
           - status
           - code
+
+  ActivityResponse:
+    description: Single activity
+    type: object
+    properties:
+      result:
+        $ref: '#/definitions/Activity'
+          
+
+  DoLoginBody:
+    description: Body used for creating a new user.
+    type: object
+    properties:
+      username:
+        type: string
+      password:
+        type: string
+        
   
   Error:
     properties:
@@ -581,93 +389,39 @@ definitions:
     required:
       - message
   
-  #MODELS
-  MandatoryView1:
+  #MODELS     
+  Activity:
     type: object
     properties:
-      theme:
-        type: string
-      program:
-        type: string
       title:
         type: string
-      format:
+      campaignId:
         type: string
-      persona:
+      tacticId:
+        type: string
+      formatId:
         type: string
       abstract:
         type: string
-      region:
+      regionId:
         type: string
-      start_date:
+      startDate:
         type: string
-      end_date:
-        type: string
-      highlights:
+      endDate:
         type: string
       asset:
         type: string
-  
-  MandatoryView2:
-    type: object
-    properties:
-      businessPlatformChange:
+      userId:
         type: string
-      program:
+      programId:
         type: string
-      title:
-        type: string
-      format:
-        type: string
-      persona:
-        type: string
-      abstract:
-        type: string
-      region:
-        type: string
-      start_date:
-        type: string
-      end_date:
-        type: string
-      highlights:
-        type: string
-      asset:
-        type: string
-  
-  MandatoryView3:
-    type: object
-    properties:
-      ia:
-        type: string
-      program:
-        type: string
-      title:
-        type: string
-      format:
-        type: string
-      persona:
-        type: string
-      abstract:
-        type: string
-      region:
-        type: string
-  
-  Theme:
-    type: object
-    required:
-      - id
-    properties:
-      id:
-        type: string
-      name:
-        type: string
-        
+
   Program:
     type: object
     properties:
       program_id:
         type: string
-      name:
+      label:
         type: string
         
   Format:
@@ -677,49 +431,19 @@ definitions:
     properties:
       id:
         type: string
-      name:
+      label:
         type: string
-        
-  Customer360Area:
+
+  Tactic:
     type: object
     required:
       - id
     properties:
       id:
         type: string
-      name:
+      label:
         type: string
-        
-  Industry:
-    type: object
-    required:
-      - id
-    properties:
-      id:
-        type: string
-      name:
-        type: string
-        
-  Team:
-    type: object
-    required:
-      - id
-    properties:
-      id:
-        type: string
-      name:
-        type: string
-        
-  Persona:
-    type: object
-    required:
-      - id
-    properties:
-      id:
-        type: string
-      name:
-        type: string
-        
+              
   Region:
     type: object
     required:
@@ -727,19 +451,9 @@ definitions:
     properties:
       id:
         type: string
-      name:
+      label:
         type: string
-        
-  TargetAudience:
-    type: object
-    required:
-      - id
-    properties:
-      id:
-        type: string
-      name:
-        type: string
-  
+
   Status:
     type: object
     required:
@@ -749,21 +463,10 @@ definitions:
         type: string
       name:
         type: string
-  
-  Segment:
-    type: object
-    required:
-      - id
-    properties:
-      id:
-        type: string
-      name:
-        type: string
-  
             
 schemes: ['http', 'https']
 consumes: ['application/json']
 produces: ['application/json']
 
-host: localhost:8080
+host: localhost:3000
 basePath: /api/v1

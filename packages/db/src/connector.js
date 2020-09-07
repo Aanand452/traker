@@ -12,7 +12,10 @@ const host = config[env].host
 export const sequelize = new Sequelize.Sequelize(db, username, password, {
   dialect: "postgres",
   port: 5432,
-  host: host || 'postgres'
+  host: host || 'postgres',
+  define: {
+    timestamps: false
+  },
 });
 
 sequelize.authenticate().then(data => {

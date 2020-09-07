@@ -1,5 +1,5 @@
 import { Model, DataTypes } from 'sequelize';
-import { sequelize } from '../db';
+import { sequelize } from '../connector';
 
 class Activity extends Model {}
 
@@ -9,6 +9,11 @@ Activity.init({
     primaryKey: true,
     type: DataTypes.STRING,
     field: 'activity_id',
+  },
+  userId: {
+    allowNull: false,
+    type: DataTypes.STRING,
+    field: 'user_id',
   },
   title: {
     allowNull: false,
@@ -54,6 +59,11 @@ Activity.init({
     allowNull: false,
     type: DataTypes.TEXT,
     field: 'asset',
+  },
+  programId: {
+    allowNull: false,
+    type: DataTypes.TEXT,
+    field: 'program_id',
   }
 }, {
   tableName: 'activity',

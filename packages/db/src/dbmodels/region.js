@@ -1,14 +1,14 @@
 import { Model, DataTypes } from 'sequelize';
 import { sequelize } from '../connector';
 
-class Tactic extends Model {}
+class Region extends Model {}
 
-Tactic.init({
-  tacticId: {
+Region.init({
+  regionId: {
     allowNull: false,
     primaryKey: true,
     type: DataTypes.STRING,
-    field: 'tactic_id',
+    field: 'region_id',
   },
   name: {
     type: DataTypes.STRING,
@@ -16,19 +16,15 @@ Tactic.init({
     field: 'name',
   }
 }, {
-  tableName: 'tactic',
+  tableName: 'region',
   sequelize: sequelize, 
   timestamps: false
 });
 
-Tactic.associate = models => {
-  Tactic.hasMany(models.Format, {
-    foreignKey: 'tactic_id'
+Region.associate = models => {
+  Region.hasMany(models.Program, {
+    foreignKey: 'target_region'
   });
 }
 
-Tactic.associate = models => {
-  Tactic.belongsTo(models.Program);
-}
-
-export default Tactic;
+export default Region;
