@@ -21,4 +21,10 @@ Region.init({
   timestamps: false
 });
 
+Region.associate = models => {
+  Region.hasMany(models.Program, {
+    foreignKey: 'target_region'
+  });
+}
+
 export default Region;
