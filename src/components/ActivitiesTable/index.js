@@ -1,7 +1,6 @@
 import React, { Component, Fragment } from 'react';
 import { withRouter, Link } from 'react-router-dom';
 import { connect } from 'react-redux';
-
 import {
   Button,
   ButtonGroup,
@@ -19,9 +18,10 @@ import {
   Toast
 } from '@salesforce/design-system-react';
 
-import Modal from '../Modal';
+import Modal from '../EditActivityModal';
 import Panel from '../Panel';
 import Prompt from '../Prompt';
+import Pager from '../Pager';
 
 // ACTIONS
 import {
@@ -32,7 +32,6 @@ import {
   setItem
 } from '../../actions/DataTable';
 import { Container } from './styles';
-
 
 const CustomDataTableCell = ({ children, ...props }) => (
   <DataTableCell title={children} {...props}>
@@ -62,7 +61,8 @@ class Table extends Component {
     isPanelOpen: false,
     data: [],
     editModalIsOPen: false,
-    isDeletePromptOpen: false
+    isDeletePromptOpen: false,
+    displayedData: [],
   };
 
   componentDidUpdate(prevProps) {
@@ -186,6 +186,10 @@ class Table extends Component {
     })
   };
 
+  handlePagination = (newData) => {
+    this.setState({displayedData: newData});
+  };
+
   render() {
     return (
       <Container>
@@ -201,7 +205,7 @@ class Table extends Component {
                 name="lead"
               />
             }
-            info={`${this.state.data.length} ${this.state.data.length === 1 ? 'item' : 'items'}`}
+            info={`${this.state.displayedData.length} of ${this.state.data.length} ${this.state.data.length === 1 ? 'item' : 'items'}`}
             joined
             onRenderControls={this.controls}
             title={<h1>Activities</h1>}
@@ -222,7 +226,7 @@ class Table extends Component {
             }}
             fixedHeader
             fixedLayout
-            items={this.state.data}
+            items={this.state.displayedData}
             id="activitiesTable"
             joined
             onRowChange={this.props.selectItem}
@@ -230,18 +234,18 @@ class Table extends Component {
             selection={this.props.dataTable.selection}
             selectRows="checkbox"
           >
-            <DataTableColumn label="Program" property="program" />
+            <DataTableColumn label="Program" property="programId" />
             <DataTableColumn label="Campaign ID" property="campaignId" />
             <DataTableColumn label="Title" property="title" />
-            <DataTableColumn label="Tactic" property="tactic" />
-            <DataTableColumn label="Format" property="format" />
+            <DataTableColumn label="Tactic" property="tacticId" />
+            <DataTableColumn label="Format" property="formatId" />
             <DataTableColumn label="Abstract" property="abstract" />
             <DataTableColumn
               sortDirection={this.state.sortDirection}
               sortable
               isSorted={this.state.sortProperty === 'region'}
               label="Region"
-              property="region"
+              property="regionId"
             />
             <DataTableColumn
               isSorted={this.state.sortProperty === 'startDate'}
@@ -277,6 +281,7 @@ class Table extends Component {
               dropdown={<Dropdown length="7" />}
             />
           </DataTable>
+          <Pager data={this.state.data} itemsPerPage={20} setDisplayedItems={this.handlePagination} />
           {this.state.toast.show && (
             <ToastContainer>
               <Toast 
