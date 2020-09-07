@@ -1,5 +1,5 @@
 import { Model, DataTypes } from 'sequelize';
-import { sequelize } from '../db';
+import { sequelize } from '../connector';
 
 class Segment extends Model {}
 
@@ -20,5 +20,11 @@ Segment.init({
   sequelize: sequelize,
   timestamps: false
 });
+
+Segment.associate = models => {
+  Segment.hasMany(models.Program, {
+    foreignKey: 'segment'
+  });
+};
 
 export default Segment;

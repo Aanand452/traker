@@ -1,5 +1,5 @@
 import { Model, DataTypes } from 'sequelize';
-import { sequelize } from '../db';
+import { sequelize } from '../connector';
 
 class Industry extends Model {}
 
@@ -20,5 +20,11 @@ Industry.init({
   sequelize: sequelize,
   timestamps: false
 });
+
+Industry.associate = models => {
+  Industry.hasMany(models.Program, {
+    foreignKey: 'industry'
+  });
+};
 
 export default Industry;

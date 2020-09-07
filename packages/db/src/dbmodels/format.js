@@ -27,7 +27,8 @@ Format.init({
 });
 
 Format.associate = models => {
-  Format.belongsTo(models.Tactic);
+  Format.belongsTo(models.Tactic, {foreignKey: 'tactic_id'});
+  Format.hasMany(models.Activity, {foreignKey: 'format_id'});
 }
 
 export default Format;

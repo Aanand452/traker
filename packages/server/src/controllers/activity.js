@@ -1,12 +1,15 @@
 import ApiUtils from '@sara/common/src/api/ApiUtils';
 import httpStatus from 'http-status-codes';
 import ActivityModel from '@sara/db/src/models/activity';
-import Activity from '@sara/db/src/dbmodels/activity';
 
 const getActivities = async (req, res) => {  
   try {
-    const activities = await ActivityModel.getAllActivities();
-    ApiUtils.reposeWithhSuccess(res, activities, httpStatus.OK);
+    var userId = req.swagger.params.userId.value;
+    const activities = await ActivityModel.getAllActivities(userId);
+
+    if(activities === 'error') ApiUtils.responseWithError(res, httpStatus.INTERNAL_SERVER_ERROR);
+    else if(!activities) ApiUtils.reposeWithhSuccess(res, null, httpStatus.NOT_FOUND);
+    else ApiUtils.reposeWithhSuccess(res, activities, httpStatus.OK);
   } catch (err) {
     ApiUtils.responseWithError(res, httpStatus.INTERNAL_SERVER_ERROR, err.toString());
   }
@@ -59,7 +62,9 @@ const deleteActivity = async (req, res) => {
     const activityId = req.body.activityId;
     const request = await ActivityModel.deleteActivity(activityId);
 
-    ApiUtils.reposeWithhSuccess(res, request, httpStatus.OK);
+    if(request === 'error') ApiUtils.responseWithError(res, httpStatus.INTERNAL_SERVER_ERROR);
+    else if(!request) ApiUtils.reposeWithhSuccess(res, null, httpStatus.NOT_FOUND);
+    else ApiUtils.reposeWithhSuccess(res, request, httpStatus.OK);
   } catch (err) {
     ApiUtils.responseWithError(res, httpStatus.INTERNAL_SERVER_ERROR, err);
   }

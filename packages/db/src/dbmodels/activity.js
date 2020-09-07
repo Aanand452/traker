@@ -71,4 +71,12 @@ Activity.init({
   timestamps: false
 });
 
+Activity.associate = models => {
+  Activity.belongsTo(models.User, {foreignKey: 'user_id'});
+  Activity.belongsTo(models.Tactic, {foreignKey: 'tactic_id'});
+  Activity.belongsTo(models.Format, {foreignKey: 'format_id'});
+  Activity.belongsTo(models.Region, {foreignKey: 'region_id'});
+  Activity.belongsTo(models.Program, {foreignKey: 'program_id'});
+}
+
 export default Activity;

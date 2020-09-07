@@ -71,28 +71,6 @@ paths:
             allOf: 
               - $ref: '#/definitions/ResponseStatus'
               - $ref: '#/definitions/Error'
-
-  /activities:
-    get:
-      x-swagger-router-controller: activity
-      operationId: "getActivities"
-      summary: Returns the list of activities.
-      description: This will be used to populate the activities table
-      produces:
-        - application/json
-      responses:
-        200:
-          description: Success
-          schema:
-            allOf:
-              - $ref: '#/definitions/ResponseStatus'
-              - $ref: '#/definitions/ProgramListResponse'
-        default:
-          description: Invalid request.
-          schema:
-            allOf: 
-              - $ref: '#/definitions/ResponseStatus'
-              - $ref: '#/definitions/Error'
   
   /region:
     get:
@@ -212,7 +190,35 @@ paths:
             allOf:
               - $ref: '#/definitions/ResponseStatus'
               - $ref: '#/definitions/Error'
-  
+
+  /activities/{userId}:
+    get:
+      x-swagger-router-controller: activity
+      operationId: "getActivities"
+      summary: Returns the list of activities by user.
+      description: This will be used to populate the activities table
+      parameters:
+        - in: path
+          name: userId
+          description: ID of activity to fetch
+          required: true
+          type: string
+      produces:
+        - application/json
+      responses:
+        200:
+          description: Success
+          schema:
+            allOf:
+              - $ref: '#/definitions/ResponseStatus'
+              - $ref: '#/definitions/ProgramListResponse'
+        default:
+          description: Invalid request.
+          schema:
+            allOf: 
+              - $ref: '#/definitions/ResponseStatus'
+              - $ref: '#/definitions/Error'
+
   /activity/{id}:  
     get:
       x-swagger-router-controller: activity
