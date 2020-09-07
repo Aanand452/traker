@@ -18,7 +18,7 @@ import {
 } from '../../actions/DataTable';
 
 
-class ModalComponent extends Component {
+class EditActivityModalComponent extends Component {
 
   state = {
     program: [],
@@ -29,72 +29,151 @@ class ModalComponent extends Component {
     programSelection: [],
     formatSelection: [],
     regionSelection: [],
-    title: this.props.data.title,
-    abstract: this.props.data.abstract,
-    startDate: this.props.data.startDate,
-    endDate: this.props.data.endDate,
-    asset: this.props.data.asset,
-    campaignId: this.props.data.campaignId,
+    activityId: null,
+    title: null,
+    abstract: null,
+    startDate: null,
+    endDate: null,
+    asset: null,
+    campaignId: null,
     errors: {}
-  };
+  }
+
+  constructor(props){
+    super(props);
+
+    this.baseUrl = 'http://localhost:3000/api/v1';
+  }
 
   componentDidMount() {
-    this.checkProgram();
-    this.checkTactic();
-    this.checkFormat();
-    this.checkRegion();
+    this.initDropdowns();
+    
+  }
+
+  initDropdowns = async () => {
+    await this.checkProgram();
+    await this.checkTactic();
+    await this.checkRegion();
+
+    this.getActicityById(this.props.data.activityId);
+  }
+
+  getActicityById = async id => {
+    let response = await fetch(`${this.baseUrl}/activity/${id}`);
+    let { result } = await response.json();
+
+    try{
+      var activityProgram = this.state.program.filter(el => el.program_id === result.programId);
+      var activityTactic = this.state.tactic.filter(el => el.tactic_id === result.tacticId);
+      var activityRegion = this.state.region.filter(el => el.region_id === result.regionId);
+      
+      this.setState({...this.state,
+        title: result.title,
+        abstract: result.abstract,
+        startDate: moment(result.startDate).format('MM/DD/YYYY'),
+        endDate: moment(result.endDate).format('MM/DD/YYYY'),
+        asset: result.asset,
+        campaignId: result.campaignId,
+        programSelection: activityProgram,
+        tacticSelection: activityTactic,
+        regionSelection: activityRegion,
+      });
+      
+      await this.checkFormat(this.state.tacticSelection[0].tactic_id);
+      var activityFormat = this.state.format.filter(el => el.format_id === result.formatId);
+
+      this.setState({...this.state, 
+        formatSelection: activityFormat,
+      });
+    } catch(err) {
+      console.error(err);
+    }
   }
 
   checkTactic = async () => {
-    try {
-      let response = await fetch('/assets/data/tactic.json');
-      let { result } = await response.json()
-      let tacticSelection = result.filter(el => el.label === this.props.data.tactic);
-      this.setState({ tacticSelection, tactic: result });
-    } catch(err) {
-      console.log(err)
-    }
+    return new Promise(async (resolve, reject) => {
+      try {
+        let response = await fetch(`${this.baseUrl}/tactic`);
+        let { result } = await response.json(); 
+  
+        //salesforce datepicker requires id key
+        result = result.map(el => {
+          el.id = el.tactic_id;
+          return el;
+        });
+  
+        this.setState({ tactic: result });
+        this.checkFormat(result[0].tactic_id);
+        resolve();
+      } catch(err) {
+        console.error(err)
+        reject(err);
+      }
+    });
+    
   }
 
   checkProgram = async () => {
-    try {
-      let response = await fetch('/assets/data/program.json');
-      let { result } = await response.json()
-      let programSelection = result.filter(el => el.label === this.props.data.program);
-      this.setState({ programSelection, program: result });
-    } catch(err) {
-      console.log(err)
-    }
+    return new Promise(async (resolve, reject) => {
+      try {
+        let response = await fetch(`${this.baseUrl}/program`);
+        let { result } = await response.json()
+  
+        //salesforce datepicker requires id key
+        result = result.map(el => {
+          el.id = el.program_id;
+          return el;
+        });
+  
+        this.setState({ program: result });
+        resolve();
+      } catch(err) {
+        console.error(err)
+        reject(err);
+      }
+    })
+    
   }
 
-  populateTactic = async selection => {
-    let response = await fetch('/assets/data/format.json');
-    let { result } = await response.json();
-    let format = result.filter(el => el.tactic === selection[0].label);
-    this.setState({ tacticSelection: selection, format, formatSelection: [format[0]] });
-  }
-
-  checkFormat = async () => {
-    try {
-      let response = await fetch('/assets/data/format.json');
-      let { result } = await response.json();
-      let format = result.filter(el => el.tactic === this.state.tacticSelection[0].label);
-      let formatSelection = result.filter(el => el.label === this.props.data.format);
-      this.setState({ formatSelection, format });
-    } catch(err) {
-      console.log(err)
-    }
+  checkFormat = async (tacticId) => {
+    return new Promise(async (resolve, reject) => {
+      try {
+        let response = await fetch(`${this.baseUrl}/format/${tacticId}`);
+        let { result } = await response.json();
+        let formatSelection = result[0];
+        
+        //salesforce datepicker requires id key
+        result = result.map(el => {
+          el.id = el.format_id;
+          return el;
+        });
+        
+        this.setState({ format: result, formatSelection });
+        resolve();
+      } catch(err) {
+        console.error(err);
+        reject(err);
+      }
+    });
   }
 
   checkRegion = async () => {
-    try {
-      let response = await fetch('/assets/data/region.json');
-      let { result } = await response.json()
-      let regionSelection = result.filter(el => el.label === this.props.data.region);
-      this.setState({ regionSelection, region: result });
-    } catch(err) {
-      console.log(err)
-    }
+    return new Promise(async (resolve, reject) => {
+      try {
+        let response = await fetch(`${this.baseUrl}/region`);
+        let { result } = await response.json();
+        result = result.map(el => {
+          el.id = el.region_id;
+          return el;
+        });
+  
+        this.setState({ region: result });
+        resolve();
+      } catch(err) {
+        console.error(err)
+        reject();
+      }
+    });
   }
 
   handleStartDate = (event, data) => {
@@ -106,15 +185,11 @@ class ModalComponent extends Component {
   }
 
   handleChange = e => {
-    if(e.target.value.length > 0) {
-      let errors = {...this.state.errors, [e.target.id]: false};
-      this.setState({errors})
-    }
     this.setState({[e.target.id]: e.target.value});
   }
 
   editTable = async () => {
-    let { title, abstract, campaignId } = this.state;
+    /*let { title, abstract, campaignId } = this.state;
     let errors = {...this.state.errors};
     
     if(campaignId.length === 0 || campaignId.length < 18) {
@@ -131,16 +206,39 @@ class ModalComponent extends Component {
       errors = {...errors, abstract: true};
       this.setState({errors});
       return;
-    }
-    try {
-      await fetch('/assets/data/edit_activity.json');
+    }*/
 
+    try {
+      let body = {
+        title: this.state.title,
+        campaignId: this.state.campaignId,
+        tacticId: this.state.tacticSelection[0].tactic_id,
+        formatId: this.state.formatSelection[0].format_id,
+        abstract: this.state.abstract,
+        regionId: this.state.regionSelection[0].region_id,
+        startDate: this.state.startDate,
+        endDate: this.state.endtDate,
+        asset: this.state.asset,
+        userId: localStorage.getItem('userId'),
+        programId: this.state.programSelection[0].program_id,
+      }
+
+      const config = {
+        method: 'PUT',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(body)
+      }
+      const response = await fetch(`${this.baseUrl}/activity/${this.props.data.activityId}`, config);
+      
       this.props.editItem(this.props.dataTable.items, {
         campaignId: this.state.campaignId,
-        program: this.state.programSelection[0] && this.state.programSelection[0].label,
-        format: this.state.formatSelection[0] && this.state.formatSelection[0].label,
-        region: this.state.regionSelection[0] && this.state.regionSelection[0].label,
-        tactic: this.state.tacticSelection[0] && this.state.tacticSelection[0].label,
+        program: this.state.programSelection[0] && this.state.programSelection[0].program_id,
+        format: this.state.formatSelection[0] && this.state.formatSelection[0].format_id,
+        region: this.state.regionSelection[0] && this.state.regionSelection[0].region_id,
+        tactic: this.state.tacticSelection[0] && this.state.tacticSelection[0].tactic_id,
         title: this.state.title,
         abstract: this.state.abstract,
         startDate: this.state.startDate,
@@ -183,31 +281,13 @@ class ModalComponent extends Component {
         >
           <section className="slds-p-around_large">
             <div className="slds-form-element slds-m-bottom_large">
-              <div className="slds-form-element__control slds-grid slds-gutters">
-                <div className="slds-col slds-size_11-of-12">
-                  <Input
-                    id="campaignId"
-                    label="Campaign ID"
-                    errorText={(this.state.errors.campaignId && "This field is required") || (this.state.campaignId.length < 18 && "This field must contain 18 characters")}
-                    placeholder="Placeholder Text"
-                    value={this.state.campaignId}
-                    maxLength="18"
-                    minLength="18"
-                    required
-                    onChange={e => this.handleChange(e)}
-                  />
-                </div>
-                <div className="slds-col slds-size_1-of-12 slds-m-top_large">
-                  <Button
-                    onClick={() => this.setState({campaignId: this.idGenerator(18)})}
-                    assistiveText={{ icon: 'Icon Border-filled medium' }}
-                    iconCategory="utility"
-                    iconName="refresh"
-                    iconVariant="border-filled"
-                    title="Generate new Campaign ID"
-                    variant="icon" />
-                </div>
-              </div>
+              <Input
+                id="campaignId"
+                label="Campaign ID"
+                placeholder="Placeholder Text"
+                defaultValue={this.state.campaignId}
+                onChange={e => this.handleChange(e)}
+              />
             </div>
             <div className="slds-form-element slds-m-bottom_large">
               <Combobox
@@ -218,7 +298,6 @@ class ModalComponent extends Component {
                       data.selection.length === 0
                         ? this.state.programSelection
                         : data.selection;
-                    console.log('selected: ', selection[0].label);
                     this.setState({ programSelection: selection });
                   },
                 }}
@@ -233,7 +312,7 @@ class ModalComponent extends Component {
               />
             </div>
             <div className="slds-form-element slds-m-bottom_large">
-              <Textarea
+              <Input
                 required
                 id="title"
                 label="Title"
@@ -252,8 +331,9 @@ class ModalComponent extends Component {
                       data.selection.length === 0
                         ? this.state.tacticSelection
                         : data.selection;
-                    console.log('selected: ', selection[0].label);
-                    this.populateTactic(selection)
+                    
+                    this.setState({ tacticSelection: selection });
+                    this.checkFormat(selection[0].tactic_id);
                   }
                 }}
                 labels={{
@@ -275,7 +355,6 @@ class ModalComponent extends Component {
                       data.selection.length === 0
                         ? this.state.formatSelection
                         : data.selection;
-                    console.log('selected: ', selection[0].label);
                     this.setState({ formatSelection: selection });
                   }
                 }}
@@ -309,7 +388,6 @@ class ModalComponent extends Component {
                       data.selection.length === 0
                         ? this.state.regionSelection
                         : data.selection;
-                    console.log('selected: ', selection[0].label);
                     this.setState({ regionSelection: selection });
                   },
                 }}
@@ -336,16 +414,12 @@ class ModalComponent extends Component {
                     if (this.props.action) {
                       const dataAsArray = Object.keys(data).map((key) => data[key]);
                       this.props.action('onChange')(event, data, ...dataAsArray);
-                    } else if (console) {
-                      console.log('onChange', event, data);
                     }
                   }}
                   onCalendarFocus={(event, data) => {
                     if (this.props.action) {
                       const dataAsArray = Object.keys(data).map((key) => data[key]);
                       this.props.action('onCalendarFocus')(event, data, ...dataAsArray);
-                    } else if (console) {
-                      console.log('onCalendarFocus', event, data);
                     }
                   }}
                   formatter={(date) => {
@@ -368,16 +442,12 @@ class ModalComponent extends Component {
                     if (this.props.action) {
                       const dataAsArray = Object.keys(data).map((key) => data[key]);
                       this.props.action('onChange')(event, data, ...dataAsArray);
-                    } else if (console) {
-                      console.log('onChange', event, data);
                     }
                   }}
                   onCalendarFocus={(event, data) => {
                     if (this.props.action) {
                       const dataAsArray = Object.keys(data).map((key) => data[key]);
                       this.props.action('onCalendarFocus')(event, data, ...dataAsArray);
-                    } else if (console) {
-                      console.log('onCalendarFocus', event, data);
                     }
                   }}
                   formatter={(date) => {
@@ -414,4 +484,4 @@ let mapState = ({ dataTable }) => ({
   dataTable
 });
 
-export default connect(mapState, { editItem })(ModalComponent);
+export default connect(mapState, { editItem })(EditActivityModalComponent);

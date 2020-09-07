@@ -3,6 +3,7 @@ import { Spinner } from '@salesforce/design-system-react';
 
 import { Container } from './styles';
 import ActivitiesTable from '../ActivitiesTable';
+import { API_URL } from '../../config/config';
 
 class EditActivityPage extends Component {
   state = {
@@ -18,10 +19,12 @@ class EditActivityPage extends Component {
     this.setState({showLoader: true});
 
     try {
-      const response = await fetch('assets/data/activities.json');
+      const response = await fetch(`${API_URL}/activities`);
       const result = await response.json();
       this.setState({activities: result.result});
-    } catch (error) {}
+    } catch (error) {
+      console.error(error);
+    }
 
     this.setState({showLoader: false});  
   }

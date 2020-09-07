@@ -1,6 +1,5 @@
 import React, { Component, Fragment } from 'react';
 import { withRouter, Link } from 'react-router-dom';
-
 import {
   Button,
   ButtonGroup,
@@ -15,8 +14,10 @@ import {
   ToastContainer,
   Toast
 } from '@salesforce/design-system-react';
+
 import Panel from '../Panel';
 import { Container } from './styles';
+import Pager from '../Pager';
 
 const CustomDataTableCell = ({ children, ...props }) => (
   <DataTableCell title={children} {...props}>
@@ -38,7 +39,8 @@ class Table extends Component {
     search: '',
     showToast: this.props.location.newRow ? true : false,
     isPanelOpen: false,
-    data: []
+    data: [],
+    displayedData: [],
   };
 
   componentDidUpdate(prevProps) {
@@ -125,6 +127,10 @@ class Table extends Component {
     })
   };
 
+  handlePagination = (newData) => {
+    this.setState({displayedData: newData});
+  };
+
   render() {
     return (
       <Container>
@@ -138,7 +144,7 @@ class Table extends Component {
                 name="lead"
               />
             }
-            info={`${this.state.data.length} ${this.state.data.length === 1 ? 'item' : 'items'}`}
+            info={`${this.state.displayedData.length} of ${this.state.data.length} ${this.state.data.length === 1 ? 'item' : 'items'}`}
             joined
             onRenderControls={this.controls}
             title={<h1>Programs</h1>}
@@ -159,19 +165,19 @@ class Table extends Component {
             }}
             fixedHeader
             fixedLayout
-            items={this.state.data}
+            items={this.state.displayedData}
             id="DataTableExample-FixedHeaders"
             joined
             onSort={this.onSort}
           >
             <DataTableColumn
               label="Program Name"
-              property="programName"
+              property="name"
               sortDirection={this.state.sortDirection}
               sortable
               isSorted={this.state.sortProperty === 'programName'}
             />
-            <DataTableColumn label="Program Owner" property="programOwner" />
+            <DataTableColumn label="Program Owner" property="owner" />
             <DataTableColumn label="Budget" property="budget" />
             <DataTableColumn label="Metrics" property="metrics" />
             <DataTableColumn label="Parent Campaign ID" property="parentCampaignId" />
@@ -185,6 +191,7 @@ class Table extends Component {
             <DataTableColumn label="Customer Message" property="customerMessage" />
             <DataTableColumn label="Business Goal" property="businessGoal" />
           </DataTable>
+          <Pager data={this.state.data} itemsPerPage={20} setDisplayedItems={this.handlePagination} />
           {this.state.showToast && (
             <ToastContainer>
               <Toast 

@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Spinner } from '@salesforce/design-system-react';
+import { API_URL } from '../../config/config';
 
 import { Container } from './styles';
 import ProgramsTable from '../ProgramsTable';
@@ -18,8 +19,9 @@ class EditProgramPage extends Component {
     this.setState({showLoader: true});
 
     try {
-      const response = await fetch('assets/data/programs.json');
+      const response = await fetch(`${API_URL}/programs`);
       const result = await response.json();
+
       this.setState({programs: result.result});
     } catch (error) {}
 
