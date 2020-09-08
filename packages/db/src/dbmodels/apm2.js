@@ -23,7 +23,7 @@ APM2.init({
 
 APM2.associate = models => {
   APM2.hasMany(models.Program, {
-    foreignKey: 'apm2'
+    foreignKey: 'apm2_id'
   });
 }
 

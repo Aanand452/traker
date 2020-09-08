@@ -50,12 +50,18 @@ paths:
               - $ref: '#/definitions/ResponseStatus'
               - $ref: '#/definitions/Error'
 
-  /programs:
+  /programs/{userId}:
     get:
       x-swagger-router-controller: program
       operationId: "getProgramsFull"
       summary: Returns the list of programs.
       description: This will be used to populate the activity table
+      parameters:
+        - in: path
+          name: userId
+          description: ID of user to fetch programs
+          required: true
+          type: string
       produces:
         - application/json
       responses:
@@ -200,7 +206,7 @@ paths:
       parameters:
         - in: path
           name: userId
-          description: ID of activity to fetch
+          description: ID of user to fetch activities
           required: true
           type: string
       produces:

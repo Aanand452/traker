@@ -23,7 +23,7 @@ Region.init({
 
 Region.associate = models => {
   Region.hasMany(models.Program, {
-    foreignKey: 'target_region'
+    foreignKey: 'region_id'
   });
   Region.hasMany(models.Activity, {foreignKey: 'region_id'});
 }

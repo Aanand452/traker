@@ -18,7 +18,8 @@ const getPrograms = async (req, res) => {
 
 const getProgramsFull = async (req, res) => {  
   try {
-    const programs = await ProgramModel.getAllProgramsFull();
+    var userId = req.swagger.params.userId.value;
+    const programs = await ProgramModel.getAllProgramsFullByUser(userId);
 
     if(programs === 'error') ApiUtils.responseWithError(res, httpStatus.INTERNAL_SERVER_ERROR);
     else if(!programs) ApiUtils.reposeWithhSuccess(res, null, httpStatus.NOT_FOUND);

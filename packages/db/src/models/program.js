@@ -11,11 +11,24 @@ class ProgramModel {
     }
   }
 
-  static async getAllProgramsFull() {
+  static async getAllProgramsFullByUser(id) {
     try{
       const programs = await db.Program.findAll({
-        include: [db.User, db.Region, db.LifecycleStage, db.APM1, db.APM2, db.Industry, db.Segment, db.Persona]
+        include: [
+          {
+            model: db.User,
+            where: {user_id: id}
+          },
+          db.Region,
+          db.LifecycleStage,
+          db.APM1,
+          db.APM2,
+          db.Industry,
+          db.Segment,
+          db.Persona
+        ],
       });
+      
       const minProgram = programs.map(program => {
         return (
           {

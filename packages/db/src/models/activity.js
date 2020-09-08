@@ -3,7 +3,7 @@ import db from '../dbmodels/';
 import { v4 as uuidv4 } from 'uuid';
 
 class ActivityModel {
-  static async getAllActivities(id) {
+  static async getAllActivitiesByUser(id) {
     try{
       const activities = await db.Activity.findAll({
         include: [db.User, db.Tactic, db.Format, db.Region, db.Program],
