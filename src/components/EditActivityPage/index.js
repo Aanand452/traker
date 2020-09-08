@@ -29,13 +29,14 @@ class EditActivityPage extends Component {
 
   getActivities = async () => {
     this.setState({showLoader: true});
+    const user = localStorage.getItem('userId');
 
     try {
-      const response = await fetch(`${this.API_URL}/activities`);
-      const result = await response.json();
-      this.setState({activities: result.result});
-    } catch (error) {
-      console.error(error);
+      const request = await fetch(`${this.API_URL}/activities/${user}`);
+      const response = await request.json();
+      this.setState({activities: response.result});
+    } catch (err) {
+      console.error(err);
     }
 
     this.setState({showLoader: false});  
@@ -68,7 +69,7 @@ class EditActivityPage extends Component {
     }
 
     try {
-      const request = await fetch(`${API_URL}/activity`, config)
+      const request = await fetch(`${this.API_URL}/activity`, config)
       await request.json();
       await this.getActivities();
 
