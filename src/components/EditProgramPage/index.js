@@ -27,10 +27,10 @@ class EditProgramPage extends Component {
     const user = localStorage.getItem('userId');
 
     try {
-      const response = await fetch(`${this.API_URL}/programs/${user}`);
-      const result = await response.json();
+      const request = await fetch(`${this.API_URL}/programs/${user}`);
+      const response = await request.json();
 
-      this.setState({programs: result.result});
+      this.setState({programs: response.result});
     } catch (error) {}
 
     this.setState({showLoader: false});  
