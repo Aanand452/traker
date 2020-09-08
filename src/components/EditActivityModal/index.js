@@ -198,12 +198,13 @@ class EditActivityModalComponent extends Component {
 
   handleChange = e => {
     let errors = {...this.state.errors};
-    if(e.target.value.length > 0 && e.target.id !== 'campaignId') {
+    if(e.target.value && e.target.id !== 'campaignId') {
       errors = {...this.state.errors, [e.target.id]: false};
     } else {
       errors = {...this.state.errors, [e.target.id]: true};
     }
     delete errors.campaignId;
+    console.log(e.target.value)
     this.setState({[e.target.id]: e.target.value, errors});
   }
 
@@ -257,18 +258,6 @@ class EditActivityModalComponent extends Component {
     }
   }
 
-  idGenerator = len => {
-    let maxlen = 8,
-      min = Math.pow(16,Math.min(len,maxlen)-1) ,
-      max = Math.pow(16,Math.min(len,maxlen)) - 1,
-      n   = Math.floor( Math.random() * (max-min+1) ) + min,
-      r   = n.toString(16);
-    while ( r.length < len ) {
-        r = r + this.idGenerator( len - maxlen );
-    }
-    return r;
-  }
-
 	render() {        
 		return (
       <IconSettings iconPath="/assets/icons">
@@ -288,7 +277,7 @@ class EditActivityModalComponent extends Component {
                 id="campaignId"
                 label="Campaign ID"
                 placeholder="Placeholder Text"
-                defaultValue={this.state.campaignId}
+                value={this.state.campaignId}
                 onChange={e => this.handleChange(e)}
               />
             </div>
@@ -317,13 +306,13 @@ class EditActivityModalComponent extends Component {
               />
             </div>
             <div className="slds-form-element slds-m-bottom_large">
-              <Input
+              <Textarea
                 required
                 id="title"
                 label="Title"
                 errorText={this.state.errors.title && "This field is required"}
                 placeholder="Enter title"
-                defaultValue={this.state.title}
+                value={this.state.title}
                 onChange={e => this.handleChange(e)}
               />
             </div>
@@ -384,7 +373,7 @@ class EditActivityModalComponent extends Component {
                 label="Abstract"
                 errorText={this.state.errors.abstract && "This field is required"}
                 placeholder="Enter abstract"
-                defaultValue={this.state.abstract}
+                value={this.state.abstract}
                 onChange={e => this.handleChange(e)}
               />
             </div>
@@ -483,7 +472,7 @@ class EditActivityModalComponent extends Component {
                 type='url'
                 required
                 placeholder="Enter assets"
-                defaultValue={this.state.asset}
+                value={this.state.asset}
                 onChange={e => this.handleChange(e)}
                 errorText={this.state.errors.asset && "This field is required"}
               />
