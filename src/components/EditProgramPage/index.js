@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Spinner } from '@salesforce/design-system-react';
-import { getAPIUrl, API_URL } from '../../config/config';
+import { getAPIUrl } from '../../config/config';
 
 import { Container } from './styles';
 import ProgramsTable from '../ProgramsTable';
@@ -24,9 +24,10 @@ class EditProgramPage extends Component {
 
   getPrograms = async () => {
     this.setState({showLoader: true});
+    const user = localStorage.getItem('userId');
 
     try {
-      const response = await fetch(`${this.API_URL}/programs`);
+      const response = await fetch(`${this.API_URL}/programs/${user}`);
       const result = await response.json();
 
       this.setState({programs: result.result});
