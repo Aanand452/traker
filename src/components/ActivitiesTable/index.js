@@ -194,7 +194,7 @@ class Table extends Component {
     return (
       <Container>
         <IconSettings iconPath="/assets/icons">
-          {this.state.editModalIsOPen && <Modal data={this.props.dataTable.item} onToast={this.onToast} title='Edit row' toggleOpen={this.toggleOpen} />}
+          {this.state.editModalIsOPen && <Modal data={this.props.dataTable.item} onToast={this.onToast} title='Edit activity' toggleOpen={this.toggleOpen} />}
           {this.props.dataTable.isDeletePromptOpen && <Prompt />}
           <PageHeader
             onRenderActions={this.actions}

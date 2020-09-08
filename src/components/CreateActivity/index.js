@@ -89,7 +89,6 @@ class CreateActivity extends Component {
       let response = await fetch(`${this.state.baseURL}/api/v1/tactic`);
       let { result } = await response.json();
       let format = await this.populateTactic(result[0]);
-      console.log(format)
       this.setState({ formats: format, tactics: result, row: {...this.state.row, tactic: [result[0]], format: [format[0]] } });
     } catch(err) {
       console.error(err)
@@ -309,7 +308,7 @@ class CreateActivity extends Component {
             <div className={`slds-m-bottom_large slds-col slds-size_1-of-4 ${this.state.error.endDate && "slds-has-error"}`}>
               <Datepicker
                 id="endDate"
-                labels={{label: 'Start Date'}}
+                labels={{label: 'End Date'}}
                 triggerClassName="slds-col slds-size_1-of-1"
                 onChange={(event, data) => this.handleChange("endDate", data.formattedDate)}
                 formatter={(date) => date ? moment(date).format('MM/DD/YYYY') : ''}
