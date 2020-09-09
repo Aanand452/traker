@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Spinner } from '@salesforce/design-system-react';
-import { API_URL } from '../../config/config';
+import { getAPIUrl } from '../../config/config';
 
 import { Container } from './styles';
 import ProgramsTable from '../ProgramsTable';
@@ -12,17 +12,25 @@ class EditProgramPage extends Component {
   }
 
   componentDidMount() {
+    this.setupAndFetch();
+  }
+
+  setupAndFetch = async () => {
+    if(window.location.hostname === 'localhost') this.API_URL =  "http://localhost:3000/api/v1";
+    else this.API_URL = await getAPIUrl();
+    
     this.getPrograms();
   }
 
   getPrograms = async () => {
     this.setState({showLoader: true});
+    const user = localStorage.getItem('userId');
 
     try {
-      const response = await fetch(`${API_URL}/programs`);
-      const result = await response.json();
+      const request = await fetch(`${this.API_URL}/programs/${user}`);
+      const response = await request.json();
 
-      this.setState({programs: result.result});
+      this.setState({programs: response.result});
     } catch (error) {}
 
     this.setState({showLoader: false});  
