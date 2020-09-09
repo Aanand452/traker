@@ -5,6 +5,12 @@ import Tactic from './tactic';
 import User from './user';
 import ProgramUser from './programUser';
 import Region from './region';
+import LifecycleStage from './lifecycleStage';
+import APM1 from './apm1';
+import APM2 from './apm2';
+import Industry from './industry';
+import Segment from './segment';
+import Persona from './persona';
 
 let db = {};
 
@@ -21,6 +27,12 @@ db.Tactic = Tactic;
 db.User = User;
 db.ProgramUser = ProgramUser;
 db.Region = Region;
+db.LifecycleStage = LifecycleStage;
+db.APM1 = APM1;
+db.APM2 = APM2;
+db.Industry = Industry;
+db.Segment = Segment;
+db.Persona = Persona;
 
 /**
  * 

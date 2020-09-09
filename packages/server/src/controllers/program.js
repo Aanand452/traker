@@ -18,13 +18,12 @@ const getPrograms = async (req, res) => {
 
 const getProgramsFull = async (req, res) => {  
   try {
-    const programs = await ProgramModel.getAllProgramsFull();
-    if(!programs) {
-      ApiUtils.reposeWithhSuccess(res, null, httpStatus.NOT_FOUND);
-    } else {      
-      if(programs === 'error') ApiUtils.responseWithError(res, httpStatus.INTERNAL_SERVER_ERROR);
-      else ApiUtils.reposeWithhSuccess(res, programs, httpStatus.OK);
-    }
+    var userId = req.swagger.params.userId.value;
+    const programs = await ProgramModel.getAllProgramsFullByUser(userId);
+
+    if(programs === 'error') ApiUtils.responseWithError(res, httpStatus.INTERNAL_SERVER_ERROR);
+    else if(!programs) ApiUtils.reposeWithhSuccess(res, null, httpStatus.NOT_FOUND);
+    else ApiUtils.reposeWithhSuccess(res, programs, httpStatus.OK);
   } catch (err) {
     ApiUtils.responseWithError(res, httpStatus.INTERNAL_SERVER_ERROR, err.toString());
   }

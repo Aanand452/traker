@@ -1,5 +1,5 @@
 import { Model, DataTypes } from 'sequelize';
-import { sequelize } from '../db';
+import { sequelize } from '../connector';
 
 class APM2 extends Model {}
 
@@ -20,5 +20,11 @@ APM2.init({
   sequelize: sequelize,
   timestamps: false
 });
+
+APM2.associate = models => {
+  APM2.hasMany(models.Program, {
+    foreignKey: 'apm2'
+  });
+}
 
 export default APM2;
