@@ -23,7 +23,7 @@ Industry.init({
 
 Industry.associate = models => {
   Industry.hasMany(models.Program, {
-    foreignKey: 'industry_id'
+    foreignKey: 'industry'
   });
 };
 

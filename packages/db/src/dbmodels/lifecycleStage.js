@@ -23,7 +23,7 @@ LifecycleStage.init({
 
 LifecycleStage.associate = models => {
   LifecycleStage.hasMany(models.Program, {
-    foreignKey: 'lifecycle_stage_id'
+    foreignKey: 'lifecycle_stage'
   });
 }
 

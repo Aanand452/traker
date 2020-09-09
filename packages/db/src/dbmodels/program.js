@@ -38,27 +38,27 @@ Program.init({
   targetRegion: {
     allowNull: false,
     type: DataTypes.STRING,
-    field: 'region_id',
+    field: 'target_region',
   },
   lifecycleStage: {
     allowNull: false,
     type: DataTypes.STRING,
-    field: 'lifecycle_stage_id',
+    field: 'lifecycle_stage',
   },
   apm1: {
     allowNull: false,
     type: DataTypes.STRING,
-    field: 'apm1_id',
+    field: 'apm1',
   },
   apm2: {
     allowNull: true,
     type: DataTypes.STRING,
-    field: 'apm2_id',
+    field: 'apm2',
   },
   industry: {
     allowNull: false,
     type: DataTypes.STRING,
-    field: 'industry_id',
+    field: 'industry',
   },
   segment: {
     allowNull: false,
@@ -91,11 +91,11 @@ Program.associate = models => {
     through: 'program_user',
     foreignKey: 'program_id'
   });
-  Program.belongsTo(models.Region, {foreignKey: 'region_id'});
-  Program.belongsTo(models.LifecycleStage, {foreignKey: 'lifecycle_stage_id'});
-  Program.belongsTo(models.APM1, {foreignKey: 'apm1_id'});
-  Program.belongsTo(models.APM2, {foreignKey: 'apm2_id'});
-  Program.belongsTo(models.Industry, {foreignKey: 'industry_id'});
+  Program.belongsTo(models.Region, {foreignKey: 'target_region'});
+  Program.belongsTo(models.LifecycleStage, {foreignKey: 'lifecycle_stage'});
+  Program.belongsTo(models.APM1, {foreignKey: 'apm1'});
+  Program.belongsTo(models.APM2, {foreignKey: 'apm2'});
+  Program.belongsTo(models.Industry, {foreignKey: 'industry'});
   Program.belongsTo(models.Segment, {foreignKey: 'segment'});
   Program.belongsTo(models.Persona, {foreignKey: 'persona'});
 }
