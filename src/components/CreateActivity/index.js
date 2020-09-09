@@ -261,7 +261,7 @@ class CreateActivity extends Component {
               />
             </div>
             <div className="slds-m-bottom_large slds-col slds-size_1-of-2">
-              <Textarea
+              <Input
                 id="title"
                 label="Title"
                 errorText={this.state.error.title}

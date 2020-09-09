@@ -306,7 +306,7 @@ class EditActivityModalComponent extends Component {
               />
             </div>
             <div className="slds-form-element slds-m-bottom_large">
-              <Textarea
+              <Input
                 required
                 id="title"
                 label="Title"
