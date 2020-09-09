@@ -1,48 +1,34 @@
 import React, { Component } from 'react';
-import { connect } from 'react-redux';
-
-import {
-  Modal,
-  Button
-} from '@salesforce/design-system-react';
-
-// ACTIONS
-import {
-  closeDeletePrompt,
-  handleDeleteSelection
-} from '../../actions/DataTable';
+import { Modal, Button } from '@salesforce/design-system-react';
 
 class Prompt extends Component {
-  
+  state = {
+    isOpen: this.props.isOpen,
+  };
+
+  componentDidUpdate(prevProps) {
+    if(prevProps.isOpen !== this.props.isOpen)
+      this.setState({isOpen: this.props.isOpen})
+  };
+
   render() {
-
-    let {item, items, selection} = this.props.dataTable;
-
 		return (
-      <Modal
-        isOpen={true}
-        onRequestClose={this.props.closeErrorHandler ? this.props.closeErrorHandler : this.props.closeDeletePrompt}
-      >
+      <Modal isOpen={this.state.isOpen} onRequestClose={this.props.onClose}>
         <div className="slds-m-around_medium slds-text-align_center">
           <h2 className="slds-m-bottom_medium slds-text-color_destructive slds-text-heading_large">{this.props.title ? this.props.title :'Warning!'}</h2>
           <p>{this.props.message ? this.props.message :'Are you sure you want to delete this activity?'}</p>
           <div className="slds-m-top_x-large">
             <Button
-              key="promptBtn"
+              key="promptBtnClose"
               label="Cancel"
-              onClick={this.props.closeErrorHandler ? this.props.closeErrorHandler : this.props.closeDeletePrompt}
+              onClick={this.props.onClose}
             />
-            {
-              !this.props.closeErrorHandler && (
-                <Button
-                  variant="brand"
-                  key="promptBtn"
-                  label="Delete"
-                  onClick={() => this.props.handleDeleteSelection(items, item, selection)}
-                />
-              )
-            }
-            
+            <Button
+            variant="brand"
+            key="promptBtnConfirm"
+            label="Delete"
+            onClick={this.props.onConfirm}
+          />
           </div>
         </div>
       </Modal>
@@ -50,8 +36,4 @@ class Prompt extends Component {
 	}
 }
 
-let mapState = ({ dataTable }) => ({
-  dataTable
-});
-
-export default connect(mapState, { closeDeletePrompt, handleDeleteSelection })(Prompt);
+export default Prompt;
