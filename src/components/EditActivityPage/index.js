@@ -3,7 +3,7 @@ import { Spinner } from '@salesforce/design-system-react';
 
 import { Container } from './styles';
 import ActivitiesTable from '../ActivitiesTable';
-import { API_URL } from '../../config/config';
+import { getAPIUrl } from '../../config/config';
 
 class EditActivityPage extends Component {
   state = {
@@ -12,6 +12,13 @@ class EditActivityPage extends Component {
   }
 
   componentDidMount() {
+    this.setupAndFetch();
+  }
+
+  setupAndFetch = async () => {
+    if(window.location.hostname === 'localhost') this.API_URL =  "http://localhost:3000/api/v1";
+    else this.API_URL = await getAPIUrl();
+    
     this.getActivities();
   }
 
@@ -19,7 +26,7 @@ class EditActivityPage extends Component {
     this.setState({showLoader: true});
 
     try {
-      const response = await fetch(`${API_URL}/activities`);
+      const response = await fetch(`${this.API_URL}/activities`);
       const result = await response.json();
       this.setState({activities: result.result});
     } catch (error) {
