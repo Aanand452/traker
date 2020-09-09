@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Spinner } from '@salesforce/design-system-react';
-import { getAPIUrl, API_URL } from '../../config/config';
+import { getAPIUrl } from '../../config/config';
 
 import { Container } from './styles';
 import ProgramsTable from '../ProgramsTable';

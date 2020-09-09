@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import { withRouter } from 'react-router-dom';
 import moment from 'moment';
-import { v4 as uuidv4 } from 'uuid';
+import { getAPIUrl } from '../../config/config';
+
 import {
   IconSettings,
   Combobox,
@@ -40,7 +41,7 @@ class CreateActivity extends Component {
   };
 
   componentDidMount() {
-    
+    this.setupAndFetch();
   };
 
   getUser = () => {
@@ -61,7 +62,7 @@ class CreateActivity extends Component {
 
   async checkRegion() {
     try {
-      let response = await fetch(`${this.API_URL}/api/v1/region`);
+      let response = await fetch(`${this.API_URL}/region`);
       let { result } = await response.json();
       this.setState({ regions: result, row: {...this.state.row, region: [result[0]]}});
     } catch(err) {
@@ -71,7 +72,7 @@ class CreateActivity extends Component {
 
   async checkProgram() {
     try {
-      let response = await fetch(`${this.API_URL}/api/v1/program`);
+      let response = await fetch(`${this.API_URL}/program`);
       let { result } = await response.json();
       this.setState({ programs: result, row: {...this.state.row, program: [result[0]]}});
     } catch(err) {
@@ -81,7 +82,7 @@ class CreateActivity extends Component {
 
   async checkTactic() {
     try {
-      let response = await fetch(`${this.API_URL}/api/v1/tactic`);
+      let response = await fetch(`${this.API_URL}/tactic`);
       let { result } = await response.json();
       let format = await this.populateTactic(result[0]);
       console.log(format)
@@ -93,7 +94,7 @@ class CreateActivity extends Component {
 
   async populateTactic(selection) {
     try {
-      let response = await fetch(`${this.API_URL}/api/v1/format/${selection.tactic_id}`);
+      let response = await fetch(`${this.API_URL}/format/${selection.tactic_id}`);
       let { result } = await response.json();
       return result;
     } catch (err) {
@@ -193,7 +194,7 @@ class CreateActivity extends Component {
         },
         body: JSON.stringify(body)
       }
-      const response = await fetch(`${this.API_URL}/api/v1/activity`, config);
+      const response = await fetch(`${this.API_URL}/activity`, config);
     } catch (err) {
       this.setState({isDeletePromptOpen: true});
       console.error(err);
