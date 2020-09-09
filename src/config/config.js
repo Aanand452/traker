@@ -1,4 +1,24 @@
-// TO DO
-// export default a un objeto JSON
+let API_URL;
 
-export const API_URL = "http://localhost:3000/api/v1";
+const fetchAPIUrl = async () => {
+  return new Promise(async (resolve, reject) => {
+    try{
+      let api = await fetch('/config');
+      let response = await api.json();
+
+      if(response.api) resolve(response.api);   
+    } catch (err) {
+      reject(err); 
+    }
+  })
+};
+
+async function getAPIUrl(){
+  try{
+    return API_URL = await fetchAPIUrl();
+  } catch(err) {
+    console.error('SARA', err);
+  }
+}
+
+export { getAPIUrl, API_URL };
