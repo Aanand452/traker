@@ -63,7 +63,22 @@ class ProgramModel {
         include: [db.User, db.Region, db.LifecycleStage, db.APM1, db.APM2, db.Industry, db.Segment, db.Persona]
       });
 
-      return program;
+      const minProgram = {
+        programId: program.programId,
+        owner: program.owner,
+        budget: program.budget,
+        metrics: program.metrics,
+        parentCampaignId: program.parentCampaignId,
+        targetRegion: program.targetRegion,
+        lifecycleStage: program.lifecycleStage,
+        apm1: program.apm1,
+        apm2: program.apm2,
+        industry: program.industry,
+        segment: program.segment,
+        persona: program.persona
+      }
+      
+      return minProgram;
     } catch (err) {
       console.error('Error getting program list', err);
     }
