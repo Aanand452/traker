@@ -8,7 +8,9 @@ import {
   Input,
   Datepicker,
   Button,
-  Textarea
+  Textarea,
+  Accordion,
+  AccordionPanel
 } from '@salesforce/design-system-react';
 
 import Prompt from '../Prompt';
@@ -36,7 +38,9 @@ class CreateActivity extends Component {
     tactics: [],
     formats: [],
     error: {},
-    isDeletePromptOpen: false
+    isDeletePromptOpen: false,
+    expandedPanels: {},
+    items: {}
   };
 
   componentDidMount() {
@@ -79,6 +83,16 @@ class CreateActivity extends Component {
       let response = await fetch(`${this.state.baseURL}/api/v1/program`);
       let { result } = await response.json();
       this.setState({ programs: result, row: {...this.state.row, program: [result[0]]}});
+    } catch(err) {
+      console.error(err)
+    }
+  }
+
+  async checkProgramDetail() {
+    try {
+      let response = await fetch(`${this.state.baseURL}/api/v1/program/${this.state.row.program[0]}`);
+      let { result } = await response.json();
+      this.setState({ items: result });
     } catch(err) {
       console.error(err)
     }
@@ -205,14 +219,28 @@ class CreateActivity extends Component {
     }
   }
 
+  togglePanel(event, data) {
+		this.setState((state) => ({
+			...state,
+			expandedPanels: {
+				[data.id]: !state.expandedPanels[data.id],
+			},
+		}));
+		if (this.props.action) {
+			const dataAsArray = Object.keys(data).map((id) => data[id]);
+			this.props.action('onClick')(event, ...dataAsArray);
+		} else if (console) {
+			console.log('[onSelect] (event, data)', event, data);
+		}
+	}
+
   render() {
-    console.log()
     return (
       <IconSettings iconPath="assets/icons">
         {this.state.isDeletePromptOpen && <Prompt closeErrorHandler={() => this.setState({isDeletePromptOpen: false})} error={true} message='Interval server error' title='Error' />}
         <FormContainer>
           <form className="slds-grid slds-wrap" onSubmit={e => this.validateSubmit(e)}>
-            <div className="slds-m-bottom_large slds-col slds-size_1-of-2">
+            <div className="slds-m-bottom_large slds-col slds-size_1-of-1">
               <Combobox
                 id="program"
                 events={{onSelect: (event, data) => data.selection.length && this.handleChange("program", data.selection)}}
@@ -223,6 +251,59 @@ class CreateActivity extends Component {
                 value="program"
                 variant="readonly"
                 errorText={this.state.error.program}
+              />
+              <Accordion>
+                <AccordionPanel
+                  expanded={!!this.state.expandedPanels[this.state.items.id]}
+                  onTogglePanel={(event) => this.togglePanel(event, this.state.items)}
+                  summary="Program details"
+                >
+                  <div className="slds-grid slds-wrap">
+                    <div className="slds-m-bottom_large slds-col slds-size_1-of-2 slds-large-size_1-of-4">
+                      <p>Program Owner: <strong>Hola</strong></p>
+                    </div>
+                    <div className="slds-m-bottom_large slds-col slds-size_1-of-2 slds-large-size_1-of-4">
+                      <p>Budget: <strong>Hola</strong></p>
+                    </div>
+                    <div className="slds-m-bottom_large slds-col slds-size_1-of-2 slds-large-size_1-of-4">
+                      <p>Metrics: <strong>Hola</strong></p>
+                    </div>
+                    <div className="slds-m-bottom_large slds-col slds-size_1-of-2 slds-large-size_1-of-4">
+                      <p>Parent Campaign ID: <strong>Hola</strong></p>
+                    </div>
+                    <div className="slds-m-bottom_large slds-col slds-size_1-of-2 slds-large-size_1-of-4">
+                      <p>Region: <strong>Hola</strong></p>
+                    </div>
+                    <div className="slds-m-bottom_large slds-col slds-size_1-of-2 slds-large-size_1-of-4">
+                      <p>Lifecycle Stage: <strong>Hola</strong></p>
+                    </div>
+                    <div className="slds-m-bottom_large slds-col slds-size_1-of-2 slds-large-size_1-of-4">
+                      <p>APM1: <strong>Hola</strong></p>
+                    </div>
+                    <div className="slds-m-bottom_large slds-col slds-size_1-of-2 slds-large-size_1-of-4">
+                      <p>APM2: <strong>Hola</strong></p>
+                    </div>
+                    <div className="slds-m-bottom_large slds-col slds-size_1-of-2 slds-large-size_1-of-4">
+                      <p>Industry: <strong>Hola</strong></p>
+                    </div>
+                    <div className="slds-m-bottom_large slds-col slds-size_1-of-2 slds-large-size_1-of-4">
+                      <p>Segment: <strong>Hola</strong></p>
+                    </div>
+                    <div className="slds-m-bottom_large slds-col slds-size_1-of-2 slds-large-size_1-of-4">
+                      <p>Persona: <strong>Hola</strong></p>
+                    </div>
+                  </div>
+                </AccordionPanel>
+              </Accordion>
+            </div>
+            <div className="slds-m-bottom_large slds-col slds-size_1-of-2">
+              <Input
+                placeholder="Enter Campaign Id"
+                label="Campaign Id"
+                onChange={(event, data) => this.handleChange("campaignId", data.value)}
+                defaultValue={this.state.row.campaignId}
+                id="campaignId"
+                maxLength="18"
               />
             </div>
             <div className="slds-m-bottom_large slds-col slds-size_1-of-2">
@@ -308,16 +389,6 @@ class CreateActivity extends Component {
             </div>
             <div className="slds-m-bottom_large slds-col slds-size_1-of-2">
               <Input placeholder="Enter assets" onChange={(event, data) => this.handleChange("asset", data.value)} defaultValue={this.state.row.asset} id="asset" label="Asset"/>
-            </div>
-            <div className="slds-m-bottom_large slds-col slds-size_1-of-2">
-              <Input
-                placeholder="Enter Campaign Id"
-                label="Campaign Id"
-                onChange={(event, data) => this.handleChange("campaignId", data.value)}
-                defaultValue={this.state.row.campaignId}
-                id="campaignId"
-                maxLength="18"
-              />
             </div>
             <div className="slds-col slds-size_1-of-1">
               <Button label="Cancel" onClick={() => this.props.history.push('/home')} />
