@@ -213,13 +213,16 @@ class CreateActivity extends Component {
         <FormContainer>
           <form className="slds-grid slds-wrap" onSubmit={e => this.validateSubmit(e)}>
             <div className="slds-m-bottom_large slds-col slds-size_1-of-2">
-              <Input
-                placeholder="Enter Campaign Id"
-                label="Campaign Id"
-                onChange={(event, data) => this.handleChange("campaignId", data.value)}
-                defaultValue={this.state.row.campaignId}
-                id="campaignId"
-                maxLength="18"
+              <Combobox
+                id="program"
+                events={{onSelect: (event, data) => data.selection.length && this.handleChange("program", data.selection)}}
+                labels={{label: 'Program'}}
+                name="program"
+                options={this.state.programs}
+                selection={this.state.row.program}
+                value="program"
+                variant="readonly"
+                errorText={this.state.error.program}
               />
             </div>
             <div className="slds-m-bottom_large slds-col slds-size_1-of-2">
@@ -282,19 +285,6 @@ class CreateActivity extends Component {
               />
             </div>
             <div className="slds-m-bottom_large slds-col slds-size_1-of-2">
-              <Combobox
-                id="program"
-                events={{onSelect: (event, data) => data.selection.length && this.handleChange("program", data.selection)}}
-                labels={{label: 'Program'}}
-                name="program"
-                options={this.state.programs}
-                selection={this.state.row.program}
-                value="program"
-                variant="readonly"
-                errorText={this.state.error.program}
-              />
-            </div>
-            <div className="slds-m-bottom_large slds-col slds-size_1-of-2">
               <Datepicker
                 required
                 id="startDate"
@@ -318,6 +308,16 @@ class CreateActivity extends Component {
             </div>
             <div className="slds-m-bottom_large slds-col slds-size_1-of-2">
               <Input placeholder="Enter assets" onChange={(event, data) => this.handleChange("asset", data.value)} defaultValue={this.state.row.asset} id="asset" label="Asset"/>
+            </div>
+            <div className="slds-m-bottom_large slds-col slds-size_1-of-2">
+              <Input
+                placeholder="Enter Campaign Id"
+                label="Campaign Id"
+                onChange={(event, data) => this.handleChange("campaignId", data.value)}
+                defaultValue={this.state.row.campaignId}
+                id="campaignId"
+                maxLength="18"
+              />
             </div>
             <div className="slds-col slds-size_1-of-1">
               <Button label="Cancel" onClick={() => this.props.history.push('/home')} />
