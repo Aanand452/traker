@@ -56,6 +56,18 @@ class ProgramModel {
       console.error('Error getting program list', err);
     }
   }
+
+  static async getProgramById(id) {
+    try {
+      const program = await db.Program.findByPk(id, {
+        include: [db.User, db.Region, db.LifecycleStage, db.APM1, db.APM2, db.Industry, db.Segment, db.Persona]
+      });
+
+      return program;
+    } catch (err) {
+      console.error('Error getting program list', err);
+    }
+  };
 }
 
 export default ProgramModel;
