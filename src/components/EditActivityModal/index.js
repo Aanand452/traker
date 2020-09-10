@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import moment from 'moment';
+import { getAPIUrl } from '../../config/config';
 
 import {
   IconSettings,
@@ -42,12 +43,18 @@ class EditActivityModalComponent extends Component {
   constructor(props){
     super(props);
 
-    this.baseUrl = 'http://localhost:3000/api/v1';
+    this.API_URL = 'http://localhost:3000/api/v1';
   }
 
   componentDidMount() {
-    this.initDropdowns();
+    this.setupAndFetch();
+  }
+
+  setupAndFetch = async () => {
+    if(window.location.hostname === 'localhost') this.API_URL =  "http://localhost:3000/api/v1";
+    else this.API_URL = await getAPIUrl();
     
+    this.initDropdowns();
   }
 
   initDropdowns = async () => {
@@ -59,7 +66,7 @@ class EditActivityModalComponent extends Component {
   }
 
   getActicityById = async id => {
-    let response = await fetch(`${this.baseUrl}/activity/${id}`);
+    let response = await fetch(`${this.API_URL}/activity/${id}`);
     let { result } = await response.json();
 
     try{
@@ -93,7 +100,7 @@ class EditActivityModalComponent extends Component {
   checkTactic = async () => {
     return new Promise(async (resolve, reject) => {
       try {
-        let response = await fetch(`${this.baseUrl}/tactic`);
+        let response = await fetch(`${this.API_URL}/tactic`);
         let { result } = await response.json(); 
   
         //salesforce datepicker requires id key
@@ -116,7 +123,7 @@ class EditActivityModalComponent extends Component {
   checkProgram = async () => {
     return new Promise(async (resolve, reject) => {
       try {
-        let response = await fetch(`${this.baseUrl}/program`);
+        let response = await fetch(`${this.API_URL}/program`);
         let { result } = await response.json()
   
         //salesforce datepicker requires id key
@@ -138,7 +145,7 @@ class EditActivityModalComponent extends Component {
   checkFormat = async (tacticId) => {
     return new Promise(async (resolve, reject) => {
       try {
-        let response = await fetch(`${this.baseUrl}/format/${tacticId}`);
+        let response = await fetch(`${this.API_URL}/format/${tacticId}`);
         let { result } = await response.json();
         let formatSelection = result[0];
         
@@ -160,7 +167,7 @@ class EditActivityModalComponent extends Component {
   checkRegion = async () => {
     return new Promise(async (resolve, reject) => {
       try {
-        let response = await fetch(`${this.baseUrl}/region`);
+        let response = await fetch(`${this.API_URL}/region`);
         let { result } = await response.json();
         result = result.map(el => {
           el.id = el.region_id;
@@ -231,7 +238,7 @@ class EditActivityModalComponent extends Component {
         },
         body: JSON.stringify(body)
       }
-      const response = await fetch(`${this.baseUrl}/activity/${this.props.data.activityId}`, config);
+      const response = await fetch(`${this.API_URL}/activity/${this.props.data.activityId}`, config);
       
       this.props.editItem(this.props.dataTable.items, {
         campaignId: this.state.campaignId,

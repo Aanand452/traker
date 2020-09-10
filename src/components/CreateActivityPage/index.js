@@ -34,7 +34,6 @@ class CreateActivityPage extends Component {
     };
 
     try {
-      const response = await fetch('API.json');
       this.props.history.push({
         pathname: '/my-activities',
         newRow: newRow
