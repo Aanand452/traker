@@ -69,13 +69,13 @@ class ProgramModel {
         budget: program.budget,
         metrics: program.metrics,
         parentCampaignId: program.parentCampaignId,
-        targetRegion: program.targetRegion,
-        lifecycleStage: program.lifecycleStage,
-        apm1: program.apm1,
-        apm2: program.apm2,
-        industry: program.industry,
-        segment: program.segment,
-        persona: program.persona
+        targetRegion: program.Region ? program.Region.name : '',
+        lifecycleStage: program.LifecycleStage ? program.LifecycleStage.name : '',
+        apm1: program.APM1 ? program.APM1.name : '',
+        apm2: program.APM2 ? program.APM2.name : '',
+        industry: program.Industry ? program.Industry.name : '',
+        segment: program.Segment ? program.Segment.name : '',
+        persona: program.Persona ? program.Persona.name : ''
       }
       
       return minProgram;
