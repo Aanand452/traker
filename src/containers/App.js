@@ -9,6 +9,7 @@ import NavBar from '../components/NavBar';
 import EditActivityPage from '../components/EditActivityPage';
 import EditProgramPage from '../components/EditProgramPage';
 import HomePage from '../components/HomePage';
+import PrivateRoute from '../components/PrivateRoute';
 
 function EditActivity() {
   return (
@@ -53,10 +54,10 @@ function App({closeSettingsMenu, user}) {
       <SfdcPageAppWrapper className="app" onClick={closeSettingsMenu}>
         <Switch>
           <Route exact path="/" component={Login} />
-          <Route exact path="/home" component={Home} />
-          <Route exact path="/my-activities" component={EditActivity} />
-          <Route exact path="/programs-view" component={EditProgram} />
-          <Route exact path="/create-activity" component={CreateActivity} />
+          <PrivateRoute exact path="/home" component={Home} />
+          <PrivateRoute exact path="/my-activities" component={EditActivity} />
+          <PrivateRoute exact path="/programs-view" component={EditProgram} />
+          <PrivateRoute exact path="/create-activity" component={CreateActivity} />
           <Route exact path="*" component={NotFoundPage} />
         </Switch>
       </SfdcPageAppWrapper>
