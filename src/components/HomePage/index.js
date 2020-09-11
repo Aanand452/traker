@@ -31,19 +31,6 @@ const HomePage = () => (
       </Card>
       <Card>
         <CardImage src="assets/images/placeholder-img-horizontal.jpg" alt="placeholder" />
-        <CardTitle>Create Program</CardTitle>
-        <CardBody>
-          a brief description <br />
-          (Only displayed for Admin and Superuser)
-        </CardBody>
-        <CardAction>
-          <Link>
-            <Button variant="brand" label="Create new program" />
-          </Link>
-        </CardAction>
-      </Card>
-      <Card>
-        <CardImage src="assets/images/placeholder-img-horizontal.jpg" alt="placeholder" />
         <CardTitle>Edit Activities / My Activities</CardTitle>
         <CardBody>
           a brief description
@@ -63,6 +50,19 @@ const HomePage = () => (
         <CardAction>
           <Link to="/programs-view">
             <Button variant="brand" label="Go to Programs View" />
+          </Link>
+        </CardAction>
+      </Card>
+      <Card>
+        <CardImage src="assets/images/placeholder-img-horizontal.jpg" alt="placeholder" />
+        <CardTitle>Create Program</CardTitle>
+        <CardBody>
+          a brief description <br />
+          (Only displayed for Admin and Superuser)
+        </CardBody>
+        <CardAction>
+          <Link>
+            <Button variant="brand" label="Create new program" />
           </Link>
         </CardAction>
       </Card>

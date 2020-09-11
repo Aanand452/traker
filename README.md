@@ -1,5 +1,5 @@
 
-# WWW Price List
+
 
 Basic react+redux project.
 - Full Webpack pipeline created through [react-create-app](https://github.com/facebookincubator/create-react-app)
@@ -10,7 +10,6 @@ Basic react+redux project.
 
 ### Structure
 ```
-www-pricelist
 |- server
     |- config
       |- config.js  // Passport configuration for SAML authentication

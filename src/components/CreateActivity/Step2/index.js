@@ -70,7 +70,7 @@ class Step2 extends Component {
           />
         </div>
         <div className="slds-m-bottom_large slds-col slds-size_1-of-2">
-          <Textarea
+          <Input
             id="title"
             label="Title"
             errorText={this.props.error.title}
@@ -98,6 +98,7 @@ class Step2 extends Component {
             formatter={(date) => date ? moment(date).format('MM/DD/YYYY') : ''}
             parser={(dateString) => moment(dateString, 'MM-DD-YYYY').toDate()}
             value={this.props.row.startDate}
+            errorText={this.props.error.startDate}
           />
           <Datepicker
             id="endDate"
@@ -107,10 +108,11 @@ class Step2 extends Component {
             formatter={(date) => date ? moment(date).format('MM/DD/YYYY') : ''}
             parser={(dateString) => moment(dateString, 'MM-DD-YYYY').toDate()}
             value={this.props.row.endDate}
+            errorText={this.props.error.endDate}
           />
         </div>
         <div className="slds-m-bottom_large slds-col slds-size_1-of-2">
-          <Input placeholder="Enter assets" onChange={(event, data) => this.handleChange("asset", data.value)} value={this.props.row.asset} id="asset" label="Asset"/>
+          <Input placeholder="Enter assets" onChange={(event, data) => this.handleChange("asset", data.value)} value={this.props.row.asset} id="asset" label="Asset" errorText={this.props.error.asset}/>
         </div>
         <div className="slds-col slds-size_1-of-1">
           <Button label="Go back" onClick={() => this.props.handleStep(1)} />

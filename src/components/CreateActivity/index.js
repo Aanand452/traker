@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 import { withRouter, Link } from 'react-router-dom';
+import { getAPIUrl } from '../../config/config';
+
 import {
   IconSettings,
   Breadcrumb
@@ -56,6 +58,7 @@ class CreateActivity extends Component {
     this.checkProgram();
     this.checkProgramDetail();
     this.props.getFormData(this.state.row);
+    this.setupAndFetch();
   };
 
   getUser = () => {
@@ -63,21 +66,20 @@ class CreateActivity extends Component {
     this.setState({ loggedUser });
   }
 
-  async getBaseUrl() {
-    try {
-      let response = await fetch('/config');
-      let data = await response.json();
-      this.setState({
-        baseURL: data.api
-      });
-    } catch (err) {
-      console.error('ERROR: cannot get the url config: ', err);
-    }
+  setupAndFetch = async () => {
+    if(window.location.hostname === 'localhost') this.API_URL =  "http://localhost:3000/api/v1";
+    else this.API_URL = await getAPIUrl();
+    
+    this.getUser();
+    this.checkTactic();
+    this.checkRegion();
+    this.checkProgram();
+    this.props.getFormData(this.state.row);
   }
 
   async checkRegion() {
     try {
-      let response = await fetch(`${this.state.baseURL}/api/v1/region`);
+      let response = await fetch(`${this.API_URL}/region`);
       let { result } = await response.json();
       this.setState({ regions: result, row: {...this.state.row, region: [result[0]]}});
     } catch(err) {
@@ -87,7 +89,7 @@ class CreateActivity extends Component {
 
   async checkProgram() {
     try {
-      let response = await fetch(`${this.state.baseURL}/api/v1/program`);
+      let response = await fetch(`${this.API_URL}/program`);
       let { result } = await response.json();
       this.setState({ programs: result, row: {...this.state.row, program: [result[0]]}});
     } catch(err) {
@@ -108,7 +110,7 @@ class CreateActivity extends Component {
 
   async checkTactic() {
     try {
-      let response = await fetch(`${this.state.baseURL}/api/v1/tactic`);
+      let response = await fetch(`${this.API_URL}/tactic`);
       let { result } = await response.json();
       let format = await this.populateTactic(result[0]);
       this.setState({ formats: format, tactics: result, row: {...this.state.row, tactic: [result[0]], format: [format[0]] } });
@@ -119,7 +121,7 @@ class CreateActivity extends Component {
 
   async populateTactic(selection) {
     try {
-      let response = await fetch(`${this.state.baseURL}/api/v1/format/${selection.tactic_id}`);
+      let response = await fetch(`${this.API_URL}/format/${selection.tactic_id}`);
       let { result } = await response.json();
       return result;
     } catch (err) {
@@ -145,11 +147,11 @@ class CreateActivity extends Component {
 
   validations = (input, data) => {
     let errors = {...this.state.error};
-    const inputs = ["program", "title", "format", "region", "tactic", "abstract"];
+    const inputs = ["program", "title", "format", "region", "tactic", "abstract", "asset", "startDate", "endDate"];
 
     if (input) {
       if(inputs.includes(input) && !data) {
-        errors = {...errors, [input]: `Enter ${input === "abstract" ? "an" : "a"} ${input}`};
+        errors = {...errors, [input]: "This field is required"};
       } else {
         delete errors[input];
       }
@@ -158,7 +160,7 @@ class CreateActivity extends Component {
         if(this.state.row[input]) {
           delete errors[input];
         } else {
-          errors = {...errors, [input]: `Enter ${input === "abstract" ? "an" : "a"} ${input}`};
+          errors = {...errors, [input]: "This field is required"};
         }
       })
     }
@@ -204,7 +206,7 @@ class CreateActivity extends Component {
         },
         body: JSON.stringify(body)
       }
-      const response = await fetch(`http://localhost:3000/api/v1/activity`, config);
+      const response = await fetch(`${this.API_URL}/activity`, config);
     } catch (err) {
       this.setState({isDeletePromptOpen: true});
       console.error(err);
