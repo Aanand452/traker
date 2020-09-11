@@ -1,0 +1,20 @@
+{
+  "info": {
+    "status": "Status HTTP Code",
+    "code": 200
+  },
+  "result": { 
+    "programId": "eb20275a-d2a6-41b4-b2e6-092b317234c9",
+    "owner": "millergonzalez@salesforce.com",
+    "budget": "75871652",
+    "metrics": "Metrics example",
+    "parentCampaignId": "2rdAlpVNo8ovjmSYqx",
+    "targetRegion": "IN",
+    "lifecycleStage": "Life cycle example",
+    "apm1": "APM1 example",
+    "apm2": "APM2 example",
+    "industry": "Industry example",
+    "segment": "Segment example",
+    "persona": "Persona example"
+  }
+}

@@ -1,19 +1,13 @@
 import React, { Component } from 'react';
-import { withRouter } from 'react-router-dom';
-import moment from 'moment';
-import { v4 as uuidv4 } from 'uuid';
+import { withRouter, Link } from 'react-router-dom';
 import {
   IconSettings,
-  Combobox,
-  Input,
-  Datepicker,
-  Button,
-  Textarea,
-  Accordion,
-  AccordionPanel
+  Breadcrumb
 } from '@salesforce/design-system-react';
 
 import Prompt from '../Prompt';
+import Step1 from './Step1';
+import Step2 from './Step2';
 
 import { FormContainer } from './styles';
 
@@ -40,7 +34,19 @@ class CreateActivity extends Component {
     error: {},
     isDeletePromptOpen: false,
     expandedPanels: {},
-    items: {}
+    items: {},
+    steps: [
+      {
+        step: 1,
+        trail: <Link onClick={() => this.handleStep(1)}>Select program</Link>,
+        active: true
+      },
+      {
+        step: 2,
+        trail: <Link>Create activity</Link>,
+        active: false
+      }
+    ]
   };
 
   componentDidMount() {
@@ -48,6 +54,7 @@ class CreateActivity extends Component {
     this.checkTactic();
     this.checkRegion();
     this.checkProgram();
+    this.checkProgramDetail();
     this.props.getFormData(this.state.row);
   };
 
@@ -90,7 +97,8 @@ class CreateActivity extends Component {
 
   async checkProgramDetail() {
     try {
-      let response = await fetch(`${this.state.baseURL}/api/v1/program/${this.state.row.program[0]}`);
+      // let response = await fetch('/assets/data/program_details.json');
+      let response = await fetch(`${this.state.baseURL}/api/v1/program/${this.state.row.program[0].program_id}`);
       let { result } = await response.json();
       this.setState({ items: result });
     } catch(err) {
@@ -103,7 +111,6 @@ class CreateActivity extends Component {
       let response = await fetch(`${this.state.baseURL}/api/v1/tactic`);
       let { result } = await response.json();
       let format = await this.populateTactic(result[0]);
-      console.log(format)
       this.setState({ formats: format, tactics: result, row: {...this.state.row, tactic: [result[0]], format: [format[0]] } });
     } catch(err) {
       console.error(err)
@@ -119,21 +126,6 @@ class CreateActivity extends Component {
       console.error(err);
     }
   }
-
-  checkDataModel(model, modelSelection) {
-    let selection = model.filter(el => el.label === modelSelection)
-    return selection.length ? selection : [model[0]] 
-  };
-
-  createModelData(modelData) {
-    const modelResult = modelData.map((el, index) => {
-      const elementJson = {}
-      elementJson.label = el
-      elementJson.id = index.toString();
-      return elementJson
-    });
-    return modelResult
-  };
 
   handleChange = async (value, data) => {
     let newRow = {};
@@ -218,182 +210,40 @@ class CreateActivity extends Component {
       console.error(err);
     }
   }
-
-  togglePanel(event, data) {
-		this.setState((state) => ({
-			...state,
-			expandedPanels: {
-				[data.id]: !state.expandedPanels[data.id],
-			},
-		}));
-		if (this.props.action) {
-			const dataAsArray = Object.keys(data).map((id) => data[id]);
-			this.props.action('onClick')(event, ...dataAsArray);
-		} else if (console) {
-			console.log('[onSelect] (event, data)', event, data);
-		}
-	}
+  
+  handleStep = step => {
+    let steps = this.state.steps.map(el => el.step <= step ? {...el, active: true} : {...el, active: false});
+    this.setState({ steps });
+  }
 
   render() {
     return (
       <IconSettings iconPath="assets/icons">
+        <div className="slds-m-left_xx-small slds-m-bottom_small">
+          <Breadcrumb trail={this.state.steps.filter(el => el.active).map(el => el.trail)} />
+        </div>
         {this.state.isDeletePromptOpen && <Prompt closeErrorHandler={() => this.setState({isDeletePromptOpen: false})} error={true} message='Interval server error' title='Error' />}
         <FormContainer>
           <form className="slds-grid slds-wrap" onSubmit={e => this.validateSubmit(e)}>
-            <div className="slds-m-bottom_large slds-col slds-size_1-of-1">
-              <Combobox
-                id="program"
-                events={{onSelect: (event, data) => data.selection.length && this.handleChange("program", data.selection)}}
-                labels={{label: 'Program'}}
-                name="program"
-                options={this.state.programs}
-                selection={this.state.row.program}
-                value="program"
-                variant="readonly"
-                errorText={this.state.error.program}
-              />
-              <Accordion>
-                <AccordionPanel
-                  expanded={!!this.state.expandedPanels[this.state.items.id]}
-                  onTogglePanel={(event) => this.togglePanel(event, this.state.items)}
-                  summary="Program details"
-                >
-                  <div className="slds-grid slds-wrap">
-                    <div className="slds-m-bottom_large slds-col slds-size_1-of-2 slds-large-size_1-of-4">
-                      <p>Program Owner: <strong>Hola</strong></p>
-                    </div>
-                    <div className="slds-m-bottom_large slds-col slds-size_1-of-2 slds-large-size_1-of-4">
-                      <p>Budget: <strong>Hola</strong></p>
-                    </div>
-                    <div className="slds-m-bottom_large slds-col slds-size_1-of-2 slds-large-size_1-of-4">
-                      <p>Metrics: <strong>Hola</strong></p>
-                    </div>
-                    <div className="slds-m-bottom_large slds-col slds-size_1-of-2 slds-large-size_1-of-4">
-                      <p>Parent Campaign ID: <strong>Hola</strong></p>
-                    </div>
-                    <div className="slds-m-bottom_large slds-col slds-size_1-of-2 slds-large-size_1-of-4">
-                      <p>Region: <strong>Hola</strong></p>
-                    </div>
-                    <div className="slds-m-bottom_large slds-col slds-size_1-of-2 slds-large-size_1-of-4">
-                      <p>Lifecycle Stage: <strong>Hola</strong></p>
-                    </div>
-                    <div className="slds-m-bottom_large slds-col slds-size_1-of-2 slds-large-size_1-of-4">
-                      <p>APM1: <strong>Hola</strong></p>
-                    </div>
-                    <div className="slds-m-bottom_large slds-col slds-size_1-of-2 slds-large-size_1-of-4">
-                      <p>APM2: <strong>Hola</strong></p>
-                    </div>
-                    <div className="slds-m-bottom_large slds-col slds-size_1-of-2 slds-large-size_1-of-4">
-                      <p>Industry: <strong>Hola</strong></p>
-                    </div>
-                    <div className="slds-m-bottom_large slds-col slds-size_1-of-2 slds-large-size_1-of-4">
-                      <p>Segment: <strong>Hola</strong></p>
-                    </div>
-                    <div className="slds-m-bottom_large slds-col slds-size_1-of-2 slds-large-size_1-of-4">
-                      <p>Persona: <strong>Hola</strong></p>
-                    </div>
-                  </div>
-                </AccordionPanel>
-              </Accordion>
-            </div>
-            <div className="slds-m-bottom_large slds-col slds-size_1-of-2">
-              <Input
-                placeholder="Enter Campaign Id"
-                label="Campaign Id"
-                onChange={(event, data) => this.handleChange("campaignId", data.value)}
-                defaultValue={this.state.row.campaignId}
-                id="campaignId"
-                maxLength="18"
-              />
-            </div>
-            <div className="slds-m-bottom_large slds-col slds-size_1-of-2">
-              <Combobox
-                id="region"
-                events={{onSelect: (event, data) => data.selection.length && this.handleChange("region", data.selection)}}
-                labels={{label: 'Region'}}
-                name="region"
-                options={this.state.regions}
-                selection={this.state.row.region}
-                value="region"
-                variant="readonly"
-                errorText={this.state.error.region}
-              />
-            </div>
-            <div className="slds-m-bottom_large slds-col slds-size_1-of-2">
-              <Combobox
-                id="tactic"
-                events={{onSelect: (event, data) => data.selection.length && this.handleChange("tactic", data.selection)}}
-                labels={{label: 'Tactic'}}
-                name="tactic"
-                options={this.state.tactics}
-                selection={this.state.row.tactic}
-                value="tactic"  
-                variant="readonly"
-                errorText={this.state.error.tactic}
-              />
-            </div>
-            <div className="slds-m-bottom_large slds-col slds-size_1-of-2">
-              <Combobox
-                id="format"
-                events={{onSelect: (event, data) => data.selection.length && this.handleChange("format", data.selection)}}
-                labels={{label: 'Format'}}
-                name="format"
-                options={this.state.formats}
-                selection={this.state.row.format}
-                value="format"  
-                variant="readonly"
-                errorText={this.state.error.format}
-              />
-            </div>
-            <div className="slds-m-bottom_large slds-col slds-size_1-of-2">
-              <Textarea
-                id="title"
-                label="Title"
-                errorText={this.state.error.title}
-                placeholder="Enter title"
-                defaultValue={this.state.title}
-                onChange={(event) => this.handleChange("title", event.target.value)}
-              />
-            </div>
-            <div className="slds-m-bottom_large slds-col slds-size_1-of-2">
-              <Textarea
-                id="abstract"
-                label="Abstract"
-                errorText={this.state.error.abstract}
-                placeholder="Enter abstract"
-                defaultValue={this.state.row.abstract}
-                onChange={(event) => this.handleChange("abstract", event.target.value)}
-              />
-            </div>
-            <div className="slds-m-bottom_large slds-col slds-size_1-of-2">
-              <Datepicker
-                required
-                id="startDate"
-                labels={{label: 'Start Date'}}
-                triggerClassName="slds-col slds-size_1-of-2"
-                onChange={(event, data) => this.handleChange("startDate", data.formattedDate)}
-                formatter={(date) => date ? moment(date).format('MM/DD/YYYY') : ''}
-                parser={(dateString) => moment(dateString, 'MM-DD-YYYY').toDate()}
-                value={this.state.row.startDate}
-              />
-              <Datepicker
-                required
-                id="endDate"
-                labels={{label: 'End Date'}}
-                triggerClassName="slds-col slds-size_1-of-2"
-                onChange={(event, data) => this.handleChange("endDate", data.formattedDate)}
-                formatter={(date) => date ? moment(date).format('MM/DD/YYYY') : ''}
-                parser={(dateString) => moment(dateString, 'MM-DD-YYYY').toDate()}
-                value={this.state.row.endDate}
-              />
-            </div>
-            <div className="slds-m-bottom_large slds-col slds-size_1-of-2">
-              <Input placeholder="Enter assets" onChange={(event, data) => this.handleChange("asset", data.value)} defaultValue={this.state.row.asset} id="asset" label="Asset"/>
-            </div>
-            <div className="slds-col slds-size_1-of-1">
-              <Button label="Cancel" onClick={() => this.props.history.push('/home')} />
-              <Button label="Save" variant="brand" type="submit" />
-            </div>
+            {
+              this.state.steps.filter(el => el.active).length === 1 ?
+                <Step1
+                  row={this.state.row}
+                  handleStep={this.handleStep}
+                  handleChange={this.handleChange}
+                  error={this.state.error}
+                /> :
+                <Step2
+                  row={this.state.row}
+                  handleStep={this.handleStep}
+                  getFormData={this.props.getFormData}
+                  handleChange={this.handleChange}
+                  error={this.state.error}
+                  regions={this.state.regions}
+                  tactics={this.state.tactics}
+                  formats={this.state.formats}
+                />
+            }
           </form>
         </FormContainer>
       </IconSettings>
