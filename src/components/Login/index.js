@@ -64,7 +64,7 @@ class Login extends Component {
         <IconSettings iconPath="/assets/icons">
           <ToastContainer>
             {this.state.isToastOpened && <Toast
-              labels={{ heading:'Error server'}}
+              labels={{ heading:'Something went wrong'}}
               variant="error"
               onRequestClose={() => this.setState({isToastOpened: false})}
               duration={4000}
