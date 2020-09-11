@@ -22,13 +22,8 @@ Tactic.init({
 });
 
 Tactic.associate = models => {
-  Tactic.hasMany(models.Format, {
-    foreignKey: 'tactic_id'
-  });
-}
-
-Tactic.associate = models => {
-  Tactic.belongsTo(models.Program);
+  Tactic.hasMany(models.Format, {foreignKey: 'tactic_id'});
+  Tactic.hasMany(models.Activity, {foreignKey: 'tactic_id'});
 }
 
 export default Tactic;
