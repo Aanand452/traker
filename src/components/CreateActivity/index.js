@@ -85,7 +85,6 @@ class CreateActivity extends Component {
       let response = await fetch(`${this.API_URL}/tactic`);
       let { result } = await response.json();
       let format = await this.populateTactic(result[0]);
-      console.log(format)
       this.setState({ formats: format, tactics: result, row: {...this.state.row, tactic: [result[0]], format: [format[0]] } });
     } catch(err) {
       console.error(err)
@@ -135,11 +134,11 @@ class CreateActivity extends Component {
 
   validations = (input, data) => {
     let errors = {...this.state.error};
-    const inputs = ["program", "title", "format", "region", "tactic", "abstract"];
+    const inputs = ["program", "title", "format", "region", "tactic", "abstract", "asset", "startDate", "endDate"];
 
     if (input) {
       if(inputs.includes(input) && !data) {
-        errors = {...errors, [input]: `Enter ${input === "abstract" ? "an" : "a"} ${input}`};
+        errors = {...errors, [input]: "This field is required"};
       } else {
         delete errors[input];
       }
@@ -148,7 +147,7 @@ class CreateActivity extends Component {
         if(this.state.row[input]) {
           delete errors[input];
         } else {
-          errors = {...errors, [input]: `Enter ${input === "abstract" ? "an" : "a"} ${input}`};
+          errors = {...errors, [input]: "This field is required"};
         }
       })
     }
@@ -258,7 +257,7 @@ class CreateActivity extends Component {
               />
             </div>
             <div className="slds-m-bottom_large slds-col slds-size_1-of-2">
-              <Textarea
+              <Input
                 id="title"
                 label="Title"
                 errorText={this.state.error.title}
@@ -290,30 +289,39 @@ class CreateActivity extends Component {
                 errorText={this.state.error.program}
               />
             </div>
-            <div className="slds-m-bottom_large slds-col slds-size_1-of-2">
+            <div className={`slds-m-bottom_large slds-col slds-size_1-of-4 ${this.state.error.startDate && "slds-has-error"}`}>
               <Datepicker
-                required
                 id="startDate"
                 labels={{label: 'Start Date'}}
-                triggerClassName="slds-col slds-size_1-of-2"
+                triggerClassName={`slds-col slds-size_1-of-1`}
                 onChange={(event, data) => this.handleChange("startDate", data.formattedDate)}
                 formatter={(date) => date ? moment(date).format('MM/DD/YYYY') : ''}
                 parser={(dateString) => moment(dateString, 'MM-DD-YYYY').toDate()}
                 value={this.state.row.startDate}
               />
+              {this.state.error.startDate && <div class="slds-form-element__help">This field is required</div>}
+            </div>
+            <div className={`slds-m-bottom_large slds-col slds-size_1-of-4 ${this.state.error.endDate && "slds-has-error"}`}>
               <Datepicker
-                required
                 id="endDate"
                 labels={{label: 'End Date'}}
-                triggerClassName="slds-col slds-size_1-of-2"
+                triggerClassName="slds-col slds-size_1-of-1"
                 onChange={(event, data) => this.handleChange("endDate", data.formattedDate)}
                 formatter={(date) => date ? moment(date).format('MM/DD/YYYY') : ''}
                 parser={(dateString) => moment(dateString, 'MM-DD-YYYY').toDate()}
                 value={this.state.row.endDate}
               />
+              {this.state.error.endDate && <div class="slds-form-element__help">This field is required</div>}
             </div>
             <div className="slds-m-bottom_large slds-col slds-size_1-of-2">
-              <Input placeholder="Enter assets" onChange={(event, data) => this.handleChange("asset", data.value)} defaultValue={this.state.row.asset} id="asset" label="Asset"/>
+              <Input
+                placeholder="Enter assets"
+                onChange={(event, data) => this.handleChange("asset", data.value)}
+                defaultValue={this.state.row.asset}
+                id="asset"
+                label="Asset"
+                errorText={this.state.error.asset}
+              />
             </div>
             <div className="slds-col slds-size_1-of-1">
               <Button label="Cancel" onClick={() => this.props.history.push('/home')} />

@@ -184,36 +184,40 @@ class EditActivityModalComponent extends Component {
   }
 
   handleStartDate = (event, data) => {
-    this.setState({ startDate: data.formattedDate });
+    let errors = {...this.state.errors};
+    if(data.formattedDate) {
+      errors = {...this.state.errors, startDate: false};
+    } else {
+      errors = {...this.state.errors, startDate: true};
+    }
+    this.setState({ startDate: data.formattedDate, errors });
   }
 
   handleEndDate = (event, data) => {
-    this.setState({ endDate: data.formattedDate });
+    let errors = {...this.state.errors};
+    if(data.formattedDate) {
+      errors = {...this.state.errors, endDate: false};
+    } else {
+      errors = {...this.state.errors, endDate: true};
+    }
+    this.setState({ endDate: data.formattedDate, errors });
   }
 
   handleChange = e => {
-    this.setState({[e.target.id]: e.target.value});
+    let errors = {...this.state.errors};
+    if(e.target.value && e.target.id !== 'campaignId') {
+      errors = {...this.state.errors, [e.target.id]: false};
+    } else {
+      errors = {...this.state.errors, [e.target.id]: true};
+    }
+    delete errors.campaignId;
+    console.log(e.target.value)
+    this.setState({[e.target.id]: e.target.value, errors});
   }
 
   editTable = async () => {
-    /*let { title, abstract, campaignId } = this.state;
-    let errors = {...this.state.errors};
-    
-    if(campaignId.length === 0 || campaignId.length < 18) {
-      errors = {...errors, campaignId: true};
-      this.setState({errors});
-      return;
-    }
-    if(title.length === 0) {
-      errors = {...errors, title: true};
-      this.setState({errors});
-      return;
-    }
-    if(abstract.length === 0) {
-      errors = {...errors, abstract: true};
-      this.setState({errors});
-      return;
-    }*/
+
+    if(Object.values(this.state.errors).some(el => el)) return;
 
     try {
       let body = {
@@ -261,18 +265,6 @@ class EditActivityModalComponent extends Component {
     }
   }
 
-  idGenerator = len => {
-    let maxlen = 8,
-      min = Math.pow(16,Math.min(len,maxlen)-1) ,
-      max = Math.pow(16,Math.min(len,maxlen)) - 1,
-      n   = Math.floor( Math.random() * (max-min+1) ) + min,
-      r   = n.toString(16);
-    while ( r.length < len ) {
-        r = r + this.idGenerator( len - maxlen );
-    }
-    return r;
-  }
-
 	render() {        
 		return (
       <IconSettings iconPath="/assets/icons">
@@ -292,12 +284,13 @@ class EditActivityModalComponent extends Component {
                 id="campaignId"
                 label="Campaign ID"
                 placeholder="Placeholder Text"
-                defaultValue={this.state.campaignId}
+                value={this.state.campaignId}
                 onChange={e => this.handleChange(e)}
               />
             </div>
             <div className="slds-form-element slds-m-bottom_large">
               <Combobox
+                id="program"
                 required
                 events={{
                   onSelect: (event, data) => {
@@ -316,6 +309,7 @@ class EditActivityModalComponent extends Component {
                 options={this.state.program}
                 selection={this.state.programSelection}
                 variant="readonly"
+                errorText={this.state.errors.program && "This field is required"}
               />
             </div>
             <div className="slds-form-element slds-m-bottom_large">
@@ -325,13 +319,14 @@ class EditActivityModalComponent extends Component {
                 label="Title"
                 errorText={this.state.errors.title && "This field is required"}
                 placeholder="Enter title"
-                defaultValue={this.state.title}
+                value={this.state.title}
                 onChange={e => this.handleChange(e)}
               />
             </div>
             <div className="slds-form-element slds-m-bottom_large">
               <Combobox
                 required
+                id='tactic'
                 events={{
                   onSelect: (event, data) => {
                     const selection =
@@ -351,11 +346,13 @@ class EditActivityModalComponent extends Component {
                 options={this.state.tactic}
                 selection={this.state.tacticSelection}
                 variant="readonly"
+                errorText={this.state.errors.tactic && "This field is required"}
               />
             </div>
             <div className="slds-form-element slds-m-bottom_large">
               <Combobox
                 required
+                id='format'
                 events={{
                   onSelect: (event, data) => {
                     const selection =
@@ -373,6 +370,7 @@ class EditActivityModalComponent extends Component {
                 options={this.state.format}
                 selection={this.state.formatSelection}
                 variant="readonly"
+                errorText={this.state.errors.format && "This field is required"}
               />
             </div>
             <div className="slds-form-element slds-m-bottom_large">
@@ -382,13 +380,14 @@ class EditActivityModalComponent extends Component {
                 label="Abstract"
                 errorText={this.state.errors.abstract && "This field is required"}
                 placeholder="Enter abstract"
-                defaultValue={this.state.abstract}
+                value={this.state.abstract}
                 onChange={e => this.handleChange(e)}
               />
             </div>
             <div className="slds-form-element slds-m-bottom_large">
               <Combobox
                 required
+                id='region'
                 events={{
                   onSelect: (event, data) => {
                     const selection =
@@ -406,79 +405,84 @@ class EditActivityModalComponent extends Component {
                 options={this.state.region}
                 selection={this.state.regionSelection}
                 variant="readonly"
+                errorText={this.state.errors.region && "This field is required"}
               />
             </div>
-            <div className="slds-grid slds-gutters slds-m-bottom_large">
-                <Datepicker
-                  required
-                  triggerClassName="slds-col slds-size_1-of-2"
-                  labels={{
-                    label: 'Start date',
-                  }}
-                  onChange={(event, data) => {
-                    this.handleStartDate(event, data);
+            <div className={`slds-m-bottom_large slds-col slds-size_1-of-1 ${this.state.errors.startDate && "slds-has-error"}`}>
+              <Datepicker
+                required
+                id='startDate'
+                triggerClassName="slds-col slds-size_1-of-1"
+                labels={{
+                  label: 'Start date',
+                }}
+                onChange={(event, data) => {
+                  this.handleStartDate(event, data);
 
-                    if (this.props.action) {
-                      const dataAsArray = Object.keys(data).map((key) => data[key]);
-                      this.props.action('onChange')(event, data, ...dataAsArray);
-                    }
-                  }}
-                  onCalendarFocus={(event, data) => {
-                    if (this.props.action) {
-                      const dataAsArray = Object.keys(data).map((key) => data[key]);
-                      this.props.action('onCalendarFocus')(event, data, ...dataAsArray);
-                    }
-                  }}
-                  formatter={(date) => {
-                    return date ? moment(date).format('MM/DD/YYYY') : '';
-                  }}
-                  parser={(dateString) => {
-                    return moment(dateString, 'MM-DD-YYYY').toDate();
-                  }}
-                  value={this.state.startDate}
-                />
-                <Datepicker
-                  required
-                  triggerClassName="slds-col slds-size_1-of-2"
-                  labels={{
-                    label: 'End date',
-                  }}
-                  onChange={(event, data) => {
-                    this.handleEndDate(event, data);
+                  if (this.props.action) {
+                    const dataAsArray = Object.keys(data).map((key) => data[key]);
+                    this.props.action('onChange')(event, data, ...dataAsArray);
+                  }
+                }}
+                onCalendarFocus={(event, data) => {
+                  if (this.props.action) {
+                    const dataAsArray = Object.keys(data).map((key) => data[key]);
+                    this.props.action('onCalendarFocus')(event, data, ...dataAsArray);
+                  }
+                }}
+                formatter={(date) => {
+                  return date ? moment(date).format('MM/DD/YYYY') : '';
+                }}
+                parser={(dateString) => {
+                  return moment(dateString, 'MM-DD-YYYY').toDate();
+                }}
+                value={this.state.startDate}
+              />
+              {this.state.errors.startDate && <div class="slds-form-element__help">This field is required</div>}
+            </div>
+            <div className={`slds-m-bottom_large slds-col slds-size_1-of-1 ${this.state.errors.endDate && "slds-has-error"}`}>
+              <Datepicker
+                required
+                id='endDate'
+                triggerClassName="slds-col slds-size_1-of-1"
+                labels={{
+                  label: 'End date',
+                }}
+                onChange={(event, data) => {
+                  this.handleEndDate(event, data);
 
-                    if (this.props.action) {
-                      const dataAsArray = Object.keys(data).map((key) => data[key]);
-                      this.props.action('onChange')(event, data, ...dataAsArray);
-                    }
-                  }}
-                  onCalendarFocus={(event, data) => {
-                    if (this.props.action) {
-                      const dataAsArray = Object.keys(data).map((key) => data[key]);
-                      this.props.action('onCalendarFocus')(event, data, ...dataAsArray);
-                    }
-                  }}
-                  formatter={(date) => {
-                    return date ? moment(date).format('MM/DD/YYYY') : '';
-                  }}
-                  parser={(dateString) => {
-                    return moment(dateString, 'MM-DD-YYYY').toDate();
-                  }}
-                  value={this.state.endDate}
-                />
+                  if (this.props.action) {
+                    const dataAsArray = Object.keys(data).map((key) => data[key]);
+                    this.props.action('onChange')(event, data, ...dataAsArray);
+                  }
+                }}
+                onCalendarFocus={(event, data) => {
+                  if (this.props.action) {
+                    const dataAsArray = Object.keys(data).map((key) => data[key]);
+                    this.props.action('onCalendarFocus')(event, data, ...dataAsArray);
+                  }
+                }}
+                formatter={(date) => {
+                  return date ? moment(date).format('MM/DD/YYYY') : '';
+                }}
+                parser={(dateString) => {
+                  return moment(dateString, 'MM-DD-YYYY').toDate();
+                }}
+                value={this.state.endDate}
+              />
+              {this.state.errors.endDate && <div class="slds-form-element__help">This field is required</div>}
             </div>
             <div className="slds-form-element slds-m-bottom_large">
-              <label className="slds-form-element__label">
-                Assets
-              </label>
-              <div className="slds-form-element__control">
-                <input
-                  className="slds-input"
-                  type="url"
-                  placeholder="Enter assets"
-                  defaultValue={this.state.asset}
-                  onChange={e => this.setState({asset: e.target.value})}
-                />
-              </div>
+              <Input
+                id='asset'
+                label="Asset"
+                type='url'
+                required
+                placeholder="Enter assets"
+                value={this.state.asset}
+                onChange={e => this.handleChange(e)}
+                errorText={this.state.errors.asset && "This field is required"}
+              />
             </div>
           </section>
         </Modal>
