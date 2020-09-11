@@ -1,6 +1,7 @@
 import React, { Component, Fragment } from 'react';
 import { withRouter, Link } from 'react-router-dom';
 import { connect } from 'react-redux';
+import moment from 'moment';
 import {
   Button,
   ButtonGroup,
@@ -28,19 +29,12 @@ import {
 } from '../../actions/DataTable';
 import { Container } from './styles';
 
-const CustomDataTableCell = ({ children, ...props }) => (
+const DateCell = ({ children, ...props }) => (
   <DataTableCell title={children} {...props}>
-    <a
-      href="javascript:void(0);"
-      onClick={(event) => {
-        event.preventDefault();
-      }}
-    >
-      {children}
-    </a>
+    {moment(children).format('L')}
   </DataTableCell>
 );
-CustomDataTableCell.displayName = DataTableCell.displayName;
+DateCell.displayName = DataTableCell.displayName;
 
 
 class Table extends Component {
@@ -246,14 +240,18 @@ class Table extends Component {
             property="startDate"
             sortable
             sortDirection={this.state.sortDirection}
-          />
+          >
+            <DateCell />
+          </DataTableColumn>
           <DataTableColumn
             isSorted={this.state.sortProperty === 'endDate'}
             label="End date"
             property="endDate"
             sortable
             sortDirection={this.state.sortDirection}
-          />
+          >
+          <DateCell />
+          </DataTableColumn>
           <DataTableColumn label="Assets" property="asset" />
 
           <DataTableRowActions

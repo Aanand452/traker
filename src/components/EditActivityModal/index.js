@@ -77,8 +77,8 @@ class EditActivityModalComponent extends Component {
       this.setState({...this.state,
         title: result.title,
         abstract: result.abstract,
-        startDate: moment(result.startDate).format('MM/DD/YYYY'),
-        endDate: moment(result.endDate).format('MM/DD/YYYY'),
+        startDate: moment(result.startDate),
+        endDate: moment(result.endDate), 
         asset: result.asset,
         campaignId: result.campaignId,
         programSelection: activityProgram,
@@ -419,58 +419,53 @@ class EditActivityModalComponent extends Component {
                 onChange={(event, data) => {
                   this.handleStartDate(event, data);
 
-                  if (this.props.action) {
-                    const dataAsArray = Object.keys(data).map((key) => data[key]);
-                    this.props.action('onChange')(event, data, ...dataAsArray);
-                  }
-                }}
-                onCalendarFocus={(event, data) => {
-                  if (this.props.action) {
-                    const dataAsArray = Object.keys(data).map((key) => data[key]);
-                    this.props.action('onCalendarFocus')(event, data, ...dataAsArray);
-                  }
-                }}
-                formatter={(date) => {
-                  return date ? moment(date).format('MM/DD/YYYY') : '';
-                }}
-                parser={(dateString) => {
-                  return moment(dateString, 'MM-DD-YYYY').toDate();
-                }}
-                value={this.state.startDate}
-              />
-              {this.state.errors.startDate && <div class="slds-form-element__help">This field is required</div>}
-            </div>
-            <div className={`slds-m-bottom_large slds-col slds-size_1-of-1 ${this.state.errors.endDate && "slds-has-error"}`}>
-              <Datepicker
-                required
-                id='endDate'
-                triggerClassName="slds-col slds-size_1-of-1"
-                labels={{
-                  label: 'End date',
-                }}
-                onChange={(event, data) => {
-                  this.handleEndDate(event, data);
+                    if (this.props.action) {
+                      const dataAsArray = Object.keys(data).map((key) => data[key]);
+                      this.props.action('onChange')(event, data, ...dataAsArray);
+                    }
+                  }}
+                  onCalendarFocus={(event, data) => {
+                    if (this.props.action) {
+                      const dataAsArray = Object.keys(data).map((key) => data[key]);
+                      this.props.action('onCalendarFocus')(event, data, ...dataAsArray);
+                    }
+                  }}
+                  formatter={(date) => {
+                    return date ? moment(date).format('L') : '';
+                  }}
+                  parser={(dateString) => {
+                    return moment(dateString, 'L').toDate();
+                  }}
+                  value={this.state.startDate}
+                />
+                <Datepicker
+                  required
+                  triggerClassName="slds-col slds-size_1-of-1"
+                  labels={{
+                    label: 'End date',
+                  }}
+                  onChange={(event, data) => {
+                    this.handleEndDate(event, data);
 
-                  if (this.props.action) {
-                    const dataAsArray = Object.keys(data).map((key) => data[key]);
-                    this.props.action('onChange')(event, data, ...dataAsArray);
-                  }
-                }}
-                onCalendarFocus={(event, data) => {
-                  if (this.props.action) {
-                    const dataAsArray = Object.keys(data).map((key) => data[key]);
-                    this.props.action('onCalendarFocus')(event, data, ...dataAsArray);
-                  }
-                }}
-                formatter={(date) => {
-                  return date ? moment(date).format('MM/DD/YYYY') : '';
-                }}
-                parser={(dateString) => {
-                  return moment(dateString, 'MM-DD-YYYY').toDate();
-                }}
-                value={this.state.endDate}
-              />
-              {this.state.errors.endDate && <div class="slds-form-element__help">This field is required</div>}
+                    if (this.props.action) {
+                      const dataAsArray = Object.keys(data).map((key) => data[key]);
+                      this.props.action('onChange')(event, data, ...dataAsArray);
+                    }
+                  }}
+                  onCalendarFocus={(event, data) => {
+                    if (this.props.action) {
+                      const dataAsArray = Object.keys(data).map((key) => data[key]);
+                      this.props.action('onCalendarFocus')(event, data, ...dataAsArray);
+                    }
+                  }}
+                  formatter={(date) => {
+                    return date ? moment(date).format('L') : '';
+                  }}
+                  parser={(dateString) => {
+                    return moment(dateString, 'L').toDate();
+                  }}
+                  value={this.state.endDate}
+                />
             </div>
             <div className="slds-form-element slds-m-bottom_large">
               <Input
