@@ -1,6 +1,6 @@
 import React from 'react';
 import NotFoundPage from '../containers/NotFoundPage';
-import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Switch, Redirect } from 'react-router-dom';
 import { SfdcPageAppWrapper } from './styles/page';
 
 import Login from '../components/Login'
@@ -53,7 +53,7 @@ function App({closeSettingsMenu, user}) {
       
       <SfdcPageAppWrapper className="app" onClick={closeSettingsMenu}>
         <Switch>
-          <Route exact path="/" component={Login} />
+          <Route exact path="/" render={() => !localStorage.getItem("userId") ? <Login /> : <Redirect to='/home' />} />
           <PrivateRoute exact path="/home" component={Home} />
           <PrivateRoute exact path="/my-activities" component={EditActivity} />
           <PrivateRoute exact path="/programs-view" component={EditProgram} />
