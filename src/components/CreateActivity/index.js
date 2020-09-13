@@ -4,7 +4,9 @@ import { getAPIUrl } from '../../config/config';
 
 import {
   IconSettings,
-  Breadcrumb
+  Breadcrumb,
+  ToastContainer,
+  Toast,
 } from '@salesforce/design-system-react';
 
 import Prompt from '../Prompt';
@@ -48,16 +50,16 @@ class CreateActivity extends Component {
         trail: <Link>Create activity</Link>,
         active: false
       }
-    ]
+    ],
+    toast: {
+      variant: 'error',
+      heading: 'Something went wrong',
+      duration: 5000,
+      active: false
+    }
   };
 
   componentDidMount() {
-    this.getUser();
-    this.checkTactic();
-    this.checkRegion();
-    this.checkProgram();
-    this.checkProgramDetail();
-    this.props.getFormData(this.state.row);
     this.setupAndFetch();
   };
 
@@ -80,8 +82,14 @@ class CreateActivity extends Component {
   async checkRegion() {
     try {
       let response = await fetch(`${this.API_URL}/region`);
-      let { result } = await response.json();
-      this.setState({ regions: result, row: {...this.state.row, region: [result[0]]}});
+      if(response.status === 404) {
+        this.setState({toast: {heading: 'Regions not found', active: true, variant: 'error', duration: 5000}});
+      } else if(response.status === 500) {
+        this.setState({toast: {heading: 'Server error', active: true, variant: 'error', duration: 5000}});
+      } else {
+        let { result } = await response.json();
+        this.setState({ regions: result, row: {...this.state.row, region: [result[0]]}});
+      }
     } catch(err) {
       console.error(err)
     }
@@ -90,19 +98,14 @@ class CreateActivity extends Component {
   async checkProgram() {
     try {
       let response = await fetch(`${this.API_URL}/program`);
-      let { result } = await response.json();
-      this.setState({ programs: result, row: {...this.state.row, program: [result[0]]}});
-    } catch(err) {
-      console.error(err)
-    }
-  }
-
-  async checkProgramDetail() {
-    try {
-      // let response = await fetch('/assets/data/program_details.json');
-      let response = await fetch(`${this.state.baseURL}/api/v1/program/${this.state.row.program[0].program_id}`);
-      let { result } = await response.json();
-      this.setState({ items: result });
+      if(response.status === 404) {
+        this.setState({toast: {heading: 'Programs not found', active: true, variant: 'error', duration: 5000}});
+      } else if(response.status === 500) {
+        this.setState({toast: {heading: 'Server error', active: true, variant: 'error', duration: 5000}});
+      } else {
+        let { result } = await response.json();
+        this.setState({ programs: result, row: {...this.state.row, program: [result[0]]}});
+      }
     } catch(err) {
       console.error(err)
     }
@@ -111,9 +114,15 @@ class CreateActivity extends Component {
   async checkTactic() {
     try {
       let response = await fetch(`${this.API_URL}/tactic`);
-      let { result } = await response.json();
-      let format = await this.populateTactic(result[0]);
-      this.setState({ formats: format, tactics: result, row: {...this.state.row, tactic: [result[0]], format: [format[0]] } });
+      if(response.status === 404) {
+        this.setState({toast: {heading: 'Formats not found', active: true, variant: 'error', duration: 5000}});
+      } else if(response.status === 500) {
+        this.setState({toast: {heading: 'Server error', active: true, variant: 'error', duration: 5000}});
+      } else {
+        let { result } = await response.json();
+        let format = await this.populateTactic(result[0]);
+        this.setState({ formats: format, tactics: result, row: {...this.state.row, tactic: [result[0]], format: [format[0]] } });
+      }
     } catch(err) {
       console.error(err)
     }
@@ -122,8 +131,14 @@ class CreateActivity extends Component {
   async populateTactic(selection) {
     try {
       let response = await fetch(`${this.API_URL}/format/${selection.tactic_id}`);
-      let { result } = await response.json();
-      return result;
+      if(response.status === 404) {
+        this.setState({toast: {heading: 'Tactics not found', active: true, variant: 'error', duration: 5000}});
+      } else if(response.status === 500) {
+        this.setState({toast: {heading: 'Server error', active: true, variant: 'error', duration: 5000}});
+      } else {
+        let { result } = await response.json();
+        return result;
+      }
     } catch (err) {
       console.error(err);
     }
@@ -221,6 +236,18 @@ class CreateActivity extends Component {
   render() {
     return (
       <IconSettings iconPath="assets/icons">
+        {
+          this.state.toast.active && (<IconSettings iconPath="/assets/icons">
+            <ToastContainer>
+              <Toast
+                labels={{ heading: this.state.toast.heading }}
+                variant={this.state.toast.variant}
+                duration={this.state.toast.duration}
+                onRequestClose={() => this.setState({toast: {active: false}})}
+              />
+            </ToastContainer>
+          </IconSettings>)
+        }
         <div className="slds-m-left_xx-small slds-m-bottom_small">
           <Breadcrumb trail={this.state.steps.filter(el => el.active).map(el => el.trail)} />
         </div>

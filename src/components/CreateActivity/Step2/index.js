@@ -1,7 +1,6 @@
 import React, { Component, Fragment } from 'react';
 import { withRouter, Link } from 'react-router-dom';
 import moment from 'moment';
-import { v4 as uuidv4 } from 'uuid';
 import {
   IconSettings,
   Combobox,
@@ -13,10 +12,6 @@ import {
 
 class Step2 extends Component {
 
-  handleChange = async (value, data) => {
-    this.props.handleChange(value, data);
-  };
-
   render() {
     return (
       <Fragment>
@@ -24,16 +19,14 @@ class Step2 extends Component {
           <Input
             placeholder="Enter Campaign Id"
             label="Campaign Id"
-            onChange={(event, data) => this.handleChange("campaignId", data.value)}
+            onChange={(event, data) => this.props.handleChange("campaignId", data.value)}
             defaultValue={this.props.row.campaignId}
-            id="campaignId"
             maxLength="18"
           />
         </div>
         <div className="slds-m-bottom_large slds-col slds-size_1-of-2">
           <Combobox
-            id="region"
-            events={{onSelect: (event, data) => data.selection.length && this.handleChange("region", data.selection)}}
+            events={{onSelect: (event, data) => data.selection.length && this.props.handleChange("region", data.selection)}}
             labels={{label: 'Region'}}
             name="region"
             options={this.props.regions}
@@ -45,8 +38,7 @@ class Step2 extends Component {
         </div>
         <div className="slds-m-bottom_large slds-col slds-size_1-of-2">
           <Combobox
-            id="tactic"
-            events={{onSelect: (event, data) => data.selection.length && this.handleChange("tactic", data.selection)}}
+            events={{onSelect: (event, data) => data.selection.length && this.props.handleChange("tactic", data.selection)}}
             labels={{label: 'Tactic'}}
             name="tactic"
             options={this.props.tactics}
@@ -58,8 +50,7 @@ class Step2 extends Component {
         </div>
         <div className="slds-m-bottom_large slds-col slds-size_1-of-2">
           <Combobox
-            id="format"
-            events={{onSelect: (event, data) => data.selection.length && this.handleChange("format", data.selection)}}
+            events={{onSelect: (event, data) => data.selection.length && this.props.handleChange("format", data.selection)}}
             labels={{label: 'Format'}}
             name="format"
             options={this.props.formats}
@@ -71,40 +62,36 @@ class Step2 extends Component {
         </div>
         <div className="slds-m-bottom_large slds-col slds-size_1-of-2">
           <Input
-            id="title"
             label="Title"
             errorText={this.props.error.title}
             placeholder="Enter title"
             value={this.props.row.title}
-            onChange={(event) => this.handleChange("title", event.target.value)}
+            onChange={(event) => this.props.handleChange("title", event.target.value)}
           />
         </div>
         <div className="slds-m-bottom_large slds-col slds-size_1-of-2">
           <Textarea
-            id="abstract"
             label="Abstract"
             errorText={this.props.error.abstract}
             placeholder="Enter abstract"
             value={this.props.row.abstract}
-            onChange={(event) => this.handleChange("abstract", event.target.value)}
+            onChange={(event) => this.props.handleChange("abstract", event.target.value)}
           />
         </div>
         <div className="slds-m-bottom_large slds-col slds-size_1-of-2">
           <Datepicker
-            id="startDate"
             labels={{label: 'Start Date'}}
             triggerClassName="slds-col slds-size_1-of-2"
-            onChange={(event, data) => this.handleChange("startDate", data.formattedDate)}
+            onChange={(event, data) => this.props.handleChange("startDate", data.formattedDate)}
             formatter={(date) => date ? moment(date).format('MM/DD/YYYY') : ''}
             parser={(dateString) => moment(dateString, 'MM-DD-YYYY').toDate()}
             value={this.props.row.startDate}
             errorText={this.props.error.startDate}
           />
           <Datepicker
-            id="endDate"
             labels={{label: 'End Date'}}
             triggerClassName="slds-col slds-size_1-of-2"
-            onChange={(event, data) => this.handleChange("endDate", data.formattedDate)}
+            onChange={(event, data) => this.props.handleChange("endDate", data.formattedDate)}
             formatter={(date) => date ? moment(date).format('MM/DD/YYYY') : ''}
             parser={(dateString) => moment(dateString, 'MM-DD-YYYY').toDate()}
             value={this.props.row.endDate}
@@ -112,7 +99,7 @@ class Step2 extends Component {
           />
         </div>
         <div className="slds-m-bottom_large slds-col slds-size_1-of-2">
-          <Input placeholder="Enter assets" onChange={(event, data) => this.handleChange("asset", data.value)} value={this.props.row.asset} id="asset" label="Asset" errorText={this.props.error.asset}/>
+          <Input placeholder="Enter assets" onChange={(event, data) => this.props.handleChange("asset", data.value)} value={this.props.row.asset} label="Asset" errorText={this.props.error.asset}/>
         </div>
         <div className="slds-col slds-size_1-of-1">
           <Button label="Go back" onClick={() => this.props.handleStep(1)} />
