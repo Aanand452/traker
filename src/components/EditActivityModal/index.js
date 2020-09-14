@@ -50,10 +50,6 @@ class EditActivityModalComponent extends Component {
     this.setupAndFetch();
   }
 
-  componentDidUpdate() {
-    console.log("STATE =======> ", this.state);
-  }
-
   setupAndFetch = async () => {
     if(window.location.hostname === 'localhost') this.API_URL =  "http://localhost:3000/api/v1";
     else this.API_URL = await getAPIUrl();
