@@ -246,7 +246,7 @@ class EditActivityModalComponent extends Component {
         },
         body: JSON.stringify(body)
       }
-      debugger
+
       const response = await fetch(`${this.API_URL}/activity/${this.props.data.activityId}`, config);
       
       this.props.editItem(this.props.dataTable.items, {
