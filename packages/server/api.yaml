@@ -49,35 +49,45 @@ paths:
             allOf: 
               - $ref: '#/definitions/ResponseStatus'
               - $ref: '#/definitions/Error'
-
-  /programs:
+  
+  /program/{id}:  
     get:
       x-swagger-router-controller: program
-      operationId: "getProgramsFull"
-      summary: Returns the list of programs.
-      description: This will be used to populate the activity table
-      produces:
-        - application/json
+      operationId: "getProgramById"
+      summary: get a program by id
+      description: N/A
+      parameters:
+        - in: path
+          name: id
+          description: ID of program to fetch
+          required: true
+          type: string
       responses:
         200:
           description: Success
           schema:
             allOf:
               - $ref: '#/definitions/ResponseStatus'
-              - $ref: '#/definitions/ProgramListResponse'
+              - $ref: '#/definitions/ProgramResponse'
         default:
           description: Invalid request.
           schema:
-            allOf: 
+            allOf:
               - $ref: '#/definitions/ResponseStatus'
               - $ref: '#/definitions/Error'
 
-  /activities:
+  /programs/{userId}:
     get:
-      x-swagger-router-controller: activity
-      operationId: "getActivities"
-      summary: Returns the list of activities.
-      description: This will be used to populate the activities table
+      x-swagger-router-controller: program
+      operationId: "getProgramsFull"
+      summary: Returns the list of programs.
+      description: This will be used to populate the activity table
+      parameters:
+        - in: path
+          name: userId
+          description: ID of user to fetch programs
+          required: true
+          type: string
       produces:
         - application/json
       responses:
@@ -190,7 +200,57 @@ paths:
             allOf:
               - $ref: '#/definitions/ResponseStatus'
               - $ref: '#/definitions/Error'
-  
+    delete:
+      x-swagger-router-controller: activity
+      operationId: "deleteActivity"
+      summary: Delete an activity
+      description: N/A
+      parameters:
+      - name: body
+        in: body
+        schema:
+          $ref: '#/definitions/DeleteActivity'
+      responses:
+        200:
+          description: Success
+          schema:
+            allOf:
+              - $ref: '#/definitions/ResponseStatus'
+        default:
+          description: Invalid request.
+          schema:
+            allOf:
+              - $ref: '#/definitions/ResponseStatus'
+              - $ref: '#/definitions/Error'
+
+  /activities/{userId}:
+    get:
+      x-swagger-router-controller: activity
+      operationId: "getActivities"
+      summary: Returns the list of activities by user.
+      description: This will be used to populate the activities table
+      parameters:
+        - in: path
+          name: userId
+          description: ID of user to fetch activities
+          required: true
+          type: string
+      produces:
+        - application/json
+      responses:
+        200:
+          description: Success
+          schema:
+            allOf:
+              - $ref: '#/definitions/ResponseStatus'
+              - $ref: '#/definitions/ProgramListResponse'
+        default:
+          description: Invalid request.
+          schema:
+            allOf: 
+              - $ref: '#/definitions/ResponseStatus'
+              - $ref: '#/definitions/Error'
+
   /activity/{id}:  
     get:
       x-swagger-router-controller: activity
@@ -243,7 +303,7 @@ paths:
             allOf:
               - $ref: '#/definitions/ResponseStatus'
               - $ref: '#/definitions/Error'
-               
+
   /login:
     post:
       x-swagger-router-controller: user
@@ -299,9 +359,28 @@ definitions:
         type: string
       programId:
         type: string
+  
+  DeleteActivity:
+    description: Body used for deleting one or more activities.
+    type: object
+    properties:
+      activitiesId:
+        type: array
+        items:
+          type: string
+
 
   ProgramListResponse:
     description: A list of programs.
+    type: object
+    properties:
+      result:
+        type: array
+        items:
+          $ref: '#/definitions/Program'
+  
+  ProgramResponse:
+    description: A program get by Id
     type: object
     properties:
       result:

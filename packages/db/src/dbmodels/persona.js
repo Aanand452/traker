@@ -1,5 +1,5 @@
 import { Model, DataTypes } from 'sequelize';
-import { sequelize } from '../db';
+import { sequelize } from '../connector';
 
 class Persona extends Model {}
 
@@ -20,5 +20,11 @@ Persona.init({
   sequelize: sequelize,
   timestamps: false
 });
+
+Persona.associate = models => {
+  Persona.hasMany(models.Program, {
+    foreignKey: 'persona'
+  });
+};
 
 export default Persona;

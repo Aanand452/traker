@@ -1,5 +1,5 @@
 import { Model, DataTypes } from 'sequelize';
-import { sequelize } from '../db';
+import { sequelize } from '../connector';
 
 class LifecycleStage extends Model {}
 
@@ -20,5 +20,11 @@ LifecycleStage.init({
   sequelize: sequelize,
   timestamps: false
 });
+
+LifecycleStage.associate = models => {
+  LifecycleStage.hasMany(models.Program, {
+    foreignKey: 'lifecycle_stage'
+  });
+}
 
 export default LifecycleStage;
