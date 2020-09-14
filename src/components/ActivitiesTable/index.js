@@ -250,7 +250,7 @@ class Table extends Component {
             sortable
             sortDirection={this.state.sortDirection}
           >
-          <DateCell />
+            <DateCell />
           </DataTableColumn>
           <DataTableColumn label="Assets" property="asset" />
 

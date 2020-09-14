@@ -30,13 +30,13 @@ class EditActivityModalComponent extends Component {
     programSelection: [],
     formatSelection: [],
     regionSelection: [],
-    activityId: null,
-    title: null,
-    abstract: null,
-    startDate: null,
-    endDate: null,
-    asset: null,
-    campaignId: null,
+    activityId: this.props.data.activityId,
+    title: this.props.data.title,
+    abstract: this.props.data.abstract,
+    startDate: moment(new Date(this.props.data.startDate)).format('L'),
+    endDate: moment(new Date(this.props.data.endDate)).format('L'),
+    asset: this.props.data.asset,
+    campaignId: this.props.data.campaignId,
     errors: {}
   }
 
@@ -73,12 +73,12 @@ class EditActivityModalComponent extends Component {
       var activityProgram = this.state.program.filter(el => el.program_id === result.programId);
       var activityTactic = this.state.tactic.filter(el => el.tactic_id === result.tacticId);
       var activityRegion = this.state.region.filter(el => el.region_id === result.regionId);
-      
+
       this.setState({...this.state,
         title: result.title,
         abstract: result.abstract,
-        startDate: moment(result.startDate),
-        endDate: moment(result.endDate), 
+        startDate: moment(new Date(result.startDate)).format('L'),
+        endDate: moment(new Date(result.endDate)).format('L'), 
         asset: result.asset,
         campaignId: result.campaignId,
         programSelection: activityProgram,
@@ -413,59 +413,45 @@ class EditActivityModalComponent extends Component {
                 required
                 id='startDate'
                 triggerClassName="slds-col slds-size_1-of-1"
-                labels={{
-                  label: 'Start date',
-                }}
+                labels={{label: 'Start date'}}
                 onChange={(event, data) => {
                   this.handleStartDate(event, data);
-
-                    if (this.props.action) {
-                      const dataAsArray = Object.keys(data).map((key) => data[key]);
-                      this.props.action('onChange')(event, data, ...dataAsArray);
-                    }
-                  }}
-                  onCalendarFocus={(event, data) => {
-                    if (this.props.action) {
-                      const dataAsArray = Object.keys(data).map((key) => data[key]);
-                      this.props.action('onCalendarFocus')(event, data, ...dataAsArray);
-                    }
-                  }}
-                  formatter={(date) => {
-                    return date ? moment(date).format('L') : '';
-                  }}
-                  parser={(dateString) => {
-                    return moment(dateString, 'L').toDate();
-                  }}
-                  value={this.state.startDate}
-                />
-                <Datepicker
-                  required
-                  triggerClassName="slds-col slds-size_1-of-1"
-                  labels={{
-                    label: 'End date',
-                  }}
-                  onChange={(event, data) => {
-                    this.handleEndDate(event, data);
-
-                    if (this.props.action) {
-                      const dataAsArray = Object.keys(data).map((key) => data[key]);
-                      this.props.action('onChange')(event, data, ...dataAsArray);
-                    }
-                  }}
-                  onCalendarFocus={(event, data) => {
-                    if (this.props.action) {
-                      const dataAsArray = Object.keys(data).map((key) => data[key]);
-                      this.props.action('onCalendarFocus')(event, data, ...dataAsArray);
-                    }
-                  }}
-                  formatter={(date) => {
-                    return date ? moment(date).format('L') : '';
-                  }}
-                  parser={(dateString) => {
-                    return moment(dateString, 'L').toDate();
-                  }}
-                  value={this.state.endDate}
-                />
+                  if (this.props.action) {
+                    const dataAsArray = Object.keys(data).map((key) => data[key]);
+                    this.props.action('onChange')(event, data, ...dataAsArray);
+                  }
+                }}
+                onCalendarFocus={(event, data) => {
+                  if (this.props.action) {
+                    const dataAsArray = Object.keys(data).map((key) => data[key]);
+                    this.props.action('onCalendarFocus')(event, data, ...dataAsArray);
+                  }
+                }}
+                formatter={(date) => date ? moment(date).format('L') : ''}
+                parser={(dateString) => moment(dateString, 'L').toDate()}
+                formattedValue={this.state.startDate}
+              />
+              <Datepicker
+                required
+                triggerClassName="slds-col slds-size_1-of-1"
+                labels={{label: 'End date',}}
+                onChange={(event, data) => {
+                  this.handleEndDate(event, data);
+                  if (this.props.action) {
+                    const dataAsArray = Object.keys(data).map((key) => data[key]);
+                    this.props.action('onChange')(event, data, ...dataAsArray);
+                  }
+                }}
+                onCalendarFocus={(event, data) => {
+                  if (this.props.action) {
+                    const dataAsArray = Object.keys(data).map((key) => data[key]);
+                    this.props.action('onCalendarFocus')(event, data, ...dataAsArray);
+                  }
+                }}
+                formatter={(date) => date ? moment(date).format('L') : ''}
+                parser={(dateString) => moment(dateString, 'L').toDate()}
+                formattedValue={this.state.endDate}
+              />
             </div>
             <div className="slds-form-element slds-m-bottom_large">
               <Input
