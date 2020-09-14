@@ -17,7 +17,6 @@ const SfdcLoginContainer = styled.section`
 
 const SfdcCardLogin = styled.section`
   width: 20rem;
-  height: 12rem;
 `;
 
 export {

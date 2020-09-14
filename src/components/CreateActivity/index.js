@@ -1,17 +1,17 @@
 import React, { Component } from 'react';
-import { withRouter } from 'react-router-dom';
-import moment from 'moment';
-import { v4 as uuidv4 } from 'uuid';
+import { withRouter, Link } from 'react-router-dom';
+import { getAPIUrl } from '../../config/config';
+
 import {
   IconSettings,
-  Combobox,
-  Input,
-  Datepicker,
-  Button,
-  Textarea
+  Breadcrumb,
+  ToastContainer,
+  Toast,
 } from '@salesforce/design-system-react';
 
 import Prompt from '../Prompt';
+import Step1 from './Step1';
+import Step2 from './Step2';
 
 import { FormContainer } from './styles';
 
@@ -36,15 +36,31 @@ class CreateActivity extends Component {
     tactics: [],
     formats: [],
     error: {},
-    isDeletePromptOpen: false
+    isDeletePromptOpen: false,
+    expandedPanels: {},
+    items: {},
+    steps: [
+      {
+        step: 1,
+        trail: <Link onClick={() => this.handleStep(1)}>Select program</Link>,
+        active: true
+      },
+      {
+        step: 2,
+        trail: <Link>Create activity</Link>,
+        active: false
+      }
+    ],
+    toast: {
+      variant: 'error',
+      heading: 'Something went wrong',
+      duration: 5000,
+      active: false
+    }
   };
 
   componentDidMount() {
-    this.getUser();
-    this.checkTactic();
-    this.checkRegion();
-    this.checkProgram();
-    this.props.getFormData(this.state.row);
+    this.setupAndFetch();
   };
 
   getUser = () => {
@@ -52,23 +68,28 @@ class CreateActivity extends Component {
     this.setState({ loggedUser });
   }
 
-  async getBaseUrl() {
-    try {
-      let response = await fetch('/config');
-      let data = await response.json();
-      this.setState({
-        baseURL: data.api
-      });
-    } catch (err) {
-      console.error('ERROR: cannot get the url config: ', err);
-    }
+  setupAndFetch = async () => {
+    if(window.location.hostname === 'localhost') this.API_URL =  "http://localhost:3000/api/v1";
+    else this.API_URL = await getAPIUrl();
+    
+    this.getUser();
+    this.checkTactic();
+    this.checkRegion();
+    this.checkProgram();
+    this.props.getFormData(this.state.row);
   }
 
   async checkRegion() {
     try {
-      let response = await fetch(`${this.state.baseURL}/api/v1/region`);
-      let { result } = await response.json();
-      this.setState({ regions: result, row: {...this.state.row, region: [result[0]]}});
+      let response = await fetch(`${this.API_URL}/region`);
+      if(response.status === 404) {
+        this.setState({toast: {heading: 'Regions not found', active: true, variant: 'error', duration: 5000}});
+      } else if(response.status === 500) {
+        this.setState({toast: {heading: 'Server error', active: true, variant: 'error', duration: 5000}});
+      } else {
+        let { result } = await response.json();
+        this.setState({ regions: result, row: {...this.state.row, region: [result[0]]}});
+      }
     } catch(err) {
       console.error(err)
     }
@@ -76,9 +97,15 @@ class CreateActivity extends Component {
 
   async checkProgram() {
     try {
-      let response = await fetch(`${this.state.baseURL}/api/v1/program`);
-      let { result } = await response.json();
-      this.setState({ programs: result, row: {...this.state.row, program: [result[0]]}});
+      let response = await fetch(`${this.API_URL}/program`);
+      if(response.status === 404) {
+        this.setState({toast: {heading: 'Programs not found', active: true, variant: 'error', duration: 5000}});
+      } else if(response.status === 500) {
+        this.setState({toast: {heading: 'Server error', active: true, variant: 'error', duration: 5000}});
+      } else {
+        let { result } = await response.json();
+        this.setState({ programs: result, row: {...this.state.row, program: [result[0]]}});
+      }
     } catch(err) {
       console.error(err)
     }
@@ -86,11 +113,16 @@ class CreateActivity extends Component {
 
   async checkTactic() {
     try {
-      let response = await fetch(`${this.state.baseURL}/api/v1/tactic`);
-      let { result } = await response.json();
-      let format = await this.populateTactic(result[0]);
-      console.log(format)
-      this.setState({ formats: format, tactics: result, row: {...this.state.row, tactic: [result[0]], format: [format[0]] } });
+      let response = await fetch(`${this.API_URL}/tactic`);
+      if(response.status === 404) {
+        this.setState({toast: {heading: 'Formats not found', active: true, variant: 'error', duration: 5000}});
+      } else if(response.status === 500) {
+        this.setState({toast: {heading: 'Server error', active: true, variant: 'error', duration: 5000}});
+      } else {
+        let { result } = await response.json();
+        let format = await this.populateTactic(result[0]);
+        this.setState({ formats: format, tactics: result, row: {...this.state.row, tactic: [result[0]], format: [format[0]] } });
+      }
     } catch(err) {
       console.error(err)
     }
@@ -98,28 +130,19 @@ class CreateActivity extends Component {
 
   async populateTactic(selection) {
     try {
-      let response = await fetch(`${this.state.baseURL}/api/v1/format/${selection.tactic_id}`);
-      let { result } = await response.json();
-      return result;
+      let response = await fetch(`${this.API_URL}/format/${selection.tactic_id}`);
+      if(response.status === 404) {
+        this.setState({toast: {heading: 'Tactics not found', active: true, variant: 'error', duration: 5000}});
+      } else if(response.status === 500) {
+        this.setState({toast: {heading: 'Server error', active: true, variant: 'error', duration: 5000}});
+      } else {
+        let { result } = await response.json();
+        return result;
+      }
     } catch (err) {
       console.error(err);
     }
   }
-
-  checkDataModel(model, modelSelection) {
-    let selection = model.filter(el => el.label === modelSelection)
-    return selection.length ? selection : [model[0]] 
-  };
-
-  createModelData(modelData) {
-    const modelResult = modelData.map((el, index) => {
-      const elementJson = {}
-      elementJson.label = el
-      elementJson.id = index.toString();
-      return elementJson
-    });
-    return modelResult
-  };
 
   handleChange = async (value, data) => {
     let newRow = {};
@@ -139,11 +162,11 @@ class CreateActivity extends Component {
 
   validations = (input, data) => {
     let errors = {...this.state.error};
-    const inputs = ["program", "title", "format", "region", "tactic", "abstract"];
+    const inputs = ["program", "title", "format", "region", "tactic", "abstract", "asset", "startDate", "endDate"];
 
     if (input) {
       if(inputs.includes(input) && !data) {
-        errors = {...errors, [input]: `Enter ${input === "abstract" ? "an" : "a"} ${input}`};
+        errors = {...errors, [input]: "This field is required"};
       } else {
         delete errors[input];
       }
@@ -152,7 +175,7 @@ class CreateActivity extends Component {
         if(this.state.row[input]) {
           delete errors[input];
         } else {
-          errors = {...errors, [input]: `Enter ${input === "abstract" ? "an" : "a"} ${input}`};
+          errors = {...errors, [input]: "This field is required"};
         }
       })
     }
@@ -198,131 +221,58 @@ class CreateActivity extends Component {
         },
         body: JSON.stringify(body)
       }
-      const response = await fetch(`http://localhost:3000/api/v1/activity`, config);
+      const response = await fetch(`${this.API_URL}/activity`, config);
     } catch (err) {
       this.setState({isDeletePromptOpen: true});
       console.error(err);
     }
   }
+  
+  handleStep = step => {
+    let steps = this.state.steps.map(el => el.step <= step ? {...el, active: true} : {...el, active: false});
+    this.setState({ steps });
+  }
 
   render() {
-    console.log()
     return (
       <IconSettings iconPath="assets/icons">
+        {
+          this.state.toast.active && (<IconSettings iconPath="/assets/icons">
+            <ToastContainer>
+              <Toast
+                labels={{ heading: this.state.toast.heading }}
+                variant={this.state.toast.variant}
+                duration={this.state.toast.duration}
+                onRequestClose={() => this.setState({toast: {active: false}})}
+              />
+            </ToastContainer>
+          </IconSettings>)
+        }
+        <div className="slds-m-left_xx-small slds-m-bottom_small">
+          <Breadcrumb trail={this.state.steps.filter(el => el.active).map(el => el.trail)} />
+        </div>
         {this.state.isDeletePromptOpen && <Prompt closeErrorHandler={() => this.setState({isDeletePromptOpen: false})} error={true} message='Interval server error' title='Error' />}
         <FormContainer>
           <form className="slds-grid slds-wrap" onSubmit={e => this.validateSubmit(e)}>
-            <div className="slds-m-bottom_large slds-col slds-size_1-of-2">
-              <Input
-                placeholder="Enter Campaign Id"
-                label="Campaign Id"
-                onChange={(event, data) => this.handleChange("campaignId", data.value)}
-                defaultValue={this.state.row.campaignId}
-                id="campaignId"
-                maxLength="18"
-              />
-            </div>
-            <div className="slds-m-bottom_large slds-col slds-size_1-of-2">
-              <Combobox
-                id="region"
-                events={{onSelect: (event, data) => data.selection.length && this.handleChange("region", data.selection)}}
-                labels={{label: 'Region'}}
-                name="region"
-                options={this.state.regions}
-                selection={this.state.row.region}
-                value="region"
-                variant="readonly"
-                errorText={this.state.error.region}
-              />
-            </div>
-            <div className="slds-m-bottom_large slds-col slds-size_1-of-2">
-              <Combobox
-                id="tactic"
-                events={{onSelect: (event, data) => data.selection.length && this.handleChange("tactic", data.selection)}}
-                labels={{label: 'Tactic'}}
-                name="tactic"
-                options={this.state.tactics}
-                selection={this.state.row.tactic}
-                value="tactic"  
-                variant="readonly"
-                errorText={this.state.error.tactic}
-              />
-            </div>
-            <div className="slds-m-bottom_large slds-col slds-size_1-of-2">
-              <Combobox
-                id="format"
-                events={{onSelect: (event, data) => data.selection.length && this.handleChange("format", data.selection)}}
-                labels={{label: 'Format'}}
-                name="format"
-                options={this.state.formats}
-                selection={this.state.row.format}
-                value="format"  
-                variant="readonly"
-                errorText={this.state.error.format}
-              />
-            </div>
-            <div className="slds-m-bottom_large slds-col slds-size_1-of-2">
-              <Textarea
-                id="title"
-                label="Title"
-                errorText={this.state.error.title}
-                placeholder="Enter title"
-                defaultValue={this.state.title}
-                onChange={(event) => this.handleChange("title", event.target.value)}
-              />
-            </div>
-            <div className="slds-m-bottom_large slds-col slds-size_1-of-2">
-              <Textarea
-                id="abstract"
-                label="Abstract"
-                errorText={this.state.error.abstract}
-                placeholder="Enter abstract"
-                defaultValue={this.state.row.abstract}
-                onChange={(event) => this.handleChange("abstract", event.target.value)}
-              />
-            </div>
-            <div className="slds-m-bottom_large slds-col slds-size_1-of-2">
-              <Combobox
-                id="program"
-                events={{onSelect: (event, data) => data.selection.length && this.handleChange("program", data.selection)}}
-                labels={{label: 'Program'}}
-                name="program"
-                options={this.state.programs}
-                selection={this.state.row.program}
-                value="program"
-                variant="readonly"
-                errorText={this.state.error.program}
-              />
-            </div>
-            <div className="slds-m-bottom_large slds-col slds-size_1-of-2">
-              <Datepicker
-                required
-                id="startDate"
-                labels={{label: 'Start Date'}}
-                triggerClassName="slds-col slds-size_1-of-2"
-                onChange={(event, data) => this.handleChange("startDate", data.formattedDate)}
-                formatter={(date) => date ? moment(date).format('MM/DD/YYYY') : ''}
-                parser={(dateString) => moment(dateString, 'MM-DD-YYYY').toDate()}
-                value={this.state.row.startDate}
-              />
-              <Datepicker
-                required
-                id="endDate"
-                labels={{label: 'End Date'}}
-                triggerClassName="slds-col slds-size_1-of-2"
-                onChange={(event, data) => this.handleChange("endDate", data.formattedDate)}
-                formatter={(date) => date ? moment(date).format('MM/DD/YYYY') : ''}
-                parser={(dateString) => moment(dateString, 'MM-DD-YYYY').toDate()}
-                value={this.state.row.endDate}
-              />
-            </div>
-            <div className="slds-m-bottom_large slds-col slds-size_1-of-2">
-              <Input placeholder="Enter assets" onChange={(event, data) => this.handleChange("asset", data.value)} defaultValue={this.state.row.asset} id="asset" label="Asset"/>
-            </div>
-            <div className="slds-col slds-size_1-of-1">
-              <Button label="Cancel" onClick={() => this.props.history.push('/home')} />
-              <Button label="Save" variant="brand" type="submit" />
-            </div>
+            {
+              this.state.steps.filter(el => el.active).length === 1 ?
+                <Step1
+                  row={this.state.row}
+                  handleStep={this.handleStep}
+                  handleChange={this.handleChange}
+                  error={this.state.error}
+                /> :
+                <Step2
+                  row={this.state.row}
+                  handleStep={this.handleStep}
+                  getFormData={this.props.getFormData}
+                  handleChange={this.handleChange}
+                  error={this.state.error}
+                  regions={this.state.regions}
+                  tactics={this.state.tactics}
+                  formats={this.state.formats}
+                />
+            }
           </form>
         </FormContainer>
       </IconSettings>
