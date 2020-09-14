@@ -50,6 +50,10 @@ class EditActivityModalComponent extends Component {
     this.setupAndFetch();
   }
 
+  componentDidUpdate() {
+    console.log("STATE =======> ", this.state);
+  }
+
   setupAndFetch = async () => {
     if(window.location.hostname === 'localhost') this.API_URL =  "http://localhost:3000/api/v1";
     else this.API_URL = await getAPIUrl();
@@ -228,7 +232,7 @@ class EditActivityModalComponent extends Component {
         abstract: this.state.abstract,
         regionId: this.state.regionSelection[0].region_id,
         startDate: this.state.startDate,
-        endDate: this.state.endtDate,
+        endDate: this.state.endDate,
         asset: this.state.asset,
         userId: localStorage.getItem('userId'),
         programId: this.state.programSelection[0].program_id,
@@ -242,6 +246,7 @@ class EditActivityModalComponent extends Component {
         },
         body: JSON.stringify(body)
       }
+      debugger
       const response = await fetch(`${this.API_URL}/activity/${this.props.data.activityId}`, config);
       
       this.props.editItem(this.props.dataTable.items, {
@@ -430,6 +435,7 @@ class EditActivityModalComponent extends Component {
                 formatter={(date) => date ? moment(date).format('L') : ''}
                 parser={(dateString) => moment(dateString, 'L').toDate()}
                 formattedValue={this.state.startDate}
+                autocomplete="off"
               />
               {this.state.errors.startDate && <div class="slds-form-element__help">This field is required</div>}
             </div>
@@ -454,6 +460,7 @@ class EditActivityModalComponent extends Component {
                 formatter={(date) => date ? moment(date).format('L') : ''}
                 parser={(dateString) => moment(dateString, 'L').toDate()}
                 formattedValue={this.state.endDate}
+                autocomplete="off"
               />
               {this.state.errors.endDate && <div class="slds-form-element__help">This field is required</div>}
             </div>
