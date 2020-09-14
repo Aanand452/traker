@@ -431,6 +431,9 @@ class EditActivityModalComponent extends Component {
                 parser={(dateString) => moment(dateString, 'L').toDate()}
                 formattedValue={this.state.startDate}
               />
+              {this.state.errors.startDate && <div class="slds-form-element__help">This field is required</div>}
+            </div>
+            <div className={`slds-m-bottom_large slds-col slds-size_1-of-1 ${this.state.errors.endDate && "slds-has-error"}`}>
               <Datepicker
                 required
                 triggerClassName="slds-col slds-size_1-of-1"
