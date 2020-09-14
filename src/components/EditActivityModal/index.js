@@ -452,6 +452,7 @@ class EditActivityModalComponent extends Component {
                 parser={(dateString) => moment(dateString, 'L').toDate()}
                 formattedValue={this.state.endDate}
               />
+              {this.state.errors.endDate && <div class="slds-form-element__help">This field is required</div>}
             </div>
             <div className="slds-form-element slds-m-bottom_large">
               <Input
