@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { getAPIUrl } from '../../config/config';
+import { withRouter } from 'react-router-dom';
 import { Input, Toast, ToastContainer, IconSettings } from '@salesforce/design-system-react';
 import {
   SfdcFlexColum,
@@ -38,11 +39,6 @@ class Login extends Component {
       this.setState({errors: {password: true}});
       return true;
     }
-
-    if(res.length <= 0) {
-      this.setState({errors: {invalid: true}});
-      return true;
-    }
   }
 
   login = async e => {
@@ -62,11 +58,13 @@ class Login extends Component {
       let response = await fetch(`${this.API_URL}/login`, config);
       let { result } = await response.json();
 
-      if(this.validations(result)) return;
-      
-      localStorage.setItem("userId", result[0].userId);
-      this.props.history.push('/home');
+      if(!this.validations(result)){
+        result.length === 0 && this.setState({errors: {invalid: true}});
 
+        console.log('SARA', result.length);
+        result.length > 0 && localStorage.setItem("userId", result[0].userId);
+        result.length > 0 && this.props.history.push('/home');
+      }
     } catch (err) {
       this.setState({isToastOpened: true});
       console.error(err.message);
@@ -136,4 +134,4 @@ class Login extends Component {
   
 }
 
-export default Login;
+export default withRouter(Login);
