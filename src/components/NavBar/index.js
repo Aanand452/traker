@@ -49,6 +49,13 @@ class NavBar extends Component{
     notification:{active:false, message:'', type: '', icon: '' }
   };
 
+  onClickLogout = e => {
+    e.preventDefault();
+    
+    localStorage.getItem('userId') && localStorage.removeItem('userId');
+    this.props.history.push('/');
+  }
+
   configUrls(data){
     this.setState({
       tableauUrl: data.tablaeu
@@ -101,7 +108,7 @@ class NavBar extends Component{
             <GlobalHeaderProfile 
               popover={
                 <Popover
-                  body={<HeaderProfileCustomContent />}
+                  body={<HeaderProfileCustomContent onClick={this.onClickLogout} />}
                   id="header-profile-popover-id"
                 />
             } />
