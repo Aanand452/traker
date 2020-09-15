@@ -1,4 +1,5 @@
 import db from '../dbmodels/';
+import { v4 as uuidv4 } from 'uuid';
 
 class ProgramModel {
   static async getAllPrograms() {
@@ -81,6 +82,52 @@ class ProgramModel {
       return minProgram;
     } catch (err) {
       console.error('Error getting program list', err);
+    }
+  };
+
+  static async addNewProgram(body) {
+    try {
+      const user = await db.User.findByPk(body.userId);
+      if(!user) throw new Error("User doesn't exists");
+
+      const region = await db.Region.findByPk(body.regionId);
+      if(!region) throw new Error("Region doesn't exists");
+
+      const lifecycleStage = await db.LifecycleStage.findByPk(body.lifecycleStageId);
+      if(!lifecycleStage) throw new Error("Lifecycle Stage doesn't exists");
+
+      const apm1 = await db.APM1.findByPk(body.apm1Id);
+      if(!apm1) throw new Error("APM1 doesn't exists");
+
+      const apm2 = await db.APM2.findByPk(body.apm2Id);
+      if(!apm2) throw new Error("APM2 doesn't exists");
+
+      const industry = await db.Industry.findByPk(body.industryId);
+      if(!industry) throw new Error("Industry doesn't exists");
+
+      const segment = await db.Segment.findByPk(body.segmentId);
+      if(!segment) throw new Error("Segment doesn't exists");
+
+      const persona = await db.Persona.findByPk(body.personaId);
+      if(!persona) throw new Error("Persona doesn't exists");
+
+      body.programId = uuidv4();
+      if(!body.programId) throw new Error("It was imposible to create a program");
+
+      body.targetRegion = body.regionId;
+      body.lifecycleStage = body.lifecycleStageId;
+      body.apm1 = body.apm1Id;
+      body.apm2 = body.apm2Id;
+      body.industry = body.industryId;
+      body.segment = body.segmentId;
+      body.persona = body.personaId;
+      body.owner = user.username;
+
+      const program = await db.Program.create(body);
+
+      return program;
+    } catch (err) {
+      console.error('Error creating new program', err);
     }
   };
 }
