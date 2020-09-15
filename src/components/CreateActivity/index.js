@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { withRouter, Link } from 'react-router-dom';
-import { getAPIUrl } from '../../config/config';
-
+import moment from 'moment';
 import {
   IconSettings,
   Breadcrumb,
@@ -9,6 +8,7 @@ import {
   Toast,
 } from '@salesforce/design-system-react';
 
+import { getAPIUrl } from '../../config/config';
 import Prompt from '../Prompt';
 import Step1 from './Step1';
 import Step2 from './Step2';
