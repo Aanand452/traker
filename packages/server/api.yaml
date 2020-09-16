@@ -49,6 +49,28 @@ paths:
             allOf: 
               - $ref: '#/definitions/ResponseStatus'
               - $ref: '#/definitions/Error'
+    post:
+      x-swagger-router-controller: program
+      operationId: "addNewProgram"
+      summary: Create a new program
+      description: N/A
+      parameters:
+      - name: body
+        in: body
+        schema:
+          $ref: '#/definitions/ProgramCreateBody'
+      responses:
+        200:
+          description: Success
+          schema:
+            allOf:
+              - $ref: '#/definitions/ResponseStatus'
+        default:
+          description: Invalid request.
+          schema:
+            allOf:
+              - $ref: '#/definitions/ResponseStatus'
+              - $ref: '#/definitions/Error'
   
   /program/{id}:  
     get:
@@ -368,7 +390,39 @@ definitions:
         type: array
         items:
           type: string
-
+  
+  ProgramCreateBody:
+    description: Body used for creating a new program.
+    type: object
+    properties:
+      name:
+        type: string
+      budget:
+        type: string
+      metrics:
+        type: string
+      parentCampaignId:
+        type: string
+      customerMessage:
+        type: string
+      businessGoal:
+        type: string
+      regionId:
+        type: string
+      lifecycleStageId:
+        type: string
+      apm1Id:
+        type: string
+      apm2Id:
+        type: string
+      industryId:
+        type: string
+      segmentId:
+        type: string
+      personaId:
+        type: string
+      userId:
+        type: string
 
   ProgramListResponse:
     description: A list of programs.
