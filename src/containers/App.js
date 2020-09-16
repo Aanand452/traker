@@ -3,7 +3,6 @@ import NotFoundPage from '../containers/NotFoundPage';
 import { BrowserRouter as Router, Route, Switch, Redirect } from 'react-router-dom';
 import moment from 'moment';
 import 'moment/locale/en-au';
-import 'moment/locale/es';
 import { SfdcPageAppWrapper } from './styles/page';
 
 import Login from '../components/Login'
@@ -14,7 +13,8 @@ import EditProgramPage from '../components/EditProgramPage';
 import HomePage from '../components/HomePage';
 import PrivateRoute from '../components/PrivateRoute';
 
-moment.locale(navigator.language);
+//configurate date formats as dd/mm/yyyy
+moment.locale('en-AU');
 
 function EditActivity() {
   return (
