@@ -151,8 +151,14 @@ class Step1 extends Component {
               <p>{this.state.items.persona}</p>
             </div>
           </div>
-          <Button label="Cancel" onClick={() => this.props.history.push('/home')} />
-          <Button label="Next step" variant="brand" onClick={this.nextStep} />
+          {
+            this.props.step === 1 && 
+            <div>
+              <Button label="Cancel" onClick={() => this.props.history.push('/home')} /> 
+              <Button label="Select a program" variant="brand" onClick={this.nextStep} />
+            </div>
+          }
+          
         </div>
       </Fragment>  
     )

@@ -254,14 +254,16 @@ class CreateActivity extends Component {
         {this.state.isDeletePromptOpen && <Prompt closeErrorHandler={() => this.setState({isDeletePromptOpen: false})} error={true} message='Interval server error' title='Error' />}
         <FormContainer>
           <form className="slds-grid slds-wrap" onSubmit={e => this.validateSubmit(e)}>
+            <Step1
+              row={this.state.row}
+              handleStep={this.handleStep}
+              handleChange={this.handleChange}
+              error={this.state.error}
+              step={this.state.steps.filter(el => el.active).length}
+            />
             {
-              this.state.steps.filter(el => el.active).length === 1 ?
-                <Step1
-                  row={this.state.row}
-                  handleStep={this.handleStep}
-                  handleChange={this.handleChange}
-                  error={this.state.error}
-                /> :
+              this.state.steps.filter(el => el.active).length === 2  &&
+                
                 <Step2
                   row={this.state.row}
                   handleStep={this.handleStep}
