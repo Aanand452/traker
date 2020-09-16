@@ -19,7 +19,7 @@ export default class ApiUtils {
     const status = httpStatus.getStatusText(code);
     const payload = {
       info: {
-        code: code || 500,
+        code: code || httpStatus.INTERNAL_SERVER_ERROR,
         status,
       },
       message: errorMessage || `Error has happened in the server, will be fixed it soon`

@@ -128,6 +128,7 @@ class ProgramModel {
       return program;
     } catch (err) {
       console.error('Error creating new program', err);
+      return 'Error';
     }
   };
 }
