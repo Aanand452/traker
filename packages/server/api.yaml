@@ -148,6 +148,138 @@ paths:
               - $ref: '#/definitions/ResponseStatus'
               - $ref: '#/definitions/Error'
 
+  /lifecycle-stage:
+    get:
+      x-swagger-router-controller: lifecycleStage
+      operationId: "getAllLifecycleStages"
+      summary: Returns the list of lifecycle stages.
+      description: This will be used to populate the insert and update dropdowns
+      produces:
+        - application/json
+      responses:
+        200:
+          description: Success
+          schema:
+            allOf:
+              - $ref: '#/definitions/ResponseStatus'
+              - $ref: '#/definitions/RegionListResponse'
+        default:
+          description: Invalid request.
+          schema:
+            allOf: 
+              - $ref: '#/definitions/ResponseStatus'
+              - $ref: '#/definitions/Error'
+
+  /apm1:
+    get:
+      x-swagger-router-controller: apm1
+      operationId: "getAllAPM1"
+      summary: Returns the list of apm1.
+      description: This will be used to populate the insert and update dropdowns
+      produces:
+        - application/json
+      responses:
+        200:
+          description: Success
+          schema:
+            allOf:
+              - $ref: '#/definitions/ResponseStatus'
+              - $ref: '#/definitions/RegionListResponse'
+        default:
+          description: Invalid request.
+          schema:
+            allOf: 
+              - $ref: '#/definitions/ResponseStatus'
+              - $ref: '#/definitions/Error'
+
+  /apm2:
+    get:
+      x-swagger-router-controller: apm2
+      operationId: "getAllAPM2"
+      summary: Returns the list of apm2.
+      description: This will be used to populate the insert and update dropdowns
+      produces:
+        - application/json
+      responses:
+        200:
+          description: Success
+          schema:
+            allOf:
+              - $ref: '#/definitions/ResponseStatus'
+              - $ref: '#/definitions/RegionListResponse'
+        default:
+          description: Invalid request.
+          schema:
+            allOf: 
+              - $ref: '#/definitions/ResponseStatus'
+              - $ref: '#/definitions/Error'
+
+  /industry:
+    get:
+      x-swagger-router-controller: industry
+      operationId: "getAllIndustries"
+      summary: Returns the list of industries.
+      description: This will be used to populate the insert and update dropdowns
+      produces:
+        - application/json
+      responses:
+        200:
+          description: Success
+          schema:
+            allOf:
+              - $ref: '#/definitions/ResponseStatus'
+              - $ref: '#/definitions/RegionListResponse'
+        default:
+          description: Invalid request.
+          schema:
+            allOf: 
+              - $ref: '#/definitions/ResponseStatus'
+              - $ref: '#/definitions/Error'
+
+  /segment:
+    get:
+      x-swagger-router-controller: segment
+      operationId: "getAllSegments"
+      summary: Returns the list of segments.
+      description: This will be used to populate the insert and update dropdowns
+      produces:
+        - application/json
+      responses:
+        200:
+          description: Success
+          schema:
+            allOf:
+              - $ref: '#/definitions/ResponseStatus'
+              - $ref: '#/definitions/RegionListResponse'
+        default:
+          description: Invalid request.
+          schema:
+            allOf: 
+              - $ref: '#/definitions/ResponseStatus'
+              - $ref: '#/definitions/Error'
+
+  /persona:
+    get:
+      x-swagger-router-controller: persona
+      operationId: "getAllPersonas"
+      summary: Returns the list of personas.
+      description: This will be used to populate the insert and update dropdowns
+      produces:
+        - application/json
+      responses:
+        200:
+          description: Success
+          schema:
+            allOf:
+              - $ref: '#/definitions/ResponseStatus'
+              - $ref: '#/definitions/RegionListResponse'
+        default:
+          description: Invalid request.
+          schema:
+            allOf: 
+              - $ref: '#/definitions/ResponseStatus'
+              - $ref: '#/definitions/Error'
+
   /format/{tacticId}:
     get:
       x-swagger-router-controller: format
