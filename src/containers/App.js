@@ -14,7 +14,8 @@ import EditProgramPage from '../components/EditProgramPage';
 import HomePage from '../components/HomePage';
 import PrivateRoute from '../components/PrivateRoute';
 
-moment.locale(navigator.language);
+//configurate date formats as dd/mm/yyyy
+moment.locale('en-AU');
 
 function EditActivity() {
   return (
