@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { withRouter, Link } from 'react-router-dom';
-import moment from 'moment';
+import moment from 'moment-timezone';
+import momentTz from 'moment';
 import {
   IconSettings,
   Breadcrumb,
@@ -147,7 +148,7 @@ class CreateActivity extends Component {
   handleChange = async (value, data) => {
     let newRow = {};
     let formats = this.state.formats;
-    
+
     if(value === "tactic") {
       formats = await this.populateTactic(data[0]);
       newRow = {...this.state.row, tactic: data, format: [formats[0]]};
@@ -211,13 +212,21 @@ class CreateActivity extends Component {
     return false;
   };
 
+  parseDatesGTM = row => {
+    row.startDate = moment(row.startDate, 'DD/MM/YYYY').format();
+    row.endDate = moment(row.endDate, 'DD/MM/YYYY').format();
+
+    return row;
+  }
+
   onSubmit = async body => {
     try {
+      body = this.parseDatesGTM(body);
       const config = {
         method: 'POST',
         headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
         },
         body: JSON.stringify(body)
       }
@@ -264,16 +273,16 @@ class CreateActivity extends Component {
             {
               this.state.steps.filter(el => el.active).length === 2  &&
                 
-                <Step2
-                  row={this.state.row}
-                  handleStep={this.handleStep}
-                  getFormData={this.props.getFormData}
-                  handleChange={this.handleChange}
-                  error={this.state.error}
-                  regions={this.state.regions}
-                  tactics={this.state.tactics}
-                  formats={this.state.formats}
-                />
+              <Step2
+                row={this.state.row}
+                handleStep={this.handleStep}
+                getFormData={this.props.getFormData}
+                handleChange={this.handleChange}
+                error={this.state.error}
+                regions={this.state.regions}
+                tactics={this.state.tactics}
+                formats={this.state.formats}
+              />
             }
           </form>
         </FormContainer>
