@@ -107,52 +107,58 @@ class Step1 extends Component {
           />
           <div className="slds-grid slds-wrap slds-m-left_xx-small slds-m-top_large">
             <div className="slds-m-bottom_large slds-col slds-size_1-of-2 slds-large-size_1-of-4">
-              <p>Program Owner:</p>
-              <strong>{this.state.items.owner}</strong>
+              <strong>Program Owner:</strong>
+              <p>{this.state.items.owner}</p>
             </div>
             <div className="slds-m-bottom_large slds-col slds-size_1-of-2 slds-large-size_1-of-4">
-              <p>Budget:</p>
-              <strong>{this.state.items.budget}</strong>
+              <strong>Budget:</strong>
+              <p>{this.state.items.budget}</p>
             </div>
             <div className="slds-m-bottom_large slds-col slds-size_1-of-2 slds-large-size_1-of-4">
-              <p>Metrics:</p>
-              <strong>{this.state.items.metrics}</strong>
+              <strong>Metrics:</strong>
+              <p>{this.state.items.metrics}</p>
             </div>
             <div className="slds-m-bottom_large slds-col slds-size_1-of-2 slds-large-size_1-of-4">
-              <p>Parent Campaign ID:</p>
-              <strong>{this.state.items.parentCampaignId }</strong>
+              <strong>Parent Campaign ID:</strong>
+              <p>{this.state.items.parentCampaignId }</p>
             </div>
             <div className="slds-m-bottom_large slds-col slds-size_1-of-2 slds-large-size_1-of-4">
-              <p>Region:</p>
-              <strong>{this.state.items.targetRegion}</strong>
+              <strong>Region:</strong>
+              <p>{this.state.items.targetRegion}</p>
             </div>
             <div className="slds-m-bottom_large slds-col slds-size_1-of-2 slds-large-size_1-of-4">
-              <p>Lifecycle Stage:</p>
-              <strong>{this.state.items.lifecycleStage}</strong>
+              <strong>Lifecycle Stage:</strong>
+              <p>{this.state.items.lifecycleStage}</p>
             </div>
             <div className="slds-m-bottom_large slds-col slds-size_1-of-2 slds-large-size_1-of-4">
-              <p>APM1:</p>
-              <strong>{this.state.items.apm1}</strong>
+              <strong>APM1:</strong>
+              <p>{this.state.items.apm1}</p>
             </div>
             <div className="slds-m-bottom_large slds-col slds-size_1-of-2 slds-large-size_1-of-4">
-              <p>APM2:</p>
-              <strong>{this.state.items.apm2}</strong>
+              <strong>APM2:</strong>
+              <p>{this.state.items.apm2}</p>
             </div>
             <div className="slds-m-bottom_large slds-col slds-size_1-of-2 slds-large-size_1-of-4">
-              <p>Industry:</p>
-              <strong>{this.state.items.industry}</strong>
+              <strong>Industry:</strong>
+              <p>{this.state.items.industry}</p>
             </div>
             <div className="slds-m-bottom_large slds-col slds-size_1-of-2 slds-large-size_1-of-4">
-              <p>Segment:</p>
-              <strong>{this.state.items.segment}</strong>
+              <strong>Segment:</strong>
+              <p>{this.state.items.segment}</p>
             </div>
             <div className="slds-m-bottom_large slds-col slds-size_1-of-2 slds-large-size_1-of-4">
-              <p>Persona:</p>
-              <strong>{this.state.items.persona}</strong>
+              <strong>Persona:</strong>
+              <p>{this.state.items.persona}</p>
             </div>
           </div>
-          <Button label="Cancel" onClick={() => this.props.history.push('/home')} />
-          <Button label="Next step" variant="brand" onClick={this.nextStep} />
+          {
+            this.props.step === 1 && 
+            <div>
+              <Button label="Cancel" onClick={() => this.props.history.push('/home')} /> 
+              <Button label="Select program" variant="brand" onClick={this.nextStep} />
+            </div>
+          }
+          
         </div>
       </Fragment>  
     )
