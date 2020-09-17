@@ -15,14 +15,14 @@ export default class ApiUtils {
     response.status(code).json(payload);
   }
 
-  static responseWithError(response, code = httpStatus.INTERNAL_SERVER_ERROR, errorMessage) {
+  static responseWithError(response, code, errorMessage) {
     const status = httpStatus.getStatusText(code);
     const payload = {
       info: {
-        code,
+        code: code || httpStatus.INTERNAL_SERVER_ERROR,
         status,
       },
-      message: `Error has happened in the server, will be fixed it soon`
+      message: errorMessage || `Error has happened in the server, will be fixed it soon`
     };
 
     errorMessage && console.error(ERROR_PREFIX, errorMessage);
