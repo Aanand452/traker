@@ -162,7 +162,7 @@ paths:
           schema:
             allOf:
               - $ref: '#/definitions/ResponseStatus'
-              - $ref: '#/definitions/RegionListResponse'
+              - $ref: '#/definitions/LifecycleStageListResponse'
         default:
           description: Invalid request.
           schema:
@@ -184,7 +184,7 @@ paths:
           schema:
             allOf:
               - $ref: '#/definitions/ResponseStatus'
-              - $ref: '#/definitions/RegionListResponse'
+              - $ref: '#/definitions/APM1ListResponse'
         default:
           description: Invalid request.
           schema:
@@ -206,7 +206,7 @@ paths:
           schema:
             allOf:
               - $ref: '#/definitions/ResponseStatus'
-              - $ref: '#/definitions/RegionListResponse'
+              - $ref: '#/definitions/APM2ListResponse'
         default:
           description: Invalid request.
           schema:
@@ -228,7 +228,7 @@ paths:
           schema:
             allOf:
               - $ref: '#/definitions/ResponseStatus'
-              - $ref: '#/definitions/RegionListResponse'
+              - $ref: '#/definitions/IndustryListResponse'
         default:
           description: Invalid request.
           schema:
@@ -250,7 +250,7 @@ paths:
           schema:
             allOf:
               - $ref: '#/definitions/ResponseStatus'
-              - $ref: '#/definitions/RegionListResponse'
+              - $ref: '#/definitions/SegmentListResponse'
         default:
           description: Invalid request.
           schema:
@@ -272,7 +272,7 @@ paths:
           schema:
             allOf:
               - $ref: '#/definitions/ResponseStatus'
-              - $ref: '#/definitions/RegionListResponse'
+              - $ref: '#/definitions/PersonaListResponse'
         default:
           description: Invalid request.
           schema:
@@ -602,13 +602,67 @@ definitions:
           $ref: '#/definitions/Tactic'
 
   RegionListResponse:
-    description: A list of users.
+    description: A list of regions.
     type: object
     properties:
       result:
         type: array
         items:
           $ref: '#/definitions/Region'
+
+  LifecycleStageListResponse:
+    description: A list of lifecycle stages.
+    type: object
+    properties:
+      result:
+        type: array
+        items:
+          $ref: '#/definitions/LifecycleStage'
+
+  APM1ListResponse:
+    description: A list of apm1.
+    type: object
+    properties:
+      result:
+        type: array
+        items:
+          $ref: '#/definitions/APM1'
+
+  APM2ListResponse:
+    description: A list of apm2.
+    type: object
+    properties:
+      result:
+        type: array
+        items:
+          $ref: '#/definitions/APM2'
+
+  IndustryListResponse:
+    description: A list of industries.
+    type: object
+    properties:
+      result:
+        type: array
+        items:
+          $ref: '#/definitions/Industry'
+
+  SegmentListResponse:
+    description: A list of segments.
+    type: object
+    properties:
+      result:
+        type: array
+        items:
+          $ref: '#/definitions/Segment'
+
+  PersonaListResponse:
+    description: A list of persona.
+    type: object
+    properties:
+      result:
+        type: array
+        items:
+          $ref: '#/definitions/Persona'
 
   ResponseStatus:
     type: object
@@ -717,6 +771,66 @@ definitions:
       id:
         type: string
       label:
+        type: string
+
+  LifecycleStage:
+    type: object
+    required:
+      - id
+    properties:
+      id:
+        type: string
+      name:
+        type: string
+
+  APM1:
+    type: object
+    required:
+      - id
+    properties:
+      id:
+        type: string
+      name:
+        type: string
+
+  APM2:
+    type: object
+    required:
+      - id
+    properties:
+      id:
+        type: string
+      name:
+        type: string
+
+  Industry:
+    type: object
+    required:
+      - id
+    properties:
+      id:
+        type: string
+      name:
+        type: string
+
+  Segment:
+    type: object
+    required:
+      - id
+    properties:
+      id:
+        type: string
+      name:
+        type: string
+
+  Persona:
+    type: object
+    required:
+      - id
+    properties:
+      id:
+        type: string
+      name:
         type: string
 
   Status:
