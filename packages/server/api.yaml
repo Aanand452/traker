@@ -148,6 +148,138 @@ paths:
               - $ref: '#/definitions/ResponseStatus'
               - $ref: '#/definitions/Error'
 
+  /lifecycle-stage:
+    get:
+      x-swagger-router-controller: lifecycleStage
+      operationId: "getAllLifecycleStages"
+      summary: Returns the list of lifecycle stages.
+      description: This will be used to populate the insert and update dropdowns
+      produces:
+        - application/json
+      responses:
+        200:
+          description: Success
+          schema:
+            allOf:
+              - $ref: '#/definitions/ResponseStatus'
+              - $ref: '#/definitions/LifecycleStageListResponse'
+        default:
+          description: Invalid request.
+          schema:
+            allOf: 
+              - $ref: '#/definitions/ResponseStatus'
+              - $ref: '#/definitions/Error'
+
+  /apm1:
+    get:
+      x-swagger-router-controller: apm1
+      operationId: "getAllAPM1"
+      summary: Returns the list of apm1.
+      description: This will be used to populate the insert and update dropdowns
+      produces:
+        - application/json
+      responses:
+        200:
+          description: Success
+          schema:
+            allOf:
+              - $ref: '#/definitions/ResponseStatus'
+              - $ref: '#/definitions/APM1ListResponse'
+        default:
+          description: Invalid request.
+          schema:
+            allOf: 
+              - $ref: '#/definitions/ResponseStatus'
+              - $ref: '#/definitions/Error'
+
+  /apm2:
+    get:
+      x-swagger-router-controller: apm2
+      operationId: "getAllAPM2"
+      summary: Returns the list of apm2.
+      description: This will be used to populate the insert and update dropdowns
+      produces:
+        - application/json
+      responses:
+        200:
+          description: Success
+          schema:
+            allOf:
+              - $ref: '#/definitions/ResponseStatus'
+              - $ref: '#/definitions/APM2ListResponse'
+        default:
+          description: Invalid request.
+          schema:
+            allOf: 
+              - $ref: '#/definitions/ResponseStatus'
+              - $ref: '#/definitions/Error'
+
+  /industry:
+    get:
+      x-swagger-router-controller: industry
+      operationId: "getAllIndustries"
+      summary: Returns the list of industries.
+      description: This will be used to populate the insert and update dropdowns
+      produces:
+        - application/json
+      responses:
+        200:
+          description: Success
+          schema:
+            allOf:
+              - $ref: '#/definitions/ResponseStatus'
+              - $ref: '#/definitions/IndustryListResponse'
+        default:
+          description: Invalid request.
+          schema:
+            allOf: 
+              - $ref: '#/definitions/ResponseStatus'
+              - $ref: '#/definitions/Error'
+
+  /segment:
+    get:
+      x-swagger-router-controller: segment
+      operationId: "getAllSegments"
+      summary: Returns the list of segments.
+      description: This will be used to populate the insert and update dropdowns
+      produces:
+        - application/json
+      responses:
+        200:
+          description: Success
+          schema:
+            allOf:
+              - $ref: '#/definitions/ResponseStatus'
+              - $ref: '#/definitions/SegmentListResponse'
+        default:
+          description: Invalid request.
+          schema:
+            allOf: 
+              - $ref: '#/definitions/ResponseStatus'
+              - $ref: '#/definitions/Error'
+
+  /persona:
+    get:
+      x-swagger-router-controller: persona
+      operationId: "getAllPersonas"
+      summary: Returns the list of personas.
+      description: This will be used to populate the insert and update dropdowns
+      produces:
+        - application/json
+      responses:
+        200:
+          description: Success
+          schema:
+            allOf:
+              - $ref: '#/definitions/ResponseStatus'
+              - $ref: '#/definitions/PersonaListResponse'
+        default:
+          description: Invalid request.
+          schema:
+            allOf: 
+              - $ref: '#/definitions/ResponseStatus'
+              - $ref: '#/definitions/Error'
+
   /format/{tacticId}:
     get:
       x-swagger-router-controller: format
@@ -470,13 +602,67 @@ definitions:
           $ref: '#/definitions/Tactic'
 
   RegionListResponse:
-    description: A list of users.
+    description: A list of regions.
     type: object
     properties:
       result:
         type: array
         items:
           $ref: '#/definitions/Region'
+
+  LifecycleStageListResponse:
+    description: A list of lifecycle stages.
+    type: object
+    properties:
+      result:
+        type: array
+        items:
+          $ref: '#/definitions/LifecycleStage'
+
+  APM1ListResponse:
+    description: A list of apm1.
+    type: object
+    properties:
+      result:
+        type: array
+        items:
+          $ref: '#/definitions/APM1'
+
+  APM2ListResponse:
+    description: A list of apm2.
+    type: object
+    properties:
+      result:
+        type: array
+        items:
+          $ref: '#/definitions/APM2'
+
+  IndustryListResponse:
+    description: A list of industries.
+    type: object
+    properties:
+      result:
+        type: array
+        items:
+          $ref: '#/definitions/Industry'
+
+  SegmentListResponse:
+    description: A list of segments.
+    type: object
+    properties:
+      result:
+        type: array
+        items:
+          $ref: '#/definitions/Segment'
+
+  PersonaListResponse:
+    description: A list of persona.
+    type: object
+    properties:
+      result:
+        type: array
+        items:
+          $ref: '#/definitions/Persona'
 
   ResponseStatus:
     type: object
@@ -585,6 +771,66 @@ definitions:
       id:
         type: string
       label:
+        type: string
+
+  LifecycleStage:
+    type: object
+    required:
+      - id
+    properties:
+      id:
+        type: string
+      name:
+        type: string
+
+  APM1:
+    type: object
+    required:
+      - id
+    properties:
+      id:
+        type: string
+      name:
+        type: string
+
+  APM2:
+    type: object
+    required:
+      - id
+    properties:
+      id:
+        type: string
+      name:
+        type: string
+
+  Industry:
+    type: object
+    required:
+      - id
+    properties:
+      id:
+        type: string
+      name:
+        type: string
+
+  Segment:
+    type: object
+    required:
+      - id
+    properties:
+      id:
+        type: string
+      name:
+        type: string
+
+  Persona:
+    type: object
+    required:
+      - id
+    properties:
+      id:
+        type: string
+      name:
         type: string
 
   Status:
