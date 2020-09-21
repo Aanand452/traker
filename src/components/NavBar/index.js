@@ -122,6 +122,7 @@ class NavBar extends Component{
                 <NavigationBarLink to="/home" title="Home" />
                 <NavigationBarLink to="/my-activities" title="My Activities" />
                 <NavigationBarLink to="/programs-view" title="Programs View" />
+                <NavigationBarLink to="/create-program" title="Create Program" />
                 {this.state.tableauUrl !== '/' && <NavigationBarLink title="Go to reports" href={this.state.tableauUrl}/>}
                 
               </GlobalNavigationBarRegion>

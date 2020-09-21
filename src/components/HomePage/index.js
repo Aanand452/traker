@@ -61,7 +61,7 @@ const HomePage = () => (
           (Only displayed for Admin and Superuser)
         </CardBody>
         <CardAction>
-          <Link>
+          <Link to="/create-program">
             <Button variant="brand" label="Create new program" />
           </Link>
         </CardAction>
