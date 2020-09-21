@@ -260,7 +260,7 @@ class EditActivityModalComponent extends Component {
       });
       this.props.toggleOpen();
       this.props.onToast(true, "The campaign was edited successfully", "success");
-      // this.props.reloadActivities();
+      this.props.reloadActivities();
     } catch (err) {
       this.props.onToast(true, "Something went wrong, please try again", "error");
     }
