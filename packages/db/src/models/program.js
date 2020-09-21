@@ -16,10 +16,7 @@ class ProgramModel {
     try{
       const programs = await db.Program.findAll({
         include: [
-          {
-            model: db.User,
-            where: {user_id: id}
-          },
+          db.User,
           db.Region,
           db.LifecycleStage,
           db.APM1,
