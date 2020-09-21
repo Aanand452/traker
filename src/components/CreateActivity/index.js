@@ -146,6 +146,7 @@ class CreateActivity extends Component {
   }
 
   handleChange = async (value, data) => {
+    debugger
     let newRow = {};
     let formats = this.state.formats;
 
