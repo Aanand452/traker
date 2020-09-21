@@ -11,8 +11,6 @@ import {
   IconSettings,
   PageHeader,
   PageHeaderControl,
-  ToastContainer,
-  Toast
 } from '@salesforce/design-system-react';
 
 import Panel from '../Panel';
@@ -37,7 +35,6 @@ class Table extends Component {
     sortProperty: '',
     sortDirection: '',
     search: '',
-    showToast: this.props.location.newRow ? true : false,
     isPanelOpen: false,
     data: [],
     displayedData: [],
@@ -210,16 +207,6 @@ class Table extends Component {
             <DataTableColumn label="Business Goal" property="businessGoal" />
           </DataTable>
           <Pager data={this.state.data} itemsPerPage={20} setDisplayedItems={this.handlePagination} />
-          {this.state.showToast && (
-            <ToastContainer>
-              <Toast 
-                labels={{heading: ["A new Program was added successfully"]}}
-                variant="success"
-                duration={5000}
-                onRequestClose={() => this.setState({showToast: false})}
-              />
-            </ToastContainer>
-          )}
         </IconSettings>
       </Container>
     );

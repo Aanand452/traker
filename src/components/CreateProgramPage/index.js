@@ -35,6 +35,14 @@ class CreateProgramPage extends Component {
   setup = async () => {
     if(window.location.hostname === 'localhost') this.API_URL =  "http://localhost:3000/api/v1";
     else this.API_URL = await getAPIUrl();
+
+    this.getRegions();
+    this.getLifecycles();
+    this.getAPM1();
+    this.getAPM2();
+    this.getIndustry();
+    this.getSegment();
+    this.getPersona();
   };
 
   getRegions = async () => {
@@ -42,9 +50,10 @@ class CreateProgramPage extends Component {
       const request = await fetch(`${this.API_URL}/region`);
       const response = await request.json();
 
-      this.setState({ regions: response.result });
+      if(response.info.code === 200) this.setState({ regions: response.result });
+      else throw new Error(response.info.status);
     } catch (err) {
-      console.error(err);
+      this.showError(err);
     }
   }
 
@@ -54,9 +63,10 @@ class CreateProgramPage extends Component {
       const response = await request.json();
       const lifecycles = response.result.map(item => ({id: item.lifecycleStageId, label: item.name}));
 
-      this.setState({ lifecycleStages: lifecycles });
+      if(response.info.code === 200) this.setState({ lifecycleStages: lifecycles });
+      else throw new Error(response.info.status);
     } catch (err) {
-      console.error(err);
+      this.showError(err);
     }
   };
 
@@ -67,9 +77,10 @@ class CreateProgramPage extends Component {
       const apm1 = response.result.map(item => ({id: item.apm1Id, label: item.name}));
 
 
-      this.setState({ apm1s: apm1 });
+      if(response.info.code === 200) this.setState({ apm1s: apm1 });
+      else throw new Error(response.info.status);
     } catch (err) {
-      console.error(err);
+      this.showError(err);
     }
   };
 
@@ -79,9 +90,10 @@ class CreateProgramPage extends Component {
       const response = await request.json();
       const apm2 = response.result.map(item => ({id: item.apm2Id, label: item.name}));
 
-      this.setState({ apm2s: apm2 });
+      if(response.info.code === 200) this.setState({ apm2s: apm2 });
+      else throw new Error(response.info.status);
     } catch (err) {
-      console.error(err);
+      this.showError(err);
     }
   };
 
@@ -91,9 +103,10 @@ class CreateProgramPage extends Component {
       const response = await request.json();
       const industry = response.result.map(item => ({id: item.industryId, label: item.name}));
 
-      this.setState({ industries : industry });
+      if(response.info.code === 200) this.setState({ industries : industry });
+      else throw new Error(response.info.status);
     } catch (err) {
-      console.error(err);
+      this.showError(err);
     }
   };
 
@@ -103,9 +116,10 @@ class CreateProgramPage extends Component {
       const response = await request.json();
       const segment = response.result.map(item => ({id: item.segmentId, label: item.name}));
 
-      this.setState({ segments: segment });
+      if(response.info.code === 200) this.setState({ segments: segment });
+      else throw new Error(response.info.status);
     } catch (err) {
-      console.error(err);
+      this.showError(err);
     }
   };
 
@@ -115,9 +129,10 @@ class CreateProgramPage extends Component {
       const response = await request.json();
       const persona = response.result.map(item => ({id: item.personaId, label: item.name}));
 
-      this.setState({ personas: persona });
+      if(response.info.code === 200) this.setState({ personas: persona });
+      else throw new Error(response.info.status);
     } catch (err) {
-      console.error(err);
+      this.showError(err);
     }
   };
 
@@ -201,38 +216,30 @@ class CreateProgramPage extends Component {
       const response = await fetch(`${this.API_URL}/program`, config);
 
       if(response.status === 200) {
-        this.setState({
-          toast: {
-            active: true,
-            variant: 'success',
-            heading: 'The program was added successfuly'
-          },
-          program: {},
-          showLoader: false
-        })
-      } else throw new Error(response);
+        this.props.history.push({
+          pathname: '/programs-view',
+          state: { newProgram: true }
+        });
+      } else throw new Error('Something went wrong, please try again');
     } catch (err) {
-      this.setState({
-        toast: {
-          active: true,
-          variant: 'error',
-          heading: 'Something went wrong, please try again'
-        },
-        showLoader: false
-      });
-      console.error(err);
+      this.setState({showLoader: false});
+      this.showError(err)
     };
+  };
+
+  showError = (err) => {
+    this.setState({
+      toast: {
+        active: true,
+        variant: 'error',
+        heading: 'Something went wrong, please try again.'
+      }
+    });
+    console.error(err);
   };
 
   componentDidMount() {
     this.setup();
-    this.getRegions();
-    this.getLifecycles();
-    this.getAPM1();
-    this.getAPM2();
-    this.getIndustry();
-    this.getSegment();
-    this.getPersona();
   };
 
   render() {
