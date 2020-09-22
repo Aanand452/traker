@@ -16,8 +16,7 @@ class CreateActivityPage extends Component {
     this.setState({row: data});
   };
 
-  onSubmit = async e => {
-    e.preventDefault();
+  onSubmit = async () => {
     
     this.setState({showLoader: true});
     const newRow = {

@@ -199,7 +199,6 @@ class CreateActivity extends Component {
 
     if (Object.keys(errors).length === 0) {
       this.onSubmit(row);
-      return this.props.handleSubmit(e);
     }
     
     return false;
@@ -223,7 +222,10 @@ class CreateActivity extends Component {
         },
         body: JSON.stringify(body)
       }
-      await fetch(`${this.API_URL}/activity`, config);
+      let response = await fetch(`${this.API_URL}/activity`, config);
+      if(response.status === 200) {
+        this.props.handleSubmit();
+      } else throw new Error(response);
     } catch (err) {
       this.setState({isDeletePromptOpen: true});
       console.error(err);
