@@ -30,13 +30,13 @@ class EditActivityModalComponent extends Component {
     programSelection: [],
     formatSelection: [],
     regionSelection: [],
-    activityId: null,
-    title: null,
-    abstract: null,
-    startDate: null,
-    endDate: null,
-    asset: null,
-    campaignId: null,
+    activityId: this.props.data.activityId,
+    title: this.props.data.title,
+    abstract: this.props.data.abstract,
+    startDate: moment(new Date(this.props.data.startDate)).format('L'),
+    endDate: moment(new Date(this.props.data.endDate)).format('L'),
+    asset: this.props.data.asset,
+    campaignId: this.props.data.campaignId,
     errors: {}
   }
 
@@ -73,12 +73,12 @@ class EditActivityModalComponent extends Component {
       var activityProgram = this.state.program.filter(el => el.program_id === result.programId);
       var activityTactic = this.state.tactic.filter(el => el.tactic_id === result.tacticId);
       var activityRegion = this.state.region.filter(el => el.region_id === result.regionId);
-      
+
       this.setState({...this.state,
         title: result.title,
         abstract: result.abstract,
-        startDate: moment(result.startDate).format('MM/DD/YYYY'),
-        endDate: moment(result.endDate).format('MM/DD/YYYY'),
+        startDate: moment(new Date(result.startDate)).format('L'),
+        endDate: moment(new Date(result.endDate)).format('L'), 
         asset: result.asset,
         campaignId: result.campaignId,
         programSelection: activityProgram,
@@ -215,6 +215,13 @@ class EditActivityModalComponent extends Component {
     this.setState({[e.target.id]: e.target.value, errors});
   }
 
+  parseDatesGTM = row => {
+    row.startDate = moment(row.startDate, 'DD/MM/YYYY').format();
+    row.endDate = moment(row.endDate, 'DD/MM/YYYY').format();
+
+    return row;
+  }
+
   editTable = async () => {
 
     if(Object.values(this.state.errors).some(el => el)) return;
@@ -228,11 +235,13 @@ class EditActivityModalComponent extends Component {
         abstract: this.state.abstract,
         regionId: this.state.regionSelection[0].region_id,
         startDate: this.state.startDate,
-        endDate: this.state.endtDate,
+        endDate: this.state.endDate,
         asset: this.state.asset,
         userId: localStorage.getItem('userId'),
         programId: this.state.programSelection[0].program_id,
       }
+
+      body = this.parseDatesGTM(body);
 
       const config = {
         method: 'PUT',
@@ -242,6 +251,7 @@ class EditActivityModalComponent extends Component {
         },
         body: JSON.stringify(body)
       }
+
       const response = await fetch(`${this.API_URL}/activity/${this.props.data.activityId}`, config);
       
       this.props.editItem(this.props.dataTable.items, {
@@ -259,7 +269,7 @@ class EditActivityModalComponent extends Component {
       });
       this.props.toggleOpen();
       this.props.onToast(true, "The campaign was edited successfully", "success");
-      
+      this.props.reloadActivities();
     } catch (err) {
       this.props.onToast(true, "Something went wrong, please try again", "error");
     }
@@ -413,12 +423,9 @@ class EditActivityModalComponent extends Component {
                 required
                 id='startDate'
                 triggerClassName="slds-col slds-size_1-of-1"
-                labels={{
-                  label: 'Start date',
-                }}
+                labels={{label: 'Start date'}}
                 onChange={(event, data) => {
                   this.handleStartDate(event, data);
-
                   if (this.props.action) {
                     const dataAsArray = Object.keys(data).map((key) => data[key]);
                     this.props.action('onChange')(event, data, ...dataAsArray);
@@ -430,27 +437,20 @@ class EditActivityModalComponent extends Component {
                     this.props.action('onCalendarFocus')(event, data, ...dataAsArray);
                   }
                 }}
-                formatter={(date) => {
-                  return date ? moment(date).format('MM/DD/YYYY') : '';
-                }}
-                parser={(dateString) => {
-                  return moment(dateString, 'MM-DD-YYYY').toDate();
-                }}
-                value={this.state.startDate}
+                formatter={(date) => date ? moment(date).format('L') : ''}
+                parser={(dateString) => moment(dateString, 'L').toDate()}
+                formattedValue={this.state.startDate}
+                autocomplete="off"
               />
               {this.state.errors.startDate && <div class="slds-form-element__help">This field is required</div>}
             </div>
             <div className={`slds-m-bottom_large slds-col slds-size_1-of-1 ${this.state.errors.endDate && "slds-has-error"}`}>
               <Datepicker
                 required
-                id='endDate'
                 triggerClassName="slds-col slds-size_1-of-1"
-                labels={{
-                  label: 'End date',
-                }}
+                labels={{label: 'End date',}}
                 onChange={(event, data) => {
                   this.handleEndDate(event, data);
-
                   if (this.props.action) {
                     const dataAsArray = Object.keys(data).map((key) => data[key]);
                     this.props.action('onChange')(event, data, ...dataAsArray);
@@ -462,13 +462,10 @@ class EditActivityModalComponent extends Component {
                     this.props.action('onCalendarFocus')(event, data, ...dataAsArray);
                   }
                 }}
-                formatter={(date) => {
-                  return date ? moment(date).format('MM/DD/YYYY') : '';
-                }}
-                parser={(dateString) => {
-                  return moment(dateString, 'MM-DD-YYYY').toDate();
-                }}
-                value={this.state.endDate}
+                formatter={(date) => date ? moment(date).format('L') : ''}
+                parser={(dateString) => moment(dateString, 'L').toDate()}
+                formattedValue={this.state.endDate}
+                autocomplete="off"
               />
               {this.state.errors.endDate && <div class="slds-form-element__help">This field is required</div>}
             </div>

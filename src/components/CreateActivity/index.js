@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { withRouter, Link } from 'react-router-dom';
-import { getAPIUrl } from '../../config/config';
-
+import moment from 'moment-timezone';
+import momentTz from 'moment';
 import {
   IconSettings,
   Breadcrumb,
@@ -9,6 +9,7 @@ import {
   Toast,
 } from '@salesforce/design-system-react';
 
+import { getAPIUrl } from '../../config/config';
 import Prompt from '../Prompt';
 import Step1 from './Step1';
 import Step2 from './Step2';
@@ -147,7 +148,7 @@ class CreateActivity extends Component {
   handleChange = async (value, data) => {
     let newRow = {};
     let formats = this.state.formats;
-    
+
     if(value === "tactic") {
       formats = await this.populateTactic(data[0]);
       newRow = {...this.state.row, tactic: data, format: [formats[0]]};
@@ -211,13 +212,21 @@ class CreateActivity extends Component {
     return false;
   };
 
+  parseDatesGTM = row => {
+    row.startDate = moment(row.startDate, 'DD/MM/YYYY').format();
+    row.endDate = moment(row.endDate, 'DD/MM/YYYY').format();
+
+    return row;
+  }
+
   onSubmit = async body => {
     try {
+      body = this.parseDatesGTM(body);
       const config = {
         method: 'POST',
         headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
         },
         body: JSON.stringify(body)
       }
@@ -254,24 +263,26 @@ class CreateActivity extends Component {
         {this.state.isDeletePromptOpen && <Prompt closeErrorHandler={() => this.setState({isDeletePromptOpen: false})} error={true} message='Interval server error' title='Error' />}
         <FormContainer>
           <form className="slds-grid slds-wrap" onSubmit={e => this.validateSubmit(e)}>
+            <Step1
+              row={this.state.row}
+              handleStep={this.handleStep}
+              handleChange={this.handleChange}
+              error={this.state.error}
+              step={this.state.steps.filter(el => el.active).length}
+            />
             {
-              this.state.steps.filter(el => el.active).length === 1 ?
-                <Step1
-                  row={this.state.row}
-                  handleStep={this.handleStep}
-                  handleChange={this.handleChange}
-                  error={this.state.error}
-                /> :
-                <Step2
-                  row={this.state.row}
-                  handleStep={this.handleStep}
-                  getFormData={this.props.getFormData}
-                  handleChange={this.handleChange}
-                  error={this.state.error}
-                  regions={this.state.regions}
-                  tactics={this.state.tactics}
-                  formats={this.state.formats}
-                />
+              this.state.steps.filter(el => el.active).length === 2  &&
+                
+              <Step2
+                row={this.state.row}
+                handleStep={this.handleStep}
+                getFormData={this.props.getFormData}
+                handleChange={this.handleChange}
+                error={this.state.error}
+                regions={this.state.regions}
+                tactics={this.state.tactics}
+                formats={this.state.formats}
+              />
             }
           </form>
         </FormContainer>
