@@ -182,7 +182,7 @@ class Table extends Component {
   render() {
     return (
       <Container>
-        {this.state.editModalIsOPen && <Modal data={this.props.dataTable.item} onToast={this.onToast} title='Edit row' toggleOpen={this.toggleOpen} />}
+        {this.state.editModalIsOPen && <Modal data={this.props.dataTable.item} onToast={this.onToast} title='Edit row' toggleOpen={this.toggleOpen} reloadActivities={this.props.reloadActivities} />}
         <PageHeader
           onRenderActions={this.actions}
           icon={

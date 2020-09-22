@@ -99,7 +99,7 @@ class EditActivityPage extends Component {
     return (
       <Container>
         <IconSettings iconPath="/assets/icons">
-          <ActivitiesTable data={this.state.activities} onDelete={this.onDelete} />
+          <ActivitiesTable data={this.state.activities} onDelete={this.onDelete} reloadActivities={this.getActivities} />
           
           <ConfirmationDailog isOpen={this.state.showConfirmationDialog} onClose={this.closeConfirmationDialog} onConfirm={this.deleteActivity} />
           {this.state.showLoader && <Spinner size="small" variant="brand" assistiveText={{ label: "Loading..." }} />}
