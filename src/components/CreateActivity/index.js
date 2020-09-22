@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { withRouter, Link } from 'react-router-dom';
 import moment from 'moment-timezone';
-import momentTz from 'moment';
 import {
   IconSettings,
   Breadcrumb,
@@ -18,7 +17,6 @@ import { FormContainer } from './styles';
 
 class CreateActivity extends Component {
   state = {
-    baseURL: 'http://localhost:3000',
     loggedUser: '',
     row: {
       format: [],
@@ -38,7 +36,6 @@ class CreateActivity extends Component {
     formats: [],
     error: {},
     isDeletePromptOpen: false,
-    expandedPanels: {},
     items: {},
     steps: [
       {
@@ -58,11 +55,11 @@ class CreateActivity extends Component {
       duration: 5000,
       active: false
     }
-  };
+  }
 
   componentDidMount() {
     this.setupAndFetch();
-  };
+  }
 
   getUser = () => {
     let loggedUser = localStorage.getItem("userId");
@@ -83,31 +80,29 @@ class CreateActivity extends Component {
   async checkRegion() {
     try {
       let response = await fetch(`${this.API_URL}/region`);
-      if(response.status === 404) {
-        this.setState({toast: {heading: 'Regions not found', active: true, variant: 'error', duration: 5000}});
-      } else if(response.status === 500) {
-        this.setState({toast: {heading: 'Server error', active: true, variant: 'error', duration: 5000}});
-      } else {
+      if(response.status === 200) {
         let { result } = await response.json();
         this.setState({ regions: result, row: {...this.state.row, region: [result[0]]}});
+      } else {
+        throw new Error(response);
       }
     } catch(err) {
-      console.error(err)
+      this.setState({toast: {...this.state.toast, active: true}});
+      console.error(err);
     }
   }
 
   async checkProgram() {
     try {
       let response = await fetch(`${this.API_URL}/program`);
-      if(response.status === 404) {
-        this.setState({toast: {heading: 'Programs not found', active: true, variant: 'error', duration: 5000}});
-      } else if(response.status === 500) {
-        this.setState({toast: {heading: 'Server error', active: true, variant: 'error', duration: 5000}});
-      } else {
+      if(response.status === 200) {
         let { result } = await response.json();
         this.setState({ programs: result, row: {...this.state.row, program: [result[0]]}});
+      } else {
+        throw new Error(response);
       }
     } catch(err) {
+      this.setState({toast: {...this.state.toast, active: true}});
       console.error(err)
     }
   }
@@ -115,32 +110,30 @@ class CreateActivity extends Component {
   async checkTactic() {
     try {
       let response = await fetch(`${this.API_URL}/tactic`);
-      if(response.status === 404) {
-        this.setState({toast: {heading: 'Formats not found', active: true, variant: 'error', duration: 5000}});
-      } else if(response.status === 500) {
-        this.setState({toast: {heading: 'Server error', active: true, variant: 'error', duration: 5000}});
-      } else {
+      if(response.status === 200) {
         let { result } = await response.json();
         let format = await this.populateTactic(result[0]);
         this.setState({ formats: format, tactics: result, row: {...this.state.row, tactic: [result[0]], format: [format[0]] } });
+      } else {
+        throw new Error(response);
       }
     } catch(err) {
-      console.error(err)
+      this.setState({toast: {...this.state.toast, active: true}});
+      console.error(err);
     }
   }
 
   async populateTactic(selection) {
     try {
       let response = await fetch(`${this.API_URL}/format/${selection.tactic_id}`);
-      if(response.status === 404) {
-        this.setState({toast: {heading: 'Tactics not found', active: true, variant: 'error', duration: 5000}});
-      } else if(response.status === 500) {
-        this.setState({toast: {heading: 'Server error', active: true, variant: 'error', duration: 5000}});
-      } else {
+      if(response.status === 200) {
         let { result } = await response.json();
         return result;
+      } else {
+        throw new Error(response);
       }
     } catch (err) {
+      this.setState({toast: {...this.state.toast, active: true}});
       console.error(err);
     }
   }
@@ -157,7 +150,7 @@ class CreateActivity extends Component {
     }
 
     this.validations(value, data);
-    this.setState({row: newRow, formats})
+    this.setState({row: newRow, formats});
     this.props.getFormData(newRow);
   };
 
@@ -230,7 +223,7 @@ class CreateActivity extends Component {
         },
         body: JSON.stringify(body)
       }
-      const response = await fetch(`${this.API_URL}/activity`, config);
+      await fetch(`${this.API_URL}/activity`, config);
     } catch (err) {
       this.setState({isDeletePromptOpen: true});
       console.error(err);
@@ -271,12 +264,10 @@ class CreateActivity extends Component {
               step={this.state.steps.filter(el => el.active).length}
             />
             {
-              this.state.steps.filter(el => el.active).length === 2  &&
-                
+              this.state.steps.filter(el => el.active).length === 2  && 
               <Step2
                 row={this.state.row}
                 handleStep={this.handleStep}
-                getFormData={this.props.getFormData}
                 handleChange={this.handleChange}
                 error={this.state.error}
                 regions={this.state.regions}
