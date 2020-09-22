@@ -215,6 +215,13 @@ class EditActivityModalComponent extends Component {
     this.setState({[e.target.id]: e.target.value, errors});
   }
 
+  parseDatesGTM = row => {
+    row.startDate = moment(row.startDate, 'DD/MM/YYYY').format();
+    row.endDate = moment(row.endDate, 'DD/MM/YYYY').format();
+
+    return row;
+  }
+
   editTable = async () => {
 
     if(Object.values(this.state.errors).some(el => el)) return;
@@ -233,6 +240,8 @@ class EditActivityModalComponent extends Component {
         userId: localStorage.getItem('userId'),
         programId: this.state.programSelection[0].program_id,
       }
+
+      body = this.parseDatesGTM(body);
 
       const config = {
         method: 'PUT',
