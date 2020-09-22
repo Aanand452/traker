@@ -44,7 +44,7 @@ class Table extends Component {
     search: '',
     toast: {
       show: this.props.location.newRow ? true : false,
-      message: "A new campaign was added successfully",
+      message: "A new activity was added successfully",
       variant: "success"
     },
     isPanelOpen: false,
@@ -182,7 +182,7 @@ class Table extends Component {
   render() {
     return (
       <Container>
-        {this.state.editModalIsOPen && <Modal data={this.props.dataTable.item} onToast={this.onToast} title='Edit row' toggleOpen={this.toggleOpen} reloadActivities={this.props.reloadActivities} />}
+        {this.state.editModalIsOPen && <Modal data={this.props.dataTable.item} onToast={this.onToast} title='Edit activity' toggleOpen={this.toggleOpen} reloadActivities={this.props.reloadActivities} />}
         <PageHeader
           onRenderActions={this.actions}
           icon={
