@@ -1,8 +1,7 @@
 import React, { Component, Fragment } from 'react';
-import { withRouter, Link } from 'react-router-dom';
+import { withRouter } from 'react-router-dom';
 import moment from 'moment';
 import {
-  IconSettings,
   Combobox,
   Input,
   Datepicker,
@@ -20,7 +19,7 @@ class Step2 extends Component {
             placeholder="Enter Campaign Id"
             label="Campaign Id"
             onChange={(event, data) => this.props.handleChange("campaignId", data.value)}
-            defaultValue={this.props.row.campaignId}
+            value={this.props.row.campaignId}
             maxLength="18"
           />
         </div>
