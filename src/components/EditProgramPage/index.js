@@ -5,14 +5,17 @@ import { Spinner, ToastContainer, Toast, IconSettings } from '@salesforce/design
 import { getAPIUrl } from '../../config/config';
 import { Container } from './styles';
 import ProgramsTable from '../ProgramsTable';
+import ConfirmationDialog from '../Prompt';
 
 class EditProgramPage extends Component {
   state = {
     showLoader: false,
+    showConfirmationDialog: false,
     toast: {
       active: false
     },
-    programs: []
+    programs: [],
+    selectedProgram: ''
   }
 
   componentDidMount() {
@@ -47,10 +50,72 @@ class EditProgramPage extends Component {
     this.setState({showLoader: false});  
   }
 
+  deleteProgram = async () => {
+    console.log('hola')
+  }
+
+  onDelete = program => {
+    this.setState({
+      showConfirmationDialog: true,
+      selectedProgram: program.programId,
+    });
+  };
+
+  closeConfirmationDialog = () => {
+    this.setState({showConfirmationDialog: false, selectedProgram: ''});
+  }
+
+  deleteProgram = async () => {
+    this.setState({
+      showConfirmationDialog: false,
+      showLoader: true,
+    });
+
+    const config = {
+      method: 'DELETE',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({programId: this.state.selectedProgram})
+    }
+
+    try {
+      const response = await fetch(`${this.API_URL}/program`, config)
+      if(response.status === 200) {
+        await response.json();
+        await this.getPrograms();
+
+        this.setState({
+          toast: {
+            active: true,
+            heading: "A program was deleted successfuly",
+            variant: "success"
+          },
+          selectedProgram: ''
+        });
+      } else throw new Error(response);
+    } catch (err) {
+      console.error(err);
+
+      this.setState({
+        toast: {
+          active: true,
+          heading: "Something went wrong, please try again in a few seconds",
+          variant: "error"
+        },
+        selectedProgram: ''
+      });
+    }
+
+    this.setState({showLoader: false});
+  }
+
   render() {
     return (
       <Container>
         <IconSettings iconPath="/assets/icons">
+          <ConfirmationDialog isOpen={this.state.showConfirmationDialog} onClose={this.closeConfirmationDialog} onConfirm={this.deleteProgram} />
           {this.state.showLoader && <Spinner size="small" variant="brand" assistiveText={{ label: "Loading..." }} />}
           {this.state.toast.active && (
             <ToastContainer>
@@ -62,7 +127,7 @@ class EditProgramPage extends Component {
               />
             </ToastContainer>
           )}
-          <ProgramsTable data={this.state.programs} />
+          <ProgramsTable onDelete={this.onDelete} data={this.state.programs} />
         </IconSettings>
       </Container>
     );
