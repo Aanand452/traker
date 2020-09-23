@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import moment from 'moment';
+import moment from 'moment-timezone';
 import { getAPIUrl } from '../../config/config';
 
 import {
@@ -33,8 +33,8 @@ class EditActivityModalComponent extends Component {
     activityId: this.props.data.activityId,
     title: this.props.data.title,
     abstract: this.props.data.abstract,
-    startDate: moment(new Date(this.props.data.startDate)).format('L'),
-    endDate: moment(new Date(this.props.data.endDate)).format('L'),
+    startDate: moment(new Date(this.props.data.startDate)).format('DD/MM/YYYY'),
+    endDate: moment(new Date(this.props.data.endDate)).format('DD/MM/YYYY'),
     asset: this.props.data.asset,
     campaignId: this.props.data.campaignId,
     errors: {}
@@ -77,8 +77,8 @@ class EditActivityModalComponent extends Component {
       this.setState({...this.state,
         title: result.title,
         abstract: result.abstract,
-        startDate: moment(new Date(result.startDate)).format('L'),
-        endDate: moment(new Date(result.endDate)).format('L'), 
+        startDate: moment(new Date(result.startDate)).format('DD/MM/YYYY'),
+        endDate: moment(new Date(result.endDate)).format('DD/MM/YYYY'), 
         asset: result.asset,
         campaignId: result.campaignId,
         programSelection: activityProgram,
@@ -215,6 +215,18 @@ class EditActivityModalComponent extends Component {
     this.setState({[e.target.id]: e.target.value, errors});
   }
 
+  parseDatesToLocal = row => {
+    let startDate =  moment.tz(row.startDate, moment.tz.guess()).toString();
+    let endDate =  moment.tz(row.endDate, moment.tz.guess()).toString();
+
+    console.log('MILL', startDate, endDate);
+
+    row.startDate = startDate;
+    row.endDate = endDate;
+
+    return row;
+  }
+
   parseDatesGTM = row => {
     row.startDate = moment(row.startDate, 'DD/MM/YYYY').format();
     row.endDate = moment(row.endDate, 'DD/MM/YYYY').format();
@@ -241,7 +253,9 @@ class EditActivityModalComponent extends Component {
         programId: this.state.programSelection[0].program_id,
       }
 
+      console.log(body);
       body = this.parseDatesGTM(body);
+      console.log(body);
 
       const config = {
         method: 'PUT',
@@ -271,6 +285,7 @@ class EditActivityModalComponent extends Component {
       this.props.onToast(true, "The campaign was edited successfully", "success");
       this.props.reloadActivities();
     } catch (err) {
+      console.log(err);
       this.props.onToast(true, "Something went wrong, please try again", "error");
     }
   }
@@ -437,8 +452,8 @@ class EditActivityModalComponent extends Component {
                     this.props.action('onCalendarFocus')(event, data, ...dataAsArray);
                   }
                 }}
-                formatter={(date) => date ? moment(date).format('L') : ''}
-                parser={(dateString) => moment(dateString, 'L').toDate()}
+                formatter={(date) => date ? moment(date).format('DD/MM/YYYY') : ''}
+                parser={(dateString) => moment(dateString, 'DD/MM/YYYY').toDate()}
                 formattedValue={this.state.startDate}
                 autocomplete="off"
               />
@@ -462,8 +477,8 @@ class EditActivityModalComponent extends Component {
                     this.props.action('onCalendarFocus')(event, data, ...dataAsArray);
                   }
                 }}
-                formatter={(date) => date ? moment(date).format('L') : ''}
-                parser={(dateString) => moment(dateString, 'L').toDate()}
+                formatter={(date) => date ? moment(date).format('DD/MM/YYYY') : ''}
+                parser={(dateString) => moment(dateString, 'DD/MM/YYYY').toDate()}
                 formattedValue={this.state.endDate}
                 autocomplete="off"
               />
