@@ -76,4 +76,17 @@ const addNewProgram = async (req, res) => {
   }
 };
 
-export { getPrograms, getProgramsFull, getProgramById, addNewProgram }
+const deleteProgram = async (req, res) => {
+  try {
+    const programId = req.body.programId;
+    const request = await ProgramModel.deleteProgram(programId);
+
+    if(request === 'error') ApiUtils.responseWithError(res, httpStatus.INTERNAL_SERVER_ERROR);
+    else if(!request) ApiUtils.reposeWithhSuccess(res, null, httpStatus.NOT_FOUND);
+    else ApiUtils.reposeWithhSuccess(res, request, httpStatus.OK);
+  } catch (err) {
+    ApiUtils.responseWithError(res, httpStatus.INTERNAL_SERVER_ERROR, err);
+  }
+};
+
+export { getPrograms, getProgramsFull, getProgramById, addNewProgram, deleteProgram }
