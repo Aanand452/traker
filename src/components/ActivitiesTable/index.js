@@ -31,7 +31,7 @@ import { Container } from './styles';
 
 const DateCell = ({ children, ...props }) => (
   <DataTableCell title={children} {...props}>
-    {moment(children).format('L')}
+    {moment(children).format('DD/MM/YYYY')}
   </DataTableCell>
 );
 DateCell.displayName = DataTableCell.displayName;

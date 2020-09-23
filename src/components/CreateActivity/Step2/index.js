@@ -83,8 +83,8 @@ class Step2 extends Component {
             labels={{label: 'Start Date'}}
             triggerClassName="slds-col slds-size_1-of-2"
             onChange={(event, data) => this.props.handleChange("startDate", data.formattedDate)}
-            formatter={(date) => date ? moment(date).format('L') : ''}
-            parser={(dateString) => moment(dateString, 'L').toDate()}
+            formatter={(date) => date ? moment(date).format('DD/MM/YYYY') : ''}
+            parser={(dateString) => moment(dateString, 'DD/MM/YYYY').toDate()}
             formattedValue={this.props.row.startDate}
             errorText={this.props.error.startDate}
           />
@@ -92,8 +92,8 @@ class Step2 extends Component {
             labels={{label: 'End Date'}}
             triggerClassName="slds-col slds-size_1-of-2"
             onChange={(event, data) => this.props.handleChange("endDate", data.formattedDate)}
-            formatter={(date) => date ? moment(date).format('L') : ''}
-            parser={(dateString) => moment(dateString, 'L').toDate()}
+            formatter={(date) => date ? moment(date).format('DD/MM/YYYY') : ''}
+            parser={(dateString) => moment(dateString, 'DD/MM/YYYY').toDate()}
             formattedValue={this.props.row.endDate}
             errorText={this.props.error.endDate}
           />
