@@ -41,17 +41,23 @@ class EditProgramPage extends Component {
     const user = localStorage.getItem('userId');
 
     try {
-      const request = await fetch(`${this.API_URL}/programs/${user}`);
-      const response = await request.json();
-
-      this.setState({programs: response.result});
-    } catch (error) {}
+      const response = await fetch(`${this.API_URL}/programs/${user}`);
+      if(response.status === 200) {
+        const { result } = await response.json();
+        this.setState({programs: result});
+      } else throw new Error(response);
+    } catch (err) {
+      console.error(err);
+      this.setState({
+        toast: {
+          active: true,
+          heading: "Something went wrong, please try again in a few seconds",
+          variant: "error"
+        }
+      });
+    }
 
     this.setState({showLoader: false});  
-  }
-
-  deleteProgram = async () => {
-    console.log('hola')
   }
 
   onDelete = program => {
@@ -82,7 +88,6 @@ class EditProgramPage extends Component {
     try {
       const response = await fetch(`${this.API_URL}/program/${this.state.selectedProgram}`, config)
       if(response.status === 200) {
-        await response.json();
         await this.getPrograms();
 
         this.setState({
@@ -96,7 +101,6 @@ class EditProgramPage extends Component {
       } else throw new Error(response);
     } catch (err) {
       console.error(err);
-
       this.setState({
         toast: {
           active: true,
