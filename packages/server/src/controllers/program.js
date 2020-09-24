@@ -78,7 +78,7 @@ const addNewProgram = async (req, res) => {
 
 const deleteProgram = async (req, res) => {
   try {
-    const programId = req.body.programId;
+    var programId = req.swagger.params.id.value;
     const request = await ProgramModel.deleteProgram(programId);
 
     if(request === 'error') ApiUtils.responseWithError(res, httpStatus.INTERNAL_SERVER_ERROR);
