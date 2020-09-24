@@ -128,6 +128,20 @@ class Table extends Component {
     this.setState({displayedData: newData});
   };
 
+  handleRowAction = (item, { id }) => {
+    switch(id) {
+      case 0:
+        this.props.setItem(item);
+        this.toggleOpen();
+        break;
+      case 1:
+        console.log('Delete');
+        break;
+      default:
+        break;
+    }
+  };
+
   render() {
     return (
       <Container>
@@ -205,6 +219,23 @@ class Table extends Component {
             <DataTableColumn label="Persona" property="persona" />
             <DataTableColumn label="Customer Message" property="customerMessage" />
             <DataTableColumn label="Business Goal" property="businessGoal" />
+            <DataTableRowActions
+              options={[
+                {
+                  id: 0,
+                  label: 'Edit',
+                  value: '1',
+                },
+                {
+                  id: 1,
+                  label: 'Delete',
+                  value: '2',
+                }
+              ]}
+              menuPosition="overflowBoundaryElement"
+              onAction={this.handleRowAction}
+              dropdown={<Dropdown length="7" />}
+            />
           </DataTable>
           <Pager data={this.state.data} itemsPerPage={20} setDisplayedItems={this.handlePagination} />
         </IconSettings>
