@@ -128,6 +128,18 @@ class ProgramModel {
       return 'Error';
     }
   };
+
+  static async deleteProgram(id) {
+    try {
+      const program = await db.Program.findByPk(id);
+      await program.destroy();
+
+      return program;
+    } catch (err) {
+      console.error('Error deleting program', err);
+      return 'error';
+    }
+  }
 }
 
 export default ProgramModel;
