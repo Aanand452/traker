@@ -114,7 +114,7 @@ class EditProgramPage extends Component {
     return (
       <Container>
         <IconSettings iconPath="/assets/icons">
-          <ConfirmationDialog isOpen={this.state.showConfirmationDialog} onClose={this.closeConfirmationDialog} onConfirm={this.deleteProgram} />
+          <ConfirmationDialog message="Are you sure you want to delete this program?" isOpen={this.state.showConfirmationDialog} onClose={this.closeConfirmationDialog} onConfirm={this.deleteProgram} />
           {this.state.showLoader && <Spinner size="small" variant="brand" assistiveText={{ label: "Loading..." }} />}
           {this.state.toast.active && (
             <ToastContainer>
