@@ -7,6 +7,8 @@ import {
   DataTable,
   DataTableColumn,
   DataTableCell,
+  DataTableRowActions,
+  Dropdown,
   Icon,
   IconSettings,
   PageHeader,
@@ -16,6 +18,7 @@ import {
 import Panel from '../Panel';
 import { Container } from './styles';
 import Pager from '../Pager';
+import Modal from '../ProgramModal';
 
 const CustomDataTableCell = ({ children, ...props }) => (
   <DataTableCell title={children} {...props}>
@@ -38,6 +41,8 @@ class Table extends Component {
     isPanelOpen: false,
     data: [],
     displayedData: [],
+    editModalIsOPen: false,
+    selectedprogram: {}
   };
 
   componentDidUpdate(prevProps) {
@@ -128,11 +133,15 @@ class Table extends Component {
     this.setState({displayedData: newData});
   };
 
+  toggleOpen = bool => {
+    this.setState({ editModalIsOPen: bool });
+  };
+
   handleRowAction = (item, { id }) => {
     switch(id) {
       case 0:
-        this.props.setItem(item);
-        this.toggleOpen();
+        this.setState({ selectedprogram: item})
+        this.toggleOpen(true);
         break;
       case 1:
         console.log('Delete');
@@ -146,6 +155,7 @@ class Table extends Component {
     return (
       <Container>
         <IconSettings iconPath="/assets/icons">
+          {this.state.editModalIsOPen && <Modal onEdit={this.props.onEdit} program={this.state.selectedprogram} toggleOpen={this.toggleOpen} title='Edit program'  />}
           <PageHeader
             onRenderActions={this.actions}
             icon={
@@ -218,7 +228,7 @@ class Table extends Component {
             <DataTableColumn label="Segment" property="segment" />
             <DataTableColumn label="Persona" property="persona" />
             <DataTableColumn label="Customer Message" property="customerMessage" />
-            <DataTableColumn label="Business Goal" property="businessGoal" />
+            <DataTableColumn label="Business Goal" property="businessGoals" />
             <DataTableRowActions
               options={[
                 {

@@ -38,13 +38,22 @@ class EditProgramPage extends Component {
     const user = localStorage.getItem('userId');
 
     try {
-      const request = await fetch(`${this.API_URL}/programs/${user}`);
-      const response = await request.json();
+      const response = await fetch(`${this.API_URL}/programs/${user}`);
+      const { result } = await response.json();
 
-      this.setState({programs: response.result});
+      this.setState({programs: result});
     } catch (error) {}
 
     this.setState({showLoader: false});  
+  }
+
+  onEdit = () => {
+    this.setState({toast: {
+      active: true,
+      variant: 'success',
+      heading: 'The program was updated successfuly'
+    }});
+    this.getPrograms();
   }
 
   render() {
@@ -62,7 +71,7 @@ class EditProgramPage extends Component {
               />
             </ToastContainer>
           )}
-          <ProgramsTable data={this.state.programs} />
+          <ProgramsTable onEdit={this.onEdit}  data={this.state.programs} />
         </IconSettings>
       </Container>
     );
