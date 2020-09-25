@@ -98,10 +98,10 @@ const updateProgram = async (req, res) => {
     if(!programToCheck) {
       ApiUtils.reposeWithhSuccess(res, null, httpStatus.NOT_FOUND);
     } else {
-      const activity = await ProgramModel.updateProgram(programId, body);
+      const program = await ProgramModel.updateProgram(programId, body);
       
-      if(activity === 'error') ApiUtils.responseWithError(res, httpStatus.INTERNAL_SERVER_ERROR);
-      else ApiUtils.reposeWithhSuccess(res, activity, httpStatus.OK);
+      if(program === 'error') ApiUtils.responseWithError(res, httpStatus.INTERNAL_SERVER_ERROR);
+      else ApiUtils.reposeWithhSuccess(res, program, httpStatus.OK);
     }    
   } catch (err) {
     ApiUtils.responseWithError(res, httpStatus.INTERNAL_SERVER_ERROR, err);
