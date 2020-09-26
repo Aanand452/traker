@@ -211,7 +211,6 @@ class EditActivityModalComponent extends Component {
       errors = {...this.state.errors, [e.target.id]: true};
     }
     delete errors.campaignId;
-    console.log(e.target.value)
     this.setState({[e.target.id]: e.target.value, errors});
   }
 
