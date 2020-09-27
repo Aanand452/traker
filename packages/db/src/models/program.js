@@ -148,9 +148,6 @@ class ProgramModel {
   static async addNewProgram(body) {
     try {
       /*
-      const user = await db.User.findByPk(body.userId);
-      if(!user) throw new Error("User doesn't exists");
-
       const region = await db.Region.findByPk(body.regionId);
       if(!region) throw new Error("Region doesn't exists");
 
@@ -171,26 +168,27 @@ class ProgramModel {
 
       const persona = await db.Persona.findByPk(body.personaId);
       if(!persona) throw new Error("Persona doesn't exists");
-      
 
       body.programId = uuidv4();
       if(!body.programId) throw new Error("It was imposible to create a program");
       */
 
       body.targetRegion = body.regionId;
-      body.lifecycleStage = body.lifecycleStageId;
       body.apm1 = body.apm1Id;
-      body.apm2 = body.apm2Id;
       body.industry = body.industryId;
       body.segment = body.segmentId;
       body.persona = body.personaId;
-      body.owner = user.username;
+
+      body.lifecycleStage = body.lifecycleStageId;
+      body.apm2 = body.apm2Id;
 
       const program = await db.Program.create(body);
 
       return program;
     } catch (err) {
-      console.error('Error creating new program', err);
+      console.error('Error creating program', err);
+      if(err.name === 'SequelizeValidationError' || err.name === 'SequelizeForeignKeyConstraintError')
+        return 'ValidationError';
       return 'Error';
     }
   };

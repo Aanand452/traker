@@ -57,8 +57,9 @@ paths:
       parameters:
       - name: body
         in: body
+        required: true
         schema:
-          $ref: '#/definitions/ProgramCreateBody'
+          $ref: '#/definitions/ProgramBody'
       responses:
         200:
           description: Success
