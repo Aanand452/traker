@@ -54,7 +54,7 @@ class Table extends Component {
   actions = () => (
     <PageHeaderControl>
       <ButtonGroup id="button-group-page-header-actions">
-        <Link>
+        <Link to="/create-program">
           <Button label="New" />
         </Link>
       </ButtonGroup>
