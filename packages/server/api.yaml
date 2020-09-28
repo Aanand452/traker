@@ -619,11 +619,7 @@ definitions:
         type: string
       metrics:
         type: string
-      parentCampaignId:
-        type: string
       customerMessage:
-        type: string
-      businessGoals:
         type: string
       regionId:
         type: string
