@@ -19,32 +19,63 @@ class ProgramModel {
 
   static async getAllProgramsFullByUser(id) {
     try{
-      const program = await db.Program.findAll({
+      let program = await db.Program.findAll({
         order: [
           ['name', 'ASC'],
-        ]
+        ],
+        raw : true 
       });
+      
 
-      const region = await db.Region.findAll({});
-      console.log(region);
-      let programData = program.map(el => 
-        ({
+      let region = await db.Region.findAll({ raw : true });
+      let lifecycleStage = await db.LifecycleStage.findAll({ raw : true });
+      let apm1 = await db.APM1.findAll({ raw : true });
+      let apm2 = await db.APM2.findAll({ raw : true });
+      let industry = await db.Industry.findAll({ raw : true });
+      let segment = await db.Segment.findAll({ raw : true });
+      let persona = await db.Persona.findAll({ raw : true });
+
+      let programData = program.map(el => {
+        let regionName = region.filter(item => el.targetRegion === item.regionId)[0] ? 
+          region.filter(item => el.targetRegion === item.regionId)[0].name : null;
+
+        let lifecycleStageName =  lifecycleStage.filter(item => el.lifecycleStage === item.lifecycleStageId)[0] ? 
+          lifecycleStage.filter(item => el.lifecycleStage === item.lifecycleStageId)[0].name : null;
+
+        let apm1Name =  apm1.filter(item => el.apm1 === item.apm1Id)[0] ? 
+          apm1.filter(item => el.apm1 === item.apm1Id)[0].name : null;
+
+        let apm2Name =  apm2.filter(item => el.apm2 === item.apm2Id)[0] ? 
+          apm2.filter(item => el.apm2 === item.apm2Id)[0].name : null;
+
+        let industryName =  industry.filter(item => el.industry === item.industryId)[0] ? 
+          industry.filter(item => el.industry === item.industryId)[0].name : null;
+
+        let segmentName =  segment.filter(item => el.segment === item.segmentId)[0] ? 
+          segment.filter(item => el.segment === item.segmentId)[0].name : null;
+
+        let personaName =  persona.filter(item => el.persona === item.personaId)[0] ? 
+          persona.filter(item => el.persona === item.personaId)[0].name : null;
+
+        return {
           programId: el.programId,
+          name: el.name,  
           owner: el.owner,
           budget: el.budget,
           metrics: el.metrics,
           parentCampaignId: el.parentCampaignId,
-          targetRegion: region.filter(reg => el.Region === reg.regionId),
-          lifecycleStage: el.LifecycleStage,
-          apm1: el.APM1,
-          apm2: el.APM2,
-          industry: el.Industry,
-          segment: el.Segment,
-          persona: el.Persona
-        })
-      )
+          targetRegion: regionName,
+          lifecycleStage: lifecycleStageName,
+          apm1: apm1Name,
+          apm2: apm2Name,
+          industry: industryName,
+          segment: segmentName,
+          persona: personaName,
+          customerMessage: el.customerMessage
+        }
+      });
       
-      return program;
+      return programData;
     } catch (err) {
       console.error('Error getting program list', err);
     }
