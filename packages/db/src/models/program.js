@@ -206,6 +206,29 @@ class ProgramModel {
       return 'error';
     }
   }
+
+  static async updateProgram(id, body) {
+    try{
+      body.targetRegion = body.regionId;
+      body.lifecycleStage = body.lifecycleStageId;
+      body.apm1 = body.apm1Id;
+      body.apm2 = body.apm2Id;
+      body.industry = body.industryId;
+      body.segment = body.segmentId;
+      body.persona = body.personaId;
+
+      await db.Program.update(body, {
+        where: {
+          program_id: id
+        }
+      });
+
+      return await db.Program.findByPk(id);
+    } catch (err) {
+      console.error('Error updating an program', err);
+      return 'error';
+    }
+  }
 }
 
 export default ProgramModel;

@@ -89,4 +89,23 @@ const deleteProgram = async (req, res) => {
   }
 };
 
-export { getPrograms, getProgramsFull, getProgramById, addNewProgram, deleteProgram }
+const updateProgram = async (req, res) => {  
+  try {
+    var programId = req.swagger.params.id.value;
+    var body = req.body
+    
+    const programToCheck = await ProgramModel.getProgramById(programId)
+    if(!programToCheck) {
+      ApiUtils.reposeWithhSuccess(res, null, httpStatus.NOT_FOUND);
+    } else {
+      const program = await ProgramModel.updateProgram(programId, body);
+      
+      if(program === 'error') ApiUtils.responseWithError(res, httpStatus.INTERNAL_SERVER_ERROR);
+      else ApiUtils.reposeWithhSuccess(res, program, httpStatus.OK);
+    }    
+  } catch (err) {
+    ApiUtils.responseWithError(res, httpStatus.INTERNAL_SERVER_ERROR, err);
+  }
+}
+
+export { getPrograms, getProgramsFull, getProgramById, addNewProgram, deleteProgram, updateProgram }

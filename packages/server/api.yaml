@@ -120,6 +120,33 @@ paths:
             allOf:
               - $ref: '#/definitions/ResponseStatus'
               - $ref: '#/definitions/Error'
+    put:
+      x-swagger-router-controller: program
+      operationId: "updateProgram"
+      summary: Update a program
+      description: N/A
+      parameters:
+        - in: path
+          name: id
+          description: ID of program to be updated
+          required: true
+          type: string
+        - in: body
+          name: body
+          schema:
+            $ref: '#/definitions/ProgramBody'
+      responses:
+        200:
+          description: Success
+          schema:
+            allOf:
+              - $ref: '#/definitions/ResponseStatus'
+        default:
+          description: Invalid request.
+          schema:
+            allOf:
+              - $ref: '#/definitions/ResponseStatus'
+              - $ref: '#/definitions/Error'
 
   /programs/{userId}:
     get:
@@ -577,6 +604,39 @@ definitions:
       personaId:
         type: string
       userId:
+        type: string
+
+  ProgramBody:
+    description: Body used for creating a new program.
+    type: object
+    properties:
+      name:
+        type: string
+      owner:
+        type: string
+      budget:
+        type: string
+      metrics:
+        type: string
+      parentCampaignId:
+        type: string
+      customerMessage:
+        type: string
+      businessGoals:
+        type: string
+      regionId:
+        type: string
+      lifecycleStageId:
+        type: string
+      apm1Id:
+        type: string
+      apm2Id:
+        type: string
+      industryId:
+        type: string
+      segmentId:
+        type: string
+      personaId:
         type: string
 
   ProgramListResponse:
