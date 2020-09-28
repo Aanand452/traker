@@ -4,7 +4,12 @@ import { v4 as uuidv4 } from 'uuid';
 class ProgramModel {
   static async getAllPrograms() {
     try{
-      const program = await db.Program.findAll({attributes: ['program_id', ['name', 'label']]});
+      const program = await db.Program.findAll({
+        attributes: ['program_id', ['name', 'label']],
+        order: [
+          ['name', 'ASC'],
+        ],
+      });
       
       return program;
     } catch (err) {
@@ -14,42 +19,32 @@ class ProgramModel {
 
   static async getAllProgramsFullByUser(id) {
     try{
-      const programs = await db.Program.findAll({
-        include: [
-          db.User,
-          db.Region,
-          db.LifecycleStage,
-          db.APM1,
-          db.APM2,
-          db.Industry,
-          db.Segment,
-          db.Persona
-        ],
-      });
-      
-      const minProgram = programs.map(program => {
-        return (
-          {
-            programId: program.programId,
-            name: program.name,
-            owner: program.owner,
-            budget: program.budget,
-            metrics: program.metrics,
-            parentCampaignId: program.parentCampaignId,
-            targetRegion: program.Region ? program.Region.name : '',
-            lifecycleStage: program.LifecycleStage ? program.LifecycleStage.name : '',
-            apm1: program.APM1 ? program.APM1.name : '',
-            apm2: program.APM2 ? program.APM2.name : '',
-            industry: program.Industry ? program.Industry.name : '',
-            segment: program.Segment ? program.Segment.name : '',
-            persona: program.Persona ? program.Persona.name : '',
-            customerMessage: program.customerMessage,
-            businessGoals: program.businessGoals,
-          }
-        )
+      const program = await db.Program.findAll({
+        order: [
+          ['name', 'ASC'],
+        ]
       });
 
-      return minProgram;
+      const region = await db.Region.findAll({});
+      console.log(region);
+      let programData = program.map(el => 
+        ({
+          programId: el.programId,
+          owner: el.owner,
+          budget: el.budget,
+          metrics: el.metrics,
+          parentCampaignId: el.parentCampaignId,
+          targetRegion: region.filter(reg => el.Region === reg.regionId),
+          lifecycleStage: el.LifecycleStage,
+          apm1: el.APM1,
+          apm2: el.APM2,
+          industry: el.Industry,
+          segment: el.Segment,
+          persona: el.Persona
+        })
+      )
+      
+      return program;
     } catch (err) {
       console.error('Error getting program list', err);
     }
@@ -82,8 +77,22 @@ class ProgramModel {
     }
   };
 
+  static async etlAddNewProgram(body) {
+    try {
+      body.programId = uuidv4();
+      if(!body.programId) throw new Error("It was imposible to create a program");
+      const program = await db.Program.create(body);
+
+      return program;
+    } catch (err) {
+      console.log(err);
+      return err;
+    }
+  };
+
   static async addNewProgram(body) {
     try {
+      /*
       const user = await db.User.findByPk(body.userId);
       if(!user) throw new Error("User doesn't exists");
 
@@ -107,9 +116,11 @@ class ProgramModel {
 
       const persona = await db.Persona.findByPk(body.personaId);
       if(!persona) throw new Error("Persona doesn't exists");
+      
 
       body.programId = uuidv4();
       if(!body.programId) throw new Error("It was imposible to create a program");
+      */
 
       body.targetRegion = body.regionId;
       body.lifecycleStage = body.lifecycleStageId;

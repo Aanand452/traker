@@ -1,5 +1,7 @@
 'use strict';
 
+
+//TODO: must be deleted
 module.exports = {
   up: async (queryInterface, Sequelize) => {
     await queryInterface.addColumn(

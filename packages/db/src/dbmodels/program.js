@@ -11,12 +11,12 @@ Program.init({
     field: 'program_id',
   },
   name: {
-    allowNull: false,
+    allowNull: true,
     type: DataTypes.STRING,
     field: 'name',
   },
   owner: {
-    allowNull: false,
+    allowNull: true,
     type: DataTypes.STRING,
     field: 'owner',
   },
@@ -31,22 +31,22 @@ Program.init({
     field: 'metrics',
   },
   parentCampaignId: {
-    allowNull: false,
+    allowNull: true,
     type: DataTypes.STRING,
     field: 'parent_campaign_id',
   },
   targetRegion: {
-    allowNull: false,
+    allowNull: true,
     type: DataTypes.STRING,
     field: 'target_region',
   },
   lifecycleStage: {
-    allowNull: false,
+    allowNull: true,
     type: DataTypes.STRING,
     field: 'lifecycle_stage',
   },
   apm1: {
-    allowNull: false,
+    allowNull: true,
     type: DataTypes.STRING,
     field: 'apm1',
   },
@@ -56,27 +56,27 @@ Program.init({
     field: 'apm2',
   },
   industry: {
-    allowNull: false,
+    allowNull: true,
     type: DataTypes.STRING,
     field: 'industry',
   },
   segment: {
-    allowNull: false,
+    allowNull: true,
     type: DataTypes.STRING,
     field: 'segment',
   },
   persona: {
-    allowNull: false,
+    allowNull: true,
     type: DataTypes.STRING,
     field: 'persona',
   },
   customerMessage: {
-    allowNull: false,
+    allowNull: true,
     type: DataTypes.STRING,
     field: 'customer_message',
   },
   businessGoals: {
-    allowNull: false,
+    allowNull: true,
     type: DataTypes.STRING,
     field: 'business_goal',
   }
@@ -87,6 +87,7 @@ Program.init({
 });
 
 Program.associate = models => {
+/*  
   Program.belongsToMany(models.User, { 
     through: 'program_user',
     foreignKey: 'program_id'
@@ -98,6 +99,7 @@ Program.associate = models => {
   Program.belongsTo(models.Industry, {foreignKey: 'industry'});
   Program.belongsTo(models.Segment, {foreignKey: 'segment'});
   Program.belongsTo(models.Persona, {foreignKey: 'persona'});
+*/
 }
 
 export default Program;

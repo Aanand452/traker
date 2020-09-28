@@ -1,6 +1,4 @@
-import User from '../dbmodels/user';
 import db from '../dbmodels/'
-
 class UserModel {
   static async getAutenticatedUser(usr, pwd) {
     try{
@@ -9,9 +7,6 @@ class UserModel {
           username: usr,
           password: pwd
         },
-        include: [
-          { model: db.Program }
-        ],
         timestamps: false
       });
       

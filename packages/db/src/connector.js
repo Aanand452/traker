@@ -13,6 +13,7 @@ export const sequelize = new Sequelize.Sequelize(db, username, password, {
   dialect: "postgres",
   port: 5432,
   host: host || 'postgres',
+  logging: false, //enable it to see SQL logs 
   define: {
     timestamps: false
   },

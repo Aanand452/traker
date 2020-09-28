@@ -3,6 +3,7 @@ import { sequelize } from '../connector';
 import Program from './program';
 import User from './user';
 
+//to be deleted
 class ProgramUser extends Model {}
 
 ProgramUser.init({

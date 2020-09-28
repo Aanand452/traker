@@ -11,6 +11,24 @@ class APM1 {
       return 'error';
     }
   }
+
+  static async getByName(name) {
+    return new Promise(async (resolve, reject) => {
+      try{
+        const response = await db.APM1.findAll({
+          where: {
+            name: name
+          }
+        });
+  
+        let data = response.length > 0 ? response[0].dataValues.apm1Id : null;
+        resolve(data);
+      } catch (err) {
+        console.error('Error getting activity', err);
+        reject(err);
+      }
+    });
+  }
 }
 
 export default APM1;
