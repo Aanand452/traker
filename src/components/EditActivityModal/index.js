@@ -285,7 +285,7 @@ class EditActivityModalComponent extends Component {
       }
 
       let response = await fetch(`${this.API_URL}/activity/${this.props.data.activityId}`, config);
-      console.log(response)
+      
       if(response.status === 200) {
         this.props.editItem(this.props.dataTable.items, {
           campaignId: this.state.campaignId,
