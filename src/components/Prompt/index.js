@@ -26,7 +26,7 @@ class Prompt extends Component {
             <Button
             variant="brand"
             key="promptBtnConfirm"
-            label="Delete"
+            label={this.props.mainButtonLabel ? this.props.mainButtonLabel : "Delete"}
             onClick={this.props.onConfirm}
           />
           </div>

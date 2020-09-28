@@ -1,8 +1,7 @@
 import React, { Component, Fragment } from 'react';
-import { withRouter, Link } from 'react-router-dom';
+import { withRouter } from 'react-router-dom';
 import moment from 'moment';
 import {
-  IconSettings,
   Combobox,
   Input,
   Datepicker,
@@ -20,7 +19,7 @@ class Step2 extends Component {
             placeholder="Enter Campaign Id"
             label="Campaign Id"
             onChange={(event, data) => this.props.handleChange("campaignId", data.value)}
-            defaultValue={this.props.row.campaignId}
+            value={this.props.row.campaignId}
             maxLength="18"
           />
         </div>
@@ -78,25 +77,27 @@ class Step2 extends Component {
             onChange={(event) => this.props.handleChange("abstract", event.target.value)}
           />
         </div>
-        <div className="slds-m-bottom_large slds-col slds-size_1-of-2">
+        <div className={`slds-col slds-size_1-of-4 ${this.props.error.startDate && "slds-has-error"}`}>
           <Datepicker
             labels={{label: 'Start Date'}}
-            triggerClassName="slds-col slds-size_1-of-2"
+            triggerClassName="slds-col slds-size_1-of-1"
             onChange={(event, data) => this.props.handleChange("startDate", data.formattedDate)}
-            formatter={(date) => date ? moment(date).format('L') : ''}
-            parser={(dateString) => moment(dateString, 'L').toDate()}
+            formatter={(date) => date ? moment(date).format('DD/MM/YYYY') : ''}
+            parser={(dateString) => moment(dateString, 'DD/MM/YYYY').toDate()}
             formattedValue={this.props.row.startDate}
-            errorText={this.props.error.startDate}
           />
+          {this.props.error.startDate && <div class="slds-form-element__help">{this.props.error.startDate}</div>}
+        </div>
+        <div className={`slds-col slds-size_1-of-4 ${this.props.error.endDate && "slds-has-error"}`}>
           <Datepicker
             labels={{label: 'End Date'}}
-            triggerClassName="slds-col slds-size_1-of-2"
+            triggerClassName="slds-col slds-size_1-of-1"
             onChange={(event, data) => this.props.handleChange("endDate", data.formattedDate)}
-            formatter={(date) => date ? moment(date).format('L') : ''}
-            parser={(dateString) => moment(dateString, 'L').toDate()}
+            formatter={(date) => date ? moment(date).format('DD/MM/YYYY') : ''}
+            parser={(dateString) => moment(dateString, 'DD/MM/YYYY').toDate()}
             formattedValue={this.props.row.endDate}
-            errorText={this.props.error.endDate}
           />
+          {this.props.error.endDate && <div class="slds-form-element__help">{this.props.error.endDate}</div>}
         </div>
         <div className="slds-m-bottom_large slds-col slds-size_1-of-2">
           <Input placeholder="Enter assets" onChange={(event, data) => this.props.handleChange("asset", data.value)} value={this.props.row.asset} label="Asset" errorText={this.props.error.asset}/>

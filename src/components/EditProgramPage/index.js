@@ -114,6 +114,15 @@ class EditProgramPage extends Component {
     this.setState({showLoader: false});
   }
 
+  onEdit = () => {
+    this.setState({toast: {
+      active: true,
+      variant: 'success',
+      heading: 'The program was updated successfuly'
+    }});
+    this.getPrograms();
+  }
+
   render() {
     return (
       <Container>
@@ -130,7 +139,7 @@ class EditProgramPage extends Component {
               />
             </ToastContainer>
           )}
-          <ProgramsTable onDelete={this.onDelete} data={this.state.programs} />
+          <ProgramsTable onEdit={this.onEdit} onDelete={this.onDelete} data={this.state.programs} />
         </IconSettings>
       </Container>
     );

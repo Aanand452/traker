@@ -11,9 +11,7 @@ import {
 
 class Step1 extends Component {
   state = {
-    baseURL: 'http://localhost:3000',
     programs: [],
-    program: [],
     items: {},
     toast: {
       variant: 'error',
@@ -38,17 +36,16 @@ class Step1 extends Component {
     try {
       let response = await fetch(`${this.API_URL}/program`);
       
-      if(response.status === 404) {
-        this.setState({toast: {heading: 'Programs not found', active: true, variant: 'error', duration: 5000}});
-      } else if(response.status === 500) {
-        this.setState({toast: {heading: 'Server error', active: true, variant: 'error', duration: 5000}});
-      } else {
+      if(response.status === 200) {
         let { result } = await response.json();
         let program = [result[0]];
         this.setState({ programs: result, program });
         this.checkProgramDetail(program[0].program_id);
+      } else {
+        throw new Error(response);
       }
     } catch(err) {
+      this.setState({toast: {heading: 'Something went wrong, please try again', active: true, variant: 'error', duration: 5000}});
       console.error(err.message);
     }
   }
@@ -57,15 +54,14 @@ class Step1 extends Component {
     try {
       let response = await fetch(`${this.API_URL}/program/${id}`);
 
-      if(response.status === 404) {
-        this.setState({toast: {heading: 'Program details not found', active: true, variant: 'error', duration: 5000}});
-      } else if(response.status === 500) {
-        this.setState({toast: {heading: 'Server error', active: true, variant: 'error', duration: 5000}});
-      } else {
+      if(response.status === 200) {
         let { result } = await response.json();
         this.setState({ items: result });
+      } else {
+        throw new Error(response);
       }
     } catch(err) {
+      this.setState({toast: {heading: 'Something went wrong, please try again', active: true, variant: 'error', duration: 5000}});
       console.error(err.message);
     }
   }

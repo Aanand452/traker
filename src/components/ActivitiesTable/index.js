@@ -31,7 +31,7 @@ import { Container } from './styles';
 
 const DateCell = ({ children, ...props }) => (
   <DataTableCell title={children} {...props}>
-    {moment(children).format('L')}
+    {moment(children).format('DD/MM/YYYY')}
   </DataTableCell>
 );
 DateCell.displayName = DataTableCell.displayName;
@@ -44,7 +44,7 @@ class Table extends Component {
     search: '',
     toast: {
       show: this.props.location.newRow ? true : false,
-      message: "A new activity was added successfully",
+      message: "A New Activity Has Been Added",
       variant: "success"
     },
     isPanelOpen: false,
