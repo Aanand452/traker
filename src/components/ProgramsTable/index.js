@@ -132,7 +132,7 @@ class Table extends Component {
   handlePagination = (newData) => {
     this.setState({displayedData: newData});
   };
-
+  
   toggleOpen = bool => {
     this.setState({ editModalIsOPen: bool });
   };
@@ -144,7 +144,7 @@ class Table extends Component {
         this.toggleOpen(true);
         break;
       case 1:
-        console.log('Delete');
+        this.props.onDelete(item);
         break;
       default:
         break;
