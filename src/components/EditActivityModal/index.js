@@ -205,20 +205,26 @@ class EditActivityModalComponent extends Component {
 
   handleChange = e => {
     let errors = {...this.state.errors};
-    if(e.target.value && e.target.id !== 'campaignId') {
-      errors = {...this.state.errors, [e.target.id]: false};
+    if(e.target.id === 'asset' && e.target.value.length > 0 && !this.isUrl(e.target.value)) {
+      errors = {...this.state.errors, asset: false, assetUrl: true};
+    } else if(e.target.value && e.target.id !== 'campaignId') {
+      errors = {...this.state.errors, [e.target.id]: false, assetUrl: false};
     } else {
       errors = {...this.state.errors, [e.target.id]: true};
     }
+    
     delete errors.campaignId;
     this.setState({[e.target.id]: e.target.value, errors});
+  }
+
+  isUrl = data => {
+    let regexp = new RegExp(/^((ftp|http|https):\/\/)?www\.([A-z]+)\.([A-z]{2,})/);
+    return regexp.test(data);
   }
 
   parseDatesToLocal = row => {
     let startDate =  moment.tz(row.startDate, moment.tz.guess()).toString();
     let endDate =  moment.tz(row.endDate, moment.tz.guess()).toString();
-
-    console.log('MILL', startDate, endDate);
 
     row.startDate = startDate;
     row.endDate = endDate;
@@ -233,28 +239,41 @@ class EditActivityModalComponent extends Component {
     return row;
   }
 
-  editTable = async () => {
+  validate = body => {
+    let errors = {...this.state.errors}
+    for(let item in body) {
+      if(item === 'asset' && body[item].length > 0 && !this.isUrl(body[item])) {
+        errors = {...this.state.errors, asset: false, assetUrl: true};
+      } else if(!body[item]) {
+        errors = {...this.state.errors, [item]: true};
+      }
+    }
+    delete errors.campaignId;
+    this.setState({ errors });
+    return errors;
+  }
 
-    if(Object.values(this.state.errors).some(el => el)) return;
-
+  editTable = async e => {
+    e.preventDefault();
+    
     try {
       let body = {
         title: this.state.title,
         campaignId: this.state.campaignId,
-        tacticId: this.state.tacticSelection[0].tactic_id,
-        formatId: this.state.formatSelection[0].format_id,
+        tacticId: this.state.tacticSelection[0].id,
+        formatId: this.state.formatSelection[0].id,
         abstract: this.state.abstract,
-        regionId: this.state.regionSelection[0].region_id,
+        regionId: this.state.regionSelection[0].id,
         startDate: this.state.startDate,
         endDate: this.state.endDate,
         asset: this.state.asset,
         userId: localStorage.getItem('userId'),
-        programId: this.state.programSelection[0].program_id,
+        programId: this.state.programSelection[0].id,
       }
-
-      console.log(body);
+      
+      if(Object.values(this.validate(body)).some(el => el)) return;
+      
       body = this.parseDatesGTM(body);
-      console.log(body);
 
       const config = {
         method: 'PUT',
@@ -265,26 +284,28 @@ class EditActivityModalComponent extends Component {
         body: JSON.stringify(body)
       }
 
-      const response = await fetch(`${this.API_URL}/activity/${this.props.data.activityId}`, config);
-      
-      this.props.editItem(this.props.dataTable.items, {
-        campaignId: this.state.campaignId,
-        program: this.state.programSelection[0] && this.state.programSelection[0].program_id,
-        format: this.state.formatSelection[0] && this.state.formatSelection[0].format_id,
-        region: this.state.regionSelection[0] && this.state.regionSelection[0].region_id,
-        tactic: this.state.tacticSelection[0] && this.state.tacticSelection[0].tactic_id,
-        title: this.state.title,
-        abstract: this.state.abstract,
-        startDate: this.state.startDate,
-        endDate: this.state.endDate,
-        asset: this.state.asset,
-        id: this.props.data.id
-      });
-      this.props.toggleOpen();
-      this.props.onToast(true, "The campaign was edited successfully", "success");
-      this.props.reloadActivities();
+      let response = await fetch(`${this.API_URL}/activity/${this.props.data.activityId}`, config);
+      console.log(response)
+      if(response.status === 200) {
+        this.props.editItem(this.props.dataTable.items, {
+          campaignId: this.state.campaignId,
+          program: this.state.programSelection[0] && this.state.programSelection[0].program_id,
+          format: this.state.formatSelection[0] && this.state.formatSelection[0].format_id,
+          region: this.state.regionSelection[0] && this.state.regionSelection[0].region_id,
+          tactic: this.state.tacticSelection[0] && this.state.tacticSelection[0].tactic_id,
+          title: this.state.title,
+          abstract: this.state.abstract,
+          startDate: this.state.startDate,
+          endDate: this.state.endDate,
+          asset: this.state.asset,
+          id: this.props.data.id
+        });
+        this.props.toggleOpen();
+        this.props.onToast(true, "The campaign was edited successfully", "success");
+        this.props.reloadActivities();
+      } else throw new Error(response);
     } catch (err) {
-      console.log(err);
+      console.error(err);
       this.props.onToast(true, "Something went wrong, please try again", "error");
     }
   }
@@ -492,7 +513,7 @@ class EditActivityModalComponent extends Component {
                 placeholder="Enter assets"
                 value={this.state.asset}
                 onChange={e => this.handleChange(e)}
-                errorText={this.state.errors.asset && "This field is required"}
+                errorText={this.state.errors.asset && "This field is required" || this.state.errors.assetUrl && "This field must be a URL" || false}
               />
             </div>
           </section>
