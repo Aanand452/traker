@@ -44,13 +44,13 @@ const readAndInsertRow = async row => {
     body.targetRegion = values[0];
     body.apm1 = values[1];
     body.apm2 = values[2];
-    body.industry = values[2];
+    body.industry = values[3];
     body.lifecycleStage = values[4];
     body.segment = values[5];
     body.persona = values[6];
     body.owner = owner;
     body.name = name;
-    body.message = message;
+    body.customerMessage = message;
     
     const prog = await program.etlAddNewProgram(body);
     console.log('inserted', body.name);

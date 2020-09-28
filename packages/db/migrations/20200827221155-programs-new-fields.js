@@ -23,7 +23,7 @@ module.exports = {
     await queryInterface.addColumn(
       'program',
       'customer_message',
-      Sequelize.STRING
+      Sequelize.TEXT
     );
     
     await queryInterface.addColumn(

@@ -12,7 +12,7 @@ Program.init({
   },
   name: {
     allowNull: true,
-    type: DataTypes.STRING,
+    type: DataTypes.TEXT,
     field: 'name',
   },
   owner: {
@@ -72,7 +72,7 @@ Program.init({
   },
   customerMessage: {
     allowNull: true,
-    type: DataTypes.STRING,
+    type: DataTypes.TEXT,
     field: 'customer_message',
   },
   businessGoals: {
