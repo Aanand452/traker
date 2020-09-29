@@ -81,6 +81,22 @@ class ProgramModel {
     }
   }
 
+  static async etlGetProgramByName(name) {
+    try {
+      let program = await db.Program.findAll({
+        where: {
+          name: name
+        },
+        raw : true 
+      });
+
+      return program[0].programId;
+    } catch (err) {
+      console.error('Error getting program list', err);
+    }
+  };
+
+
   static async getProgramById(id) {
     try {
       let program = await db.Program.findByPk(id, {
