@@ -42,7 +42,7 @@ const CustomDataTableCell = ({ children, ...props }) => (
       target="blank"
 			href={children}
 		>
-			{children}
+			View asset
 		</a>
 	</DataTableCell>
 );
