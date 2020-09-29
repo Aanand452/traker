@@ -178,9 +178,8 @@ class ProgramModel {
       body.industry = body.industryId;
       body.segment = body.segmentId;
       body.persona = body.personaId;
-
-      body.lifecycleStage = body.lifecycleStageId;
-      body.apm2 = body.apm2Id;
+      if(body.lifecycleStageId) body.lifecycleStage = body.lifecycleStageId;
+      if(body.apm2Id) body.apm2 = body.apm2Id;
 
       const program = await db.Program.create(body);
 
