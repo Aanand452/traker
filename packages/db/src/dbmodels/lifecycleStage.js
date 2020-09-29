@@ -22,9 +22,11 @@ LifecycleStage.init({
 });
 
 LifecycleStage.associate = models => {
+  /*
   LifecycleStage.hasMany(models.Program, {
     foreignKey: 'lifecycle_stage'
   });
+  */
 }
 
 export default LifecycleStage;

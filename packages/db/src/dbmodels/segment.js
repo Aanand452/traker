@@ -22,9 +22,11 @@ Segment.init({
 });
 
 Segment.associate = models => {
+/*
   Segment.hasMany(models.Program, {
     foreignKey: 'segment'
   });
+*/
 };
 
 export default Segment;

@@ -22,9 +22,11 @@ Persona.init({
 });
 
 Persona.associate = models => {
+/*
   Persona.hasMany(models.Program, {
     foreignKey: 'persona'
   });
+*/
 };
 
 export default Persona;
