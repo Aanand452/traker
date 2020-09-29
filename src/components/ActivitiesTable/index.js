@@ -36,6 +36,17 @@ const DateCell = ({ children, ...props }) => (
 );
 DateCell.displayName = DataTableCell.displayName;
 
+const CustomDataTableCell = ({ children, ...props }) => (
+	<DataTableCell {...props}>
+		<a
+      target="blank"
+			href={children}
+		>
+			View asset
+		</a>
+	</DataTableCell>
+);
+CustomDataTableCell.displayName = DataTableCell.displayName;
 
 class Table extends Component {
   state = {
@@ -252,7 +263,9 @@ class Table extends Component {
           >
             <DateCell />
           </DataTableColumn>
-          <DataTableColumn label="Assets" property="asset" />
+          <DataTableColumn label="Assets" property="asset">
+            <CustomDataTableCell />
+          </DataTableColumn>
 
           <DataTableRowActions
             options={[

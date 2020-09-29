@@ -154,6 +154,11 @@ class CreateActivity extends Component {
     this.props.getFormData(newRow);
   };
 
+  isUrl = data => {
+    let regexp = new RegExp(/^((ftp|http|https):\/\/)?www\.([A-z]+)\.([A-z]{2,})/);
+    return regexp.test(data);
+  }
+
   validations = (input, data) => {
     let errors = {...this.state.error};
     const inputs = ["program", "title", "format", "region", "tactic", "abstract", "asset", "startDate", "endDate"];
@@ -161,20 +166,24 @@ class CreateActivity extends Component {
     if (input) {
       if(inputs.includes(input) && !data) {
         errors = {...errors, [input]: "This field is required"};
+      } else if(input === "asset" && !this.isUrl(data)) {
+        errors = {...errors, asset: "This field must be a URL"};
       } else {
         delete errors[input];
       }
     } else {
-      inputs.forEach((input) => {
+      inputs.forEach(input => {
         if(this.state.row[input]) {
           delete errors[input];
+        } else if(input === "asset" && this.state.row["asset"].length > 0 && !this.isUrl(this.state.row["asset"])) {
+          errors = {...errors, asset: "This field must be a URL"};
         } else {
           errors = {...errors, [input]: "This field is required"};
         }
-      })
+      });
     }
 
-    this.setState({error: errors});
+    this.setState({ error: errors });
     return errors;
   };
 
