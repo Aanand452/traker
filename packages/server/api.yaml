@@ -175,6 +175,34 @@ paths:
             allOf: 
               - $ref: '#/definitions/ResponseStatus'
               - $ref: '#/definitions/Error'
+
+  /programs/region/{regionId}:
+    get:
+      x-swagger-router-controller: program
+      operationId: "getProgramsByRegionId"
+      summary: Returns the list of programs.
+      description: This will be used to populate the activity table
+      parameters:
+        - in: path
+          name: regionId
+          description: ID of region to fetch programs
+          required: true
+          type: string
+      produces:
+        - application/json
+      responses:
+        200:
+          description: Success
+          schema:
+            allOf:
+              - $ref: '#/definitions/ResponseStatus'
+              - $ref: '#/definitions/ProgramListResponse'
+        default:
+          description: Invalid request.
+          schema:
+            allOf: 
+              - $ref: '#/definitions/ResponseStatus'
+              - $ref: '#/definitions/Error'
   
   /region:
     get:

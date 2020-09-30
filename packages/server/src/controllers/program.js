@@ -29,6 +29,19 @@ const getProgramsFull = async (req, res) => {
   }
 }
 
+const getProgramsByRegionId = async (req, res) => {  
+  try {
+    var regionId = req.swagger.params.regionId.value;
+    const programs = await ProgramModel.getProgramsByRegionId(regionId);
+
+    if(programs === 'error') ApiUtils.responseWithError(res, httpStatus.INTERNAL_SERVER_ERROR);
+    else if(!programs) ApiUtils.reposeWithhSuccess(res, null, httpStatus.NOT_FOUND);
+    else ApiUtils.reposeWithhSuccess(res, programs, httpStatus.OK);
+  } catch (err) {
+    ApiUtils.responseWithError(res, httpStatus.INTERNAL_SERVER_ERROR, err.toString());
+  }
+}
+
 const getProgramById = async (req, res) => {
   try {
     var id = req.swagger.params.id.value;
@@ -108,4 +121,4 @@ const updateProgram = async (req, res) => {
   }
 }
 
-export { getPrograms, getProgramsFull, getProgramById, addNewProgram, deleteProgram, updateProgram }
+export { getPrograms, getProgramsFull, getProgramsByRegionId, getProgramById, addNewProgram, deleteProgram, updateProgram }
