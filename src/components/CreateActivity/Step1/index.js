@@ -21,56 +21,6 @@ class Step1 extends Component {
     }
   };
 
-  componentDidMount() {
-    this.setupAndFetch();
-  };
-
-  setupAndFetch = async () => {
-    if(window.location.hostname === 'localhost') this.API_URL = "http://localhost:3000/api/v1";
-    else this.API_URL = await getAPIUrl();
-    
-    this.checkProgram();
-  }
-
-  async checkProgram() {
-    try {
-      let response = await fetch(`${this.API_URL}/program`);
-      
-      if(response.status === 200) {
-        let { result } = await response.json();
-        let program = [result[0]];
-        this.setState({ programs: result, program });
-        this.checkProgramDetail(program[0].program_id);
-      } else {
-        throw new Error(response);
-      }
-    } catch(err) {
-      this.setState({toast: {heading: 'Something went wrong, please try again', active: true, variant: 'error', duration: 5000}});
-      console.error(err.message);
-    }
-  }
-
-  async checkProgramDetail(id) {
-    try {
-      let response = await fetch(`${this.API_URL}/program/${id}`);
-
-      if(response.status === 200) {
-        let { result } = await response.json();
-        this.setState({ items: result });
-      } else {
-        throw new Error(response);
-      }
-    } catch(err) {
-      this.setState({toast: {heading: 'Something went wrong, please try again', active: true, variant: 'error', duration: 5000}});
-      console.error(err.message);
-    }
-  }
-
-  handleChange = async (value, data) => {
-    this.checkProgramDetail(data[0].program_id);
-    this.props.handleChange(value, data);
-  };
-
   nextStep = () => {
     this.props.handleStep(2);
   }
@@ -92,10 +42,22 @@ class Step1 extends Component {
         }
         <div className="slds-m-bottom_large slds-col slds-size_1-of-1">
           <Combobox
-            events={{onSelect: (event, data) => data.selection.length && this.handleChange("program", data.selection)}}
+            events={{onSelect: (event, data) => data.selection.length && this.props.handleChange("region", data.selection)}}
+            labels={{label: 'Region'}}
+            name="region"
+            options={this.props.regions}
+            selection={this.props.row.region}
+            value="region"
+            variant="readonly"
+            errorText={this.props.error.region}
+          />
+        </div>
+        {this.props.programs.length > 0 && <div className="slds-m-bottom_large slds-col slds-size_1-of-1">
+          <Combobox
+            events={{onSelect: (event, data) => data.selection.length && this.props.handleChange("program", data.selection)}}
             labels={{label: 'Program'}}
             name="program"
-            options={this.state.programs}
+            options={this.props.programs}
             selection={this.props.row.program}
             value="program"
             variant="readonly"
@@ -104,47 +66,47 @@ class Step1 extends Component {
           <div className="slds-grid slds-wrap slds-m-left_xx-small slds-m-top_large">
             <div className="slds-m-bottom_large slds-col slds-size_1-of-2 slds-large-size_1-of-4">
               <strong>Program Owner:</strong>
-              <p>{this.state.items.owner}</p>
+              <p>{this.props.items.owner}</p>
             </div>
             <div className="slds-m-bottom_large slds-col slds-size_1-of-2 slds-large-size_1-of-4">
               <strong>Budget:</strong>
-              <p>{this.state.items.budget}</p>
+              <p>{this.props.items.budget}</p>
             </div>
             <div className="slds-m-bottom_large slds-col slds-size_1-of-2 slds-large-size_1-of-4">
               <strong>Metrics:</strong>
-              <p>{this.state.items.metrics}</p>
+              <p>{this.props.items.metrics}</p>
             </div>
             <div className="slds-m-bottom_large slds-col slds-size_1-of-2 slds-large-size_1-of-4">
               <strong>Parent Campaign ID:</strong>
-              <p>{this.state.items.parentCampaignId }</p>
+              <p>{this.props.items.parentCampaignId }</p>
             </div>
             <div className="slds-m-bottom_large slds-col slds-size_1-of-2 slds-large-size_1-of-4">
               <strong>Region:</strong>
-              <p>{this.state.items.targetRegion}</p>
+              <p>{this.props.items.targetRegion}</p>
             </div>
             <div className="slds-m-bottom_large slds-col slds-size_1-of-2 slds-large-size_1-of-4">
               <strong>Lifecycle Stage:</strong>
-              <p>{this.state.items.lifecycleStage}</p>
+              <p>{this.props.items.lifecycleStage}</p>
             </div>
             <div className="slds-m-bottom_large slds-col slds-size_1-of-2 slds-large-size_1-of-4">
               <strong>APM1:</strong>
-              <p>{this.state.items.apm1}</p>
+              <p>{this.props.items.apm1}</p>
             </div>
             <div className="slds-m-bottom_large slds-col slds-size_1-of-2 slds-large-size_1-of-4">
               <strong>APM2:</strong>
-              <p>{this.state.items.apm2}</p>
+              <p>{this.props.items.apm2}</p>
             </div>
             <div className="slds-m-bottom_large slds-col slds-size_1-of-2 slds-large-size_1-of-4">
               <strong>Industry:</strong>
-              <p>{this.state.items.industry}</p>
+              <p>{this.props.items.industry}</p>
             </div>
             <div className="slds-m-bottom_large slds-col slds-size_1-of-2 slds-large-size_1-of-4">
               <strong>Segment:</strong>
-              <p>{this.state.items.segment}</p>
+              <p>{this.props.items.segment}</p>
             </div>
             <div className="slds-m-bottom_large slds-col slds-size_1-of-2 slds-large-size_1-of-4">
               <strong>Persona:</strong>
-              <p>{this.state.items.persona}</p>
+              <p>{this.props.items.persona}</p>
             </div>
           </div>
           {
@@ -155,7 +117,7 @@ class Step1 extends Component {
             </div>
           }
           
-        </div>
+        </div>}
       </Fragment>  
     )
   };
