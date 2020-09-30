@@ -8,6 +8,7 @@ import LifecycleStage from '@sara/db/src/models/lifecycleStage';
 import segment from '@sara/db/src/models/segment';
 import persona from '@sara/db/src/models/persona';
 import program from '@sara/db/src/models/program';
+import currencyFormatter from 'currency-formatter';
 
 var myArgs = process.argv.slice(2);
 if(myArgs.length === 0) console.error('the path of the CSV is required as an argument');
@@ -51,6 +52,9 @@ const readAndInsertRow = async row => {
     body.owner = owner;
     body.name = name;
     body.customerMessage = message;
+    body.budget = row[2] ? currencyFormatter.unformat(row[2], { code: 'USD' }) : null;
+    body.metrics =  row[3] ? currencyFormatter.unformat(row[3], { code: 'USD' }) : null;
+    body.otherKPI = row[5];
     
     const prog = await program.etlAddNewProgram(body);
     console.log('inserted', body.name);
