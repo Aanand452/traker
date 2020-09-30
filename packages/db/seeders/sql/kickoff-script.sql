@@ -12,14 +12,36 @@ INSERT INTO apm1 (apm1_id, name) VALUES
   (uuid_generate_v4(), 'Other');
 
 INSERT INTO apm2 (apm2_id, name) VALUES
-  (uuid_generate_v4(), 'Sales 2'),
-  (uuid_generate_v4(), 'Service 2'),
-  (uuid_generate_v4(), 'Commerce 2'),
-  (uuid_generate_v4(), 'Marketing 2'),
-  (uuid_generate_v4(), 'Analytics 2'),
-  (uuid_generate_v4(), 'Premier 2'),
-  (uuid_generate_v4(), 'Customer 360 Platform 2'),
-  (uuid_generate_v4(), 'Other 2');
+  (uuid_generate_v4(), 'Sales Cloud & Industries'),
+  (uuid_generate_v4(), 'Salesforce CPQ'),
+  (uuid_generate_v4(), 'Partner Relationship Management (PRM)'),
+  (uuid_generate_v4(), 'Salesforce Maps'),
+  (uuid_generate_v4(), 'Salesforce Essentials'),
+  (uuid_generate_v4(), 'Data.com'),
+  (uuid_generate_v4(), 'Service Clcoud & Industries'),
+  (uuid_generate_v4(), 'Field Service'),
+  (uuid_generate_v4(), 'Self Service'),
+  (uuid_generate_v4(), 'Digital Service'),
+  (uuid_generate_v4(), 'B2C Commerce'),
+  (uuid_generate_v4(), 'B2B Commerce'),
+  (uuid_generate_v4(), 'Messaging/Journeys'),
+  (uuid_generate_v4(), 'Pardot'),
+  (uuid_generate_v4(), 'Datorama'),
+  (uuid_generate_v4(), 'Social Studio'),
+  (uuid_generate_v4(), 'Audience & Data Studio'),
+  (uuid_generate_v4(), 'Interaction Studio'),
+  (uuid_generate_v4(), 'Advertising Studio'),
+  (uuid_generate_v4(), 'Core Platform'),
+  (uuid_generate_v4(), 'Heroku'),
+  (uuid_generate_v4(), 'ISV/App Exchange'),
+  (uuid_generate_v4(), 'Shield'),
+  (uuid_generate_v4(), 'Platform Services'),
+  (uuid_generate_v4(), 'myTrailhead'),
+  (uuid_generate_v4(), 'Quip'),
+  (uuid_generate_v4(), 'Tableau'),
+  (uuid_generate_v4(), 'Einstein Analytics'),
+  (uuid_generate_v4(), 'Premier A la Carte & Priority - Sales, Service, Platform'),
+  (uuid_generate_v4(), 'Mulesoft Anypoint Platform');
 
 INSERT INTO industry (industry_id, name) VALUES
   (uuid_generate_v4(), 'Aerospace & Defense'),
@@ -64,7 +86,7 @@ INSERT INTO region (region_id, name) VALUES
   (uuid_generate_v4(), 'APAC'),
   (uuid_generate_v4(), 'ANZ'),
   (uuid_generate_v4(), 'ASEAN'),
-  (uuid_generate_v4(), 'IN'),
+  (uuid_generate_v4(), 'INDIA'),
   (uuid_generate_v4(), 'GCR');
 
 INSERT INTO segment (segment_id, name) VALUES
