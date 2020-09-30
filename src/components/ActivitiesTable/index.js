@@ -31,11 +31,22 @@ import { Container } from './styles';
 
 const DateCell = ({ children, ...props }) => (
   <DataTableCell title={children} {...props}>
-    {moment(children).format('L')}
+    {moment(children).format('DD/MM/YYYY')}
   </DataTableCell>
 );
 DateCell.displayName = DataTableCell.displayName;
 
+const CustomDataTableCell = ({ children, ...props }) => (
+	<DataTableCell {...props}>
+		<a
+      target="blank"
+			href={children}
+		>
+			View asset
+		</a>
+	</DataTableCell>
+);
+CustomDataTableCell.displayName = DataTableCell.displayName;
 
 class Table extends Component {
   state = {
@@ -44,7 +55,7 @@ class Table extends Component {
     search: '',
     toast: {
       show: this.props.location.newRow ? true : false,
-      message: "A new activity was added successfully",
+      message: "A New Activity Has Been Added",
       variant: "success"
     },
     isPanelOpen: false,
@@ -252,7 +263,9 @@ class Table extends Component {
           >
             <DateCell />
           </DataTableColumn>
-          <DataTableColumn label="Assets" property="asset" />
+          <DataTableColumn label="Assets" property="asset">
+            <CustomDataTableCell />
+          </DataTableColumn>
 
           <DataTableRowActions
             options={[
