@@ -11,57 +11,57 @@ Activity.init({
     field: 'activity_id',
   },
   userId: {
-    allowNull: false,
+    allowNull: true,
     type: DataTypes.STRING,
     field: 'user_id',
   },
   title: {
-    allowNull: false,
+    allowNull: true,
     type: DataTypes.STRING,
     field: 'title',
   },
   campaignId: {
-    allowNull: false,
+    allowNull: true,
     type: DataTypes.STRING,
     field: 'campaign_id',
   },
   tacticId: {
-    allowNull: false,
+    allowNull: true,
     type: DataTypes.STRING,
     field: 'tactic_id',
   },
   formatId: {
-    allowNull: false,
+    allowNull: true,
     type: DataTypes.STRING,
     field: 'format_id',
   },
   abstract: {
-    allowNull: false,
+    allowNull: true,
     type: DataTypes.TEXT,
     field: 'abstract',
   },
   regionId: {
-    allowNull: false,
+    allowNull: true,
     type: DataTypes.TEXT,
     field: 'region_id',
   },
   startDate: {
-    allowNull: false,
+    allowNull: true,
     type: DataTypes.DATE,
     field: 'start_date',
   },
   endDate: {
-    allowNull: false,
+    allowNull: true,
     type: DataTypes.DATE,
     field: 'end_date',
   },
   asset: {
-    allowNull: false,
+    allowNull: true,
     type: DataTypes.TEXT,
     field: 'asset',
   },
   programId: {
-    allowNull: false,
+    allowNull: true,
     type: DataTypes.TEXT,
     field: 'program_id',
   }
