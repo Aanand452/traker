@@ -101,7 +101,10 @@ class ProgramModel {
       let programs = await db.Program.findAll({
         where: {
           target_region: id
-        }
+        },
+        order: [
+          ['name', 'ASC'],
+        ]
       });
 
       if(!programs) throw new Error('Error getting program list');
@@ -115,7 +118,10 @@ class ProgramModel {
   static async getProgramById(id) {
     try {
       let program = await db.Program.findByPk(id, {
-        raw : true 
+        raw : true,
+        order: [
+          ['name', 'ASC'],
+        ]
       });
 
       let region = await db.Region.findAll({ raw : true });
@@ -147,7 +153,7 @@ class ProgramModel {
       let personaName =  persona.filter(item => program.persona === item.personaId)[0] ? 
       persona.filter(item => program.persona === item.personaId)[0].name : null;
       
-      program = {...{
+      program = {...program,
         targetRegion: regionName,
         lifecycleStage: lifecycleStageName,
         apm1: apm1Name,
@@ -155,7 +161,7 @@ class ProgramModel {
         industry: industryName,
         segment: segmentName,
         persona: personaName,
-      }}
+      };
 
       return program;
     } catch (err) {
