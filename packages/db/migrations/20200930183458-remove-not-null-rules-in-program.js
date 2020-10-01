@@ -20,7 +20,7 @@ module.exports = {
     //need to be changed to MP target (money)
     await queryInterface.changeColumn('program', 'metrics', {
       allowNull: true,
-      type: Sequelize.INTEGER,
+      type: Sequelize.TEXT,
     });
   },
 
@@ -39,7 +39,7 @@ module.exports = {
 
     //need to be changed to MP target (money)
     await queryInterface.changeColumn('program', 'metrics', {
-      type: Sequelize.INTEGER,
+      type: Sequelize.TEXT,
     });
   }
 };
