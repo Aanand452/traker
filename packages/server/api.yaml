@@ -663,6 +663,8 @@ definitions:
         type: string
       personaId:
         type: string
+      otherKpis:
+        type: string
 
   ProgramListResponse:
     description: A list of programs.
