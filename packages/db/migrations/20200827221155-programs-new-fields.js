@@ -11,7 +11,7 @@ module.exports = {
     await queryInterface.addColumn(
       'program',
       'metrics',
-      Sequelize.TEXT
+      Sequelize.INTEGER
     );
 
     await queryInterface.addColumn(
