@@ -96,6 +96,21 @@ class ProgramModel {
     }
   };
 
+  static async getProgramsByRegionId(id) {
+    try{
+      let programs = await db.Program.findAll({
+        where: {
+          target_region: id
+        }
+      });
+
+      if(!programs) throw new Error('Error getting program list');
+      
+      return programs;
+    } catch (err) {
+      console.error(err);
+    }
+  }
 
   static async getProgramById(id) {
     try {
