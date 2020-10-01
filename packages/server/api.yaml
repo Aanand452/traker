@@ -581,7 +581,7 @@ definitions:
       name:
         type: string
       budget:
-        type: string
+        type: number
       metrics:
         type: string
       parentCampaignId:
