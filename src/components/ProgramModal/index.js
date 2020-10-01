@@ -415,6 +415,15 @@ class EditProgramModalComponent extends Component {
                 onChange={(event, data) => this.handleChange("customerMessage", event.target.value)}
               />
             </div>
+            <div className="slds-form-element slds-m-bottom_large">
+              <Textarea
+                label="Other KPI's"
+                errorText={this.state.error.kpi}
+                placeholder="Enter kpi's"
+                value={this.state.program.kpi || ''}
+                onChange={(event, data) => this.handleChange("kpi", event.target.value)}
+              />
+            </div>
           </section>
         </Modal>
         {this.state.isOpenedConfirmBox && <Prompt
