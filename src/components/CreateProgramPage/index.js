@@ -198,6 +198,7 @@ class CreateProgramPage extends Component {
       };
       if(this.state.program.lifecycleStageId) body.lifecycleStageId = this.state.program.lifecycleStageId[0].id;
       if(this.state.program.apm2Id) body.apm2Id = this.state.program.apm2Id[0].id;
+      if(this.state.program.kpi) body.otherKpis = this.state.program.kpi;
 
       const config = {
         method: 'POST',
@@ -281,6 +282,15 @@ class CreateProgramPage extends Component {
                   onChange={(event, data) => this.handleChange("budget", data.value)}
                   value={this.state.program.budget || ''}
                   errorText={this.state.error.budget}
+                />
+              </div>
+              <div className="slds-m-bottom_large slds-col slds-size_1-of-2">
+                <Input
+                  placeholder="Enter MP target"
+                  label="MP Target"
+                  onChange={(event, data) => this.handleChange("metrics", data.value)}
+                  value={this.state.program.metrics || ''}
+                  errorText={this.state.error.metrics}
                 />
               </div>
               <div className="slds-m-bottom_large slds-col slds-size_1-of-2">
@@ -369,20 +379,20 @@ class CreateProgramPage extends Component {
               </div>
               <div className="slds-m-bottom_large slds-col slds-size_1-of-2">
                 <Textarea
-                  label="MP Target"
-                  errorText={this.state.error.metrics}
-                  placeholder="Enter mp target"
-                  value={this.state.program.metrics || ''}
-                  onChange={(event, data) => this.handleChange("metrics", event.target.value)}
-                />
-              </div>
-              <div className="slds-m-bottom_large slds-col slds-size_1-of-2">
-                <Textarea
                   label="Customer Message"
                   errorText={this.state.error.customerMessage}
                   placeholder="Enter customer message"
                   value={this.state.program.customerMessage || ''}
                   onChange={(event, data) => this.handleChange("customerMessage", event.target.value)}
+                />
+              </div>
+              <div className="slds-m-bottom_large slds-col slds-size_1-of-2">
+                <Textarea
+                  label="Other KPI's"
+                  errorText={this.state.error.kpi}
+                  placeholder="Enter kpi's"
+                  value={this.state.program.kpi || ''}
+                  onChange={(event, data) => this.handleChange("kpi", event.target.value)}
                 />
               </div>
               <div className="slds-col slds-size_1-of-1">
