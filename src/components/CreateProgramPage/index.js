@@ -269,11 +269,11 @@ class CreateProgramPage extends Component {
               </div>
               <div className="slds-m-bottom_large slds-col slds-size_1-of-2">
                 <Input
-                    placeholder="Enter program owner"
-                    label="Program Owner"
-                    onChange={(event, data) => this.handleChange("owner", data.value)}
-                    errorText={this.state.error.owner}
-                    value={this.state.program.owner || ''}
+                  placeholder="Enter program owner"
+                  label="Program Owner"
+                  onChange={(event, data) => this.handleChange("owner", data.value)}
+                  errorText={this.state.error.owner}
+                  value={this.state.program.owner || ''}
                   />
               </div>
               <div className="slds-m-bottom_large slds-col slds-size_1-of-2">

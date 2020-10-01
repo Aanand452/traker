@@ -18,7 +18,7 @@ const BudgetInput = (props) => {
   const onBlurFormat = (value) => {
     if(value==="")
        return
-    value = parseFloat(value)
+    value = Math.ceil(value)
     onChange({ target: { value } }, { value });
   };
 
