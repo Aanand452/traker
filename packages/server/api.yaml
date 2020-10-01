@@ -644,7 +644,7 @@ definitions:
       owner:
         type: string
       budget:
-        type: string
+        type: number
       metrics:
         type: string
       customerMessage:
