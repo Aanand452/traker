@@ -153,7 +153,7 @@ class ProgramModel {
       let personaName =  persona.filter(item => program.persona === item.personaId)[0] ? 
       persona.filter(item => program.persona === item.personaId)[0].name : null;
       
-      program = {...{
+      program = {...program,
         targetRegion: regionName,
         lifecycleStage: lifecycleStageName,
         apm1: apm1Name,
@@ -161,7 +161,9 @@ class ProgramModel {
         industry: industryName,
         segment: segmentName,
         persona: personaName,
-      }}
+      };
+
+      console.log(program);
 
       return program;
     } catch (err) {
