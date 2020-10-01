@@ -230,7 +230,10 @@ class EditProgramModalComponent extends Component {
   onSubmit = async () => {
     try {
       let program = {
-        ...this.state.program,
+        name: this.state.program.name,
+        owner: this.state.program.owner,
+        budget: this.state.program.budget,
+        metrics: this.state.program.metrics,
         regionId: this.state.program.regionId[0].region_id,
         personaId: this.state.program.personaId[0].id,
         segmentId: this.state.program.segmentId[0].id,
@@ -238,7 +241,7 @@ class EditProgramModalComponent extends Component {
         apm1Id: this.state.program.apm1Id[0].id,
         apm2Id: this.state.program.apm2Id[0].id,
         industryId: this.state.program.industryId[0].id,
-        budget: this.state.program.budget.toString(),
+        customerMessage: this.state.program.customerMessage,
         otherKpis: this.state.program.kpi,
       }
 
