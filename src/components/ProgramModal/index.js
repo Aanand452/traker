@@ -242,9 +242,9 @@ class EditProgramModalComponent extends Component {
         segmentId: this.state.program.segmentId[0].id,
         lifecycleStageId: this.state.program.lifecycleStageId[0].id,
         apm1Id: this.state.program.apm1Id[0].id,
-        apm2Id: this.state.program.apm2Id[0].id,
+        apm2Id: this.state.program.apm2Id[0] && this.state.program.apm2Id[0].id,
         industryId: this.state.program.industryId[0].id,
-        budget: this.state.program.budget.toString()
+        budget: this.state.program.budget
       }
       const config = {
         method: 'PUT',
