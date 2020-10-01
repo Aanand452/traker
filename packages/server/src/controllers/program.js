@@ -45,34 +45,14 @@ const getProgramById = async (req, res) => {
 
 const addNewProgram = async (req, res) => {  
   try {
-    const fields = [
-      "name",
-      "budget",
-      "metrics",
-      "parentCampaignId",
-      "customerMessage",
-      "businessGoals",
-      "regionId",
-      "lifecycleStageId",
-      "apm1Id",
-      "apm2Id",
-      "industryId",
-      "segmentId",
-      "personaId",
-      "userId"
-    ];
-
-    const error = fields.some(field => !req.body[field]);
-    if (error) throw new Error ('422');
-
     const program = await ProgramModel.addNewProgram(req.body);
 
-    if(program === 'Error') ApiUtils.reposeWithhSuccess(res, null, httpStatus.INTERNAL_SERVER_ERROR);
-    else if(!program) ApiUtils.reposeWithhSuccess(res, null, httpStatus.NOT_FOUND);
+    if(program === 'Error') ApiUtils.reposeWithhSuccess(res, httpStatus.INTERNAL_SERVER_ERROR);
+    else if(program === 'ValidationError') ApiUtils.reposeWithhSuccess(res, 'There is a body validation error', httpStatus.UNPROCESSABLE_ENTITY);
+    else if(!program) ApiUtils.reposeWithhSuccess(res, httpStatus.NOT_FOUND);
     else ApiUtils.reposeWithhSuccess(res, program, httpStatus.OK);
   } catch (err) {
-    if(err.toString() === 'Error: 422') ApiUtils.responseWithError(res, httpStatus.UNPROCESSABLE_ENTITY, 'Some parameter is missing in body');
-    else ApiUtils.responseWithError(res, httpStatus.INTERNAL_SERVER_ERROR);
+    ApiUtils.responseWithError(res, httpStatus.INTERNAL_SERVER_ERROR);
   }
 };
 

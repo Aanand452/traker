@@ -57,8 +57,9 @@ paths:
       parameters:
       - name: body
         in: body
+        required: true
         schema:
-          $ref: '#/definitions/ProgramCreateBody'
+          $ref: '#/definitions/ProgramBody'
       responses:
         200:
           description: Success
@@ -618,11 +619,7 @@ definitions:
         type: string
       metrics:
         type: string
-      parentCampaignId:
-        type: string
       customerMessage:
-        type: string
-      businessGoals:
         type: string
       regionId:
         type: string

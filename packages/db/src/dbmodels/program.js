@@ -21,12 +21,12 @@ Program.init({
     field: 'owner',
   },
   budget: {
-    allowNull: true,
+    allowNull: false,
     type: DataTypes.STRING,
     field: 'budget',
   },
   metrics: {
-    allowNull: true,
+    allowNull: false,
     type: DataTypes.TEXT,
     field: 'metrics',
   },
