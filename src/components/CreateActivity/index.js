@@ -201,30 +201,41 @@ class CreateActivity extends Component {
   };
 
   isUrl = data => {
-    let regexp = new RegExp(/^((ftp|http|https):\/\/)?www\.([A-z]+)\.([A-z]{2,})/);
-    return regexp.test(data);
+    let regexp = new RegExp(
+      /^((ftp|http|https):\/\/)?www\.([A-z]+)\.([A-z]{2,})/
+    );
+    return data === "" || regexp.test(data);
   }
 
   validations = (input, data) => {
     let errors = {...this.state.error};
-    const inputs = ["program", "title", "format", "region", "tactic", "abstract", "asset", "startDate", "endDate"];
+    const inputs = ["program", "title", "format", "region", "tactic", "abstract", "startDate", "endDate"];
+
+    const specialValidations = {
+      asset: { validator: this.isUrl, message: "This field must be a URL" },
+    };
 
     if (input) {
-      if(inputs.includes(input) && !data) {
-        errors = {...errors, [input]: "This field is required"};
-      } else if(input === "asset" && !this.isUrl(data)) {
-        errors = {...errors, asset: "This field must be a URL"};
+      if (inputs.includes(input) && !data) {
+        errors = { ...errors, [input]: "This field is required" };
+      } else if (specialValidations[input] && !specialValidations[input].validator(data)) {
+        errors = { ...errors };
+        errors[input] = specialValidations[input].message;
       } else {
         delete errors[input];
       }
     } else {
-      inputs.forEach(input => {
-        if(this.state.row[input]) {
+      inputs.forEach((input) => {
+        if (this.state.row[input]) {
           delete errors[input];
-        } else if(input === "asset" && this.state.row["asset"].length > 0 && !this.isUrl(this.state.row["asset"])) {
-          errors = {...errors, asset: "This field must be a URL"};
+        } else if (
+          specialValidations[input] &&
+          this.state.row[input].length > 0 &&
+          !specialValidations[input].validator(this.state.row[input])
+        ) {
+          errors = { ...errors, asset: "This field must be a URL" };
         } else {
-          errors = {...errors, [input]: "This field is required"};
+          errors = { ...errors, [input]: "This field is required" };
         }
       });
     }
