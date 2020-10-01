@@ -163,8 +163,6 @@ class ProgramModel {
         persona: personaName,
       };
 
-      console.log(program);
-
       return program;
     } catch (err) {
       console.error('Error getting program list', err);
