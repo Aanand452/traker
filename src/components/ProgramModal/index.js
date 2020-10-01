@@ -6,7 +6,6 @@ import {
   Modal,
   Button,
   Combobox,
-  Datepicker,
   Input,
   Textarea,
   ToastContainer,
@@ -55,8 +54,8 @@ class EditProgramModalComponent extends Component {
   }
 
   setProgramInState = () => {
-    let { budget, businessGoals, customerMessage, metrics, name, parentCampaignId, owner } = this.props.program;
-    this.setState({ program: { budget, businessGoals, customerMessage, metrics, name, parentCampaignId, owner } })
+    let { budget, businessGoals, customerMessage, metrics, name, parentCampaignId, owner, otherKpis } = this.props.program;
+    this.setState({ program: { budget, businessGoals, customerMessage, metrics, name, parentCampaignId, owner, kpi: otherKpis } })
   }
 
   showError = err => {
@@ -188,13 +187,9 @@ class EditProgramModalComponent extends Component {
       "name",
       "budget",
       "metrics",
-      "parentCampaignId",
       "customerMessage",
-      "businessGoals",
       "regionId",
-      "lifecycleStageId",
       "apm1Id",
-      "apm2Id",
       "industryId",
       "segmentId",
       "personaId"
@@ -243,8 +238,10 @@ class EditProgramModalComponent extends Component {
         apm1Id: this.state.program.apm1Id[0].id,
         apm2Id: this.state.program.apm2Id[0].id,
         industryId: this.state.program.industryId[0].id,
-        budget: this.state.program.budget.toString()
+        budget: this.state.program.budget.toString(),
+        otherKpis: this.state.program.kpi,
       }
+
       const config = {
         method: 'PUT',
         headers: {
@@ -317,11 +314,11 @@ class EditProgramModalComponent extends Component {
             </div>
             <div className="slds-form-element slds-m-bottom_large">
               <Input
-                placeholder="Enter parent campaign id"
-                label="Parent Campaign Id"
-                onChange={(event, data) => this.handleChange("parentCampaignId", data.value)}
-                value={this.state.program.parentCampaignId}
-                errorText={this.state.error.parentCampaignId}
+                placeholder="Enter MP target"
+                label="MP Target"
+                onChange={(event, data) => this.handleChange("metrics", data.value)}
+                value={this.state.program.metrics || ''}
+                errorText={this.state.error.metrics}
               />
             </div>
             <div className="slds-form-element slds-m-bottom_large">
@@ -410,15 +407,6 @@ class EditProgramModalComponent extends Component {
             </div>
             <div className="slds-form-element slds-m-bottom_large">
               <Textarea
-                label="Metrics"
-                errorText={this.state.error.metrics}
-                placeholder="Enter metrics"
-                value={this.state.program.metrics || ''}
-                onChange={(event, data) => this.handleChange("metrics", event.target.value)}
-              />
-            </div>
-            <div className="slds-form-element slds-m-bottom_large">
-              <Textarea
                 label="Customer Message"
                 errorText={this.state.error.customerMessage}
                 placeholder="Enter customer message"
@@ -428,11 +416,11 @@ class EditProgramModalComponent extends Component {
             </div>
             <div className="slds-form-element slds-m-bottom_large">
               <Textarea
-                label="Business Goals"
-                errorText={this.state.error.businessGoals}
-                placeholder="Enter business goals"
-                value={this.state.program.businessGoals || ''}
-                onChange={(event, data) => this.handleChange("businessGoals", event.target.value)}
+                label="Other KPI's"
+                errorText={this.state.error.kpi}
+                placeholder="Enter kpi's"
+                value={this.state.program.kpi || ''}
+                onChange={(event, data) => this.handleChange("kpi", event.target.value)}
               />
             </div>
           </section>
