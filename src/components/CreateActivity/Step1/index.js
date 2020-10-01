@@ -9,6 +9,8 @@ import {
   IconSettings
 } from '@salesforce/design-system-react';
 
+import { currencyFormatter } from "../../../utils/fomatters";
+
 class Step1 extends Component {
   state = {
     programs: [],
@@ -70,11 +72,7 @@ class Step1 extends Component {
             </div>
             <div className="slds-m-bottom_large slds-col slds-size_1-of-2 slds-large-size_1-of-4">
               <strong>Budget:</strong>
-              <p>{this.props.items.budget}</p>
-            </div>
-            <div className="slds-m-bottom_large slds-col slds-size_1-of-2 slds-large-size_1-of-4">
-              <strong>Metrics:</strong>
-              <p>{this.props.items.metrics}</p>
+              <p>{currencyFormatter(this.props.items.budget)}</p>
             </div>
             <div className="slds-m-bottom_large slds-col slds-size_1-of-2 slds-large-size_1-of-4">
               <strong>Parent Campaign ID:</strong>
