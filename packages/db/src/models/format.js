@@ -4,7 +4,7 @@ class FormatModel {
   static async getAllFormats() {
     try {
       const format = await Format.findAll({
-        attributes: ['format_id', ['name', 'label'], 'tactic_id']
+        attributes: ['format_id', 'name']
       });
       return format;
     } catch (err) {
