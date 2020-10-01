@@ -79,7 +79,12 @@ Program.init({
     allowNull: true,
     type: DataTypes.STRING,
     field: 'business_goal',
-  }
+  },
+  otherKpis: {
+    allowNull: true,
+    type: DataTypes.STRING,
+    field: 'other_kpis',
+  },
 }, {
   tableName: 'program',
   sequelize: sequelize, 

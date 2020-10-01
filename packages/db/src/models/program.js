@@ -71,7 +71,8 @@ class ProgramModel {
           industry: industryName,
           segment: segmentName,
           persona: personaName,
-          customerMessage: el.customerMessage
+          customerMessage: el.customerMessage,
+          otherKpis: el.otherKpis
         }
       });
       
@@ -205,12 +206,11 @@ class ProgramModel {
 
       const persona = await db.Persona.findByPk(body.personaId);
       if(!persona) throw new Error("Persona doesn't exists");
-
-      body.programId = uuidv4();
-      if(!body.programId) throw new Error("It was imposible to create a program");
       */
 
       body.programId = uuidv4();
+      if(!body.programId) throw new Error("It was imposible to create a program");
+      
       body.targetRegion = body.regionId;
       body.apm1 = body.apm1Id;
       body.industry = body.industryId;
