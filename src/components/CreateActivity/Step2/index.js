@@ -25,18 +25,6 @@ class Step2 extends Component {
         </div>
         <div className="slds-m-bottom_large slds-col slds-size_1-of-2">
           <Combobox
-            events={{onSelect: (event, data) => data.selection.length && this.props.handleChange("region", data.selection)}}
-            labels={{label: 'Region'}}
-            name="region"
-            options={this.props.regions}
-            selection={this.props.row.region}
-            value="region"
-            variant="readonly"
-            errorText={this.props.error.region}
-          />
-        </div>
-        <div className="slds-m-bottom_large slds-col slds-size_1-of-2">
-          <Combobox
             events={{onSelect: (event, data) => data.selection.length && this.props.handleChange("tactic", data.selection)}}
             labels={{label: 'Tactic'}}
             name="tactic"
