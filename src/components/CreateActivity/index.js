@@ -73,7 +73,6 @@ class CreateActivity extends Component {
     this.getUser();
     this.checkTactic();
     this.checkRegion();
-    this.checkProgram();
     this.props.getFormData(this.state.row);
   }
 
@@ -83,6 +82,47 @@ class CreateActivity extends Component {
       if(response.status === 200) {
         let { result } = await response.json();
         this.setState({ regions: result, row: {...this.state.row, region: [result[0]]}});
+      } else {
+        throw new Error(response);
+      }
+    } catch(err) {
+      this.setState({toast: {...this.state.toast, active: true}});
+      console.error(err);
+    }
+  }
+
+  async checkProgramByRegion(id) {
+    try {
+      let response = await fetch(`${this.API_URL}/programs/region/${id}`);
+      if(response.status === 200) {
+        let { result } = await response.json();
+        let programs = result.map(el => {
+          return {
+            label: el.name,
+            program_id: el.programId
+          }
+        });
+
+        if(programs.length <= 0) this.handleStep(1);
+        else this.checkProgramDetail(programs[0].program_id);
+
+        this.setState({ programs, row: {...this.state.row, program: [programs[0]]}});
+      } else {
+        throw new Error(response);
+      }
+    } catch (err) {
+      this.setState({toast: {...this.state.toast, active: true}});
+      console.error(err);
+    }
+  }
+  
+  async checkProgramDetail(id) {
+    try {
+      let response = await fetch(`${this.API_URL}/program/${id}`);
+
+      if(response.status === 200) {
+        let { result } = await response.json();
+        this.setState({ items: result });
       } else {
         throw new Error(response);
       }
@@ -145,6 +185,12 @@ class CreateActivity extends Component {
     if(value === "tactic") {
       formats = await this.populateTactic(data[0]);
       newRow = {...this.state.row, tactic: data, format: [formats[0]]};
+    } else if(value === "region") {
+      await this.checkProgramByRegion(data[0].region_id);
+      newRow = {...this.state.row, region: data };
+    } else if(value === "program") {
+      this.checkProgramDetail(data[0].program_id);
+      newRow = {...this.state.row, program: data};
     } else {
       newRow = {...this.state.row, [value]: data};
     }
@@ -273,15 +319,17 @@ class CreateActivity extends Component {
               handleChange={this.handleChange}
               error={this.state.error}
               step={this.state.steps.filter(el => el.active).length}
+              programs={this.state.programs}
+              items={this.state.items}
+              regions={this.state.regions}
             />
             {
-              this.state.steps.filter(el => el.active).length === 2  && 
+              this.state.programs.length > 0 && this.state.steps.filter(el => el.active).length === 2  && 
               <Step2
                 row={this.state.row}
                 handleStep={this.handleStep}
                 handleChange={this.handleChange}
                 error={this.state.error}
-                regions={this.state.regions}
                 tactics={this.state.tactics}
                 formats={this.state.formats}
               />
