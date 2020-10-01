@@ -56,8 +56,8 @@ class EditProgramModalComponent extends Component {
   }
 
   setProgramInState = () => {
-    let { budget, businessGoals, customerMessage, metrics, name, parentCampaignId, owner } = this.props.program;
-    this.setState({ program: { budget, businessGoals, customerMessage, metrics, name, parentCampaignId, owner } })
+    let { budget, customerMessage, metrics, name, parentCampaignId, owner } = this.props.program;
+    this.setState({ program: { budget, customerMessage, metrics, name, parentCampaignId, owner } })
   }
 
   showError = err => {
@@ -191,7 +191,6 @@ class EditProgramModalComponent extends Component {
       "metrics",
       "parentCampaignId",
       "customerMessage",
-      "businessGoals",
       "regionId",
       "lifecycleStageId",
       "apm1Id",
@@ -422,15 +421,6 @@ class EditProgramModalComponent extends Component {
                 placeholder="Enter customer message"
                 value={this.state.program.customerMessage || ''}
                 onChange={(event, data) => this.handleChange("customerMessage", event.target.value)}
-              />
-            </div>
-            <div className="slds-form-element slds-m-bottom_large">
-              <Textarea
-                label="Business Goals"
-                errorText={this.state.error.businessGoals}
-                placeholder="Enter business goals"
-                value={this.state.program.businessGoals || ''}
-                onChange={(event, data) => this.handleChange("businessGoals", event.target.value)}
               />
             </div>
           </section>
