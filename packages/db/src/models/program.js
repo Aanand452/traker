@@ -209,7 +209,7 @@ class ProgramModel {
       */
 
       body.programId = uuidv4();
-      if(!body.programId) throw new Error("It was imposible to create a program");
+      if(!body.programId) throw new Error("It was imposible to create a program due to an id error");
       
       body.targetRegion = body.regionId;
       body.apm1 = body.apm1Id;
