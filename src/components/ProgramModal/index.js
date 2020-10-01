@@ -13,6 +13,7 @@ import {
   Toast
 } from '@salesforce/design-system-react';
 
+import BudgetInput from '../BudgetInput/BudgetInput'
 import Prompt from '../Prompt';
 
 
@@ -306,12 +307,9 @@ class EditProgramModalComponent extends Component {
               />
             </div>
             <div className="slds-form-element slds-m-bottom_large">
-              <Input
-                placeholder="Enter budget"
-                label="Budget"
+              <BudgetInput
                 onChange={(event, data) => this.handleChange("budget", data.value)}
                 value={this.state.program.budget}
-                type='number'
                 errorText={this.state.error.budget}
               />
             </div>
