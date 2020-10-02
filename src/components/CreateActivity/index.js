@@ -81,7 +81,9 @@ class CreateActivity extends Component {
       let response = await fetch(`${this.API_URL}/region`);
       if(response.status === 200) {
         let { result } = await response.json();
+
         this.setState({ regions: result, row: {...this.state.row, region: [result[0]]}});
+        this.handleChange("region", [result[0]]);
       } else {
         throw new Error(response);
       }
