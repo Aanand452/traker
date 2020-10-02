@@ -205,10 +205,10 @@ class EditActivityModalComponent extends Component {
 
   handleChange = e => {
     let errors = {...this.state.errors};
-    if(e.target.id === 'asset' && e.target.value.length > 0 && !this.isUrl(e.target.value)) {
-      errors = {...this.state.errors, asset: false, assetUrl: true};
+    if(e.target.id === 'asset') {
+      errors = {...this.state.errors, asset: false};
     } else if(e.target.value && e.target.id !== 'campaignId') {
-      errors = {...this.state.errors, [e.target.id]: false, assetUrl: false};
+      errors = {...this.state.errors, [e.target.id]: false};
     } else {
       errors = {...this.state.errors, [e.target.id]: true};
     }
@@ -242,8 +242,8 @@ class EditActivityModalComponent extends Component {
   validate = body => {
     let errors = {...this.state.errors}
     for(let item in body) {
-      if(item === 'asset' && body[item].length > 0 && !this.isUrl(body[item])) {
-        errors = {...this.state.errors, asset: false, assetUrl: true};
+      if(item === 'asset') {
+        errors = {...this.state.errors, asset: false};
       } else if(!body[item]) {
         errors = {...this.state.errors, [item]: true};
       }
@@ -509,11 +509,10 @@ class EditActivityModalComponent extends Component {
                 id='asset'
                 label="Asset"
                 type='url'
-                required
-                placeholder="Enter assets"
+                placeholder="Insert a valid URL here"
                 value={this.state.asset}
                 onChange={e => this.handleChange(e)}
-                errorText={this.state.errors.asset && "This field is required" || this.state.errors.assetUrl && "This field must be a URL" || false}
+                errorText={this.state.errors.asset && "This field is required" || false}
               />
             </div>
           </section>

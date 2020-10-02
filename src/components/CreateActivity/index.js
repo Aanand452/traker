@@ -211,16 +211,10 @@ class CreateActivity extends Component {
     let errors = {...this.state.error};
     const inputs = ["program", "title", "format", "region", "tactic", "abstract", "startDate", "endDate"];
 
-    const specialValidations = {
-      asset: { validator: this.isUrl, message: "This field must be a URL" },
-    };
-
+ 
     if (input) {
       if (inputs.includes(input) && !data) {
         errors = { ...errors, [input]: "This field is required" };
-      } else if (specialValidations[input] && !specialValidations[input].validator(data)) {
-        errors = { ...errors };
-        errors[input] = specialValidations[input].message;
       } else {
         delete errors[input];
       }
@@ -228,12 +222,6 @@ class CreateActivity extends Component {
       inputs.forEach((input) => {
         if (this.state.row[input]) {
           delete errors[input];
-        } else if (
-          specialValidations[input] &&
-          this.state.row[input].length > 0 &&
-          !specialValidations[input].validator(this.state.row[input])
-        ) {
-          errors = { ...errors, asset: "This field must be a URL" };
         } else {
           errors = { ...errors, [input]: "This field is required" };
         }
