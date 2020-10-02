@@ -155,7 +155,7 @@ class Table extends Component {
     return (
       <Container>
         <IconSettings iconPath="/assets/icons">
-          {this.state.editModalIsOPen && <Modal onEdit={this.props.onEdit} program={this.state.selectedprogram} toggleOpen={this.toggleOpen} title='Edit program'  />}
+          {this.state.editModalIsOPen && <Modal onEdit={this.props.onEdit} program={this.state.selectedprogram} toggleOpen={this.toggleOpen} title='Edit program' ariaHideApp={false} />}
           <PageHeader
             onRenderActions={this.actions}
             icon={

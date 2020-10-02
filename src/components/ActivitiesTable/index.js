@@ -50,7 +50,7 @@ CustomDataTableCell.displayName = DataTableCell.displayName;
 class Table extends Component {
   state = {
     sortProperty: '',
-    sortDirection: '',
+    sortDirection: null,
     search: '',
     toast: {
       show: this.props.location.newRow ? true : false,
