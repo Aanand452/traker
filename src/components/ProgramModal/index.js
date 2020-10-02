@@ -27,7 +27,6 @@ class EditProgramModalComponent extends Component {
     personas: [],
     program: {},
     error: {},
-    program: {},
     toast: {
       active: false
     },

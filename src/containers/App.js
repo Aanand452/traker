@@ -1,7 +1,7 @@
 import React from 'react';
 import NotFoundPage from '../containers/NotFoundPage';
 import { BrowserRouter as Router, Route, Switch, Redirect } from 'react-router-dom';
-import moment from 'moment';
+
 import 'moment/locale/en-au';
 import { SfdcPageAppWrapper } from './styles/page';
 
