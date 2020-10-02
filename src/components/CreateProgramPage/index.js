@@ -140,15 +140,12 @@ class CreateProgramPage extends Component {
     let errors = {...this.state.error};
     const inputs = [
       "name",
+      "owner",
       "budget",
       "metrics",
-      "parentCampaignId",
       "customerMessage",
-      "businessGoals",
       "regionId",
-      "lifecycleStageId",
       "apm1Id",
-      "apm2Id",
       "industryId",
       "segmentId",
       "personaId"
@@ -189,20 +186,19 @@ class CreateProgramPage extends Component {
     try {
       const body = {
         name: this.state.program.name,
+        owner: this.state.program.owner,
         budget: this.state.program.budget,
         metrics: this.state.program.metrics,
-        parentCampaignId: this.state.program.parentCampaignId,
         customerMessage: this.state.program.customerMessage,
-        businessGoals: this.state.program.businessGoals,
         regionId: this.state.program.regionId[0].region_id,
-        lifecycleStageId: this.state.program.lifecycleStageId[0].id,
         apm1Id: this.state.program.apm1Id[0].id,
-        apm2Id: this.state.program.apm2Id[0].id,
         industryId: this.state.program.industryId[0].id,
         segmentId: this.state.program.segmentId[0].id,
-        personaId: this.state.program.personaId[0].id,
-        userId: localStorage.getItem('userId')
+        personaId: this.state.program.personaId[0].id
       };
+      if(this.state.program.lifecycleStageId) body.lifecycleStageId = this.state.program.lifecycleStageId[0].id;
+      if(this.state.program.apm2Id) body.apm2Id = this.state.program.apm2Id[0].id;
+      if(this.state.program.kpi) body.otherKpis = this.state.program.kpi;
 
       const config = {
         method: 'POST',
@@ -263,11 +259,20 @@ class CreateProgramPage extends Component {
             <div className="slds-grid slds-wrap slds-p-around_medium slds_full-width">
               <div className="slds-m-bottom_large slds-col slds-size_1-of-2">
                 <Input
-                  placeholder="Enter name"
-                  label="Name"
+                  placeholder="Enter program name"
+                  label="Program Name"
                   onChange={(event, data) => this.handleChange("name", data.value)}
                   errorText={this.state.error.name}
                   value={this.state.program.name || ''}
+                />
+              </div>
+              <div className="slds-m-bottom_large slds-col slds-size_1-of-2">
+                <Input
+                  placeholder="Enter program owner"
+                  label="Program Owner"
+                  onChange={(event, data) => this.handleChange("owner", data.value)}
+                  errorText={this.state.error.owner}
+                  value={this.state.program.owner || ''}
                 />
               </div>
               <div className="slds-m-bottom_large slds-col slds-size_1-of-2">
@@ -276,17 +281,16 @@ class CreateProgramPage extends Component {
                   label="Budget"
                   onChange={(event, data) => this.handleChange("budget", data.value)}
                   value={this.state.program.budget || ''}
-                  type='number'
                   errorText={this.state.error.budget}
                 />
               </div>
               <div className="slds-m-bottom_large slds-col slds-size_1-of-2">
                 <Input
-                  placeholder="Enter parent campaign id"
-                  label="Parent Campaign Id"
-                  onChange={(event, data) => this.handleChange("parentCampaignId", data.value)}
-                  value={this.state.program.parentCampaignId || ''}
-                  errorText={this.state.error.parentCampaignId}
+                  placeholder="Enter MP target"
+                  label="MP Target"
+                  onChange={(event, data) => this.handleChange("metrics", data.value)}
+                  value={this.state.program.metrics || ''}
+                  errorText={this.state.error.metrics}
                 />
               </div>
               <div className="slds-m-bottom_large slds-col slds-size_1-of-2">
@@ -375,15 +379,6 @@ class CreateProgramPage extends Component {
               </div>
               <div className="slds-m-bottom_large slds-col slds-size_1-of-2">
                 <Textarea
-                  label="Metrics"
-                  errorText={this.state.error.metrics}
-                  placeholder="Enter metrics"
-                  value={this.state.program.metrics || ''}
-                  onChange={(event, data) => this.handleChange("metrics", event.target.value)}
-                />
-              </div>
-              <div className="slds-m-bottom_large slds-col slds-size_1-of-2">
-                <Textarea
                   label="Customer Message"
                   errorText={this.state.error.customerMessage}
                   placeholder="Enter customer message"
@@ -393,11 +388,11 @@ class CreateProgramPage extends Component {
               </div>
               <div className="slds-m-bottom_large slds-col slds-size_1-of-2">
                 <Textarea
-                  label="Business Goals"
-                  errorText={this.state.error.businessGoals}
-                  placeholder="Enter business goals"
-                  value={this.state.program.businessGoals || ''}
-                  onChange={(event, data) => this.handleChange("businessGoals", event.target.value)}
+                  label="Other KPI's"
+                  errorText={this.state.error.kpi}
+                  placeholder="Enter kpi's"
+                  value={this.state.program.kpi || ''}
+                  onChange={(event, data) => this.handleChange("kpi", event.target.value)}
                 />
               </div>
               <div className="slds-col slds-size_1-of-1">

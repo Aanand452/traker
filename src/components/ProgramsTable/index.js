@@ -20,17 +20,12 @@ import { Container } from './styles';
 import Pager from '../Pager';
 import Modal from '../ProgramModal';
 
-const CustomDataTableCell = ({ children, ...props }) => (
+const CurrencyCell = ({ children, ...props }) => (
   <DataTableCell title={children} {...props}>
-    <a
-      href="javascript:void(0);"
-      onClick={(event) => event.preventDefault()}
-    >
-      {children}
-    </a>
+    {parseInt(children, 10) ? new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(children) : ''}
   </DataTableCell>
 );
-CustomDataTableCell.displayName = DataTableCell.displayName;
+CurrencyCell.displayName = DataTableCell.displayName;
 
 
 class Table extends Component {
@@ -54,7 +49,7 @@ class Table extends Component {
   actions = () => (
     <PageHeaderControl>
       <ButtonGroup id="button-group-page-header-actions">
-        <Link>
+        <Link to="/create-program">
           <Button label="New" />
         </Link>
       </ButtonGroup>
@@ -205,9 +200,12 @@ class Table extends Component {
               sortDirection={this.state.sortDirection}
               sortable
               isSorted={this.state.sortProperty === 'budget'}
-            />
-            <DataTableColumn label="Metrics" property="metrics" />
-            <DataTableColumn label="Parent Campaign ID" property="parentCampaignId" />
+            >
+              <CurrencyCell />
+            </DataTableColumn>
+            <DataTableColumn label="MP Target" property="metrics">
+              <CurrencyCell />
+            </DataTableColumn>
             <DataTableColumn
               label="Target Region"
               property="targetRegion"
@@ -228,7 +226,7 @@ class Table extends Component {
             <DataTableColumn label="Segment" property="segment" />
             <DataTableColumn label="Persona" property="persona" />
             <DataTableColumn label="Customer Message" property="customerMessage" />
-            <DataTableColumn label="Business Goal" property="businessGoals" />
+            <DataTableColumn label="Other KPI's" property="otherKpis" />
             <DataTableRowActions
               options={[
                 {
