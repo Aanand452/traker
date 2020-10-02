@@ -2,7 +2,7 @@ import ApiUtils from '@sara/common/src/api/ApiUtils';
 import httpStatus from 'http-status-codes';
 import FormatModel from '@sara/db/src/models/format';
 
-const getFormats = async (req, res) => {
+const getAllFormats = async (req, res) => {
   try {
     const formats = await FormatModel.getAllFormats();
     if(!formats) {
@@ -30,4 +30,4 @@ const getFormatsByTacticId = async (req, res) => {
   }
 }
 
-export { getFormats, getFormatsByTacticId }
+export { getAllFormats, getFormatsByTacticId }

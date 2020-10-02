@@ -359,6 +359,28 @@ paths:
               - $ref: '#/definitions/ResponseStatus'
               - $ref: '#/definitions/Error'
 
+  /format:
+    get:
+      x-swagger-router-controller: format
+      operationId: "getAllFormats"
+      summary: Returns the list of formats.
+      description: This will be used to populate the insert and update dropdowns
+      produces:
+        - application/json
+      responses:
+        200:
+          description: Success
+          schema:
+            allOf:
+              - $ref: '#/definitions/ResponseStatus'
+              - $ref: '#/definitions/FormatListResponse'
+        default:
+          description: Invalid request.
+          schema:
+            allOf: 
+              - $ref: '#/definitions/ResponseStatus'
+              - $ref: '#/definitions/Error'
+
   /format/{tacticId}:
     get:
       x-swagger-router-controller: format
