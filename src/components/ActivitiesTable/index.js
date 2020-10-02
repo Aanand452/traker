@@ -230,7 +230,7 @@ class Table extends Component {
       data: this.props.data,
       sortProperty: '',
       sortDirection: '',
-      isPanelOpen: true
+      isPanelOpen: false
     })
   };
 
@@ -286,8 +286,6 @@ class Table extends Component {
       this.setState({ errors: {} });
       filter = data;
     }
-
-    console.log(search)
 
     this.setState({ data: filter });
   }
