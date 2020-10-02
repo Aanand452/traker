@@ -86,7 +86,7 @@ class EditActivityModalComponent extends Component {
         regionSelection: activityRegion,
       });
       
-      await this.checkFormat(this.state.tacticSelection[0].tactic_id);
+      await this.checkFormat(this.state.tacticSelection[0] && this.state.tacticSelection[0].tactic_id);
       var activityFormat = this.state.format.filter(el => el.format_id === result.formatId);
 
       this.setState({...this.state, 
@@ -205,10 +205,10 @@ class EditActivityModalComponent extends Component {
 
   handleChange = e => {
     let errors = {...this.state.errors};
-    if(e.target.id === 'asset' && e.target.value.length > 0 && !this.isUrl(e.target.value)) {
-      errors = {...this.state.errors, asset: false, assetUrl: true};
+    if(e.target.id === 'asset') {
+      errors = {...this.state.errors, asset: false};
     } else if(e.target.value && e.target.id !== 'campaignId') {
-      errors = {...this.state.errors, [e.target.id]: false, assetUrl: false};
+      errors = {...this.state.errors, [e.target.id]: false};
     } else {
       errors = {...this.state.errors, [e.target.id]: true};
     }
@@ -242,8 +242,8 @@ class EditActivityModalComponent extends Component {
   validate = body => {
     let errors = {...this.state.errors}
     for(let item in body) {
-      if(item === 'asset' && body[item].length > 0 && !this.isUrl(body[item])) {
-        errors = {...this.state.errors, asset: false, assetUrl: true};
+      if(item === 'asset') {
+        errors = {...this.state.errors, asset: false};
       } else if(!body[item]) {
         errors = {...this.state.errors, [item]: true};
       }
@@ -260,15 +260,15 @@ class EditActivityModalComponent extends Component {
       let body = {
         title: this.state.title,
         campaignId: this.state.campaignId,
-        tacticId: this.state.tacticSelection[0].id,
-        formatId: this.state.formatSelection[0].id,
+        tacticId: this.state.tacticSelection[0] && this.state.tacticSelection[0].id,
+        formatId: this.state.formatSelection[0] && this.state.formatSelection[0].id,
         abstract: this.state.abstract,
-        regionId: this.state.regionSelection[0].id,
+        regionId: this.state.regionSelection[0] && this.state.regionSelection[0].id,
         startDate: this.state.startDate,
         endDate: this.state.endDate,
         asset: this.state.asset,
         userId: localStorage.getItem('userId'),
-        programId: this.state.programSelection[0].id,
+        programId: this.state.programSelection[0] && this.state.programSelection[0].id,
       }
       
       if(Object.values(this.validate(body)).some(el => el)) return;
@@ -380,7 +380,7 @@ class EditActivityModalComponent extends Component {
                         : data.selection;
                     
                     this.setState({ tacticSelection: selection });
-                    this.checkFormat(selection[0].tactic_id);
+                    this.checkFormat(selection[0] && selection[0].tactic_id);
                   }
                 }}
                 labels={{
@@ -509,11 +509,10 @@ class EditActivityModalComponent extends Component {
                 id='asset'
                 label="Asset"
                 type='url'
-                required
-                placeholder="Enter assets"
+                placeholder="Insert a valid URL here"
                 value={this.state.asset}
                 onChange={e => this.handleChange(e)}
-                errorText={this.state.errors.asset && "This field is required" || this.state.errors.assetUrl && "This field must be a URL" || false}
+                errorText={this.state.errors.asset && "This field is required" || false}
               />
             </div>
           </section>

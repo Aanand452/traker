@@ -12,6 +12,7 @@ import {
   Toast
 } from '@salesforce/design-system-react';
 
+import BudgetInput from '../BudgetInput/BudgetInput'
 import Prompt from '../Prompt';
 
 
@@ -54,8 +55,8 @@ class EditProgramModalComponent extends Component {
   }
 
   setProgramInState = () => {
-    let { budget, businessGoals, customerMessage, metrics, name, parentCampaignId, owner, otherKpis } = this.props.program;
-    this.setState({ program: { budget, businessGoals, customerMessage, metrics, name, parentCampaignId, owner, kpi: otherKpis } })
+    let { budget, customerMessage, metrics, name, parentCampaignId, owner, otherKpis } = this.props.program;
+    this.setState({ program: { budget, customerMessage, metrics, name, parentCampaignId, owner, kpi: otherKpis } })
   }
 
   showError = err => {
@@ -239,7 +240,7 @@ class EditProgramModalComponent extends Component {
         segmentId: this.state.program.segmentId[0].id,
         lifecycleStageId: this.state.program.lifecycleStageId[0].id,
         apm1Id: this.state.program.apm1Id[0].id,
-        apm2Id: this.state.program.apm2Id[0].id,
+        apm2Id: this.state.program.apm2Id[0] && this.state.program.apm2Id[0].id,
         industryId: this.state.program.industryId[0].id,
         customerMessage: this.state.program.customerMessage,
         otherKpis: this.state.program.kpi,
@@ -306,12 +307,9 @@ class EditProgramModalComponent extends Component {
               />
             </div>
             <div className="slds-form-element slds-m-bottom_large">
-              <Input
-                placeholder="Enter budget"
-                label="Budget"
+              <BudgetInput
                 onChange={(event, data) => this.handleChange("budget", data.value)}
                 value={this.state.program.budget}
-                type='number'
                 errorText={this.state.error.budget}
               />
             </div>

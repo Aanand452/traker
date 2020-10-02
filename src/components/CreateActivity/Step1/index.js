@@ -9,6 +9,8 @@ import {
   IconSettings
 } from '@salesforce/design-system-react';
 
+import { currencyFormatter } from "../../../utils/fomatters";
+
 class Step1 extends Component {
   state = {
     programs: [],
@@ -64,17 +66,21 @@ class Step1 extends Component {
             errorText={this.props.error.program}
           />
           <div className="slds-grid slds-wrap slds-m-left_xx-small slds-m-top_large">
+            <div className="slds-m-bottom_large slds-col slds-size_1-of-1">
+                <strong>MP Target:</strong>
+                <p>{this.props.items.metrics}</p>
+            </div>
+            <div className="slds-m-bottom_large slds-col slds-size_1-of-1">
+                <strong>Customer Message:</strong>
+                <p>{this.props.items.customerMessage}</p>
+            </div>
             <div className="slds-m-bottom_large slds-col slds-size_1-of-2 slds-large-size_1-of-4">
               <strong>Program Owner:</strong>
               <p>{this.props.items.owner}</p>
             </div>
             <div className="slds-m-bottom_large slds-col slds-size_1-of-2 slds-large-size_1-of-4">
               <strong>Budget:</strong>
-              <p>{this.props.items.budget}</p>
-            </div>
-            <div className="slds-m-bottom_large slds-col slds-size_1-of-2 slds-large-size_1-of-4">
-              <strong>Metrics:</strong>
-              <p>{this.props.items.metrics}</p>
+              <p>{currencyFormatter(this.props.items.budget)}</p>
             </div>
             <div className="slds-m-bottom_large slds-col slds-size_1-of-2 slds-large-size_1-of-4">
               <strong>Parent Campaign ID:</strong>

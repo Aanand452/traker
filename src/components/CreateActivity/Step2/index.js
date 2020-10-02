@@ -88,7 +88,7 @@ class Step2 extends Component {
           {this.props.error.endDate && <div class="slds-form-element__help">{this.props.error.endDate}</div>}
         </div>
         <div className="slds-m-bottom_large slds-col slds-size_1-of-2">
-          <Input placeholder="Enter assets" onChange={(event, data) => this.props.handleChange("asset", data.value)} value={this.props.row.asset} label="Asset" errorText={this.props.error.asset}/>
+          <Input placeholder="Insert a valid URL here" onChange={(event, data) => this.props.handleChange("asset", data.value)} value={this.props.row.asset} label="Asset" errorText={this.props.error.asset}/>
         </div>
         <div className="slds-col slds-size_1-of-1">
           <Button label="Go back" onClick={() => this.props.handleStep(1)} />

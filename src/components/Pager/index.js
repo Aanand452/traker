@@ -59,7 +59,7 @@ const Pager = props => {
         <ButtonGroup>
           <Button disabled={page === 1} onClick={prevPage} label="Prev" />
           {pages.map((el, index) => (
-            <Button className={page === index+1 && 'active'} disabled={page === index+1} onClick={() => goToPage(index+1)} label={el} />
+            <Button className={page === index+1 && 'active'} disabled={page === index+1} onClick={() => goToPage(index+1)} label={el} key={`${index}-${el||''}`} />
           ))}
           <Button onClick={nextPage} disabled={page === Math.ceil(data.length/itemsPerPage)} label="Next" />
         </ButtonGroup>
