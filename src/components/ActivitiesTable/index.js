@@ -72,14 +72,6 @@ class Table extends Component {
     errors: {}
   };
 
-  title = React.createRef();
-  campaignId = React.createRef();
-  programId = React.createRef();
-  regionId = React.createRef();
-  formatId = React.createRef();
-  startDate = React.createRef();
-  endDate = React.createRef();
-  
   componentDidMount() {
     this.setupAndFetch();
   }
@@ -246,6 +238,7 @@ class Table extends Component {
   handlePagination = newData => this.setState({displayedData: newData});
 
   handleChange = (name, value) => {
+    console.log(value)
     if(name === "startDate") {
       this.setState({ errors: { ...this.state.errors, startDate: false, repeated: false } });
     }
@@ -262,21 +255,20 @@ class Table extends Component {
         if (!filters[eachKey].length) {
           return true;
         }
-        
-        return filters[eachKey].includes(eachObj[eachKey]);
+        if(eachKey === "startDate") {
+          eachObj[eachKey] = moment(eachObj[eachKey]).format('DD/MM/YYYY');
+        }
+        if(eachKey === "endDate") {
+          eachObj[eachKey] = moment(eachObj[eachKey]).format('DD/MM/YYYY');
+        }
+        let filter = filters[eachKey].includes(eachObj[eachKey]);
+        return filter;
       });
     });
   };
 
   onSearch = () => {
-    let campaignId = this.campaignId.current.props.value;
-    let title = this.title.current.props.value;
-    let programId = this.programId.current.props.selection;
-    let regionId = this.regionId.current.props.selection;
-    let formatId = this.formatId.current.props.selection;
-    let startDate = this.startDate.current.props.formattedValue;
-    let endDate = this.endDate.current.props.formattedValue;
-
+    let { title, campaignId, programId, regionId, formatId, startDate, endDate } = this.state.search;
     let data = [...this.props.data];
     let search = {};    
     
@@ -304,11 +296,14 @@ class Table extends Component {
     }
     
     let filter = this.filter(data, search);
+    console.log(filter)
     
     if(filter.length <= 0) {
       this.setState({ errors: {} });
       filter = data;
     }
+
+    // search = {title: '', campaignId: '', programId: [{label: 'All'}], regionId: [{label: 'All'}], formatId: [{label: 'All'}]};
 
     this.setState({ data: filter, search, isPanelOpen: false });
   }
@@ -341,11 +336,10 @@ class Table extends Component {
         />
         {this.state.isPanelOpen && (
           <PanelContainer>
-            <Input ref={this.campaignId} onChange={e => this.handleChange("campaignId", e.target.value)} value={this.state.search.campaignId} type="text" label="Search by campaign ID" className="slds-m-top_small" />
-            <Input ref={this.title} onChange={e => this.handleChange("title", e.target.value)} value={this.state.search.title} type='text' label="Search by title" className="slds-m-top_small" />
+            <Input onChange={e => this.handleChange("campaignId", e.target.value)} value={this.state.search.campaignId} type="text" label="Search by campaign ID" className="slds-m-top_small" />
+            <Input onChange={e => this.handleChange("title", e.target.value)} value={this.state.search.title} type='text' label="Search by title" className="slds-m-top_small" />
             <Combobox
-              ref={this.regionId}
-              id="combobox-readonly-single"
+              id="combobox-readonly-single-region"
               classNameContainer="slds-m-top_small"
               events={{onSelect: (event, data) => data.selection.length && this.handleChange("regionId", data.selection)}}
               labels={{label: 'Region'}}
@@ -355,8 +349,7 @@ class Table extends Component {
               variant="readonly"
             />
             <Combobox
-              ref={this.programId}
-              id="combobox-readonly-single"
+              id="combobox-readonly-single-program"
               classNameContainer="slds-m-top_small"
               events={{onSelect: (event, data) => data.selection.length && this.handleChange("programId", data.selection)}}
               labels={{label: 'Program'}}
@@ -366,8 +359,7 @@ class Table extends Component {
               variant="readonly"
             />
             <Combobox
-              ref={this.formatId}
-              id="combobox-readonly-single"
+              id="combobox-readonly-single-format"
               classNameContainer="slds-m-top_small"
               events={{onSelect: (event, data) => data.selection.length && this.handleChange("formatId", data.selection)}}
               labels={{label: 'Format'}}
@@ -377,10 +369,10 @@ class Table extends Component {
               variant="readonly"
             />
             <div className=" slds-m-top_small">
-              <p>Select start date between a range of dates</p>
+              <p>Select range of dates</p>
             </div>
             {this.state.errors.repeated && <div className="slds-has-error">
-              <div className="slds-form-element__help slds-has-error">Dates must be different</div>
+              <div className="slds-form-element__help slds-has-error">Fields must be different</div>
             </div>}
             <div className="slds-grid slds-gutters">
               <div className={`slds-col slds-size_1-of-2 ${this.state.errors.startDate && "slds-has-error"}`}>
