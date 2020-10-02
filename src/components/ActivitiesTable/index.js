@@ -186,6 +186,7 @@ class Table extends Component {
   };
 
   handlePagination = (newData) => {
+    newData = newData.map(item => ({ id: item.activityId, ...item }));
     this.setState({displayedData: newData});
   };
 
