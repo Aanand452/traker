@@ -12,6 +12,8 @@ import {
   Spinner
 } from '@salesforce/design-system-react';
 
+import BudgetInput from '../BudgetInput/BudgetInput'
+
 import { Title, Container } from './styles';
 import { getAPIUrl } from '../../config/config';
 
@@ -276,9 +278,7 @@ class CreateProgramPage extends Component {
                 />
               </div>
               <div className="slds-m-bottom_large slds-col slds-size_1-of-2">
-                <Input
-                  placeholder="Enter budget"
-                  label="Budget"
+                <BudgetInput
                   onChange={(event, data) => this.handleChange("budget", data.value)}
                   value={this.state.program.budget || ''}
                   errorText={this.state.error.budget}

@@ -43,14 +43,13 @@ const DateCell = ({ children, ...props }) => (
 DateCell.displayName = DataTableCell.displayName;
 
 const CustomDataTableCell = ({ children, ...props }) => (
-	<DataTableCell {...props}>
-		<a
-      target="blank"
-			href={children}
-		>
-			View asset
-		</a>
-	</DataTableCell>
+  <DataTableCell {...props}>
+    {children && (
+      <a target="blank" href={children}>
+        View asset
+      </a>
+    )}
+  </DataTableCell>
 );
 CustomDataTableCell.displayName = DataTableCell.displayName;
 

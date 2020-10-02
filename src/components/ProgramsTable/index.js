@@ -135,7 +135,12 @@ class Table extends Component {
   handleRowAction = (item, { id }) => {
     switch(id) {
       case 0:
-        this.setState({ selectedprogram: item})
+        this.setState({
+          selectedprogram: {
+            ...item,
+            metrics: item.metrics && item.metrics.toString(),
+          },
+        });
         this.toggleOpen(true);
         break;
       case 1:
