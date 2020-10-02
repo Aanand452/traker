@@ -2,6 +2,7 @@ import React, { Component, Fragment } from 'react';
 import { withRouter, Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import moment from 'moment';
+import { extendMoment } from 'moment-range';
 import {
   Button,
   ButtonGroup,
@@ -31,6 +32,8 @@ import {
   setItem
 } from '../../actions/DataTable';
 import { Container, PanelContainer } from './styles';
+
+const extendedMoment = extendMoment(moment);
 
 const DateCell = ({ children, ...props }) => (
   <DataTableCell title={children} {...props}>
@@ -69,6 +72,14 @@ class Table extends Component {
     errors: {}
   };
 
+  title = React.createRef();
+  campaignId = React.createRef();
+  programId = React.createRef();
+  regionId = React.createRef();
+  formatId = React.createRef();
+  startDate = React.createRef();
+  endDate = React.createRef();
+  
   componentDidMount() {
     this.setupAndFetch();
   }
@@ -93,7 +104,7 @@ class Table extends Component {
       let response = await fetch(`${this.API_URL}/program`);
       if(response.status === 200) {
         let { result } = await response.json();
-        this.setState({ programs: [{label: 'All'}, ...result], search: {...this.state.search, program: [{label: 'All'}]} });
+        this.setState({ programs: [{label: 'All'}, ...result], search: {...this.state.search, programId: [{label: 'All'}]} });
       } else throw new Error(response);
     } catch(err) {
       console.error(err);
@@ -105,7 +116,7 @@ class Table extends Component {
       let response = await fetch(`${this.API_URL}/region`);
       if(response.status === 200) {
         let { result } = await response.json();
-        this.setState({ regions: [{label: 'All'}, ...result], search: {...this.state.search, region: [{label: 'All'}]}});
+        this.setState({ regions: [{label: 'All'}, ...result], search: {...this.state.search, regionId: [{label: 'All'}]}});
       } else {
         throw new Error(response);
       }
@@ -119,7 +130,7 @@ class Table extends Component {
       let response = await fetch(`${this.API_URL}/format`);
       if(response.status === 200) {
         let { result } = await response.json();
-        this.setState({ formats: [{label: 'All'}, ...result], search: {...this.state.search, format: [{label: 'All'}]}});
+        this.setState({ formats: [{label: 'All'}, ...result], search: {...this.state.search, formatId: [{label: 'All'}]}});
       } else {
         throw new Error(response);
       }
@@ -141,18 +152,16 @@ class Table extends Component {
   controls = () => (
     <Fragment>
       <PageHeaderControl>
-        <Button
-          assistiveText={{ icon: 'Refresh' }}
-          iconCategory="utility"
-          iconName="refresh"
-          iconVariant="border"
-          variant="icon"
-          onClick={this.resetTable}
-        />
-      </PageHeaderControl>
-      <PageHeaderControl>
         <ButtonGroup id="button-group-page-header-controls">
-          <ButtonStateful
+          <Button
+            assistiveText={{ icon: 'Refresh' }}
+            iconCategory="utility"
+            iconName="refresh"
+            iconVariant="border-filled"
+            variant="icon"
+            onClick={this.resetTable}
+          />
+          <Button
             assistiveText={{ icon: 'Filters' }}
             iconCategory="utility"
             iconName="filterList"
@@ -238,10 +247,10 @@ class Table extends Component {
 
   handleChange = (name, value) => {
     if(name === "startDate") {
-      this.setState({ errors: { ...this.state.errors, startDate: false } });
+      this.setState({ errors: { ...this.state.errors, startDate: false, repeated: false } });
     }
     if(name === "endDate") {
-      this.setState({ errors: { ...this.state.errors, endDate: false } });
+      this.setState({ errors: { ...this.state.errors, endDate: false, repeated: false } });
     }
     this.setState({search: {...this.state.search, [name]: value}});
   }
@@ -253,20 +262,29 @@ class Table extends Component {
         if (!filters[eachKey].length) {
           return true;
         }
+        
         return filters[eachKey].includes(eachObj[eachKey]);
       });
     });
   };
 
   onSearch = () => {
-    let { title, campaignId, program, region, format, startDate, endDate } = this.state.search;
+    let campaignId = this.campaignId.current.props.value;
+    let title = this.title.current.props.value;
+    let programId = this.programId.current.props.selection;
+    let regionId = this.regionId.current.props.selection;
+    let formatId = this.formatId.current.props.selection;
+    let startDate = this.startDate.current.props.formattedValue;
+    let endDate = this.endDate.current.props.formattedValue;
+
     let data = [...this.props.data];
     let search = {};    
     
     if(title && title.length > 0) search.title = title;
     if(campaignId && campaignId.length > 0) search.campaignId = campaignId;
-    if(program && program.length > 0 && program[0].label !== "All") search.program = program[0].label;
-    if(region && region.length > 0 && region[0].label !== "All") search.region = region[0].label;
+    if(programId && programId.length > 0 && programId[0].label !== "All") search.programId = programId[0].label;
+    if(regionId && regionId.length > 0 && regionId[0].label !== "All") search.regionId = regionId[0].label;
+    if(formatId && formatId.length > 0 && formatId[0].label !== "All") search.formatId = formatId[0].label;
     if(startDate && startDate.length > 0) search.startDate = startDate;
     if(endDate && endDate.length > 0) search.endDate = endDate;
 
@@ -279,18 +297,29 @@ class Table extends Component {
       this.setState({ errors: { ...this.state.errors, startDate: true } });
       return;
     }
+
+    if(startDate && endDate && startDate === endDate) {
+      this.setState({ errors: { ...this.state.errors, repeated: true } });
+      return;
+    }
     
     let filter = this.filter(data, search);
-
+    
     if(filter.length <= 0) {
       this.setState({ errors: {} });
       filter = data;
     }
 
-    this.setState({ data: filter });
+    this.setState({ data: filter, search, isPanelOpen: false });
   }
 
   render() {
+    const a = moment('2016-03-10');
+    const b = moment('2016-03-15');
+    const c = moment('2016-03-29');
+    const d = moment('2016-04-01');
+    const range = extendedMoment.range(a, c);
+    // console.log(range.contains(a))
     return (
       <Container>
         {this.state.editModalIsOPen && <Modal data={this.props.dataTable.item} onToast={this.onToast} title='Edit activity' toggleOpen={this.toggleOpen} reloadActivities={this.props.reloadActivities} />}
@@ -312,60 +341,74 @@ class Table extends Component {
         />
         {this.state.isPanelOpen && (
           <PanelContainer>
-            <Input onChange={e => this.handleChange("campaignId", e.target.value)} value={this.state.search.campaignId} type="text" label="Search by campaign ID" className="slds-m-top_small" />
-            <Input onChange={e => this.handleChange("title", e.target.value)} value={this.state.search.title} type='text' label="Search by title" className="slds-m-top_small" />
+            <Input ref={this.campaignId} onChange={e => this.handleChange("campaignId", e.target.value)} value={this.state.search.campaignId} type="text" label="Search by campaign ID" className="slds-m-top_small" />
+            <Input ref={this.title} onChange={e => this.handleChange("title", e.target.value)} value={this.state.search.title} type='text' label="Search by title" className="slds-m-top_small" />
             <Combobox
+              ref={this.regionId}
               id="combobox-readonly-single"
               classNameContainer="slds-m-top_small"
-              events={{onSelect: (event, data) => data.selection.length && this.handleChange("region", data.selection)}}
+              events={{onSelect: (event, data) => data.selection.length && this.handleChange("regionId", data.selection)}}
               labels={{label: 'Region'}}
               name="region"
               options={this.state.regions}
-              selection={this.state.search.region}
+              selection={this.state.search.regionId}
               variant="readonly"
             />
             <Combobox
+              ref={this.programId}
               id="combobox-readonly-single"
               classNameContainer="slds-m-top_small"
-              events={{onSelect: (event, data) => data.selection.length && this.handleChange("program", data.selection)}}
+              events={{onSelect: (event, data) => data.selection.length && this.handleChange("programId", data.selection)}}
               labels={{label: 'Program'}}
               name="program"
               options={this.state.programs}
-              selection={this.state.search.program}
+              selection={this.state.search.programId}
               variant="readonly"
             />
             <Combobox
+              ref={this.formatId}
               id="combobox-readonly-single"
               classNameContainer="slds-m-top_small"
-              events={{onSelect: (event, data) => data.selection.length && this.handleChange("format", data.selection)}}
+              events={{onSelect: (event, data) => data.selection.length && this.handleChange("formatId", data.selection)}}
               labels={{label: 'Format'}}
               name="format"
               options={this.state.formats}
-              selection={this.state.search.format}
+              selection={this.state.search.formatId}
               variant="readonly"
             />
-            <div className={`slds-col slds-size_1-of-1 slds-m-top_small ${this.state.errors.startDate && "slds-has-error"}`}>
-              <Datepicker
-                labels={{label: 'Start Date'}}
-                triggerClassName="slds-col slds-size_1-of-1"
-                onChange={(event, data) => this.handleChange("startDate", data.formattedDate)}
-                formatter={(date) => date ? moment(date).format('DD/MM/YYYY') : ''}
-                parser={(dateString) => moment(dateString, 'DD/MM/YYYY').toDate()}
-                formattedValue={this.state.search.startDate}
-              />
-              {this.state.errors.startDate && <div class="slds-form-element__help">This field is required</div>}
+            <div className=" slds-m-top_small">
+              <p>Select start date between a range of dates</p>
             </div>
-            <div className={`slds-col slds-size_1-of-1 slds-m-top_small ${this.state.errors.endDate && "slds-has-error"}`}>
-              <Datepicker
-                labels={{label: 'End Date'}}
-                triggerClassName="slds-col slds-size_1-of-1"
-                onChange={(event, data) => this.handleChange("endDate", data.formattedDate)}
-                formatter={(date) => date ? moment(date).format('DD/MM/YYYY') : ''}
-                parser={(dateString) => moment(dateString, 'DD/MM/YYYY').toDate()}
-                formattedValue={this.state.search.endDate}
-              />
-              {this.state.errors.endDate && <div class="slds-form-element__help">This field is required</div>}
+            {this.state.errors.repeated && <div className="slds-has-error">
+              <div className="slds-form-element__help slds-has-error">Dates must be different</div>
+            </div>}
+            <div className="slds-grid slds-gutters">
+              <div className={`slds-col slds-size_1-of-2 ${this.state.errors.startDate && "slds-has-error"}`}>
+                <Datepicker
+                  ref={this.startDate}
+                  labels={{label: 'Initial Date'}}
+                  triggerClassName="slds-size_1-of-1"
+                  onChange={(event, data) => this.handleChange("startDate", data.formattedDate)}
+                  formatter={(date) => date ? moment(date).format('DD/MM/YYYY') : ''}
+                  parser={(dateString) => moment(dateString, 'DD/MM/YYYY').toDate()}
+                  formattedValue={this.state.search.startDate}
+                />
+                {this.state.errors.startDate && <div className="slds-form-element__help">This field is required</div>}
+              </div>
+              <div className={`slds-size_1-of-2 ${this.state.errors.endDate && "slds-has-error"}`}>
+                <Datepicker
+                  ref={this.endDate}
+                  labels={{label: 'Final Date'}}
+                  triggerClassName="slds-col slds-size_1-of-1"
+                  onChange={(event, data) => this.handleChange("endDate", data.formattedDate)}
+                  formatter={(date) => date ? moment(date).format('DD/MM/YYYY') : ''}
+                  parser={(dateString) => moment(dateString, 'DD/MM/YYYY').toDate()}
+                  formattedValue={this.state.search.endDate}
+                />
+                {this.state.errors.endDate && <div className="slds-form-element__help">This field is required</div>}
+              </div>
             </div>
+
             <Button onClick={this.onSearch} className="slds-m-top_small" label="Search" variant="brand" />
           </PanelContainer>
         )}
