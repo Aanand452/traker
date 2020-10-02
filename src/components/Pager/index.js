@@ -1,9 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, memo } from 'react';
 import { ButtonGroup, Button } from '@salesforce/design-system-react';
 
 import { PagerContainer } from './styles';
 
-const Pager = props => {
+const areEqual = (prev, next) => prev.data === next.data;
+
+const Pager = memo(props => {
   const { data, itemsPerPage, setDisplayedItems } = props;
 
   const [page, setPage] = useState(1);
@@ -66,6 +68,6 @@ const Pager = props => {
       )}
     </PagerContainer>
   );
-};
+}, areEqual);
 
 export default Pager;

@@ -6,20 +6,23 @@ import {
   Button,
   ButtonGroup,
   ButtonStateful,
+  Combobox,
   DataTable,
   DataTableColumn,
   DataTableCell,
   DataTableRowActions,
+  Datepicker,
   Dropdown,
   Icon,
+  Input,
   PageHeader,
   PageHeaderControl,
   ToastContainer,
   Toast
 } from '@salesforce/design-system-react';
 
+import { getAPIUrl } from '../../config/config';
 import Modal from '../EditActivityModal';
-import Panel from '../Panel';
 import Pager from '../Pager';
 
 // ACTIONS
@@ -27,7 +30,7 @@ import {
   selectItem,
   setItem
 } from '../../actions/DataTable';
-import { Container } from './styles';
+import { Container, PanelContainer } from './styles';
 
 const DateCell = ({ children, ...props }) => (
   <DataTableCell title={children} {...props}>
@@ -52,7 +55,6 @@ class Table extends Component {
   state = {
     sortProperty: '',
     sortDirection: '',
-    search: '',
     toast: {
       show: this.props.location.newRow ? true : false,
       message: "A New Activity Has Been Added",
@@ -63,11 +65,66 @@ class Table extends Component {
     editModalIsOPen: false,
     isDeletePromptOpen: false,
     displayedData: [],
+    search: {},
+    errors: {}
   };
+
+  componentDidMount() {
+    this.setupAndFetch();
+  }
+
+  setupAndFetch = async () => {
+    if(window.location.hostname === 'localhost') this.API_URL =  "http://localhost:3000/api/v1";
+    else this.API_URL = await getAPIUrl();
+    
+    this.checkProgram();
+    this.checkRegion();
+    this.checkFormat();
+  }
 
   componentDidUpdate(prevProps) {
     if (this.props.data !== prevProps.data) {
       this.setState({data: this.props.data});
+    }
+  }
+
+  async checkProgram() {
+    try {
+      let response = await fetch(`${this.API_URL}/program`);
+      if(response.status === 200) {
+        let { result } = await response.json();
+        this.setState({ programs: [{label: 'All'}, ...result], search: {...this.state.search, program: [{label: 'All'}]} });
+      } else throw new Error(response);
+    } catch(err) {
+      console.error(err);
+    }
+  }
+
+  async checkRegion() {
+    try {
+      let response = await fetch(`${this.API_URL}/region`);
+      if(response.status === 200) {
+        let { result } = await response.json();
+        this.setState({ regions: [{label: 'All'}, ...result], search: {...this.state.search, region: [{label: 'All'}]}});
+      } else {
+        throw new Error(response);
+      }
+    } catch(err) {
+      console.error(err);
+    }
+  }
+
+  async checkFormat() {
+    try {
+      let response = await fetch(`${this.API_URL}/format`);
+      if(response.status === 200) {
+        let { result } = await response.json();
+        this.setState({ formats: [{label: 'All'}, ...result], search: {...this.state.search, format: [{label: 'All'}]}});
+      } else {
+        throw new Error(response);
+      }
+    } catch(err) {
+      console.error(err);
     }
   }
 
@@ -83,16 +140,6 @@ class Table extends Component {
 
   controls = () => (
     <Fragment>
-      {this.props.dataTable.selection.length > 0 && <PageHeaderControl>
-        <Button
-          onClick={this.props.openDeletePrompt}
-          assistiveText={{ icon: 'Delete List' }}
-          iconCategory="utility"
-          iconName="delete"
-          iconVariant="border"
-          variant="icon"
-        />
-      </PageHeaderControl>}
       <PageHeaderControl>
         <Button
           assistiveText={{ icon: 'Refresh' }}
@@ -147,19 +194,21 @@ class Table extends Component {
     this.setState({toast: {show, message, variant}});
   }
 
-  onSearch = text => {
+  search = text => {
     this.setState({search: text});
     if (!text){
       this.setState({data: this.props.data});
       return false;
     }
-
+    
     let data = [...this.props.data];
-    data = data.filter(item => item.title.includes(text))
+    
+    data = data.filter(item => item.title.toLowerCase().includes(text.toLowerCase()));
+
     this.setState({data});
   }
 
-  onSort = (sortInfo) => {
+  onSort = sortInfo => {
     const {property, sortDirection} = sortInfo;
     let data = [...this.state.data];
 
@@ -181,14 +230,67 @@ class Table extends Component {
       data: this.props.data,
       sortProperty: '',
       sortDirection: '',
-      search: '',
-      isPanelOpen: false
+      isPanelOpen: true
     })
   };
 
-  handlePagination = (newData) => {
-    this.setState({displayedData: newData});
+  handlePagination = newData => this.setState({displayedData: newData});
+
+  handleChange = (name, value) => {
+    if(name === "startDate") {
+      this.setState({ errors: { ...this.state.errors, startDate: false } });
+    }
+    if(name === "endDate") {
+      this.setState({ errors: { ...this.state.errors, endDate: false } });
+    }
+    this.setState({search: {...this.state.search, [name]: value}});
+  }
+
+  filter = (arr, filters) => {
+    const filterKeys = Object.keys(filters);
+    return arr.filter(eachObj => {
+      return filterKeys.every(eachKey => {
+        if (!filters[eachKey].length) {
+          return true;
+        }
+        return filters[eachKey].includes(eachObj[eachKey]);
+      });
+    });
   };
+
+  onSearch = () => {
+    let { title, campaignId, program, region, format, startDate, endDate } = this.state.search;
+    let data = [...this.props.data];
+    let search = {};    
+    
+    if(title && title.length > 0) search.title = title;
+    if(campaignId && campaignId.length > 0) search.campaignId = campaignId;
+    if(program && program.length > 0 && program[0].label !== "All") search.program = program[0].label;
+    if(region && region.length > 0 && region[0].label !== "All") search.region = region[0].label;
+    if(startDate && startDate.length > 0) search.startDate = startDate;
+    if(endDate && endDate.length > 0) search.endDate = endDate;
+
+    if(startDate && startDate.length > 0 && !endDate) {
+      this.setState({ errors: { ...this.state.errors, endDate: true } });
+      return;
+    }
+
+    if(endDate && endDate.length > 0 && !startDate) {
+      this.setState({ errors: { ...this.state.errors, startDate: true } });
+      return;
+    }
+    
+    let filter = this.filter(data, search);
+
+    if(filter.length <= 0) {
+      this.setState({ errors: {} });
+      filter = data;
+    }
+
+    console.log(search)
+
+    this.setState({ data: filter });
+  }
 
   render() {
     return (
@@ -211,7 +313,63 @@ class Table extends Component {
           variant="object-home"
         />
         {this.state.isPanelOpen && (
-          <Panel label="Search by title" search={this.state.search} handleSearch={(e) => this.onSearch(e)} />
+          <PanelContainer>
+            <Input onChange={e => this.handleChange("campaignId", e.target.value)} value={this.state.search.campaignId} type="text" label="Search by campaign ID" className="slds-m-top_small" />
+            <Input onChange={e => this.handleChange("title", e.target.value)} value={this.state.search.title} type='text' label="Search by title" className="slds-m-top_small" />
+            <Combobox
+              id="combobox-readonly-single"
+              classNameContainer="slds-m-top_small"
+              events={{onSelect: (event, data) => data.selection.length && this.handleChange("region", data.selection)}}
+              labels={{label: 'Region'}}
+              name="region"
+              options={this.state.regions}
+              selection={this.state.search.region}
+              variant="readonly"
+            />
+            <Combobox
+              id="combobox-readonly-single"
+              classNameContainer="slds-m-top_small"
+              events={{onSelect: (event, data) => data.selection.length && this.handleChange("program", data.selection)}}
+              labels={{label: 'Program'}}
+              name="program"
+              options={this.state.programs}
+              selection={this.state.search.program}
+              variant="readonly"
+            />
+            <Combobox
+              id="combobox-readonly-single"
+              classNameContainer="slds-m-top_small"
+              events={{onSelect: (event, data) => data.selection.length && this.handleChange("format", data.selection)}}
+              labels={{label: 'Format'}}
+              name="format"
+              options={this.state.formats}
+              selection={this.state.search.format}
+              variant="readonly"
+            />
+            <div className={`slds-col slds-size_1-of-1 slds-m-top_small ${this.state.errors.startDate && "slds-has-error"}`}>
+              <Datepicker
+                labels={{label: 'Start Date'}}
+                triggerClassName="slds-col slds-size_1-of-1"
+                onChange={(event, data) => this.handleChange("startDate", data.formattedDate)}
+                formatter={(date) => date ? moment(date).format('DD/MM/YYYY') : ''}
+                parser={(dateString) => moment(dateString, 'DD/MM/YYYY').toDate()}
+                formattedValue={this.state.search.startDate}
+              />
+              {this.state.errors.startDate && <div class="slds-form-element__help">This field is required</div>}
+            </div>
+            <div className={`slds-col slds-size_1-of-1 slds-m-top_small ${this.state.errors.endDate && "slds-has-error"}`}>
+              <Datepicker
+                labels={{label: 'End Date'}}
+                triggerClassName="slds-col slds-size_1-of-1"
+                onChange={(event, data) => this.handleChange("endDate", data.formattedDate)}
+                formatter={(date) => date ? moment(date).format('DD/MM/YYYY') : ''}
+                parser={(dateString) => moment(dateString, 'DD/MM/YYYY').toDate()}
+                formattedValue={this.state.search.endDate}
+              />
+              {this.state.errors.endDate && <div class="slds-form-element__help">This field is required</div>}
+            </div>
+            <Button onClick={this.onSearch} className="slds-m-top_small" label="Search" variant="brand" />
+          </PanelContainer>
         )}
         <DataTable
           assistiveText={{
@@ -230,7 +388,6 @@ class Table extends Component {
           onRowChange={this.props.selectItem}
           onSort={this.onSort}
           selection={this.props.dataTable.selection}
-          selectRows="checkbox"
         >
           <DataTableColumn label="Program" property="programId" />
           <DataTableColumn label="Campaign ID" property="campaignId" />
