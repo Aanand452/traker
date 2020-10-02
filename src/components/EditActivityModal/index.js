@@ -86,7 +86,7 @@ class EditActivityModalComponent extends Component {
         regionSelection: activityRegion,
       });
       
-      await this.checkFormat(this.state.tacticSelection[0].tactic_id);
+      await this.checkFormat(this.state.tacticSelection[0] && this.state.tacticSelection[0].tactic_id);
       var activityFormat = this.state.format.filter(el => el.format_id === result.formatId);
 
       this.setState({...this.state, 
@@ -260,15 +260,15 @@ class EditActivityModalComponent extends Component {
       let body = {
         title: this.state.title,
         campaignId: this.state.campaignId,
-        tacticId: this.state.tacticSelection[0].id,
-        formatId: this.state.formatSelection[0].id,
+        tacticId: this.state.tacticSelection[0] && this.state.tacticSelection[0].id,
+        formatId: this.state.formatSelection[0] && this.state.formatSelection[0].id,
         abstract: this.state.abstract,
-        regionId: this.state.regionSelection[0].id,
+        regionId: this.state.regionSelection[0] && this.state.regionSelection[0].id,
         startDate: this.state.startDate,
         endDate: this.state.endDate,
         asset: this.state.asset,
         userId: localStorage.getItem('userId'),
-        programId: this.state.programSelection[0].id,
+        programId: this.state.programSelection[0] && this.state.programSelection[0].id,
       }
       
       if(Object.values(this.validate(body)).some(el => el)) return;
@@ -380,7 +380,7 @@ class EditActivityModalComponent extends Component {
                         : data.selection;
                     
                     this.setState({ tacticSelection: selection });
-                    this.checkFormat(selection[0].tactic_id);
+                    this.checkFormat(selection[0] && selection[0].tactic_id);
                   }
                 }}
                 labels={{
