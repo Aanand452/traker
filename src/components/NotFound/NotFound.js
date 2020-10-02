@@ -1,5 +1,4 @@
 import React from 'react';
-import { css } from 'glamor';
 import image404 from '../../images/404.svg';
 import { Fragment } from 'react';
 import NavBar from '../NavBar';

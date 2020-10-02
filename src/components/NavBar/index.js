@@ -116,7 +116,7 @@ class NavBar extends Component{
           {this.props.match.path !== "/home" && (
             <GlobalNavigationBar>
               <GlobalNavigationBarRegion region="primary">
-                <AppLauncher triggerName="SARA" />
+                <AppLauncher triggerName="SARA" children={<React.Fragment/>} />
               </GlobalNavigationBarRegion>
               <GlobalNavigationBarRegion region="secondary" navigation>
                 <NavigationBarLink to="/home" title="Home" />

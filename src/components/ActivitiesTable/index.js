@@ -56,7 +56,7 @@ CustomDataTableCell.displayName = DataTableCell.displayName;
 class Table extends Component {
   state = {
     sortProperty: '',
-    sortDirection: '',
+    sortDirection: null,
     toast: {
       show: this.props.location.newRow ? true : false,
       message: "A New Activity Has Been Added",
@@ -234,7 +234,10 @@ class Table extends Component {
     })
   };
 
-  handlePagination = newData => this.setState({displayedData: newData});
+  handlePagination = (newData) => {
+    newData = newData.map(item => ({ id: item.activityId, ...item }));
+    this.setState({displayedData: newData});
+  }
 
   handleChange = (name, value) => {
     console.log(value)
