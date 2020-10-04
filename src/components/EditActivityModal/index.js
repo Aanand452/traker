@@ -512,7 +512,7 @@ class EditActivityModalComponent extends Component {
                 placeholder="Insert a valid URL here"
                 value={this.state.asset}
                 onChange={e => this.handleChange(e)}
-                errorText={this.state.errors.asset && "This field is required" || false}
+                errorText={(this.state.errors.asset && "This field is required") || false}
               />
             </div>
           </section>
