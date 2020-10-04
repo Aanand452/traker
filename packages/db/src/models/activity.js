@@ -6,7 +6,7 @@ class ActivityModel {
   static async getAllActivitiesByUser(id) {
     try{
       const activities = await db.Activity.findAll({
-        include: [db.User, db.Tactic, db.Format, db.Region, db.Program],
+        include: [db.User, db.Format, db.Region, db.Program],
         where: {user_id: id}
       });
 
@@ -16,7 +16,6 @@ class ActivityModel {
           userId: activity.User ? activity.User.username : '',
           title: activity.title,
           campaignId: activity.campaignId,
-          tacticId: activity.Tactic ? activity.Tactic.name : '',
           formatId: activity.Format ? activity.Format.name : '',
           abstract: activity.abstract,
           regionId: activity.Region ? activity.Region.name : '',
@@ -37,6 +36,7 @@ class ActivityModel {
     try{
       body.activityId = uuidv4();
       const activity = await Activity.create(body);
+      
       return activity;
     } catch (err) {
       console.error('Error creating activity', err);

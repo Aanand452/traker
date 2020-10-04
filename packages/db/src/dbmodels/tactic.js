@@ -23,7 +23,6 @@ Tactic.init({
 
 Tactic.associate = models => {
   Tactic.hasMany(models.Format, {foreignKey: 'tactic_id'});
-  Tactic.hasMany(models.Activity, {foreignKey: 'tactic_id'});
 }
 
 export default Tactic;

@@ -1,14 +1,14 @@
-title,campaign_id,format,abstract,region,start_date (dd/mm/yyyy),end_date (dd/mm/yyyy),asset,user_email ,program_name
+title,campaign_id,format,abstract,region_id,start_date (dd/mm/yyyy),end_date (dd/mm/yyyy),asset,user_email ,program_name
 activity 1,3c617aae,ABM,No abstract,ANZ,05/10/2020,05/12/2020,https://www.youtube.com/,miller.gonzalez@salesforce.com,Brand - Dreamforce in APAC
 activity 2,3c617cac,Blog,No abstract,APAC,05/10/2021,05/12/2021,https://www.youtube.com/,miller.gonzalez@salesforce.com,Brand - Leading Through Change
 activity 3,3c617f36,Content,No abstract,ASEAN,05/10/2022,05/12/2022,https://www.youtube.com/,miller.gonzalez@salesforce.com,Marketing - Datorama
 activity 4,3c61803a,Creative,No abstract,GCR,05/10/2023,05/12/2023,https://www.youtube.com/,miller.gonzalez@salesforce.com,ABM - Helping IAG Get to the Future Faster (ANZ)
-activity 5,3c618382,Customer Story,No abstract,INDIA,05/10/2024,05/12/2024,https://www.youtube.com/,miller.gonzalez@salesforce.com,ABM - Personalised Journeys for Strategic Customers (1:Few ABM) (ANZ)
+activity 5,3c618382,Customer Story,No abstract,IN,05/10/2024,05/12/2024,https://www.youtube.com/,miller.gonzalez@salesforce.com,ABM - Personalised Journeys for Strategic Customers (1:Few ABM) (ANZ)
 activity 6,3c618472,Data Purchase,No abstract,ANZ,05/10/2025,05/12/2025,https://www.youtube.com/,miller.gonzalez@salesforce.com,Brand - #1 CRM Digital (ANZ)
 activity 7,3c61853a,Demo,No abstract,APAC,05/10/2026,05/12/2026,https://www.youtube.com/,miller.gonzalez@salesforce.com,Brand - Leading Through Change (ANZ)
 activity 8,3c618602,Digital,No abstract,ASEAN,05/10/2027,05/12/2027,https://www.youtube.com/,miller.gonzalez@salesforce.com,Brand - Salesforce Live: ANZ
 activity 9,3c6186c0,Direct Mail,No abstract,GCR,05/10/2028,05/12/2028,https://www.youtube.com/,miller.gonzalez@salesforce.com,Brand - Values-Led Awareness (ANZ)
-activity 10,3c618896,eBook,No abstract,INDIA,05/10/2029,05/12/2029,https://www.youtube.com/,miller.gonzalez@salesforce.com,Brand - Work.com (ANZ)
+activity 10,3c618896,eBook,No abstract,IN,05/10/2029,05/12/2029,https://www.youtube.com/,miller.gonzalez@salesforce.com,Brand - Work.com (ANZ)
 activity 11,3c618968,Email,No abstract,ANZ,05/10/2030,05/12/2030,https://www.youtube.com/,miller.gonzalez@salesforce.com,CMRCL - New Logos (ANZ)
 activity 12,3c618b0c,3rd Party - Email,No abstract,APAC,05/10/2031,05/12/2031,https://www.youtube.com/,miller.gonzalez@salesforce.com,Cross-Cloud - Evergreen (ANZ)
 activity 13,3c618d0a,3rd Party - Virtual Event,No abstract,ASEAN,05/10/2032,05/12/2032,https://www.youtube.com/,miller.gonzalez@salesforce.com,Cross-Cloud - Salesforce Customer 360 (ANZ)

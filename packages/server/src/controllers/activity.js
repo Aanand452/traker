@@ -18,6 +18,7 @@ const getActivities = async (req, res) => {
 const addNewActivity = async (req, res) => {  
   try {
     const activity = await ActivityModel.addNewActivity(req.body);
+    
     if(activity === 'error') ApiUtils.responseWithError(res, httpStatus.INTERNAL_SERVER_ERROR);
     else ApiUtils.reposeWithhSuccess(res, activity, httpStatus.OK);
   } catch (err) {
