@@ -53,7 +53,7 @@ class Table extends Component {
     sortDirection: '',
     search: '',
     toast: {
-      show: this.props.location.newRow ? true : false,
+      show: false,
       message: "A New Activity Has Been Added",
       variant: "success"
     },
@@ -234,11 +234,10 @@ class Table extends Component {
           <DataTableColumn label="Program" property="programId" />
           <DataTableColumn label="Campaign ID" property="campaignId" />
           <DataTableColumn label="Title" property="title" />
-          <DataTableColumn label="Tactic" property="tacticId" />
           <DataTableColumn label="Format" property="formatId" />
           <DataTableColumn label="Abstract" property="abstract" />
           <DataTableColumn
-            sortDirection={this.state.sortDirection}
+            sortDirection={this.state.sortDirection || "desc"}
             sortable
             isSorted={this.state.sortProperty === 'region'}
             label="Region"
@@ -249,7 +248,7 @@ class Table extends Component {
             label="Start date"
             property="startDate"
             sortable
-            sortDirection={this.state.sortDirection}
+            sortDirection={this.state.sortDirection || "desc"}
           >
             <DateCell />
           </DataTableColumn>
@@ -258,7 +257,7 @@ class Table extends Component {
             label="End date"
             property="endDate"
             sortable
-            sortDirection={this.state.sortDirection}
+            sortDirection={this.state.sortDirection || "desc"}
           >
             <DateCell />
           </DataTableColumn>
