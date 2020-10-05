@@ -14,11 +14,6 @@ Format.init({
     type: DataTypes.STRING,
     allowNull: false,
     field: 'name',
-  },
-  tacticId: {
-    allowNull: false,
-    type: DataTypes.STRING,
-    field: 'tactic_id',
   }
 }, {
   tableName: 'format',
@@ -27,7 +22,6 @@ Format.init({
 });
 
 Format.associate = models => {
-  Format.belongsTo(models.Tactic, {foreignKey: 'tactic_id'});
   Format.hasMany(models.Activity, {foreignKey: 'format_id'});
 }
 
