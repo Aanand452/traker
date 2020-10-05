@@ -9,14 +9,15 @@ import {
   SfdcCardLogin
 } from './styles';
 
-import Prompt from '../Prompt';
-
 class Login extends Component {
 
   state = {
     username: '',
     password: '',
-    isToastOpened: false,
+    toast: {
+      heading: 'Something went wrong',
+      isOpened: false
+    },
     errors: {}
   }
 
@@ -56,18 +57,21 @@ class Login extends Component {
         body: JSON.stringify(body)
       }
       let response = await fetch(`${this.API_URL}/login`, config);
-      let { result } = await response.json();
 
-      if(!this.validations(result)){
-        result.length === 0 && this.setState({errors: {invalid: true}});
-
-        console.log('SARA', result.length);
-        result.length > 0 && localStorage.setItem("userId", result[0].userId);
-        result.length > 0 && this.props.history.push('/home');
-      }
+      if(response.status === 200) {
+        let { result } = await response.json();
+        
+        if(!this.validations(result)){
+          result.length === 0 && this.setState({errors: {invalid: true}});
+          
+          result.length > 0 && localStorage.setItem("userId", result[0].userId);
+          result.length > 0 && this.props.history.push('/home');
+        }
+      } else throw new Error(response);
+      
     } catch (err) {
-      this.setState({isToastOpened: true});
-      console.error(err.message);
+      this.setState({toast: {isOpened: true, heading: 'Something went wrong, please try again'}});
+      console.error(err);
     }
   }
 
@@ -87,10 +91,10 @@ class Login extends Component {
         <SfdcFlexColum>
         <IconSettings iconPath="/assets/icons">
           <ToastContainer>
-            {this.state.isToastOpened && <Toast
-              labels={{ heading:'Something went wrong'}}
+            {this.state.toast.isOpened && <Toast
+              labels={{ heading: this.state.toast.heading }}
               variant="error"
-              onRequestClose={() => this.setState({isToastOpened: false})}
+              onRequestClose={() => this.setState({toast: {isOpened: false}})}
               duration={4000}
             />}
           </ToastContainer>

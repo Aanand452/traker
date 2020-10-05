@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
-import { withRouter, Link } from 'react-router-dom';
+import { withRouter } from 'react-router-dom';
 import moment from 'moment-timezone';
-import momentTz from 'moment';
 import {
   IconSettings,
   Breadcrumb,
@@ -18,12 +17,10 @@ import { FormContainer } from './styles';
 
 class CreateActivity extends Component {
   state = {
-    baseURL: 'http://localhost:3000',
     loggedUser: '',
     row: {
       format: [],
       region: [],
-      tactic: [],
       program: [],
       title: "",
       abstract: "",
@@ -34,21 +31,19 @@ class CreateActivity extends Component {
     },
     regions: [],
     programs: [],
-    tactics: [],
     formats: [],
     error: {},
     isDeletePromptOpen: false,
-    expandedPanels: {},
     items: {},
     steps: [
       {
         step: 1,
-        trail: <Link onClick={() => this.handleStep(1)}>Select program</Link>,
+        trail: <a onClick={() => this.handleStep(1)}>Select program</a>,
         active: true
       },
       {
         step: 2,
-        trail: <Link>Create activity</Link>,
+        trail: <a>Create activity</a>,
         active: false
       }
     ],
@@ -58,11 +53,11 @@ class CreateActivity extends Component {
       duration: 5000,
       active: false
     }
-  };
+  }
 
   componentDidMount() {
     this.setupAndFetch();
-  };
+  }
 
   getUser = () => {
     let loggedUser = localStorage.getItem("userId");
@@ -74,74 +69,93 @@ class CreateActivity extends Component {
     else this.API_URL = await getAPIUrl();
     
     this.getUser();
-    this.checkTactic();
+    this.getFormats();
     this.checkRegion();
-    this.checkProgram();
     this.props.getFormData(this.state.row);
+  }
+
+  async getFormats() {
+    try {
+      const request = await fetch(`${this.API_URL}/format`);
+      const response = await request.json();
+
+      if(response.info.code === 200) {
+        const formatsList = response.result.map(item => ({...item, id: item.format_id, label: item.name}))
+
+        this.setState({formats: formatsList});
+      } else new Error(response);
+    } catch (err) {
+      this.setState({toast: {...this.state.toast, active: true}});
+      console.error(err);
+    }
   }
 
   async checkRegion() {
     try {
       let response = await fetch(`${this.API_URL}/region`);
-      if(response.status === 404) {
-        this.setState({toast: {heading: 'Regions not found', active: true, variant: 'error', duration: 5000}});
-      } else if(response.status === 500) {
-        this.setState({toast: {heading: 'Server error', active: true, variant: 'error', duration: 5000}});
-      } else {
+      if(response.status === 200) {
         let { result } = await response.json();
+        result = result.map(item => ({...item, id: item.region_id}))
+        
         this.setState({ regions: result, row: {...this.state.row, region: [result[0]]}});
+        this.handleChange("region", [result[0]]);
+      } else {
+        throw new Error(response);
       }
     } catch(err) {
-      console.error(err)
+      this.setState({toast: {...this.state.toast, active: true}});
+      console.error(err);
+    }
+  }
+
+  async checkProgramByRegion(id) {
+    try {
+      let response = await fetch(`${this.API_URL}/programs/region/${id}`);
+      if(response.status === 200) {
+        let { result } = await response.json();
+        let programs = result.map(el => ({...el, label: el.name, id: el.programId}));
+
+        if(programs.length <= 0) this.handleStep(1);
+        else this.checkProgramDetail(programs[0].programId);
+
+        this.setState({ programs, row: {...this.state.row, program: [programs[0]]}});
+      } else {
+        throw new Error(response);
+      }
+    } catch (err) {
+      this.setState({toast: {...this.state.toast, active: true}});
+      console.error(err);
+    }
+  }
+  
+  async checkProgramDetail(id) {
+    try {
+      let response = await fetch(`${this.API_URL}/program/${id}`);
+
+      if(response.status === 200) {
+        let { result } = await response.json();
+        this.setState({ items: result });
+      } else {
+        throw new Error(response);
+      }
+    } catch(err) {
+      this.setState({toast: {...this.state.toast, active: true}});
+      console.error(err);
     }
   }
 
   async checkProgram() {
     try {
       let response = await fetch(`${this.API_URL}/program`);
-      if(response.status === 404) {
-        this.setState({toast: {heading: 'Programs not found', active: true, variant: 'error', duration: 5000}});
-      } else if(response.status === 500) {
-        this.setState({toast: {heading: 'Server error', active: true, variant: 'error', duration: 5000}});
-      } else {
+      if(response.status === 200) {
         let { result } = await response.json();
         this.setState({ programs: result, row: {...this.state.row, program: [result[0]]}});
+      } else {
+        throw new Error(response);
       }
     } catch(err) {
+      this.setState({toast: {...this.state.toast, active: true}});
       console.error(err)
-    }
-  }
-
-  async checkTactic() {
-    try {
-      let response = await fetch(`${this.API_URL}/tactic`);
-      if(response.status === 404) {
-        this.setState({toast: {heading: 'Formats not found', active: true, variant: 'error', duration: 5000}});
-      } else if(response.status === 500) {
-        this.setState({toast: {heading: 'Server error', active: true, variant: 'error', duration: 5000}});
-      } else {
-        let { result } = await response.json();
-        let format = await this.populateTactic(result[0]);
-        this.setState({ formats: format, tactics: result, row: {...this.state.row, tactic: [result[0]], format: [format[0]] } });
-      }
-    } catch(err) {
-      console.error(err)
-    }
-  }
-
-  async populateTactic(selection) {
-    try {
-      let response = await fetch(`${this.API_URL}/format/${selection.tactic_id}`);
-      if(response.status === 404) {
-        this.setState({toast: {heading: 'Tactics not found', active: true, variant: 'error', duration: 5000}});
-      } else if(response.status === 500) {
-        this.setState({toast: {heading: 'Server error', active: true, variant: 'error', duration: 5000}});
-      } else {
-        let { result } = await response.json();
-        return result;
-      }
-    } catch (err) {
-      console.error(err);
     }
   }
 
@@ -149,39 +163,49 @@ class CreateActivity extends Component {
     let newRow = {};
     let formats = this.state.formats;
 
-    if(value === "tactic") {
-      formats = await this.populateTactic(data[0]);
-      newRow = {...this.state.row, tactic: data, format: [formats[0]]};
+    if(value === "region") {
+      await this.checkProgramByRegion(data[0].region_id);
+      newRow = {...this.state.row, region: data };
+    } else if(value === "program") {
+      this.checkProgramDetail(data[0].programId);
+      newRow = {...this.state.row, program: data};
     } else {
       newRow = {...this.state.row, [value]: data};
     }
 
     this.validations(value, data);
-    this.setState({row: newRow, formats})
+    this.setState({row: newRow, formats});
     this.props.getFormData(newRow);
   };
 
+  isUrl = data => {
+    let regexp = new RegExp(
+      /^((ftp|http|https):\/\/)?www\.([A-z]+)\.([A-z]{2,})/
+    );
+    return data === "" || regexp.test(data);
+  }
+
   validations = (input, data) => {
     let errors = {...this.state.error};
-    const inputs = ["program", "title", "format", "region", "tactic", "abstract", "asset", "startDate", "endDate"];
+    const inputs = ["program", "title", "format", "region", "abstract", "startDate", "endDate"];
 
     if (input) {
-      if(inputs.includes(input) && !data) {
-        errors = {...errors, [input]: "This field is required"};
+      if (inputs.includes(input) && !data) {
+        errors = { ...errors, [input]: "This field is required" };
       } else {
         delete errors[input];
       }
     } else {
       inputs.forEach((input) => {
-        if(this.state.row[input]) {
+        if (this.state.row[input]) {
           delete errors[input];
         } else {
-          errors = {...errors, [input]: "This field is required"};
+          errors = { ...errors, [input]: "This field is required" };
         }
-      })
+      });
     }
 
-    this.setState({error: errors});
+    this.setState({ error: errors });
     return errors;
   };
 
@@ -189,24 +213,22 @@ class CreateActivity extends Component {
     e.preventDefault();
     const errors = this.validations();
     let { loggedUser } = this.state;
-    let { abstract, asset, format, endDate, program, region, startDate, tactic, title, campaignId } = this.state.row;
+    let { abstract, asset, format, endDate, program, region, startDate, title, campaignId } = this.state.row;
     let row = {
       userId: loggedUser,
       abstract,
       asset,
-      formatId: format[0].format_id,
+      formatId: format.length ? format[0].format_id : "",
       endDate,
-      programId: program[0].program_id,
-      regionId: region[0].region_id,
+      programId: program.length ? program[0].programId : "",
+      regionId: region.length ? region[0].region_id : "",
       startDate,
-      tacticId: tactic[0].tactic_id,
       title,
       campaignId
     }
 
     if (Object.keys(errors).length === 0) {
       this.onSubmit(row);
-      return this.props.handleSubmit(e);
     }
     
     return false;
@@ -230,7 +252,10 @@ class CreateActivity extends Component {
         },
         body: JSON.stringify(body)
       }
-      const response = await fetch(`${this.API_URL}/activity`, config);
+      let response = await fetch(`${this.API_URL}/activity`, config);
+      if(response.status === 200) {
+        this.props.handleSubmit();
+      } else throw new Error(response);
     } catch (err) {
       this.setState({isDeletePromptOpen: true});
       console.error(err);
@@ -269,18 +294,17 @@ class CreateActivity extends Component {
               handleChange={this.handleChange}
               error={this.state.error}
               step={this.state.steps.filter(el => el.active).length}
+              programs={this.state.programs}
+              items={this.state.items}
+              regions={this.state.regions}
             />
             {
-              this.state.steps.filter(el => el.active).length === 2  &&
-                
+              this.state.programs.length > 0 && this.state.steps.filter(el => el.active).length === 2  && 
               <Step2
                 row={this.state.row}
                 handleStep={this.handleStep}
-                getFormData={this.props.getFormData}
                 handleChange={this.handleChange}
                 error={this.state.error}
-                regions={this.state.regions}
-                tactics={this.state.tactics}
                 formats={this.state.formats}
               />
             }
