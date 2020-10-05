@@ -60,9 +60,9 @@ class Table extends Component {
     editModalIsOPen: false,
     isDeletePromptOpen: false,
     displayedData: [],
-    filters:{},
+    filters: {},
     errors: {},
-    currentPage:1
+    currentPage: 1,
   };
 
   componentDidMount() {
@@ -120,6 +120,7 @@ class Table extends Component {
       let response = await fetch(`${this.API_URL}/format`);
       if (response.status === 200) {
         let { result } = await response.json();
+        result = result.map((item) => ({ label: item.name, ...item }));
         this.setState({
           formats: [{ label: "All" }, ...result],
         });
@@ -220,8 +221,8 @@ class Table extends Component {
       sortProperty: "",
       sortDirection: "",
       isPanelOpen: false,
-      filters:{},
-      currentPage:1
+      filters: {},
+      currentPage: 1,
     });
   };
 
@@ -239,10 +240,15 @@ class Table extends Component {
     });
   };
 
-  onFilter = ({functionFilters,filters}) => {
+  onFilter = ({ functionFilters, filters }) => {
     let data = [...this.props.data];
     let filter = this.filter(data, functionFilters);
-    this.setState({ data: filter, isPanelOpen: false, filters, currentPage:1 });
+    this.setState({
+      data: filter,
+      isPanelOpen: false,
+      filters,
+      currentPage: 1,
+    });
   };
 
   render() {
@@ -275,15 +281,15 @@ class Table extends Component {
           truncate
           variant="object-home"
         />
-        {
-        this.state.isPanelOpen && <FilterPanel
-          regions={this.state.regions}
-          programs={this.state.programs}
-          formats={this.state.formats}
-          onFilter={this.onFilter}
-          filters={this.state.filters}
-        />
-        }
+        {this.state.isPanelOpen && (
+          <FilterPanel
+            regions={this.state.regions}
+            programs={this.state.programs}
+            formats={this.state.formats}
+            onFilter={this.onFilter}
+            filters={this.state.filters}
+          />
+        )}
         <DataTable
           assistiveText={{
             actionsHeader: "actions",
