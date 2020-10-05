@@ -5,17 +5,20 @@ import { PagerContainer } from './styles';
 
 const areEqual = (prev, next) => prev.data === next.data;
 
+const pagesPerView = 14;
 const Pager = memo(props => {
   const { data, itemsPerPage, setDisplayedItems } = props;
 
   const [page, setPage] = useState(1);
   const [pages, setPages] = useState([1]);
-
+  const maxPages =  Math.ceil(data.length / itemsPerPage);
+  const leftPages = page - Math.ceil(pagesPerView/2)>= 0 ? Math.ceil(pagesPerView/2):page;
+  
   const getPages = () => {
     const newPage = [];
-
-    for (let i = 0; i < Math.ceil(data.length/itemsPerPage); i++) {
-      newPage.push(i+1);
+    const end =  Math.min( page + pagesPerView - leftPages ,maxPages);
+    for (let i = page -leftPages ; i < end ; i++) {
+      newPage.push(i + 1);
     }
 
     return newPage;
@@ -53,7 +56,7 @@ const Pager = memo(props => {
   useEffect(() => {
     setPages(getPages);
     getCurrentData(page);
-  }, [data]);
+  }, [data,page]);
 
   return (
     <PagerContainer>
@@ -61,7 +64,7 @@ const Pager = memo(props => {
         <ButtonGroup>
           <Button disabled={page === 1} onClick={prevPage} label="Prev" />
           {pages.map((el, index) => (
-            <Button className={page === index+1 ? 'active' :''} disabled={page === index+1} onClick={() => goToPage(index+1)} label={el} key={`${index}-${el||''}`} />
+            <Button className={page === el ? 'active' :''} disabled={page === el} onClick={() => goToPage(el)} label={el} key={`${index}-${el||''}`} />
           ))}
           <Button onClick={nextPage} disabled={page === Math.ceil(data.length/itemsPerPage)} label="Next" />
         </ButtonGroup>
