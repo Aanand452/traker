@@ -6,8 +6,7 @@ class ActivityModel {
   static async getAllActivitiesByUser(id) {
     try{
       const activities = await db.Activity.findAll({
-        include: [db.User, db.Format, db.Region, db.Program],
-        where: {user_id: id}
+        include: [db.User, db.Format, db.Region, db.Program]
       });
 
       const minActivities = activities.map(activity => {
