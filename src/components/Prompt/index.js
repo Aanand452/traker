@@ -13,7 +13,7 @@ class Prompt extends Component {
 
   render() {
 		return (
-      <Modal isOpen={this.state.isOpen} onRequestClose={this.props.onClose}>
+      <Modal isOpen={this.state.isOpen} onRequestClose={this.props.onClose} ariaHideApp={false}>
         <div className="slds-m-around_medium slds-text-align_center">
           <h2 className="slds-m-bottom_medium slds-text-color_destructive slds-text-heading_large">{this.props.title ? this.props.title :'Warning!'}</h2>
           <p>{this.props.message ? this.props.message :'Are you sure you want to delete this activity?'}</p>

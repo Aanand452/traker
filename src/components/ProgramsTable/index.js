@@ -37,7 +37,8 @@ class Table extends Component {
     data: [],
     displayedData: [],
     editModalIsOPen: false,
-    selectedprogram: {}
+    selectedprogram: {},
+    currentPage:1,
   };
 
   componentDidUpdate(prevProps) {
@@ -120,12 +121,13 @@ class Table extends Component {
       sortProperty: '',
       sortDirection: '',
       search: '',
-      isPanelOpen: false
+      isPanelOpen: false,
+      currentPage:1,
     })
   };
 
-  handlePagination = (newData) => {
-    this.setState({displayedData: newData});
+  handlePagination = (newData, currentPage) => {
+    this.setState({displayedData: newData, currentPage});
   };
   
   toggleOpen = bool => {
@@ -155,7 +157,7 @@ class Table extends Component {
     return (
       <Container>
         <IconSettings iconPath="/assets/icons">
-          {this.state.editModalIsOPen && <Modal onEdit={this.props.onEdit} program={this.state.selectedprogram} toggleOpen={this.toggleOpen} title='Edit program'  />}
+          {this.state.editModalIsOPen && <Modal onEdit={this.props.onEdit} program={this.state.selectedprogram} toggleOpen={this.toggleOpen} title='Edit program' ariaHideApp={false} />}
           <PageHeader
             onRenderActions={this.actions}
             icon={
@@ -250,7 +252,7 @@ class Table extends Component {
               dropdown={<Dropdown length="7" />}
             />
           </DataTable>
-          <Pager data={this.state.data} itemsPerPage={20} setDisplayedItems={this.handlePagination} />
+          <Pager data={this.state.data} itemsPerPage={20} setDisplayedItems={this.handlePagination} currentPage={this.state.currentPage} />
         </IconSettings>
       </Container>
     );
