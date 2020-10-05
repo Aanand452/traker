@@ -25,8 +25,6 @@ class EditActivityModalComponent extends Component {
     program: [],
     region: [],
     format: [],
-    tactic: [],
-    tacticSelection: [],
     programSelection: [],
     formatSelection: [],
     regionSelection: [],
@@ -59,8 +57,8 @@ class EditActivityModalComponent extends Component {
 
   initDropdowns = async () => {
     await this.checkProgram();
-    await this.checkTactic();
     await this.checkRegion();
+    await this.checkFormat();
 
     this.getActicityById(this.props.data.activityId);
   }
@@ -71,8 +69,8 @@ class EditActivityModalComponent extends Component {
 
     try{
       var activityProgram = this.state.program.filter(el => el.program_id === result.programId);
-      var activityTactic = this.state.tactic.filter(el => el.tactic_id === result.tacticId);
       var activityRegion = this.state.region.filter(el => el.region_id === result.regionId);
+      var activityFormat = this.state.format.filter(el => el.format_id === result.formatId);
 
       this.setState({...this.state,
         title: result.title,
@@ -82,42 +80,12 @@ class EditActivityModalComponent extends Component {
         asset: result.asset,
         campaignId: result.campaignId,
         programSelection: activityProgram,
-        tacticSelection: activityTactic,
         regionSelection: activityRegion,
-      });
-      
-      await this.checkFormat(this.state.tacticSelection[0] && this.state.tacticSelection[0].tactic_id);
-      var activityFormat = this.state.format.filter(el => el.format_id === result.formatId);
-
-      this.setState({...this.state, 
         formatSelection: activityFormat,
       });
     } catch(err) {
       console.error(err);
     }
-  }
-
-  checkTactic = async () => {
-    return new Promise(async (resolve, reject) => {
-      try {
-        let response = await fetch(`${this.API_URL}/tactic`);
-        let { result } = await response.json(); 
-  
-        //salesforce datepicker requires id key
-        result = result.map(el => {
-          el.id = el.tactic_id;
-          return el;
-        });
-  
-        this.setState({ tactic: result });
-        this.checkFormat(result[0].tactic_id);
-        resolve();
-      } catch(err) {
-        console.error(err)
-        reject(err);
-      }
-    });
-    
   }
 
   checkProgram = async () => {
@@ -142,20 +110,16 @@ class EditActivityModalComponent extends Component {
     
   }
 
-  checkFormat = async (tacticId) => {
+  checkFormat = async () => {
     return new Promise(async (resolve, reject) => {
       try {
-        let response = await fetch(`${this.API_URL}/format/${tacticId}`);
+        let response = await fetch(`${this.API_URL}/format`);
         let { result } = await response.json();
-        let formatSelection = result[0];
         
         //salesforce datepicker requires id key
-        result = result.map(el => {
-          el.id = el.format_id;
-          return el;
-        });
+        result = result.map(el => ({...el, id: el.format_id, label: el.name}));
         
-        this.setState({ format: result, formatSelection });
+        this.setState({ format: result });
         resolve();
       } catch(err) {
         console.error(err);
@@ -260,7 +224,6 @@ class EditActivityModalComponent extends Component {
       let body = {
         title: this.state.title,
         campaignId: this.state.campaignId,
-        tacticId: this.state.tacticSelection[0] && this.state.tacticSelection[0].id,
         formatId: this.state.formatSelection[0] && this.state.formatSelection[0].id,
         abstract: this.state.abstract,
         regionId: this.state.regionSelection[0] && this.state.regionSelection[0].id,
@@ -292,7 +255,6 @@ class EditActivityModalComponent extends Component {
           program: this.state.programSelection[0] && this.state.programSelection[0].program_id,
           format: this.state.formatSelection[0] && this.state.formatSelection[0].format_id,
           region: this.state.regionSelection[0] && this.state.regionSelection[0].region_id,
-          tactic: this.state.tacticSelection[0] && this.state.tacticSelection[0].tactic_id,
           title: this.state.title,
           abstract: this.state.abstract,
           startDate: this.state.startDate,
@@ -316,8 +278,8 @@ class EditActivityModalComponent extends Component {
         <Modal
           isOpen={true}
           footer={[
-            <Button label="Cancel" onClick={this.props.toggleOpen} />,
-            <Button type="submit" label="Save" variant="brand" onClick={this.editTable} />,
+            <Button label="Cancel" onClick={this.props.toggleOpen} key="CancelButton" />,
+            <Button type="submit" label="Save" variant="brand" onClick={this.editTable} key="SubmitButton" />,
           ]}
           onRequestClose={this.props.toggleOpen}
           heading={this.props.title}
@@ -371,32 +333,6 @@ class EditActivityModalComponent extends Component {
             <div className="slds-form-element slds-m-bottom_large">
               <Combobox
                 required
-                id='tactic'
-                events={{
-                  onSelect: (event, data) => {
-                    const selection =
-                      data.selection.length === 0
-                        ? this.state.tacticSelection
-                        : data.selection;
-                    
-                    this.setState({ tacticSelection: selection });
-                    this.checkFormat(selection[0] && selection[0].tactic_id);
-                  }
-                }}
-                labels={{
-                  label: 'Tactics',
-                  placeholder: 'Enter tactic',
-                }}
-                menuPosition="relative"
-                options={this.state.tactic}
-                selection={this.state.tacticSelection}
-                variant="readonly"
-                errorText={this.state.errors.tactic && "This field is required"}
-              />
-            </div>
-            <div className="slds-form-element slds-m-bottom_large">
-              <Combobox
-                required
                 id='format'
                 events={{
                   onSelect: (event, data) => {
@@ -423,7 +359,7 @@ class EditActivityModalComponent extends Component {
                 required
                 id="abstract"
                 label="Abstract"
-                errorText={this.state.errors.abstract && "This field is required"}
+                errorText={this.state.errors.abstract ? "This field is required" : ""}
                 placeholder="Enter abstract"
                 value={this.state.abstract}
                 onChange={e => this.handleChange(e)}
@@ -512,7 +448,7 @@ class EditActivityModalComponent extends Component {
                 placeholder="Insert a valid URL here"
                 value={this.state.asset}
                 onChange={e => this.handleChange(e)}
-                errorText={this.state.errors.asset && "This field is required" || false}
+                errorText={this.state.errors.asset ? "This field is required" : ''}
               />
             </div>
           </section>

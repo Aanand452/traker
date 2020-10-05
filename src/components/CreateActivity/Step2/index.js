@@ -25,18 +25,6 @@ class Step2 extends Component {
         </div>
         <div className="slds-m-bottom_large slds-col slds-size_1-of-2">
           <Combobox
-            events={{onSelect: (event, data) => data.selection.length && this.props.handleChange("tactic", data.selection)}}
-            labels={{label: 'Tactic'}}
-            name="tactic"
-            options={this.props.tactics}
-            selection={this.props.row.tactic}
-            value="tactic"  
-            variant="readonly"
-            errorText={this.props.error.tactic}
-          />
-        </div>
-        <div className="slds-m-bottom_large slds-col slds-size_1-of-2">
-          <Combobox
             events={{onSelect: (event, data) => data.selection.length && this.props.handleChange("format", data.selection)}}
             labels={{label: 'Format'}}
             name="format"
@@ -74,7 +62,7 @@ class Step2 extends Component {
             parser={(dateString) => moment(dateString, 'DD/MM/YYYY').toDate()}
             formattedValue={this.props.row.startDate}
           />
-          {this.props.error.startDate && <div class="slds-form-element__help">{this.props.error.startDate}</div>}
+          {this.props.error.startDate && <div className="slds-form-element__help">{this.props.error.startDate}</div>}
         </div>
         <div className={`slds-col slds-size_1-of-4 ${this.props.error.endDate && "slds-has-error"}`}>
           <Datepicker

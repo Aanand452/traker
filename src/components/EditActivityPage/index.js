@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { IconSettings, Spinner, ToastContainer, Toast } from '@salesforce/design-system-react';
+import { withRouter } from 'react-router-dom';
 
 import { Container } from './styles';
 import ActivitiesTable from '../ActivitiesTable';
@@ -18,6 +19,16 @@ class EditActivityPage extends Component {
 
   componentDidMount() {
     this.setupAndFetch();
+    if(this.props.location.state && this.props.location.state.newActivity) {
+      this.setState({
+        toast: {
+          active: true,
+          type: 'success',
+          message: 'A New Activity Has Been Added'
+        },
+        showToast: true,
+      })
+    }
   }
 
   setupAndFetch = async () => {
@@ -34,7 +45,8 @@ class EditActivityPage extends Component {
     try {
       const request = await fetch(`${this.API_URL}/activities/${user}`);
       const response = await request.json();
-      this.setState({activities: response.result});
+
+      this.setState({activities: response.result.map(item => ({...item, id: item.activityId}))});
     } catch (err) {
       console.error(err);
     }
@@ -119,4 +131,4 @@ class EditActivityPage extends Component {
   }
 }
 
-export default EditActivityPage;
+export default withRouter(EditActivityPage);

@@ -9,8 +9,6 @@ import {
   SfdcCardLogin
 } from './styles';
 
-import Prompt from '../Prompt';
-
 class Login extends Component {
 
   state = {
