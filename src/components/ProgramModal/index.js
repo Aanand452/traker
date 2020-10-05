@@ -237,14 +237,14 @@ class EditProgramModalComponent extends Component {
         regionId: this.state.program.regionId[0].region_id,
         personaId: this.state.program.personaId[0].id,
         segmentId: this.state.program.segmentId[0].id,
-        lifecycleStageId: this.state.program.lifecycleStageId[0].id,
         apm1Id: this.state.program.apm1Id[0].id,
-        apm2Id: this.state.program.apm2Id[0] && this.state.program.apm2Id[0].id,
         industryId: this.state.program.industryId[0].id,
         customerMessage: this.state.program.customerMessage,
-        otherKpis: this.state.program.kpi,
       }
-
+      if(this.state.program.apm2Id.length) program.apm2Id = this.state.program.apm2Id[0].id;
+      if(this.state.program.lifecycleStageId.length) program.lifecycleStageId = this.state.program.lifecycleStageId[0].id;
+      if(this.state.program.kpi) program.otherKpis = this.state.program.kpi;
+      
       const config = {
         method: 'PUT',
         headers: {

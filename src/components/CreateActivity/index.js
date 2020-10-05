@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { withRouter, Link } from 'react-router-dom';
+import { withRouter } from 'react-router-dom';
 import moment from 'moment-timezone';
 import {
   IconSettings,
@@ -21,7 +21,6 @@ class CreateActivity extends Component {
     row: {
       format: [],
       region: [],
-      tactic: [],
       program: [],
       title: "",
       abstract: "",
@@ -32,7 +31,6 @@ class CreateActivity extends Component {
     },
     regions: [],
     programs: [],
-    tactics: [],
     formats: [],
     error: {},
     isDeletePromptOpen: false,
@@ -40,12 +38,12 @@ class CreateActivity extends Component {
     steps: [
       {
         step: 1,
-        trail: <Link onClick={() => this.handleStep(1)}>Select program</Link>,
+        trail: <a onClick={() => this.handleStep(1)}>Select program</a>,
         active: true
       },
       {
         step: 2,
-        trail: <Link>Create activity</Link>,
+        trail: <a>Create activity</a>,
         active: false
       }
     ],
@@ -71,9 +69,25 @@ class CreateActivity extends Component {
     else this.API_URL = await getAPIUrl();
     
     this.getUser();
-    this.checkTactic();
+    this.getFormats();
     this.checkRegion();
     this.props.getFormData(this.state.row);
+  }
+
+  async getFormats() {
+    try {
+      const request = await fetch(`${this.API_URL}/format`);
+      const response = await request.json();
+
+      if(response.info.code === 200) {
+        const formatsList = response.result.map(item => ({...item, id: item.format_id, label: item.name}))
+
+        this.setState({formats: formatsList});
+      } else new Error(response);
+    } catch (err) {
+      this.setState({toast: {...this.state.toast, active: true}});
+      console.error(err);
+    }
   }
 
   async checkRegion() {
@@ -81,7 +95,8 @@ class CreateActivity extends Component {
       let response = await fetch(`${this.API_URL}/region`);
       if(response.status === 200) {
         let { result } = await response.json();
-
+        result = result.map(item => ({...item, id: item.region_id}))
+        
         this.setState({ regions: result, row: {...this.state.row, region: [result[0]]}});
         this.handleChange("region", [result[0]]);
       } else {
@@ -98,15 +113,10 @@ class CreateActivity extends Component {
       let response = await fetch(`${this.API_URL}/programs/region/${id}`);
       if(response.status === 200) {
         let { result } = await response.json();
-        let programs = result.map(el => {
-          return {
-            label: el.name,
-            program_id: el.programId
-          }
-        });
+        let programs = result.map(el => ({...el, label: el.name, id: el.programId}));
 
         if(programs.length <= 0) this.handleStep(1);
-        else this.checkProgramDetail(programs[0].program_id);
+        else this.checkProgramDetail(programs[0].programId);
 
         this.setState({ programs, row: {...this.state.row, program: [programs[0]]}});
       } else {
@@ -149,49 +159,15 @@ class CreateActivity extends Component {
     }
   }
 
-  async checkTactic() {
-    try {
-      let response = await fetch(`${this.API_URL}/tactic`);
-      if(response.status === 200) {
-        let { result } = await response.json();
-        let format = await this.populateTactic(result[0]);
-        this.setState({ formats: format, tactics: result, row: {...this.state.row, tactic: [result[0]], format: [format[0]] } });
-      } else {
-        throw new Error(response);
-      }
-    } catch(err) {
-      this.setState({toast: {...this.state.toast, active: true}});
-      console.error(err);
-    }
-  }
-
-  async populateTactic(selection) {
-    try {
-      let response = await fetch(`${this.API_URL}/format/${selection.tactic_id}`);
-      if(response.status === 200) {
-        let { result } = await response.json();
-        return result;
-      } else {
-        throw new Error(response);
-      }
-    } catch (err) {
-      this.setState({toast: {...this.state.toast, active: true}});
-      console.error(err);
-    }
-  }
-
   handleChange = async (value, data) => {
     let newRow = {};
     let formats = this.state.formats;
 
-    if(value === "tactic") {
-      formats = await this.populateTactic(data[0]);
-      newRow = {...this.state.row, tactic: data, format: [formats[0]]};
-    } else if(value === "region") {
+    if(value === "region") {
       await this.checkProgramByRegion(data[0].region_id);
       newRow = {...this.state.row, region: data };
     } else if(value === "program") {
-      this.checkProgramDetail(data[0].program_id);
+      this.checkProgramDetail(data[0].programId);
       newRow = {...this.state.row, program: data};
     } else {
       newRow = {...this.state.row, [value]: data};
@@ -211,9 +187,8 @@ class CreateActivity extends Component {
 
   validations = (input, data) => {
     let errors = {...this.state.error};
-    const inputs = ["program", "title", "format", "region", "tactic", "abstract", "startDate", "endDate"];
+    const inputs = ["program", "title", "format", "region", "abstract", "startDate", "endDate"];
 
- 
     if (input) {
       if (inputs.includes(input) && !data) {
         errors = { ...errors, [input]: "This field is required" };
@@ -238,17 +213,16 @@ class CreateActivity extends Component {
     e.preventDefault();
     const errors = this.validations();
     let { loggedUser } = this.state;
-    let { abstract, asset, format, endDate, program, region, startDate, tactic, title, campaignId } = this.state.row;
+    let { abstract, asset, format, endDate, program, region, startDate, title, campaignId } = this.state.row;
     let row = {
       userId: loggedUser,
       abstract,
       asset,
-      formatId: format[0].format_id,
+      formatId: format.length ? format[0].format_id : "",
       endDate,
-      programId: program[0].program_id,
-      regionId: region[0].region_id,
+      programId: program.length ? program[0].programId : "",
+      regionId: region.length ? region[0].region_id : "",
       startDate,
-      tacticId: tactic[0].tactic_id,
       title,
       campaignId
     }
@@ -331,7 +305,6 @@ class CreateActivity extends Component {
                 handleStep={this.handleStep}
                 handleChange={this.handleChange}
                 error={this.state.error}
-                tactics={this.state.tactics}
                 formats={this.state.formats}
               />
             }

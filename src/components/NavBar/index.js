@@ -25,12 +25,11 @@ const HeaderProfileCustomContent = (props) => (
             <p className="slds-truncate">
             <a
               className="slds-m-right_medium"
-              href="javascript:void(0)"
               onClick={props.onClick}
             >
               Settings
             </a>
-            <a href="javascript:void(0)" onClick={props.onClick}>
+            <a onClick={props.onClick}>
               Log Out
             </a>
           </p>
@@ -116,7 +115,9 @@ class NavBar extends Component{
           {this.props.match.path !== "/home" && (
             <GlobalNavigationBar>
               <GlobalNavigationBarRegion region="primary">
-                <AppLauncher triggerName="SARA" children={<React.Fragment/>} />
+                <AppLauncher triggerName="SARA">
+                  SARA
+                </AppLauncher>
               </GlobalNavigationBarRegion>
               <GlobalNavigationBarRegion region="secondary" navigation>
                 <NavigationBarLink to="/home" title="Home" />

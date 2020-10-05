@@ -16,26 +16,13 @@ class CreateActivityPage extends Component {
     this.setState({row: data});
   };
 
-  onSubmit = async () => {
-    
+  onSubmit = () => {
     this.setState({showLoader: true});
-    const newRow = {
-      id: 10000,
-      campaignId: this.state.row.campaignId,
-      program: this.state.row.program[0] && this.state.row.program[0].label,
-      format: this.state.row.format[0] && this.state.row.format[0].label,
-      region: this.state.row.region[0] && this.state.row.region[0].label,
-      title: this.state.row.title,
-      abstract: this.state.row.abstract,
-      startDate: this.state.row.startDate,
-      endDate: this.state.row.endDate,
-      asset: this.state.row.asset
-    };
 
     try {
       this.props.history.push({
         pathname: '/my-activities',
-        newRow: newRow
+        state: { newActivity: true }
       });
     } catch (error) {
       this.setState({showToast: true});
