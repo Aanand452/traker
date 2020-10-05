@@ -11,57 +11,52 @@ Activity.init({
     field: 'activity_id',
   },
   userId: {
-    allowNull: false,
+    allowNull: true,
     type: DataTypes.STRING,
     field: 'user_id',
   },
   title: {
-    allowNull: false,
+    allowNull: true,
     type: DataTypes.STRING,
     field: 'title',
   },
   campaignId: {
-    allowNull: false,
+    allowNull: true,
     type: DataTypes.STRING,
     field: 'campaign_id',
   },
-  tacticId: {
-    allowNull: false,
-    type: DataTypes.STRING,
-    field: 'tactic_id',
-  },
   formatId: {
-    allowNull: false,
+    allowNull: true,
     type: DataTypes.STRING,
     field: 'format_id',
   },
   abstract: {
-    allowNull: false,
+    allowNull: true,
     type: DataTypes.TEXT,
     field: 'abstract',
   },
   regionId: {
-    allowNull: false,
+    allowNull: true,
     type: DataTypes.TEXT,
     field: 'region_id',
   },
   startDate: {
-    allowNull: false,
+    allowNull: true,
     type: DataTypes.DATE,
     field: 'start_date',
   },
   endDate: {
-    allowNull: false,
+    allowNull: true,
     type: DataTypes.DATE,
     field: 'end_date',
   },
   asset: {
-    allowNull: false,
+    allowNull: true,
     type: DataTypes.TEXT,
     field: 'asset',
   },
   programId: {
-    allowNull: false,
+    allowNull: true,
     type: DataTypes.TEXT,
     field: 'program_id',
   }
@@ -73,7 +68,6 @@ Activity.init({
 
 Activity.associate = models => {
   Activity.belongsTo(models.User, {foreignKey: 'user_id'});
-  Activity.belongsTo(models.Tactic, {foreignKey: 'tactic_id'});
   Activity.belongsTo(models.Format, {foreignKey: 'format_id'});
   Activity.belongsTo(models.Region, {foreignKey: 'region_id'});
   Activity.belongsTo(models.Program, {foreignKey: 'program_id'});

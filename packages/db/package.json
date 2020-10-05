@@ -9,9 +9,14 @@
     "db:migrate": "yarn sequelize db:migrate --debug",
     "db:undo-migration": "yarn sequelize db:migrate:undo --debug",
     "db:new-migration": "yarn sequelize migration:generate --name",
-    "build": "rm -fr build && yarn babel --config-file ../../babel.config.stable.js src --out-dir build"
+    "build": "rm -fr build && yarn babel --config-file ../../babel.config.stable.js src --out-dir build",
+    "import-programs": "babel-node --presets @babel/env ./seeders/etl/upload-program.js",
+    "import-activities": "babel-node --presets @babel/env ./seeders/etl/upload-activity.js"
   },
   "dependencies": {
+    "@babel/preset-env": "^7.11.5",
+    "csv-parse": "^4.12.0",
+    "currency-formatter": "^1.5.6",
     "pg": "^8.3.2",
     "pg-hstore": "^2.3.3",
     "sequelize": "^6.3.4",

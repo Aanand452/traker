@@ -29,6 +29,19 @@ const getProgramsFull = async (req, res) => {
   }
 }
 
+const getProgramsByRegionId = async (req, res) => {  
+  try {
+    var regionId = req.swagger.params.regionId.value;
+    const programs = await ProgramModel.getProgramsByRegionId(regionId);
+
+    if(programs === 'error') ApiUtils.responseWithError(res, httpStatus.INTERNAL_SERVER_ERROR);
+    else if(!programs) ApiUtils.reposeWithhSuccess(res, null, httpStatus.NOT_FOUND);
+    else ApiUtils.reposeWithhSuccess(res, programs, httpStatus.OK);
+  } catch (err) {
+    ApiUtils.responseWithError(res, httpStatus.INTERNAL_SERVER_ERROR, err.toString());
+  }
+}
+
 const getProgramById = async (req, res) => {
   try {
     var id = req.swagger.params.id.value;
@@ -45,35 +58,47 @@ const getProgramById = async (req, res) => {
 
 const addNewProgram = async (req, res) => {  
   try {
-    const fields = [
-      "name",
-      "budget",
-      "metrics",
-      "parentCampaignId",
-      "customerMessage",
-      "businessGoals",
-      "regionId",
-      "lifecycleStageId",
-      "apm1Id",
-      "apm2Id",
-      "industryId",
-      "segmentId",
-      "personaId",
-      "userId"
-    ];
-
-    const error = fields.some(field => !req.body[field]);
-    if (error) throw new Error ('422');
-
     const program = await ProgramModel.addNewProgram(req.body);
 
-    if(program === 'Error') ApiUtils.reposeWithhSuccess(res, null, httpStatus.INTERNAL_SERVER_ERROR);
-    else if(!program) ApiUtils.reposeWithhSuccess(res, null, httpStatus.NOT_FOUND);
+    if(program === 'Error') ApiUtils.reposeWithhSuccess(res, httpStatus.INTERNAL_SERVER_ERROR);
+    else if(program === 'ValidationError') ApiUtils.reposeWithhSuccess(res, 'There is a body validation error', httpStatus.UNPROCESSABLE_ENTITY);
+    else if(!program) ApiUtils.reposeWithhSuccess(res, httpStatus.NOT_FOUND);
     else ApiUtils.reposeWithhSuccess(res, program, httpStatus.OK);
   } catch (err) {
-    if(err.toString() === 'Error: 422') ApiUtils.responseWithError(res, httpStatus.UNPROCESSABLE_ENTITY, 'Some parameter is missing in body');
-    else ApiUtils.responseWithError(res, httpStatus.INTERNAL_SERVER_ERROR);
+    ApiUtils.responseWithError(res, httpStatus.INTERNAL_SERVER_ERROR);
   }
 };
 
-export { getPrograms, getProgramsFull, getProgramById, addNewProgram }
+const deleteProgram = async (req, res) => {
+  try {
+    var programId = req.swagger.params.id.value;
+    const request = await ProgramModel.deleteProgram(programId);
+
+    if(request === 'error') ApiUtils.responseWithError(res, httpStatus.INTERNAL_SERVER_ERROR);
+    else if(!request) ApiUtils.reposeWithhSuccess(res, null, httpStatus.NOT_FOUND);
+    else ApiUtils.reposeWithhSuccess(res, request, httpStatus.OK);
+  } catch (err) {
+    ApiUtils.responseWithError(res, httpStatus.INTERNAL_SERVER_ERROR, err);
+  }
+};
+
+const updateProgram = async (req, res) => {  
+  try {
+    var programId = req.swagger.params.id.value;
+    var body = req.body
+    
+    const programToCheck = await ProgramModel.getProgramById(programId)
+    if(!programToCheck) {
+      ApiUtils.reposeWithhSuccess(res, null, httpStatus.NOT_FOUND);
+    } else {
+      const program = await ProgramModel.updateProgram(programId, body);
+      
+      if(program === 'error') ApiUtils.responseWithError(res, httpStatus.INTERNAL_SERVER_ERROR);
+      else ApiUtils.reposeWithhSuccess(res, program, httpStatus.OK);
+    }    
+  } catch (err) {
+    ApiUtils.responseWithError(res, httpStatus.INTERNAL_SERVER_ERROR, err);
+  }
+}
+
+export { getPrograms, getProgramsFull, getProgramsByRegionId, getProgramById, addNewProgram, deleteProgram, updateProgram }

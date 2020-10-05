@@ -11,12 +11,12 @@ module.exports = {
         field: 'program_id',
       },
       name: {
-        allowNull: false,
+        allowNull: true,
         type: Sequelize.STRING,
         field: 'name',
       },
       owner: {
-        allowNull: false,
+        allowNull: true,
         type: Sequelize.STRING,
         field: 'owner',
       }

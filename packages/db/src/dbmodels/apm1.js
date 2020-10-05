@@ -22,9 +22,11 @@ APM1.init({
 });
 
 APM1.associate = models => {
+  /*
   APM1.hasMany(models.Program, {
     foreignKey: 'apm1'
   });
+  */
 }
 
 export default APM1;

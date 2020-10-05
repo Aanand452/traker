@@ -57,8 +57,9 @@ paths:
       parameters:
       - name: body
         in: body
+        required: true
         schema:
-          $ref: '#/definitions/ProgramCreateBody'
+          $ref: '#/definitions/ProgramBody'
       responses:
         200:
           description: Success
@@ -97,6 +98,56 @@ paths:
             allOf:
               - $ref: '#/definitions/ResponseStatus'
               - $ref: '#/definitions/Error'
+    delete:
+      x-swagger-router-controller: program
+      operationId: "deleteProgram"
+      summary: Delete a program
+      description: N/A
+      parameters:
+        - in: path
+          name: id
+          description: ID of program to be deleted
+          required: true
+          type: string
+      responses:
+        200:
+          description: Success
+          schema:
+            allOf:
+              - $ref: '#/definitions/ResponseStatus'
+        default:
+          description: Invalid request.
+          schema:
+            allOf:
+              - $ref: '#/definitions/ResponseStatus'
+              - $ref: '#/definitions/Error'
+    put:
+      x-swagger-router-controller: program
+      operationId: "updateProgram"
+      summary: Update a program
+      description: N/A
+      parameters:
+        - in: path
+          name: id
+          description: ID of program to be updated
+          required: true
+          type: string
+        - in: body
+          name: body
+          schema:
+            $ref: '#/definitions/ProgramBody'
+      responses:
+        200:
+          description: Success
+          schema:
+            allOf:
+              - $ref: '#/definitions/ResponseStatus'
+        default:
+          description: Invalid request.
+          schema:
+            allOf:
+              - $ref: '#/definitions/ResponseStatus'
+              - $ref: '#/definitions/Error'
 
   /programs/{userId}:
     get:
@@ -108,6 +159,34 @@ paths:
         - in: path
           name: userId
           description: ID of user to fetch programs
+          required: true
+          type: string
+      produces:
+        - application/json
+      responses:
+        200:
+          description: Success
+          schema:
+            allOf:
+              - $ref: '#/definitions/ResponseStatus'
+              - $ref: '#/definitions/ProgramListResponse'
+        default:
+          description: Invalid request.
+          schema:
+            allOf: 
+              - $ref: '#/definitions/ResponseStatus'
+              - $ref: '#/definitions/Error'
+
+  /programs/region/{regionId}:
+    get:
+      x-swagger-router-controller: program
+      operationId: "getProgramsByRegionId"
+      summary: Returns the list of programs.
+      description: This will be used to populate the activity table
+      parameters:
+        - in: path
+          name: regionId
+          description: ID of region to fetch programs
           required: true
           type: string
       produces:
@@ -280,6 +359,28 @@ paths:
               - $ref: '#/definitions/ResponseStatus'
               - $ref: '#/definitions/Error'
 
+  /format:
+    get:
+      x-swagger-router-controller: format
+      operationId: "getAllFormats"
+      summary: Returns the list of formats.
+      description: This will be used to populate the insert and update dropdowns
+      produces:
+        - application/json
+      responses:
+        200:
+          description: Success
+          schema:
+            allOf:
+              - $ref: '#/definitions/ResponseStatus'
+              - $ref: '#/definitions/FormatListResponse'
+        default:
+          description: Invalid request.
+          schema:
+            allOf: 
+              - $ref: '#/definitions/ResponseStatus'
+              - $ref: '#/definitions/Error'
+
   /format/{tacticId}:
     get:
       x-swagger-router-controller: format
@@ -340,8 +441,9 @@ paths:
       parameters:
       - name: body
         in: body
+        required: true
         schema:
-          $ref: '#/definitions/ActivityCreateBody'
+          $ref: '#/definitions/ActivityBody'
       responses:
         200:
           description: Success
@@ -444,7 +546,7 @@ paths:
         - name: body
           in: body
           schema:
-            $ref: '#/definitions/ActivityCreateBody'
+            $ref: '#/definitions/ActivityBody'
       responses:
         200:
           description: Success
@@ -485,17 +587,13 @@ paths:
 
 #RESPONSES
 definitions:
-  ActivityCreateBody:
+  ActivityBody:
     description: Body used for creating a new activity.
     type: object
     properties:
-      activityId:
-        type: string
       title:
         type: string
       campaignId:
-        type: string
-      tacticId:
         type: string
       formatId:
         type: string
@@ -530,7 +628,7 @@ definitions:
       name:
         type: string
       budget:
-        type: string
+        type: number
       metrics:
         type: string
       parentCampaignId:
@@ -554,6 +652,37 @@ definitions:
       personaId:
         type: string
       userId:
+        type: string
+
+  ProgramBody:
+    description: Body used for creating a new program.
+    type: object
+    properties:
+      name:
+        type: string
+      owner:
+        type: string
+      budget:
+        type: number
+      metrics:
+        type: string
+      customerMessage:
+        type: string
+      regionId:
+        type: string
+      lifecycleStageId:
+        type: string
+      apm1Id:
+        type: string
+      apm2Id:
+        type: string
+      industryId:
+        type: string
+      segmentId:
+        type: string
+      personaId:
+        type: string
+      otherKpis:
         type: string
 
   ProgramListResponse:
