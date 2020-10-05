@@ -441,8 +441,9 @@ paths:
       parameters:
       - name: body
         in: body
+        required: true
         schema:
-          $ref: '#/definitions/ActivityCreateBody'
+          $ref: '#/definitions/ActivityBody'
       responses:
         200:
           description: Success
@@ -545,7 +546,7 @@ paths:
         - name: body
           in: body
           schema:
-            $ref: '#/definitions/ActivityCreateBody'
+            $ref: '#/definitions/ActivityBody'
       responses:
         200:
           description: Success
@@ -586,17 +587,13 @@ paths:
 
 #RESPONSES
 definitions:
-  ActivityCreateBody:
+  ActivityBody:
     description: Body used for creating a new activity.
     type: object
     properties:
-      activityId:
-        type: string
       title:
         type: string
       campaignId:
-        type: string
-      tacticId:
         type: string
       formatId:
         type: string
