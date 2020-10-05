@@ -62,6 +62,7 @@ class Table extends Component {
     displayedData: [],
     filters:{},
     errors: {},
+    currentPage:1
   };
 
   componentDidMount() {
@@ -219,13 +220,14 @@ class Table extends Component {
       sortProperty: "",
       sortDirection: "",
       isPanelOpen: false,
-      filters:{}
+      filters:{},
+      currentPage:1
     });
   };
 
-  handlePagination = (newData) => {
+  handlePagination = (newData, currentPage) => {
     newData = newData.map((item) => ({ id: item.activityId, ...item }));
-    this.setState({ displayedData: newData });
+    this.setState({ displayedData: newData, currentPage });
   };
 
   filter = (arr, functionFilters) => {
@@ -240,7 +242,7 @@ class Table extends Component {
   onFilter = ({functionFilters,filters}) => {
     let data = [...this.props.data];
     let filter = this.filter(data, functionFilters);
-    this.setState({ data: filter, isPanelOpen: false, filters });
+    this.setState({ data: filter, isPanelOpen: false, filters, currentPage:1 });
   };
 
   render() {
@@ -357,6 +359,7 @@ class Table extends Component {
           data={this.state.data}
           itemsPerPage={20}
           setDisplayedItems={this.handlePagination}
+          currentPage={this.state.currentPage}
         />
         {this.state.toast.show && (
           <ToastContainer>
