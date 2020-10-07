@@ -82,7 +82,7 @@ class FilterPanel extends Component {
         functionFilters[property] = (value) =>
           value.includes(filters[property]);
     }
-    console.log('DEBUG', { functionFilters, filters })
+
     onFilter({ functionFilters, filters });
   };
 
