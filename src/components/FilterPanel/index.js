@@ -82,6 +82,7 @@ class FilterPanel extends Component {
         functionFilters[property] = (value) =>
           value.includes(filters[property]);
     }
+    console.log('DEBUG', { functionFilters, filters })
     onFilter({ functionFilters, filters });
   };
 
@@ -89,6 +90,13 @@ class FilterPanel extends Component {
     const { regions = [], programs = [], formats = [] } = this.props;
     return (
       <PanelContainer>
+        <Input
+          onChange={(e) => this.handleChange("userId", e.target.value)}
+          value={this.state.filters.userId}
+          type="text"
+          label="Search owner"
+          className="slds-m-top_small"
+        />
         <Input
           onChange={(e) => this.handleChange("campaignId", e.target.value)}
           value={this.state.filters.campaignId}
