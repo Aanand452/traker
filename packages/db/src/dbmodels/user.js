@@ -15,6 +15,11 @@ User.init({
     allowNull: false,
     field: 'username',
   },
+  name: {
+    type: DataTypes.STRING,
+    allowNull: true,
+    field: 'name',
+  },
   password: {
     type: DataTypes.STRING,
     allowNull: false,

@@ -12,7 +12,7 @@ class ActivityModel {
       const minActivities = activities.map(activity => {
         return ({
           activityId: activity.activityId,
-          userId: activity.User ? activity.User.username : '',
+          userId: activity.User ? activity.User.name : '',
           title: activity.title,
           campaignId: activity.campaignId,
           formatId: activity.Format ? activity.Format.name : '',
