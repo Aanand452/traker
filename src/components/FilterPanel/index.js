@@ -19,17 +19,25 @@ class FilterPanel extends Component {
   }
 
   handleChange = (name, value) => {
+    if(name === "startDate" && value !== "") {
+      this.setState({
+        errors: {...this.state.errors, startDate: false, repeated: false}
+      });
+    } else if(name === "endDate" && value !== "") {
+      this.setState({
+        errors: {...this.state.errors, endDate: false, repeated: false}
+      });
+    }
     this.setState({ filters: { ...this.state.filters, [name]: value } });
   };
 
   checkEndDate = (date) => {
-    const endDate=moment(this.state.filters.endDate,'DD/MM/YYYY');
+    const endDate = moment(this.state.filters.endDate,'DD/MM/YYYY');
     return endDate.isBefore(date.date)
   }
-
   
   checkStartDate = (date) => {
-    const starDate=moment(this.state.filters.startDate,'DD/MM/YYYY');
+    const starDate = moment(this.state.filters.startDate,'DD/MM/YYYY');
     return starDate.isAfter(date.date)
   }
 
@@ -39,30 +47,33 @@ class FilterPanel extends Component {
     const functionFilters = {};
 
     for (const property in filters) {
+
       if (property === "startDate" || property === "endDate") {
         const startMoment = moment(filters["startDate"], "DD/MM/YYYY");
         const endMoment = moment(filters["endDate"], "DD/MM/YYYY");
-        if (filters["startDate"] && !filters["endDate"])
-          functionFilters["startDate"] = (value) => {
-            return moment(value.split("T")[0], "YYYY-MM-DD").isSameOrAfter(
-              startMoment
-            );
-          };
-        else if (!filters["startDate"] && filters["endDate"])
-          functionFilters["startDate"] = (value) => {
-            return moment(value.split("T")[0], "YYYY-MM-DD").isSameOrBefore(
-              endMoment
-            );
-          };
-        else if (filters["startDate"] && filters["endDate"])
-          functionFilters["startDate"] = (value) => {
-            return moment(value.split("T")[0], "YYYY-MM-DD").isBetween(
-              startMoment,
-              endMoment,
-              undefined,
-              "[]"
-            );
-          };
+        
+        if (filters["startDate"] && !filters["endDate"]) {
+          this.setState({ errors: {...this.state.errors, endDate: true} })
+          return;
+        } else if (!filters["startDate"] && filters["endDate"]) {
+          this.setState({ errors: {...this.state.errors, startDate: true} })
+          return;
+        } else if (filters["startDate"] && filters["endDate"]) {
+          if(filters["startDate"] === filters["endDate"]) {
+            this.setState({ errors: {...this.state.errors, repeated: true} })
+            return;
+          } else {
+            functionFilters["startDate"] = (value) => {
+              return moment(value.split("T")[0], "YYYY-MM-DD").isBetween(
+                startMoment,
+                endMoment,
+                undefined,
+                "[]"
+              );
+            };
+          }
+        }
+          
       } else if (Array.isArray(filters[property]))
         functionFilters[property] = (value) =>
           filters[property][0].label === "All" ||
@@ -71,9 +82,9 @@ class FilterPanel extends Component {
         functionFilters[property] = (value) =>
           value.includes(filters[property]);
     }
-    //this.setState({ submitedSearch: { ...search } });
     onFilter({ functionFilters, filters });
   };
+
   render() {
     const { regions = [], programs = [], formats = [] } = this.props;
     return (
