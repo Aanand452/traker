@@ -3,7 +3,11 @@ import db from '../dbmodels/';
 class APM2 {
   static async getAll() {
     try{
-      const apms = await db.APM2.findAll();
+      const apms = await db.APM2.findAll({
+        order: [
+          ['name', 'ASC'],
+        ]
+      });
 
       return apms;
     } catch (err) {

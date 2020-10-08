@@ -4,7 +4,10 @@ class RegionModel {
   static async getAllRegions() {
     try{
       const region = await db.Region.findAll({
-        attributes: ['region_id', ['name', 'label']]
+        attributes: ['region_id', ['name', 'label']],
+        order: [
+          ['name', 'ASC'],
+        ]
       });
 
       return region;

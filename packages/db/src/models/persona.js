@@ -3,7 +3,11 @@ import db from '../dbmodels/';
 class Persona {
   static async getAll() {
     try{
-      const personas = await db.Persona.findAll();
+      const personas = await db.Persona.findAll({
+        order: [
+          ['name', 'ASC'],
+        ]
+      });
 
       return personas;
     } catch (err) {

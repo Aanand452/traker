@@ -3,7 +3,11 @@ import db from '../dbmodels/';
 class LifecycleStage {
   static async getAll() {
     try{
-      const lifecycleStages = await db.LifecycleStage.findAll();
+      const lifecycleStages = await db.LifecycleStage.findAll({
+        order: [
+          ['name', 'ASC'],
+        ]
+      });
 
       return lifecycleStages;
     } catch (err) {

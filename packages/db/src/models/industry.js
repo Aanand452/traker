@@ -3,7 +3,11 @@ import db from '../dbmodels/';
 class Industry {
   static async getAll() {
     try{
-      const industries = await db.Industry.findAll();
+      const industries = await db.Industry.findAll({
+        order: [
+          ['name', 'ASC'],
+        ]
+      });
 
       return industries;
     } catch (err) {
