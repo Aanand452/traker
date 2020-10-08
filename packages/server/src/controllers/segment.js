@@ -13,4 +13,15 @@ const getAllSegments = async (req, res) => {
   }
 }
 
-export { getAllSegments }
+const addNewSegment = async (req, res) => {  
+  try {
+    const segment = await Segment.addNew(req.body);
+    
+    if(segment === 'error') ApiUtils.responseWithError(res, httpStatus.INTERNAL_SERVER_ERROR);
+    else ApiUtils.reposeWithhSuccess(res, segment, httpStatus.OK);
+  } catch (err) {
+    ApiUtils.responseWithError(res, httpStatus.INTERNAL_SERVER_ERROR, err.toString());
+  }
+}
+
+export { getAllSegments, addNewSegment }

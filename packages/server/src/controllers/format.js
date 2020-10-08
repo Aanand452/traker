@@ -30,4 +30,15 @@ const getFormatsByTacticId = async (req, res) => {
   }
 }
 
-export { getAllFormats, getFormatsByTacticId }
+const addNewFormat = async (req, res) => {  
+  try {
+    const format = await FormatModel.addNew(req.body);
+    
+    if(format === 'error') ApiUtils.responseWithError(res, httpStatus.INTERNAL_SERVER_ERROR);
+    else ApiUtils.reposeWithhSuccess(res, format, httpStatus.OK);
+  } catch (err) {
+    ApiUtils.responseWithError(res, httpStatus.INTERNAL_SERVER_ERROR, err.toString());
+  }
+}
+
+export { getAllFormats, getFormatsByTacticId, addNewFormat }

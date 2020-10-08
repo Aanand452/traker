@@ -12,4 +12,15 @@ const getRegion = async (req, res) => {
   }
 }
 
-export { getRegion }
+const addNewRegion = async (req, res) => {  
+  try {
+    const region = await RegionModel.addNew(req.body);
+    
+    if(region === 'error') ApiUtils.responseWithError(res, httpStatus.INTERNAL_SERVER_ERROR);
+    else ApiUtils.reposeWithhSuccess(res, region, httpStatus.OK);
+  } catch (err) {
+    ApiUtils.responseWithError(res, httpStatus.INTERNAL_SERVER_ERROR, err.toString());
+  }
+}
+
+export { getRegion, addNewRegion }

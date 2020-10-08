@@ -1,4 +1,6 @@
 import db from '../dbmodels/'
+import { v4 as uuidv4 } from 'uuid';
+
 class UserModel {
   static async getAutenticatedUser(usr, pwd) {
     try{
@@ -29,6 +31,20 @@ class UserModel {
       else return null;
     } catch (err) {
       console.error('Error getting user login', err);
+    }
+  }
+
+  static async addNew(body) {
+    try{
+      body.userId = uuidv4();
+      if(!body.userId) throw new Error("It was imposible to create a user due to an id error");
+
+      const user = await db.User.create(body);
+      
+      return user;
+    } catch (err) {
+      console.error('Error creating user', err);
+      return 'error';
     }
   }
 }

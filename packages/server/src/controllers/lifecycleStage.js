@@ -13,4 +13,15 @@ const getAllLifecycleStages = async (req, res) => {
   }
 }
 
-export { getAllLifecycleStages }
+const addNewLifecycleStage = async (req, res) => {  
+  try {
+    const lifecycleStage = await LifecycleStage.addNew(req.body);
+    
+    if(lifecycleStage === 'error') ApiUtils.responseWithError(res, httpStatus.INTERNAL_SERVER_ERROR);
+    else ApiUtils.reposeWithhSuccess(res, lifecycleStage, httpStatus.OK);
+  } catch (err) {
+    ApiUtils.responseWithError(res, httpStatus.INTERNAL_SERVER_ERROR, err.toString());
+  }
+}
+
+export { getAllLifecycleStages, addNewLifecycleStage }
