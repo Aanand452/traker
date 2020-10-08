@@ -226,6 +226,29 @@ paths:
             allOf: 
               - $ref: '#/definitions/ResponseStatus'
               - $ref: '#/definitions/Error'
+    post:
+      x-swagger-router-controller: region
+      operationId: "addNewRegion"
+      summary: Create a new region
+      description: N/A
+      parameters:
+      - name: body
+        in: body
+        required: true
+        schema:
+          $ref: '#/definitions/RegionBody'
+      responses:
+        200:
+          description: Success
+          schema:
+            allOf:
+              - $ref: '#/definitions/ResponseStatus'
+        default:
+          description: Invalid request.
+          schema:
+            allOf:
+              - $ref: '#/definitions/ResponseStatus'
+              - $ref: '#/definitions/Error'
 
   /lifecycle-stage:
     get:
@@ -246,6 +269,29 @@ paths:
           description: Invalid request.
           schema:
             allOf: 
+              - $ref: '#/definitions/ResponseStatus'
+              - $ref: '#/definitions/Error'
+    post:
+      x-swagger-router-controller: lifecycleStage
+      operationId: "addNewLifecycleStage"
+      summary: Create a new lifecycle
+      description: N/A
+      parameters:
+      - name: body
+        in: body
+        required: true
+        schema:
+          $ref: '#/definitions/LifecycleStageBody'
+      responses:
+        200:
+          description: Success
+          schema:
+            allOf:
+              - $ref: '#/definitions/ResponseStatus'
+        default:
+          description: Invalid request.
+          schema:
+            allOf:
               - $ref: '#/definitions/ResponseStatus'
               - $ref: '#/definitions/Error'
 
@@ -270,6 +316,29 @@ paths:
             allOf: 
               - $ref: '#/definitions/ResponseStatus'
               - $ref: '#/definitions/Error'
+    post:
+      x-swagger-router-controller: apm1
+      operationId: "addNewAPM1"
+      summary: Create a new apm1
+      description: N/A
+      parameters:
+      - name: body
+        in: body
+        required: true
+        schema:
+          $ref: '#/definitions/APM1Body'
+      responses:
+        200:
+          description: Success
+          schema:
+            allOf:
+              - $ref: '#/definitions/ResponseStatus'
+        default:
+          description: Invalid request.
+          schema:
+            allOf:
+              - $ref: '#/definitions/ResponseStatus'
+              - $ref: '#/definitions/Error'
 
   /apm2:
     get:
@@ -290,6 +359,29 @@ paths:
           description: Invalid request.
           schema:
             allOf: 
+              - $ref: '#/definitions/ResponseStatus'
+              - $ref: '#/definitions/Error'
+    post:
+      x-swagger-router-controller: apm2
+      operationId: "addNewAPM2"
+      summary: Create a new apm2
+      description: N/A
+      parameters:
+      - name: body
+        in: body
+        required: true
+        schema:
+          $ref: '#/definitions/APM2Body'
+      responses:
+        200:
+          description: Success
+          schema:
+            allOf:
+              - $ref: '#/definitions/ResponseStatus'
+        default:
+          description: Invalid request.
+          schema:
+            allOf:
               - $ref: '#/definitions/ResponseStatus'
               - $ref: '#/definitions/Error'
 
@@ -314,6 +406,29 @@ paths:
             allOf: 
               - $ref: '#/definitions/ResponseStatus'
               - $ref: '#/definitions/Error'
+    post:
+      x-swagger-router-controller: industry
+      operationId: "addNewIndustry"
+      summary: Create a new industry
+      description: N/A
+      parameters:
+      - name: body
+        in: body
+        required: true
+        schema:
+          $ref: '#/definitions/IndustryBody'
+      responses:
+        200:
+          description: Success
+          schema:
+            allOf:
+              - $ref: '#/definitions/ResponseStatus'
+        default:
+          description: Invalid request.
+          schema:
+            allOf:
+              - $ref: '#/definitions/ResponseStatus'
+              - $ref: '#/definitions/Error'
 
   /segment:
     get:
@@ -334,6 +449,29 @@ paths:
           description: Invalid request.
           schema:
             allOf: 
+              - $ref: '#/definitions/ResponseStatus'
+              - $ref: '#/definitions/Error'
+    post:
+      x-swagger-router-controller: segment
+      operationId: "addNewSegment"
+      summary: Create a new segment
+      description: N/A
+      parameters:
+      - name: body
+        in: body
+        required: true
+        schema:
+          $ref: '#/definitions/SegmentBody'
+      responses:
+        200:
+          description: Success
+          schema:
+            allOf:
+              - $ref: '#/definitions/ResponseStatus'
+        default:
+          description: Invalid request.
+          schema:
+            allOf:
               - $ref: '#/definitions/ResponseStatus'
               - $ref: '#/definitions/Error'
 
@@ -358,6 +496,29 @@ paths:
             allOf: 
               - $ref: '#/definitions/ResponseStatus'
               - $ref: '#/definitions/Error'
+    post:
+      x-swagger-router-controller: persona
+      operationId: "addNewPersona"
+      summary: Create a new persona
+      description: N/A
+      parameters:
+      - name: body
+        in: body
+        required: true
+        schema:
+          $ref: '#/definitions/PersonaBody'
+      responses:
+        200:
+          description: Success
+          schema:
+            allOf:
+              - $ref: '#/definitions/ResponseStatus'
+        default:
+          description: Invalid request.
+          schema:
+            allOf:
+              - $ref: '#/definitions/ResponseStatus'
+              - $ref: '#/definitions/Error'
 
   /format:
     get:
@@ -378,6 +539,29 @@ paths:
           description: Invalid request.
           schema:
             allOf: 
+              - $ref: '#/definitions/ResponseStatus'
+              - $ref: '#/definitions/Error'
+    post:
+      x-swagger-router-controller: format
+      operationId: "addNewFormat"
+      summary: Create a new format
+      description: N/A
+      parameters:
+      - name: body
+        in: body
+        required: true
+        schema:
+          $ref: '#/definitions/FormatBody'
+      responses:
+        200:
+          description: Success
+          schema:
+            allOf:
+              - $ref: '#/definitions/ResponseStatus'
+        default:
+          description: Invalid request.
+          schema:
+            allOf:
               - $ref: '#/definitions/ResponseStatus'
               - $ref: '#/definitions/Error'
 
@@ -665,7 +849,7 @@ definitions:
       budget:
         type: number
       metrics:
-        type: string
+        type: number
       customerMessage:
         type: string
       regionId:
@@ -721,6 +905,13 @@ definitions:
         items:
           $ref: '#/definitions/Format'
 
+  FormatBody:
+    description: Body used for creating a new format.
+    type: object
+    properties:
+      name:
+        type: string
+
   TacticListResponse:
     description: A list of tactics.
     type: object
@@ -739,6 +930,13 @@ definitions:
         items:
           $ref: '#/definitions/Region'
 
+  RegionBody:
+    description: Body used for creating a new region.
+    type: object
+    properties:
+      name:
+        type: string
+
   LifecycleStageListResponse:
     description: A list of lifecycle stages.
     type: object
@@ -747,6 +945,13 @@ definitions:
         type: array
         items:
           $ref: '#/definitions/LifecycleStage'
+
+  LifecycleStageBody:
+    description: Body used for creating a new lifecycleStage.
+    type: object
+    properties:
+      name:
+        type: string
 
   APM1ListResponse:
     description: A list of apm1.
@@ -757,6 +962,13 @@ definitions:
         items:
           $ref: '#/definitions/APM1'
 
+  APM1Body:
+    description: Body used for creating a new apm1.
+    type: object
+    properties:
+      name:
+        type: string
+
   APM2ListResponse:
     description: A list of apm2.
     type: object
@@ -765,6 +977,13 @@ definitions:
         type: array
         items:
           $ref: '#/definitions/APM2'
+
+  APM2Body:
+    description: Body used for creating a new apm2.
+    type: object
+    properties:
+      name:
+        type: string
 
   IndustryListResponse:
     description: A list of industries.
@@ -775,6 +994,13 @@ definitions:
         items:
           $ref: '#/definitions/Industry'
 
+  IndustryBody:
+    description: Body used for creating a new industry.
+    type: object
+    properties:
+      name:
+        type: string
+
   SegmentListResponse:
     description: A list of segments.
     type: object
@@ -784,6 +1010,13 @@ definitions:
         items:
           $ref: '#/definitions/Segment'
 
+  SegmentBody:
+    description: Body used for creating a new segment.
+    type: object
+    properties:
+      name:
+        type: string
+
   PersonaListResponse:
     description: A list of persona.
     type: object
@@ -792,6 +1025,13 @@ definitions:
         type: array
         items:
           $ref: '#/definitions/Persona'
+
+  PersonaBody:
+    description: Body used for creating a new persona.
+    type: object
+    properties:
+      name:
+        type: string
 
   ResponseStatus:
     type: object
@@ -819,7 +1059,6 @@ definitions:
       result:
         $ref: '#/definitions/Activity'
           
-
   DoLoginBody:
     description: Body used for creating a new user.
     type: object
@@ -829,7 +1068,6 @@ definitions:
       password:
         type: string
         
-  
   Error:
     properties:
       message:

@@ -1,4 +1,5 @@
 import db from '../dbmodels/';
+import { v4 as uuidv4 } from 'uuid';
 
 class Industry {
   static async getAll() {
@@ -28,6 +29,20 @@ class Industry {
         reject(err);
       }
     });
+  }
+
+  static async addNew(body) {
+    try{
+      body.industryId = uuidv4();
+      if(!body.industryId) throw new Error("It was imposible to create a industry due to an id error");
+
+      const industry = await db.Industry.create(body);
+      
+      return industry;
+    } catch (err) {
+      console.error('Error creating industry', err);
+      return 'error';
+    }
   }
 }
 

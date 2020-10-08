@@ -1,4 +1,5 @@
 import db from '../dbmodels/';
+import { v4 as uuidv4 } from 'uuid';
 
 class LifecycleStage {
   static async getAll() {
@@ -24,10 +25,24 @@ class LifecycleStage {
         let data = response.length > 0 ? response[0].dataValues.lifecycleStageId : null;
         resolve(data);
       } catch (err) {
-        console.error('Error getting activity', err);
+        console.error('Error getting lifecycleStage', err);
         reject(err);
       }
     });
+  }
+
+  static async addNew(body) {
+    try{
+      body.lifecycleStageId = uuidv4();
+      if(!body.lifecycleStageId) throw new Error("It was imposible to create a lifecycleStage due to an id error");
+
+      const lifecycleStage = await db.LifecycleStage.create(body);
+      
+      return lifecycleStage;
+    } catch (err) {
+      console.error('Error creating lifecycleStage', err);
+      return 'error';
+    }
   }
 }
 

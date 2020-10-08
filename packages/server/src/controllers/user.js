@@ -17,4 +17,15 @@ const doLogin = async (req, res) => {
   }
 }
 
-export { doLogin }
+const addNewUser = async (req, res) => {  
+  try {
+    const user = await UserModel.addNew(req.body);
+    
+    if(user === 'error') ApiUtils.responseWithError(res, httpStatus.INTERNAL_SERVER_ERROR);
+    else ApiUtils.reposeWithhSuccess(res, user, httpStatus.OK);
+  } catch (err) {
+    ApiUtils.responseWithError(res, httpStatus.INTERNAL_SERVER_ERROR, err.toString());
+  }
+}
+
+export { doLogin, addNewUser }

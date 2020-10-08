@@ -1,4 +1,5 @@
 import Format from '../dbmodels/format';
+import { v4 as uuidv4 } from 'uuid';
 
 class FormatModel {
   static async getAllFormats() {
@@ -37,6 +38,20 @@ class FormatModel {
       else return null;
     } catch (err) {
       console.error('Error getting format list', err);
+      return 'error';
+    }
+  }
+
+  static async addNew(body) {
+    try{
+      body.formatId = uuidv4();
+      if(!body.formatId) throw new Error("It was imposible to create a format due to an id error");
+
+      const format = await db.Format.create(body);
+      
+      return format;
+    } catch (err) {
+      console.error('Error creating format', err);
       return 'error';
     }
   }

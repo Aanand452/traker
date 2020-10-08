@@ -106,50 +106,50 @@ insert into tactic (tactic_id, name) values
   (uuid_generate_v4(), 'Lead Gen');
 
 insert into format (format_id,tactic_id,name) values
-  (uuid_generate_v4(), (select tactic_id from tactic where name = 'Content'), 'Blog'),
-  (uuid_generate_v4(), (select tactic_id from tactic where name = 'Content'), 'Video'),
-  (uuid_generate_v4(), (select tactic_id from tactic where name = 'Content'), 'Demo'),
-  (uuid_generate_v4(), (select tactic_id from tactic where name = 'Content'), 'Report'),
-  (uuid_generate_v4(), (select tactic_id from tactic where name = 'Content'), 'Infographic'),
-  (uuid_generate_v4(), (select tactic_id from tactic where name = 'Content'), 'Podcast'),
-  (uuid_generate_v4(), (select tactic_id from tactic where name = 'Content'), 'Research'),
-  (uuid_generate_v4(), (select tactic_id from tactic where name = 'Content'), 'Direct Mail'),
-  (uuid_generate_v4(), (select tactic_id from tactic where name = 'Content'), 'eBook');
+  (uuid_generate_v4(), null, 'Blog'),
+  (uuid_generate_v4(), null, 'Video'),
+  (uuid_generate_v4(), null, 'Demo'),
+  (uuid_generate_v4(), null, 'Report'),
+  (uuid_generate_v4(), null, 'Infographic'),
+  (uuid_generate_v4(), null, 'Podcast'),
+  (uuid_generate_v4(), null, 'Research'),
+  (uuid_generate_v4(), null, 'Direct Mail'),
+  (uuid_generate_v4(), null, 'eBook');
 
 insert into format (format_id,tactic_id,name) values
-  (uuid_generate_v4(), (select tactic_id from tactic where name = 'Digital'), 'Paid Social'),
-  (uuid_generate_v4(), (select tactic_id from tactic where name = 'Digital'), 'SEM'),
-  (uuid_generate_v4(), (select tactic_id from tactic where name = 'Digital'), 'Display'),
-  (uuid_generate_v4(), (select tactic_id from tactic where name = 'Digital'), 'Email'),
-  (uuid_generate_v4(), (select tactic_id from tactic where name = 'Digital'), 'Organic Social'),
-  (uuid_generate_v4(), (select tactic_id from tactic where name = 'Digital'), 'Website');
+  (uuid_generate_v4(), null, 'Paid Social'),
+  (uuid_generate_v4(), null, 'SEM'),
+  (uuid_generate_v4(), null, 'Display'),
+  (uuid_generate_v4(), null, 'Email'),
+  (uuid_generate_v4(), null, 'Organic Social'),
+  (uuid_generate_v4(), null, 'Website');
 
 insert into format (format_id,tactic_id,name) values
-  (uuid_generate_v4(), (select tactic_id from tactic where name = 'Exec Engagement'), 'Rountable'),
-  (uuid_generate_v4(), (select tactic_id from tactic where name = 'Exec Engagement'), 'SIC'),
-  (uuid_generate_v4(), (select tactic_id from tactic where name = 'Exec Engagement'), 'Exec Visit');
+  (uuid_generate_v4(), null, 'Rountable'),
+  (uuid_generate_v4(), null, 'SIC'),
+  (uuid_generate_v4(), null, 'Exec Visit');
   
 insert into format (format_id,tactic_id,name) values
-  (uuid_generate_v4(), (select tactic_id from tactic where name = 'Event'), 'Strategic'),
-  (uuid_generate_v4(), (select tactic_id from tactic where name = 'Event'), 'Virtual'),
-  (uuid_generate_v4(), (select tactic_id from tactic where name = 'Event'), '3rd Party'),
-  (uuid_generate_v4(), (select tactic_id from tactic where name = 'Event'), 'Keynote');
+  (uuid_generate_v4(), null, 'Strategic'),
+  (uuid_generate_v4(), null, 'Virtual'),
+  (uuid_generate_v4(), null, '3rd Party'),
+  (uuid_generate_v4(), null, 'Keynote');
 
 insert into format (format_id,tactic_id,name) values
-  (uuid_generate_v4(), (select tactic_id from tactic where name = 'Webinar'), 'Webinar');
+  (uuid_generate_v4(), null, 'Webinar');
 
 insert into format (format_id,tactic_id,name) values
-  (uuid_generate_v4(), (select tactic_id from tactic where name = 'Enablement'), 'Enablement');
+  (uuid_generate_v4(), null, 'Enablement');
 
 insert into format (format_id,tactic_id,name) values
-  (uuid_generate_v4(), (select tactic_id from tactic where name = 'Customer Stories'), 'Films');
+  (uuid_generate_v4(), null, 'Films');
 
 insert into format (format_id,tactic_id,name) values
-  (uuid_generate_v4(), (select tactic_id from tactic where name = 'Lead Gen'), 'Lead Buy'),
-  (uuid_generate_v4(), (select tactic_id from tactic where name = 'Lead Gen'), 'Data Purchase'),
-  (uuid_generate_v4(), (select tactic_id from tactic where name = 'Lead Gen'), 'Telenurture'),
-  (uuid_generate_v4(), (select tactic_id from tactic where name = 'Lead Gen'), 'Email'),
-  (uuid_generate_v4(), (select tactic_id from tactic where name = 'Lead Gen'), '3rd Party - Email');
+  (uuid_generate_v4(), null, 'Lead Buy'),
+  (uuid_generate_v4(), null, 'Data Purchase'),
+  (uuid_generate_v4(), null, 'Telenurture'),
+  (uuid_generate_v4(), null, 'Email'),
+  (uuid_generate_v4(), null, '3rd Party - Email');
 
 insert into "user" (user_id, username, password) values
 (uuid_generate_v4(), 'miller.gonzalez@salesforce.com', '1234');
