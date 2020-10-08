@@ -313,9 +313,8 @@ class EditProgramModalComponent extends Component {
               />
             </div>
             <div className="slds-form-element slds-m-bottom_large">
-              <Input
-                placeholder="Enter MP target"
-                label="MP Target"
+              <BudgetInput
+                label="MP target"
                 onChange={(event, data) => this.handleChange("metrics", data.value)}
                 value={this.state.program.metrics || ''}
                 errorText={this.state.error.metrics}

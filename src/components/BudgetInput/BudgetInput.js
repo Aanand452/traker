@@ -25,7 +25,7 @@ const BudgetInput = (props) => {
   return (
     <Input
       placeholder="Enter budget"
-      label="Budget"
+      label={props.label}
       onChange={onChangeInput}
       fixedTextLeft={!hideCurrencySign && "$"}
       onBlur={() => onBlurFormat(props.value)}
