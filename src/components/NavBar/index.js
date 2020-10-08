@@ -20,15 +20,8 @@ const HeaderProfileCustomContent = (props) => (
   <div id="header-profile-custom-popover-content">
     <div className="slds-m-around_medium">
       <div className="slds-tile slds-tile_board slds-m-horizontal_small">
-        <p className="tile__title slds-text-heading_small">User Name</p>
         <div className="slds-tile__detail">
             <p className="slds-truncate">
-            <a
-              className="slds-m-right_medium"
-              onClick={props.onClick}
-            >
-              Settings
-            </a>
             <a onClick={props.onClick}>
               Log Out
             </a>
@@ -115,15 +108,14 @@ class NavBar extends Component{
           {this.props.match.path !== "/home" && (
             <GlobalNavigationBar>
               <GlobalNavigationBarRegion region="primary">
-                <AppLauncher triggerName="SARA">
-                  SARA
+                <AppLauncher triggerName="Reporter">
+                  Reporter
                 </AppLauncher>
               </GlobalNavigationBarRegion>
               <GlobalNavigationBarRegion region="secondary" navigation>
                 <NavigationBarLink to="/home" title="Home" />
-                <NavigationBarLink to="/my-activities" title="My Activities" />
-                <NavigationBarLink to="/programs-view" title="Programs View" />
-                <NavigationBarLink to="/create-program" title="Create Program" />
+                <NavigationBarLink to="/my-activities" title="Activities" />
+                <NavigationBarLink to="/programs-view" title="Programs" />
                 {this.state.tableauUrl !== '/' && <NavigationBarLink title="Go to reports" href={this.state.tableauUrl}/>}
                 
               </GlobalNavigationBarRegion>

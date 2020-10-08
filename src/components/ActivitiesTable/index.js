@@ -308,6 +308,7 @@ class Table extends Component {
           onSort={this.onSort}
           selection={this.props.dataTable.selection}
         >
+          <DataTableColumn label="Owner" property="userId" />
           <DataTableColumn label="Program" property="programId" />
           <DataTableColumn label="Campaign ID" property="campaignId" />
           <DataTableColumn label="Title" property="title" />
