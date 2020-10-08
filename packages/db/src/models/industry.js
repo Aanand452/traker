@@ -4,7 +4,11 @@ import { v4 as uuidv4 } from 'uuid';
 class Industry {
   static async getAll() {
     try{
-      const industries = await db.Industry.findAll();
+      const industries = await db.Industry.findAll({
+        order: [
+          ['name', 'ASC'],
+        ]
+      });
 
       return industries;
     } catch (err) {

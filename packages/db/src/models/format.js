@@ -5,7 +5,10 @@ class FormatModel {
   static async getAllFormats() {
     try {
       const format = await Format.findAll({
-        attributes: ['format_id', 'name']
+        attributes: ['format_id', 'name'],
+        order: [
+          ['name', 'ASC'],
+        ]
       });
       return format;
     } catch (err) {

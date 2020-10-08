@@ -4,7 +4,11 @@ import { v4 as uuidv4 } from 'uuid';
 class APM1 {
   static async getAll() {
     try{
-      const apms = await db.APM1.findAll();
+      const apms = await db.APM1.findAll({
+        order: [
+          ['name', 'ASC'],
+        ]
+      });
 
       return apms;
     } catch (err) {
