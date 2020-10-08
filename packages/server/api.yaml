@@ -665,7 +665,7 @@ definitions:
       budget:
         type: number
       metrics:
-        type: string
+        type: number
       customerMessage:
         type: string
       regionId:
