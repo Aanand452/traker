@@ -279,15 +279,15 @@ class CreateProgramPage extends Component {
               </div>
               <div className="slds-m-bottom_large slds-col slds-size_1-of-2">
                 <BudgetInput
+                  label="budget"
                   onChange={(event, data) => this.handleChange("budget", data.value)}
                   value={this.state.program.budget || ''}
                   errorText={this.state.error.budget}
                 />
               </div>
               <div className="slds-m-bottom_large slds-col slds-size_1-of-2">
-                <Input
-                  placeholder="Enter MP target"
-                  label="MP Target"
+                <BudgetInput
+                  label="MP target"
                   onChange={(event, data) => this.handleChange("metrics", data.value)}
                   value={this.state.program.metrics || ''}
                   errorText={this.state.error.metrics}

@@ -68,7 +68,7 @@ class Step1 extends Component {
           <div className="slds-grid slds-wrap slds-m-left_xx-small slds-m-top_large">
             <div className="slds-m-bottom_large slds-col slds-size_1-of-1">
                 <strong>MP Target:</strong>
-                <p>{this.props.items.metrics}</p>
+                <p>{currencyFormatter(this.props.items.metrics)}</p>
             </div>
             <div className="slds-m-bottom_large slds-col slds-size_1-of-1">
                 <strong>Customer Message:</strong>
