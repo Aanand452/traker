@@ -1,0 +1,113 @@
+model,name
+apm1,Sales
+apm1,Service
+apm1,Commerce
+apm1,Marketing
+apm1,Customer 360 Platform
+apm1,Analytics
+apm1,Premier
+apm1,Integration
+apm1,Other
+apm2,Sales Cloud & Industries
+apm2,Salesforce CPQ
+apm2,Partner Relationship Management (PRM)
+apm2,Salesforce Maps
+apm2,Salesforce Essentials
+apm2,Data.com
+apm2,Service Clcoud & Industries
+apm2,Field Service
+apm2,Self Service
+apm2,Digital Service
+apm2,B2C Commerce
+apm2,B2B Commerce
+apm2,Messaging/Journeys
+apm2,Pardot
+apm2,Datorama
+apm2,Social Studio
+apm2,Audience & Data Studio
+apm2,Interaction Studio
+apm2,Advertising Studio
+apm2,Core Platform
+apm2,Heroku
+apm2,ISV/App Exchange
+apm2,Shield
+apm2,Platform Services
+apm2,myTrailhead
+apm2,Quip
+apm2,Tableau
+apm2,Einstein Analytics
+apm2,"Premier A la Carte & Priority - Sales, Service, Platform"
+apm2,Mulesoft Anypoint Platform
+industry,Aerospace & Defense
+industry,Agriculture & Mining
+industry,All
+industry,Automotive
+industry,Consumer Products & Retail
+industry,Education
+industry,"Engineering, Construction & RE"
+industry,Financial Services
+industry,Healthcare & Life Sciences
+industry,High Tech
+industry,Manufacturing
+industry,Media & Communications
+industry,Other
+industry,Professional Services
+industry,Public Sector
+industry,"Travel, Transport & Hospitality"
+lifecycle,Awareness
+lifecycle,Advocacy
+lifecycle,Consideration
+lifecycle,Decision
+persona,Admin/Ops
+persona,All
+persona,Analytics
+persona,Digital Marketing
+persona,Executive
+persona,Financial Services
+persona,IT
+persona,Marketing
+persona,Not Applicable
+persona,Platform
+persona,Sales
+persona,Service
+persona,HR/Employees
+region,APAC
+region,ANZ
+region,ASEAN
+region,IN
+region,GCR
+segment,EBU
+segment,ESB
+segment,MMGB
+segment,SMB
+format,3rd Party - Email
+format,3rd Party - Virtual Event
+format,ABM
+format,Blog
+format,Content
+format,Content Syndication
+format,Creative
+format,Customer Story
+format,Data Purchase
+format,Demo
+format,Digital
+format,Direct Mail
+format,eBook
+format,Email
+format,Exec Engagement
+format,Executive Visit
+format,Keynote
+format,Launch
+format,Lead Buy
+format,Organic Social
+format,Paid Social
+format,Podcast
+format,Report
+format,Research
+format,SIC
+format,Telenurture
+format,Video
+format,Virtual Event
+format,Webinar
+format,Webinar - 3rd Party
+format,Website
