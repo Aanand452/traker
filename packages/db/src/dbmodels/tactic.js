@@ -21,8 +21,4 @@ Tactic.init({
   timestamps: false
 });
 
-Tactic.associate = models => {
-  Tactic.hasMany(models.Format, {foreignKey: 'tactic_id'});
-}
-
 export default Tactic;
