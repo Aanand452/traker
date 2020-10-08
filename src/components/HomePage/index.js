@@ -20,9 +20,6 @@ const HomePage = () => (
       <Card>
         <CardImage src="assets/images/placeholder-img-horizontal.jpg" alt="placeholder" />
         <CardTitle>Create Activity</CardTitle>
-        <CardBody>
-          a brief description
-        </CardBody>
         <CardAction>
           <Link to="/create-activity">
             <Button variant="brand" label="Create new activity" />
@@ -31,10 +28,7 @@ const HomePage = () => (
       </Card>
       <Card>
         <CardImage src="assets/images/placeholder-img-horizontal.jpg" alt="placeholder" />
-        <CardTitle>Edit Activities / My Activities</CardTitle>
-        <CardBody>
-          a brief description
-        </CardBody>
+        <CardTitle>View/edit Activities</CardTitle>
         <CardAction>
           <Link to="/my-activities">
             <Button variant="brand" label="Go to My Activities" />
@@ -43,26 +37,19 @@ const HomePage = () => (
       </Card>
       <Card>
         <CardImage src="assets/images/placeholder-img-horizontal.jpg" alt="placeholder" />
-        <CardTitle>Programs View</CardTitle>
-        <CardBody>
-          a brief description
-        </CardBody>
+        <CardTitle>Create Program</CardTitle>
         <CardAction>
-          <Link to="/programs-view">
-            <Button variant="brand" label="Go to Programs View" />
+          <Link to="/create-program">
+            <Button variant="brand" label="Create new program" />
           </Link>
         </CardAction>
       </Card>
       <Card>
         <CardImage src="assets/images/placeholder-img-horizontal.jpg" alt="placeholder" />
-        <CardTitle>Create Program</CardTitle>
-        <CardBody>
-          a brief description <br />
-          (Only displayed for Admin and Superuser)
-        </CardBody>
+        <CardTitle>View/edit Programs</CardTitle>
         <CardAction>
-          <Link to="/create-program">
-            <Button variant="brand" label="Create new program" />
+          <Link to="/programs-view">
+            <Button variant="brand" label="Go to Programs View" />
           </Link>
         </CardAction>
       </Card>
