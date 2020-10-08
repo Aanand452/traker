@@ -38,12 +38,10 @@ class CreateActivity extends Component {
     steps: [
       {
         step: 1,
-        trail: <a onClick={() => this.handleStep(1)}>Select program</a>,
         active: true
       },
       {
         step: 2,
-        trail: <a>Create activity</a>,
         active: false
       }
     ],
