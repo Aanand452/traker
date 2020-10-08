@@ -1,4 +1,5 @@
 import db from '../dbmodels/';
+import { v4 as uuidv4 } from 'uuid';
 
 class APM2 {
   static async getAll() {
@@ -28,6 +29,20 @@ class APM2 {
         reject(err);
       }
     });
+  }
+
+  static async addNew(body) {
+    try{
+      body.apm2Id = uuidv4();
+      if(!body.apm2Id) throw new Error("It was imposible to create a apm2 due to an id error");
+
+      const apm2 = await db.APM2.create(body);
+      
+      return apm2;
+    } catch (err) {
+      console.error('Error creating apm2', err);
+      return 'error';
+    }
   }
 }
 

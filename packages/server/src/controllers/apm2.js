@@ -13,4 +13,15 @@ const getAllAPM2 = async (req, res) => {
   }
 }
 
-export { getAllAPM2 }
+const addNewAPM2 = async (req, res) => {  
+  try {
+    const apm = await APM2.addNew(req.body);
+    
+    if(apm === 'error') ApiUtils.responseWithError(res, httpStatus.INTERNAL_SERVER_ERROR);
+    else ApiUtils.reposeWithhSuccess(res, apm, httpStatus.OK);
+  } catch (err) {
+    ApiUtils.responseWithError(res, httpStatus.INTERNAL_SERVER_ERROR, err.toString());
+  }
+}
+
+export { getAllAPM2, addNewAPM2 }

@@ -13,4 +13,15 @@ const getAllPersonas = async (req, res) => {
   }
 }
 
-export { getAllPersonas }
+const addNewPersona = async (req, res) => {  
+  try {
+    const persona = await Persona.addNew(req.body);
+    
+    if(persona === 'error') ApiUtils.responseWithError(res, httpStatus.INTERNAL_SERVER_ERROR);
+    else ApiUtils.reposeWithhSuccess(res, persona, httpStatus.OK);
+  } catch (err) {
+    ApiUtils.responseWithError(res, httpStatus.INTERNAL_SERVER_ERROR, err.toString());
+  }
+}
+
+export { getAllPersonas, addNewPersona }

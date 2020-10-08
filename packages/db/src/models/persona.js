@@ -1,4 +1,5 @@
 import db from '../dbmodels/';
+import { v4 as uuidv4 } from 'uuid';
 
 class Persona {
   static async getAll() {
@@ -30,6 +31,19 @@ class Persona {
     });
   }
   
+  static async addNew(body) {
+    try{
+      body.personaId = uuidv4();
+      if(!body.personaId) throw new Error("It was imposible to create a persona due to an id error");
+
+      const persona = await db.Persona.create(body);
+      
+      return persona;
+    } catch (err) {
+      console.error('Error creating persona', err);
+      return 'error';
+    }
+  }
 }
 
 export default Persona;

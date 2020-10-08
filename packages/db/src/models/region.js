@@ -1,4 +1,5 @@
 import db from '../dbmodels/';
+import { v4 as uuidv4 } from 'uuid';
 
 class RegionModel {
   static async getAllRegions() {
@@ -30,6 +31,20 @@ class RegionModel {
         reject(err);
       }
     });
+  }
+
+  static async addNew(body) {
+    try{
+      body.regionId = uuidv4();
+      if(!body.regionId) throw new Error("It was imposible to create a region due to an id error");
+
+      const region = await db.Region.create(body);
+      
+      return region;
+    } catch (err) {
+      console.error('Error creating region', err);
+      return 'error';
+    }
   }
 }
 
