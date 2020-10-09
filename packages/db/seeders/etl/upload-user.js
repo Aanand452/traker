@@ -20,6 +20,12 @@ else{
 
 const readAndInsertRow = async row => {
   try{
+    const userExist = await User.getUserId(row[0]);
+    if(userExist) {
+      console.log('User already created: ', row[1]);
+      return false;
+    }
+
     const body = {
       username: row[0],
       name: row[1],
