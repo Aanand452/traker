@@ -22,7 +22,7 @@ class UserModel {
     try{
       const user = await db.User.findAll({
         where: {
-          username: usr
+          name: usr
         },
         raw: true
       });
