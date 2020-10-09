@@ -108,8 +108,8 @@ class NavBar extends Component{
           {this.props.match.path !== "/home" && (
             <GlobalNavigationBar>
               <GlobalNavigationBarRegion region="primary">
-                <AppLauncher triggerName="Reporter">
-                  Reporter
+                <AppLauncher triggerName="Activity Tracker">
+                  Activity Tracker
                 </AppLauncher>
               </GlobalNavigationBarRegion>
               <GlobalNavigationBarRegion region="secondary" navigation>
