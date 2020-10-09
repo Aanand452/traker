@@ -28,10 +28,10 @@ const HomePage = () => (
       </Card>
       <Card>
         <CardImage src="assets/images/placeholder-img-horizontal.jpg" alt="placeholder" />
-        <CardTitle>View/edit Activities</CardTitle>
+        <CardTitle>View/Edit Activities</CardTitle>
         <CardAction>
           <Link to="/my-activities">
-            <Button variant="brand" label="Go to My Activities" />
+            <Button variant="brand" label="Activities" />
           </Link>
         </CardAction>
       </Card>
@@ -46,10 +46,10 @@ const HomePage = () => (
       </Card>
       <Card>
         <CardImage src="assets/images/placeholder-img-horizontal.jpg" alt="placeholder" />
-        <CardTitle>View/edit Programs</CardTitle>
+        <CardTitle>View/Edit Programs</CardTitle>
         <CardAction>
           <Link to="/programs-view">
-            <Button variant="brand" label="Go to Programs View" />
+            <Button variant="brand" label="Programs" />
           </Link>
         </CardAction>
       </Card>
