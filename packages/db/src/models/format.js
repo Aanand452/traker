@@ -5,7 +5,10 @@ class FormatModel {
   static async getAllFormats() {
     try {
       const format = await Format.findAll({
-        attributes: ['format_id', 'name']
+        attributes: ['format_id', 'name'],
+        order: [
+          ['name', 'ASC'],
+        ]
       });
       return format;
     } catch (err) {
@@ -47,7 +50,7 @@ class FormatModel {
       body.formatId = uuidv4();
       if(!body.formatId) throw new Error("It was imposible to create a format due to an id error");
 
-      const format = await db.Format.create(body);
+      const format = await Format.create(body);
       
       return format;
     } catch (err) {

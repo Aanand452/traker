@@ -4,7 +4,11 @@ import { v4 as uuidv4 } from 'uuid';
 class Segment {
   static async getAll() {
     try{
-      const segments = await db.Segment.findAll();
+      const segments = await db.Segment.findAll({
+        order: [
+          ['name', 'ASC'],
+        ]
+      });
 
       return segments;
     } catch (err) {
