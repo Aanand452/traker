@@ -93,6 +93,7 @@ class ProgramModel {
 
       return program[0].programId;
     } catch (err) {
+      //thrown an error or save into log file
       //console.error('ETL: Error getting program list', name);
     }
   };

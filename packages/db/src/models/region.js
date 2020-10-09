@@ -27,6 +27,7 @@ class RegionModel {
           }
         });
   
+        //thrown an error or save into log file if the response.length = 0
         let data = response.length === 1 ? response[0].dataValues.regionId : null;
         resolve(data);
       } catch (err) {
