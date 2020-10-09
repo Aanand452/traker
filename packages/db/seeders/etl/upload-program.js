@@ -1,13 +1,13 @@
 import fs from 'fs';
 import parse from 'csv-parse';
-import region from '@sara/db/src/models/region';
+import Region from '@sara/db/src/models/region';
 import APM1 from '@sara/db/src/models/apm1';
 import APM2 from '@sara/db/src/models/apm2';
-import industry from '@sara/db/src/models/industry';
+import Industry from '@sara/db/src/models/industry';
 import LifecycleStage from '@sara/db/src/models/lifecycleStage';
-import segment from '@sara/db/src/models/segment';
-import persona from '@sara/db/src/models/persona';
-import program from '@sara/db/src/models/program';
+import Segment from '@sara/db/src/models/segment';
+import Persona from '@sara/db/src/models/persona';
+import Program from '@sara/db/src/models/program';
 import currencyFormatter from 'currency-formatter';
 
 var myArgs = process.argv.slice(2);
@@ -28,38 +28,78 @@ else{
 
 const readAndInsertRow = async row => {
   try{
-    let regionId = region.getByName(row[5]);
-    let apm1Id = APM1.getByName(row[7]);
-    let apm2Id = APM2.getByName(row[8]);
-    let industryId = industry.getByName(row[9]);
-    let lifecycleStageId = LifecycleStage.getByName(row[6]);
-    let segmentId = segment.getByName(row[10]);
-    let personaId = persona.getByName(row[11]);
-    let message = row[12]
-    let owner = row[1]
-    let name = row[0]
-    
-    let values = await Promise.all([regionId, apm1Id, apm2Id, industryId, lifecycleStageId, segmentId, personaId])
+    if(row[5]) {
+      var regionId = await Region.getByName(row[5]);
+      if(!regionId) {
+        console.log("Region not identified: ", row[5]);
+        return false;
+      }
+    }
+    if(row[6]) {
+      var lifecycleStageId = await LifecycleStage.getByName(row[6]);
+      if(!lifecycleStageId) {
+        console.log("lifecycle satge not identified: ", row[6]);
+        return false;
+      }
+    }
+    if(row[7]) {
+      var apm1Id = await APM1.getByName(row[7]);
+      if(!apm1Id) {
+        console.log("apm1 not identified: ", row[7]);
+        return false;
+      }
+    }
+    if(row[8]) {
+      var apm2Id = await APM2.getByName(row[8]);
+      if(!apm2Id) {
+        console.log("apm2 not identified: ", row[8]);
+        return false;
+      }
+    }
+    if(row[9]) {
+      var industryId = await Industry.getByName(row[9]);
+      if(!industryId) {
+        console.log("industry not identified: ", row[9]);
+        return false;
+      }
+    }
+    if(row[10]) {
+      var segmentId = await Segment.getByName(row[10]);
+      if(!segmentId) {
+        console.log("segment not identified: ", row[10]);
+        return false;
+      }
+    }
+    if(row[11]) {
+      var personaId = await Persona.getByName(row[11]);
+      if(!personaId) {
+        console.log("persona not identified: ", row[11]);
+        return false;
+      }
+    }
   
-    let body = {};
-    body.targetRegion = values[0];
-    body.apm1 = values[1];
-    body.apm2 = values[2];
-    body.industry = values[3];
-    body.lifecycleStage = values[4];
-    body.segment = values[5];
-    body.persona = values[6];
-    body.owner = owner;
-    body.name = name;
-    body.customerMessage = message;
-    body.budget = row[2] ? currencyFormatter.unformat(row[2], { code: 'USD' }) : null;
-    body.metrics =  row[3] ? currencyFormatter.unformat(row[3], { code: 'USD' }) : null;
-    body.otherKPI = row[5];
+    const body = {
+      name: row[0],
+      owner: row[1],
+      budget: row[2] ? currencyFormatter.unformat(row[2], { code: 'USD' }) : null,
+      metrics: row[3] ? currencyFormatter.unformat(row[3], { code: 'USD' }) : null,
+      otherKpis: row[4],
+      regionId,
+      lifecycleStageId,
+      apm1Id,
+      apm2Id,
+      industryId,
+      segmentId,
+      personaId,
+      customerMessage: row[12]
+    };
     
-    const prog = await program.etlAddNewProgram(body);
-    console.log('inserted', body.name);
+    const program = await Program.addNewProgram(body);
+
+    if(program === "Error" || !program) throw new Error("Error saving the program");
+    else console.log('Program inserted: ', body.name);
   } catch(err){
-    console.log('not inserted', body.name, err);
+    console.log('Program not inserted', err);
   }
   
 }
