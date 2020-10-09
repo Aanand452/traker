@@ -22,11 +22,12 @@ class UserModel {
     try{
       const user = await db.User.findAll({
         where: {
-          username: usr
+          name: usr
         },
         raw: true
       });
       
+      //thrown an error or save into log file if the response.length = 0
       if(user.length > 0 ) return user[0].userId;
       else return null;
     } catch (err) {

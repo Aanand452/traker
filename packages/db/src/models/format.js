@@ -37,6 +37,7 @@ class FormatModel {
         raw: true
       });
 
+      //thrown an error or save into log file if the response.length = 0
       if(format.length > 0 ) return format[0].formatId;
       else return null;
     } catch (err) {
