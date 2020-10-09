@@ -12,7 +12,8 @@
     "build": "rm -fr build && yarn babel --config-file ../../babel.config.stable.js src --out-dir build",
     "import-programs": "babel-node --presets @babel/env ./seeders/etl/upload-program.js",
     "import-activities": "babel-node --presets @babel/env ./seeders/etl/upload-activity.js",
-    "import-users": "babel-node --presets @babel/env ./seeders/etl/upload-user.js"
+    "import-users": "babel-node --presets @babel/env ./seeders/etl/upload-user.js",
+    "import-minor-tables": "babel-node --presets @babel/env ./seeders/etl/upload-minor-tables.js"
   },
   "dependencies": {
     "@babel/preset-env": "^7.11.5",
