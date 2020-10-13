@@ -20,9 +20,9 @@ else{
 
 const readAndInsertRow = async row => {
   try{
-    const userExist = await User.getUserId(row[0]);
+    const userExist = await User.getUserId(row[1]);
     if(userExist) {
-      console.log('User already created: ', row[1]);
+      console.log('\x1b[33mUser not inserted: already exists (', row[1], ')\x1b[0m');
       return false;
     }
 
@@ -36,7 +36,7 @@ const readAndInsertRow = async row => {
 
     if(user === Error) {
       throw new Error("Error save the user");
-    } else console.log('User inserted: ', body.name);
+    } else console.log('\x1b[32mUser inserted: ', body.name, '\x1b[0m');
   } catch(err){
     console.log('User not inserted: ', body.name, err);
   }

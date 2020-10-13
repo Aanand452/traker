@@ -91,7 +91,8 @@ class ProgramModel {
         raw : true 
       });
 
-      return program[0].programId;
+      if(program.length) return program[0].programId;
+      else return false;
     } catch (err) {
       //thrown an error or save into log file
       //console.error('ETL: Error getting program list', name);
