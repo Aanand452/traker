@@ -1,10 +1,10 @@
 import fs from 'fs';
 import parse from 'csv-parse';
-import region from '@sara/db/src/models/region';
-import format from '@sara/db/src/models/format';
-import user from '@sara/db/src/models/user';
-import activity from '@sara/db/src/models/activity';
-import program from '@sara/db/src/models/program';
+import Region from '@sara/db/src/models/region';
+import Format from '@sara/db/src/models/format';
+import User from '@sara/db/src/models/user';
+import Activity from '@sara/db/src/models/activity';
+import Program from '@sara/db/src/models/program';
 import moment from 'moment';
 
 var myArgs = process.argv.slice(2);
@@ -18,7 +18,7 @@ else{
     parse(fileData, {columns: false, trim: true}, function(err, rows) {
       err && console.error(err);
       rows = rows.slice(1);
-      rows.forEach(readAndInsertRow);
+      rows.forEach((row, index) => readAndInsertRow(row, index+2));
     })
   })
 }
@@ -27,36 +27,64 @@ const parseDate = (date) => {
   return null;
 }
 
-const readAndInsertRow = async row => {
+const readAndInsertRow = async (row, index) => {
   try{
-    let regionId = await region.getByName(row[4]);
-    let programId = await program.etlGetProgramByName(row[9]);
-    let formatId = await format.etlGetFormatsByName(row[2]);
-    let userId = await user.getUserId(row[8]);
-
-    if(regionId && programId && formatId && userId) {
-      let values = await Promise.all([regionId, programId, formatId, userId]);
-  
-      let body = {};
-      body.regionId = values[0];
-      body.programId = values[1];
-      body.formatId = values[2];
-      body.userId = values[3];
-      body.title = row[0];
-      body.campaignId = row[1]
-      body.endDate = parseDate(row[6])
-      body.startDate = parseDate(row[5])
-      body.abstract = row[3]
-      body.asset = row[7]
-      body.tacticId = 'to be erased'
-      
-      await activity.addNewActivity(body);
-      console.log('activity added:', body.title);
+    const activityId = await Activity.ETLCheckActivityExists(row[0], row[3], row[7]);
+    if(activityId){
+      console.log(`\x1b[33m[${index}] Activity not inserted: already exists (${row[0]})\x1b[0m`);
+      return false;
     }
+
+    if(row[4]) {
+      var regionId = await Region.getByName(row[4]);
+      if(!regionId) {
+        console.log(`\x1b[31m[${index}] Region not identified: ${row[4]}\x1b[0m`);
+        regionId = null;
+      }
+    }
+
+    if(row[9]) {
+      var programId = await Program.etlGetProgramByName(row[9]);
+      if(!programId) {
+        console.log(`\x1b[31m[${index}] Program not identified: ${row[9]}\x1b[0m`);
+        programId = null;
+      }
+    }
+
+    if(row[2]) {
+      var formatId = await Format.etlGetFormatsByName(row[2]);
+      if(!formatId) {
+        console.log(`\x1b[31m[${index}] Format not identified: ${row[2]}\x1b[0m`);
+        formatId = null;
+      }
+    }
+
+    if(row[8]) {
+      var userId = await User.getUserId(row[8]);
+      if(!userId) {
+        console.log(`\x1b[31m[${index}] User not identified: ${row[8]}\x1b[0m`);
+        userId = null;
+      }
+    }
+
+    const body = {
+      title: row[0],
+      campaignId: row[1],
+      formatId,
+      abstract: row[3],
+      regionId,
+      startDate: parseDate(row[5]),
+      endDate: parseDate(row[6]),
+      asset: row[7],
+      userId,
+      programId
+    };
+    
+    const activity = await Activity.addNewActivity(body);
+
+    if(activity === "error" || !activity) throw new Error(`Error saving the activity`);
+    else console.log(`\x1b[32m[${index}] Activity inserted: ${body.title}\x1b[0m`);
   } catch(err){
-    console.error('not inserted', err);
-  }
-  
+    console.error('Activity not inserted', err);
+  } 
 }
-
-

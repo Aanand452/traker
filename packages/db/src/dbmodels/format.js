@@ -22,7 +22,7 @@ Format.init({
 });
 
 Format.associate = models => {
-  Format.hasMany(models.Activity, {foreignKey: 'format_id'});
+  // Format.hasMany(models.Activity, {foreignKey: 'format_id'});
 }
 
 export default Format;
