@@ -217,6 +217,48 @@ class EditActivityModalComponent extends Component {
     return errors;
   }
 
+  cloneTable = async e => {
+    e.preventDefault();
+
+    try {
+      let body = {
+        title: this.state.title,
+        campaignId: this.state.campaignId,
+        formatId: this.state.formatSelection[0] && this.state.formatSelection[0].id,
+        abstract: this.state.abstract,
+        regionId: this.state.regionSelection[0] && this.state.regionSelection[0].id,
+        startDate: this.state.startDate,
+        endDate: this.state.endDate,
+        asset: this.state.asset,
+        userId: localStorage.getItem('userId'),
+        programId: this.state.programSelection[0] && this.state.programSelection[0].id,
+      }
+
+      if(Object.values(this.validate(body)).some(el => el)) return;
+      
+      body = this.parseDatesGTM(body);
+
+      const config = {
+        method: 'POST',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(body)
+      }
+
+      let response = await fetch(`${this.API_URL}/activity`, config);
+      if(response.status === 200) {
+        this.toggleModal();
+        this.props.onToast(true, "The campaign was created successfully", "success");
+        this.props.reloadActivities();
+      } else throw new Error(response);
+    } catch (err) {
+      console.error(err);
+      this.props.onToast(true, "Something went wrong, please try again", "error");
+    }
+  }
+
   editTable = async e => {
     e.preventDefault();
     
@@ -262,7 +304,7 @@ class EditActivityModalComponent extends Component {
           asset: this.state.asset,
           id: this.props.data.id
         });
-        this.props.toggleOpen();
+        this.toggleModal();
         this.props.onToast(true, "The campaign was edited successfully", "success");
         this.props.reloadActivities();
       } else throw new Error(response);
@@ -272,16 +314,24 @@ class EditActivityModalComponent extends Component {
     }
   }
 
+  toggleModal = () => {
+    if(this.props.isClone) {
+      this.props.toggleOpen("cloneModalIsOPen")
+    } else {
+      this.props.toggleOpen("editModalIsOPen")
+    }
+  }
+
 	render() {        
 		return (
       <IconSettings iconPath="/assets/icons">
         <Modal
           isOpen={true}
           footer={[
-            <Button label="Cancel" onClick={this.props.toggleOpen} key="CancelButton" />,
-            <Button type="submit" label="Save" variant="brand" onClick={this.editTable} key="SubmitButton" />,
+            <Button label="Cancel" onClick={this.toggleModal} key="CancelButton" />,
+            <Button type="submit" label={this.props.isClone ? "Create activity" : "Save"} variant="brand" onClick={this.props.isClone ? this.cloneTable : this.editTable} key="SubmitButton" />,
           ]}
-          onRequestClose={this.props.toggleOpen}
+          onRequestClose={this.toggleModal}
           heading={this.props.title}
           ariaHideApp={false}
         >
