@@ -92,19 +92,17 @@ Program.init({
 });
 
 Program.associate = models => {
-/*  
-  Program.belongsToMany(models.User, { 
-    through: 'program_user',
-    foreignKey: 'program_id'
-  });
-  Program.belongsTo(models.Region, {foreignKey: 'target_region'});
-  Program.belongsTo(models.LifecycleStage, {foreignKey: 'lifecycle_stage'});
-  Program.belongsTo(models.APM1, {foreignKey: 'apm1'});
-  Program.belongsTo(models.APM2, {foreignKey: 'apm2'});
-  Program.belongsTo(models.Industry, {foreignKey: 'industry'});
-  Program.belongsTo(models.Segment, {foreignKey: 'segment'});
-  Program.belongsTo(models.Persona, {foreignKey: 'persona'});
-*/
+  // Program.belongsToMany(models.User, { 
+  //   through: 'program_user',
+  //   foreignKey: 'program_id'
+  // });
+  // Program.belongsTo(models.Region, {foreignKey: 'target_region'});
+  // Program.belongsTo(models.LifecycleStage, {foreignKey: 'lifecycle_stage'});
+  // Program.belongsTo(models.APM1, {foreignKey: 'apm1'});
+  // Program.belongsTo(models.APM2, {foreignKey: 'apm2'});
+  // Program.belongsTo(models.Industry, {foreignKey: 'industry'});
+  // Program.belongsTo(models.Segment, {foreignKey: 'segment'});
+  // Program.belongsTo(models.Persona, {foreignKey: 'persona'});
 }
 
 export default Program;

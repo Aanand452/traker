@@ -83,7 +83,7 @@ const readAndInsertRow = async (row, index) => {
     const activity = await Activity.addNewActivity(body);
 
     if(activity === "error" || !activity) throw new Error(`Error saving the activity`);
-    else console.log(`\x1b[32m[${index}] Activity inserted: ${body.title}\x1b[0m`);
+    // else console.log(`\x1b[32m[${index}] Activity inserted: ${body.title}\x1b[0m`);
   } catch(err){
     console.error('Activity not inserted', err);
   } 
