@@ -36,7 +36,7 @@ User.associate = models => {
   //   through: 'program_user',
   //   foreignKey: 'user_id'
   // });
-  User.hasMany(models.Activity, {foreignKey: 'user_id'});
+  // User.hasMany(models.Activity, {foreignKey: 'user_id'});
 }
 
 export default User;
