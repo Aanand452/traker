@@ -6,7 +6,10 @@ import {
   Input,
   Datepicker,
   Button,
-  Textarea
+  Textarea,
+  Toast,
+  ToastContainer,
+  IconSettings
 } from '@salesforce/design-system-react';
 
 import { getAPIUrl } from '../../../config/config';
@@ -14,7 +17,13 @@ import { getAPIUrl } from '../../../config/config';
 class Step2 extends Component {
 
   state = {
-    formats: [] 
+    formats: [],
+    toast: {
+      variant: 'error',
+      heading: 'Something went wrong',
+      duration: 5000,
+      active: false
+    }
   };
 
   componentDidMount() {
@@ -34,10 +43,9 @@ class Step2 extends Component {
       
       if(request.status === 200) {
         let { result } = await request.json();
-        console.log(result)
         let formats = result.map(item => ({id: item.format_id, label: item.name}));
         this.setState({ formats });
-      } else new Error(request);
+      } else throw new Error(request);
     } catch (err) {
       this.setState({toast: {...this.state.toast, active: true}});
       console.error(err);
@@ -47,6 +55,18 @@ class Step2 extends Component {
   render() {
     return (
       <Fragment>
+        {
+          this.state.toast.active && (<IconSettings iconPath="/assets/icons">
+            <ToastContainer>
+              <Toast
+                labels={{ heading: this.state.toast.heading }}
+                variant={this.state.toast.variant}
+                duration={this.state.toast.duration}
+                onRequestClose={() => this.setState({toast: {active: false}})}
+              />
+            </ToastContainer>
+          </IconSettings>)
+        }
         <div className="slds-m-bottom_large slds-col slds-size_1-of-2">
           <Input
             placeholder="Enter Campaign Id"
