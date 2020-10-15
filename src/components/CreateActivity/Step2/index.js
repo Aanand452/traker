@@ -9,7 +9,40 @@ import {
   Textarea
 } from '@salesforce/design-system-react';
 
+import { getAPIUrl } from '../../../config/config';
+
 class Step2 extends Component {
+
+  state = {
+    formats: [] 
+  };
+
+  componentDidMount() {
+    this.setupAndFetch();
+  }
+
+  setupAndFetch = async () => {
+    if(window.location.hostname === 'localhost') this.API_URL =  "http://localhost:3000/api/v1";
+    else this.API_URL = await getAPIUrl();
+    
+    this.getFormats();
+  }
+
+  async getFormats() {
+    try {
+      const request = await fetch(`${this.API_URL}/format`);
+      
+      if(request.status === 200) {
+        let { result } = await request.json();
+        console.log(result)
+        let formats = result.map(item => ({id: item.format_id, label: item.name}));
+        this.setState({ formats });
+      } else new Error(request);
+    } catch (err) {
+      this.setState({toast: {...this.state.toast, active: true}});
+      console.error(err);
+    }
+  }
 
   render() {
     return (
@@ -28,7 +61,7 @@ class Step2 extends Component {
             events={{onSelect: (event, data) => data.selection.length && this.props.handleChange("format", data.selection)}}
             labels={{label: 'Format'}}
             name="format"
-            options={this.props.formats}
+            options={this.state.formats}
             selection={this.props.row.format}
             value="format"  
             variant="readonly"

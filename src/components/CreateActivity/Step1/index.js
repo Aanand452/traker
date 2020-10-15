@@ -13,7 +13,6 @@ import { currencyFormatter } from "../../../utils/fomatters";
 
 class Step1 extends Component {
   state = {
-    programs: [],
     items: {},
     toast: {
       variant: 'error',

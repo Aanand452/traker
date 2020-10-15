@@ -67,25 +67,8 @@ class CreateActivity extends Component {
     else this.API_URL = await getAPIUrl();
     
     this.getUser();
-    this.getFormats();
     this.checkRegion();
     this.props.getFormData(this.state.row);
-  }
-
-  async getFormats() {
-    try {
-      const request = await fetch(`${this.API_URL}/format`);
-      const response = await request.json();
-
-      if(response.info.code === 200) {
-        const formatsList = response.result.map(item => ({...item, id: item.format_id, label: item.name}))
-
-        this.setState({formats: formatsList});
-      } else new Error(response);
-    } catch (err) {
-      this.setState({toast: {...this.state.toast, active: true}});
-      console.error(err);
-    }
   }
 
   async checkRegion() {
@@ -290,6 +273,7 @@ class CreateActivity extends Component {
               row={this.state.row}
               handleStep={this.handleStep}
               handleChange={this.handleChange}
+              getFormats={this.getFormats}
               error={this.state.error}
               step={this.state.steps.filter(el => el.active).length}
               programs={this.state.programs}
