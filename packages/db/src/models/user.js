@@ -35,6 +35,22 @@ class UserModel {
     }
   }
 
+  static async getUserByEmail(email) {
+    try{
+      const user = await db.User.findAll({
+        where: {
+          username: email
+        },
+        raw: true
+      });
+      
+      if(user.length) return user[0].userId;
+      else return false;
+    } catch (err) {
+      console.error('Error getting user', err);
+    }
+  }
+
   static async addNew(body) {
     try{
       body.userId = uuidv4();

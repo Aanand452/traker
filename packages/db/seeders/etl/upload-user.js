@@ -20,7 +20,7 @@ else{
 
 const readAndInsertRow = async row => {
   try{
-    const userExist = await User.getUserId(row[1]);
+    const userExist = await User.getUserByEmail(row[0]);
     if(userExist) {
       console.log('\x1b[33mUser not inserted: already exists (', row[1], ')\x1b[0m');
       return false;
