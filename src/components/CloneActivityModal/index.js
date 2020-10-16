@@ -249,7 +249,7 @@ class CloneActivityModalComponent extends Component {
             <Button type="submit" label="Create" variant="brand" onClick={this.cloneTable} key="SubmitButton" />,
           ]}
           onRequestClose={() => this.props.toggleOpen("cloneModalIsOPen")}
-          heading="Create activity"
+          heading="Clone activity"
           ariaHideApp={false}
         >
           <section className="slds-p-around_large">
