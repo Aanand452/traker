@@ -43,7 +43,7 @@ class Step2 extends Component {
       
       if(request.status === 200) {
         let { result } = await request.json();
-        let formats = result.map(item => ({id: item.format_id, label: item.name}));
+        let formats = result.map(item => ({...item, id: item.format_id, label: item.name}));
         this.setState({ formats });
       } else throw new Error(request);
     } catch (err) {
