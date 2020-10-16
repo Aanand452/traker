@@ -13,13 +13,8 @@ import {
   Textarea
 } from '@salesforce/design-system-react';
 
-// ACTIONS
-import {
-  editItem
-} from '../../actions/DataTable';
 
-
-class EditActivityModalComponent extends Component {
+class CloneActivityModalComponent extends Component {
 
   state = {
     program: [],
@@ -181,21 +176,6 @@ class EditActivityModalComponent extends Component {
     this.setState({[e.target.id]: e.target.value, errors});
   }
 
-  isUrl = data => {
-    let regexp = new RegExp(/^((ftp|http|https):\/\/)?www\.([A-z]+)\.([A-z]{2,})/);
-    return regexp.test(data);
-  }
-
-  parseDatesToLocal = row => {
-    let startDate =  moment.tz(row.startDate, moment.tz.guess()).toString();
-    let endDate =  moment.tz(row.endDate, moment.tz.guess()).toString();
-
-    row.startDate = startDate;
-    row.endDate = endDate;
-
-    return row;
-  }
-
   parseDatesGTM = row => {
     row.startDate = moment(row.startDate, 'DD/MM/YYYY').format();
     row.endDate = moment(row.endDate, 'DD/MM/YYYY').format();
@@ -217,9 +197,9 @@ class EditActivityModalComponent extends Component {
     return errors;
   }
 
-  editTable = async e => {
+  cloneTable = async e => {
     e.preventDefault();
-    
+
     try {
       let body = {
         title: this.state.title,
@@ -233,37 +213,24 @@ class EditActivityModalComponent extends Component {
         userId: localStorage.getItem('userId'),
         programId: this.state.programSelection[0] && this.state.programSelection[0].id,
       }
-      
+
       if(Object.values(this.validate(body)).some(el => el)) return;
       
       body = this.parseDatesGTM(body);
 
       const config = {
-        method: 'PUT',
+        method: 'POST',
         headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
         },
         body: JSON.stringify(body)
       }
 
-      let response = await fetch(`${this.API_URL}/activity/${this.props.data.activityId}`, config);
-      
+      let response = await fetch(`${this.API_URL}/activity`, config);
       if(response.status === 200) {
-        this.props.editItem(this.props.dataTable.items, {
-          campaignId: this.state.campaignId,
-          program: this.state.programSelection[0] && this.state.programSelection[0].program_id,
-          format: this.state.formatSelection[0] && this.state.formatSelection[0].format_id,
-          region: this.state.regionSelection[0] && this.state.regionSelection[0].region_id,
-          title: this.state.title,
-          abstract: this.state.abstract,
-          startDate: this.state.startDate,
-          endDate: this.state.endDate,
-          asset: this.state.asset,
-          id: this.props.data.id
-        });
-        this.props.toggleOpen("editModalIsOPen")
-        this.props.onToast(true, "The campaign was edited successfully", "success");
+        this.props.toggleOpen("cloneModalIsOPen");
+        this.props.onToast(true, "The campaign was created successfully", "success");
         this.props.reloadActivities();
       } else throw new Error(response);
     } catch (err) {
@@ -278,11 +245,11 @@ class EditActivityModalComponent extends Component {
         <Modal
           isOpen={true}
           footer={[
-            <Button label="Cancel" onClick={() => this.props.toggleOpen("editModalIsOPen")} key="CancelButton" />,
-            <Button type="submit" label="Save" variant="brand" onClick={this.editTable} key="SubmitButton" />,
+            <Button label="Cancel" onClick={() => this.props.toggleOpen("cloneModalIsOPen")} key="CancelButton" />,
+            <Button type="submit" label="Create" variant="brand" onClick={this.cloneTable} key="SubmitButton" />,
           ]}
-          onRequestClose={() => this.props.toggleOpen("editModalIsOPen")}
-          heading="Edit activity"
+          onRequestClose={() => this.props.toggleOpen("cloneModalIsOPen")}
+          heading="Create activity"
           ariaHideApp={false}
         >
           <section className="slds-p-around_large">
@@ -462,4 +429,4 @@ let mapState = ({ dataTable }) => ({
   dataTable
 });
 
-export default connect(mapState, { editItem })(EditActivityModalComponent);
+export default connect(mapState)(CloneActivityModalComponent);

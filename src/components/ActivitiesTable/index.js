@@ -20,6 +20,7 @@ import {
 
 import { getAPIUrl } from "../../config/config";
 import Modal from "../EditActivityModal";
+import CloneModal from "../CloneActivityModal";
 import Pager from "../Pager";
 
 // ACTIONS
@@ -259,12 +260,18 @@ class Table extends Component {
   render() {
     return (
       <Container>
-        {(this.state.editModalIsOPen || this.state.cloneModalIsOPen ) && (
-          <Modal
-            isClone={this.state.cloneModalIsOPen}
+        {this.state.cloneModalIsOPen && (
+          <CloneModal
             data={this.props.dataTable.item}
             onToast={this.onToast}
-            title={this.state.cloneModalIsOPen ? "Clone activity" : "Edit activity"}
+            toggleOpen={this.toggleOpen}
+            reloadActivities={this.props.reloadActivities}
+          />
+        )}
+        {this.state.editModalIsOPen && (
+          <Modal
+            data={this.props.dataTable.item}
+            onToast={this.onToast}
             toggleOpen={this.toggleOpen}
             reloadActivities={this.props.reloadActivities}
           />
