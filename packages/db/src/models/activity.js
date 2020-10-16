@@ -80,6 +80,24 @@ class ActivityModel {
       return 'error';
     }
   }
+
+  static async ETLCheckActivityExists(title, abstract, asset) {
+    try {
+      const activity = await db.Activity.findAll({
+        where: {
+          title,
+          abstract,
+          asset
+        }
+      });
+
+      if(activity.length) return activity[0].activityId;
+      else return false;
+    } catch (err) {
+      console.error('Error getting activity', err);
+      return 'error';
+    }
+  };
 };
 
 export default ActivityModel;
