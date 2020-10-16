@@ -12,7 +12,6 @@ const APP_LOCKED_ALLOWED_USERS = APP_LOCKED.split(',') || [];
 
 module.exports = function (app, config, passport) {
   const isAuthenticated = (req, res, next) => {
-    next();
     if (req.isAuthenticated()){
       res.cookie('user', JSON.stringify(req.user || ''), {
         domain: process.env.APP_DOMAIN || DEFAULT_DOMAIN
@@ -88,7 +87,7 @@ module.exports = function (app, config, passport) {
     }
   });
 
-  app.get('/config', isAuthenticated, isUserAllowed, (req, res) => {
+  app.get('/config', (req, res) => {
     res.send({
       tablaeu: process.env.TABLAEU || '/',
       api: process.env.API || 'http://localhost:3000'

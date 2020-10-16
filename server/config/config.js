@@ -8,7 +8,7 @@ const config = {
     saml: {
       path: process.env.SAML_PATH || '/login/callback',
       entryPoint: process.env.SAML_ENTRY_POINT || 'https://mgonzalez-dev-ed.my.salesforce.com/idp/login?app=0sp3g0000008OIU',
-      issuer: 'sfdc-activity-tracker',
+      issuer: 'Activity_tracker_qa',
       cert: process.env.SAML_CERT || null
     }
   }
