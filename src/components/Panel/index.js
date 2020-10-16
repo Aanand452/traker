@@ -11,7 +11,11 @@ class PanelComponent extends Component {
 	render() {
 		return (
       <PanelContainer>
-        <Input onChange={e => this.props.handleSearch(e.target.value)} type='text' defaultValue={this.props.search} label={this.props.label} />
+        <Input
+          onChange={e => this.props.handleSearch(e.target.value)} 
+          type='text'
+          defaultValue={this.props.search}
+          label="Enter search text" />
       </PanelContainer>
 		);
 	}

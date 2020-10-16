@@ -3,7 +3,6 @@ import { withRouter } from 'react-router-dom';
 import moment from 'moment-timezone';
 import {
   IconSettings,
-  Breadcrumb,
   ToastContainer,
   Toast,
 } from '@salesforce/design-system-react';
@@ -263,9 +262,6 @@ class CreateActivity extends Component {
             </ToastContainer>
           </IconSettings>)
         }
-        <div className="slds-m-left_xx-small slds-m-bottom_small">
-          <Breadcrumb trail={this.state.steps.filter(el => el.active).map(el => el.trail)} />
-        </div>
         {this.state.isDeletePromptOpen && <Prompt closeErrorHandler={() => this.setState({isDeletePromptOpen: false})} error={true} message='Interval server error' title='Error' />}
         <FormContainer>
           <form className="slds-grid slds-wrap" onSubmit={e => this.validateSubmit(e)}>
