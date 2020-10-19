@@ -6,10 +6,8 @@ import UserModel from '@sara/db/src/models/user';
 
 const doLogin = async (req, res) => {  
   try {
-    const programs = req.body.password && req.body.username &&
-      await UserModel.getAutenticatedUser(req.body.username, req.body.password);
-
-    console.log(programs);
+    const programs = req.body.username &&
+      await UserModel.getAutenticatedUser(req.body.username);
 
     ApiUtils.reposeWithhSuccess(res, programs, httpStatus.OK);
   } catch (err) {

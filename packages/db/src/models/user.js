@@ -2,12 +2,11 @@ import db from '../dbmodels/'
 import { v4 as uuidv4 } from 'uuid';
 
 class UserModel {
-  static async getAutenticatedUser(usr, pwd) {
+  static async getAutenticatedUser(usr) {
     try{
       const user = await db.User.findAll({
         where: {
-          username: usr,
-          password: pwd
+          username: usr
         },
         timestamps: false
       });
