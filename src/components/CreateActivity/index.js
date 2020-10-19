@@ -27,7 +27,8 @@ class CreateActivity extends Component {
       startDate: "",
       endDate: "",
       asset: "",
-      campaignId: ""
+      campaignId: "",
+      customerMarketing: false
     },
     regions: [],
     programs: [],
@@ -194,7 +195,7 @@ class CreateActivity extends Component {
     e.preventDefault();
     const errors = this.validations();
     let { loggedUser } = this.state;
-    let { abstract, asset, format, endDate, program, region, startDate, title, campaignId } = this.state.row;
+    let { abstract, asset, format, endDate, program, region, startDate, title, campaignId, customerMarketing } = this.state.row;
     let row = {
       userId: loggedUser,
       abstract,
@@ -205,7 +206,8 @@ class CreateActivity extends Component {
       regionId: region.length ? region[0].region_id : "",
       startDate,
       title,
-      campaignId
+      campaignId,
+      customerMarketing
     }
 
     if (Object.keys(errors).length === 0) {
