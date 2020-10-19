@@ -96,7 +96,13 @@ class CreateActivity extends Component {
         let programs = result.map(el => ({...el, label: el.name, id: el.programId}));
 
         if(programs.length <= 0) this.handleStep(1);
-        else this.checkProgramDetail(programs[0].programId);
+        else if(programs.length === 1) {
+          this.checkProgramDetail(programs[0].programId);
+          this.handleStep(2);
+        } else {
+          this.checkProgramDetail(programs[0].programId);
+          this.handleStep(1);
+        }
 
         this.setState({ programs, row: {...this.state.row, program: [programs[0]]}});
       } else {
