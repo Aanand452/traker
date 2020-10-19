@@ -6,14 +6,67 @@ import {
   Input,
   Datepicker,
   Button,
-  Textarea
+  Textarea,
+  Toast,
+  ToastContainer,
+  IconSettings
 } from '@salesforce/design-system-react';
 
+import { getAPIUrl } from '../../../config/config';
+
 class Step2 extends Component {
+
+  state = {
+    formats: [],
+    toast: {
+      variant: 'error',
+      heading: 'Something went wrong',
+      duration: 5000,
+      active: false
+    }
+  };
+
+  componentDidMount() {
+    this.setupAndFetch();
+  }
+
+  setupAndFetch = async () => {
+    if(window.location.hostname === 'localhost') this.API_URL =  "http://localhost:3000/api/v1";
+    else this.API_URL = await getAPIUrl();
+    
+    this.getFormats();
+  }
+
+  async getFormats() {
+    try {
+      const request = await fetch(`${this.API_URL}/format`);
+      
+      if(request.status === 200) {
+        let { result } = await request.json();
+        let formats = result.map(item => ({...item, id: item.format_id, label: item.name}));
+        this.setState({ formats });
+      } else throw new Error(request);
+    } catch (err) {
+      this.setState({toast: {...this.state.toast, active: true}});
+      console.error(err);
+    }
+  }
 
   render() {
     return (
       <Fragment>
+        {
+          this.state.toast.active && (<IconSettings iconPath="/assets/icons">
+            <ToastContainer>
+              <Toast
+                labels={{ heading: this.state.toast.heading }}
+                variant={this.state.toast.variant}
+                duration={this.state.toast.duration}
+                onRequestClose={() => this.setState({toast: {active: false}})}
+              />
+            </ToastContainer>
+          </IconSettings>)
+        }
         <div className="slds-m-bottom_large slds-col slds-size_1-of-2">
           <Input
             placeholder="Enter Campaign Id"
@@ -28,7 +81,7 @@ class Step2 extends Component {
             events={{onSelect: (event, data) => data.selection.length && this.props.handleChange("format", data.selection)}}
             labels={{label: 'Format'}}
             name="format"
-            options={this.props.formats}
+            options={this.state.formats}
             selection={this.props.row.format}
             value="format"  
             variant="readonly"

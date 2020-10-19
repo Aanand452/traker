@@ -3,7 +3,6 @@ import { withRouter } from 'react-router-dom';
 import moment from 'moment-timezone';
 import {
   IconSettings,
-  Breadcrumb,
   ToastContainer,
   Toast,
 } from '@salesforce/design-system-react';
@@ -67,25 +66,8 @@ class CreateActivity extends Component {
     else this.API_URL = await getAPIUrl();
     
     this.getUser();
-    this.getFormats();
     this.checkRegion();
     this.props.getFormData(this.state.row);
-  }
-
-  async getFormats() {
-    try {
-      const request = await fetch(`${this.API_URL}/format`);
-      const response = await request.json();
-
-      if(response.info.code === 200) {
-        const formatsList = response.result.map(item => ({...item, id: item.format_id, label: item.name}))
-
-        this.setState({formats: formatsList});
-      } else new Error(response);
-    } catch (err) {
-      this.setState({toast: {...this.state.toast, active: true}});
-      console.error(err);
-    }
   }
 
   async checkRegion() {
@@ -114,7 +96,13 @@ class CreateActivity extends Component {
         let programs = result.map(el => ({...el, label: el.name, id: el.programId}));
 
         if(programs.length <= 0) this.handleStep(1);
-        else this.checkProgramDetail(programs[0].programId);
+        else if(programs.length === 1) {
+          this.checkProgramDetail(programs[0].programId);
+          this.handleStep(2);
+        } else {
+          this.checkProgramDetail(programs[0].programId);
+          this.handleStep(1);
+        }
 
         this.setState({ programs, row: {...this.state.row, program: [programs[0]]}});
       } else {
@@ -280,9 +268,6 @@ class CreateActivity extends Component {
             </ToastContainer>
           </IconSettings>)
         }
-        <div className="slds-m-left_xx-small slds-m-bottom_small">
-          <Breadcrumb trail={this.state.steps.filter(el => el.active).map(el => el.trail)} />
-        </div>
         {this.state.isDeletePromptOpen && <Prompt closeErrorHandler={() => this.setState({isDeletePromptOpen: false})} error={true} message='Interval server error' title='Error' />}
         <FormContainer>
           <form className="slds-grid slds-wrap" onSubmit={e => this.validateSubmit(e)}>
@@ -290,6 +275,7 @@ class CreateActivity extends Component {
               row={this.state.row}
               handleStep={this.handleStep}
               handleChange={this.handleChange}
+              getFormats={this.getFormats}
               error={this.state.error}
               step={this.state.steps.filter(el => el.active).length}
               programs={this.state.programs}
