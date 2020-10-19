@@ -1,10 +1,12 @@
 const path = require('path');
+const fetch = require("node-fetch");
+
 const HOME_URL = '/';
 const LOGIN_URL = '/login';
 const LOGOUT_URL = '/logout';
 const INDEX_FILE = path.resolve(__dirname, '../../build/index.html');
 const ERROR_403 = path.resolve(__dirname, '../static/forbidden.html');
-const DEFAULT_DOMAIN = '.sfdc-ww-pricelist-web-prod.herokuapp.com';
+const DEFAULT_DOMAIN = '.sfdc-activity-tracker.herokuapp.com';
 const ENV_UPLOAD_WHITELIST = process.env.UPLOAD_WHITELIST || '';
 const UPLOAD_WHITELIST = ENV_UPLOAD_WHITELIST.split(',') || [];
 const APP_LOCKED = process.env.APP_LOCKED || '';
@@ -16,7 +18,29 @@ module.exports = function (app, config, passport) {
       res.cookie('user', JSON.stringify(req.user || ''), {
         domain: process.env.APP_DOMAIN || DEFAULT_DOMAIN
       });
-      return next();
+
+      var apiEnpoint = process.env.API ? process.env.API + '/login' : 'http://localhost:3000/api/v1/login'
+      fetch(apiEnpoint,{
+        method: 'POST',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          username: req.user.email
+        })
+      })
+      .then((response) =>response.json())
+      .then(function(data) {
+        if(data.result.length > 0) {
+          next();
+        } else {
+          show403Error(req, res);
+        }
+      }).catch((err) => {
+        console.error(err);
+        show403Error(req, res);
+      })
     }
     else{
       res.redirect(LOGIN_URL);
@@ -78,14 +102,6 @@ module.exports = function (app, config, passport) {
       res.redirect(HOME_URL);
     }
   );
-
-  app.get('/upload', isAuthenticated, isUserAllowed, (req, res) => {
-    if (!isUploadAllowed(req.user.email)) {
-      show403Error(req, res);
-    } else {
-      goToApp(req, res);
-    }
-  });
 
   app.get('/config', (req, res) => {
     res.send({

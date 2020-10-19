@@ -30,12 +30,7 @@ Basic react+redux project.
 ### How to run for localhost testing
 1. Install [nodejs LTS](https://nodejs.org/en/download/)
 2. Install [yarn](https://yarnpkg.com)
-3. run ```DEFAULT_PRICELIST=CORE API_BASE_URL=https://sfdc-ww-pricelist-api-dev.sfdc.sh yarn start```
-  - ```DEFAULT_PRICELIST``` environment variable that stands for the id of the first Price List to load. Default value is CORE (Check the backend service for other price lists)
-  - ```API_BASE_URL``` environment variable that stands for the service url to be used for api calls. To avoid having to run the Java project locally you can use the DEV environment: https://sfdc-ww-pricelist-api-dev.sfdc.sh (Works only under Salesforce VPN)
-2. If after running the project you're seeing the "Single Sign-On" Page, You can set the security cookie manually running from Chrome console this instruction:
-  ```document.cookie = 'user=%7B%22email%22%3A%22wwp%40salesforce.com%22%7D';``` <br>(This is for avoiding having to have an authentication instance created exclusively for your localhost)
-
+3. run ```yarn start```
 
 ---------
 This project was bootstrapped with [Create React App](https://github.com/facebookincubator/create-react-app).
