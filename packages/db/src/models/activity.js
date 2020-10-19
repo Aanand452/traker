@@ -91,7 +91,7 @@ class ActivityModel {
         }
       });
 
-      if(activity.length) return activity[0].activityId;
+      if(activity.length) return activity[0];
       else return false;
     } catch (err) {
       console.error('Error getting activity', err);
