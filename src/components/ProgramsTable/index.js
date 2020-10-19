@@ -175,7 +175,7 @@ class Table extends Component {
             variant="object-home"
           />
           {this.state.isPanelOpen && (
-            <Panel label="Search by Name" search={this.state.search} handleSearch={(e) => this.onSearch(e)} />
+            <Panel search={this.state.search} handleSearch={(e) => this.onSearch(e)} />
           )}
           <DataTable
             assistiveText={{

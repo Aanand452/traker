@@ -22,7 +22,8 @@ class Step1 extends Component {
     }
   };
 
-  nextStep = () => {
+  onSelectProgram = data => {
+    data.selection.length && this.props.handleChange("program", data.selection);
     this.props.handleStep(2);
   }
 
@@ -55,7 +56,7 @@ class Step1 extends Component {
         </div>
         {this.props.programs.length > 0 && <div className="slds-m-bottom_large slds-col slds-size_1-of-1">
           <Combobox
-            events={{onSelect: (event, data) => data.selection.length && this.props.handleChange("program", data.selection)}}
+            events={{onSelect: (event, data) => this.onSelectProgram(data)}}
             labels={{label: 'Program'}}
             name="program"
             options={this.props.programs}
@@ -117,8 +118,7 @@ class Step1 extends Component {
           {
             this.props.step === 1 && 
             <div>
-              <Button label="Cancel" onClick={() => this.props.history.push('/home')} /> 
-              <Button label="Select program" variant="brand" onClick={this.nextStep} />
+              <Button label="Cancel" onClick={() => this.props.history.push('/home')} />
             </div>
           }
           

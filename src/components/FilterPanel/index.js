@@ -94,7 +94,7 @@ class FilterPanel extends Component {
           onChange={(e) => this.handleChange("userId", e.target.value)}
           value={this.state.filters.userId}
           type="text"
-          label="Search owner"
+          label="Search by owner"
           className="slds-m-top_small"
         />
         <Input
