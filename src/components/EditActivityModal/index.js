@@ -10,7 +10,8 @@ import {
   Combobox,
   Datepicker,
   Input,
-  Textarea
+  Textarea,
+  Checkbox
 } from '@salesforce/design-system-react';
 
 // ACTIONS
@@ -35,6 +36,7 @@ class EditActivityModalComponent extends Component {
     endDate: moment(new Date(this.props.data.endDate)).format('DD/MM/YYYY'),
     asset: this.props.data.asset,
     campaignId: this.props.data.campaignId,
+    customerMarketing: this.props.data.customerMarketing,
     errors: {}
   }
 
@@ -178,7 +180,12 @@ class EditActivityModalComponent extends Component {
     }
     
     delete errors.campaignId;
-    this.setState({[e.target.id]: e.target.value, errors});
+    delete errors.customerMarketing;
+    if(e.target.id === "customerMarketing") {
+      this.setState({customerMarketing: e.target.checked, errors});
+    } else {
+      this.setState({[e.target.id]: e.target.value, errors});
+    }
   }
 
   isUrl = data => {
@@ -208,11 +215,14 @@ class EditActivityModalComponent extends Component {
     for(let item in body) {
       if(item === 'asset') {
         errors = {...this.state.errors, asset: false};
+      } else if(item === 'customerMarketing') {
+        errors = {...this.state.errors, customerMarketing: false};
       } else if(!body[item]) {
         errors = {...this.state.errors, [item]: true};
       }
     }
     delete errors.campaignId;
+    delete errors.customerMarketing;
     this.setState({ errors });
     return errors;
   }
@@ -230,6 +240,7 @@ class EditActivityModalComponent extends Component {
         startDate: this.state.startDate,
         endDate: this.state.endDate,
         asset: this.state.asset,
+        customerMarketing: this.state.customerMarketing,
         userId: localStorage.getItem('userId'),
         programId: this.state.programSelection[0] && this.state.programSelection[0].id,
       }
@@ -260,6 +271,7 @@ class EditActivityModalComponent extends Component {
           startDate: this.state.startDate,
           endDate: this.state.endDate,
           asset: this.state.asset,
+          customerMarketing: this.state.customerMarketing,
           id: this.props.data.id
         });
         this.props.toggleOpen("editModalIsOPen")
@@ -449,6 +461,19 @@ class EditActivityModalComponent extends Component {
                 value={this.state.asset}
                 onChange={e => this.handleChange(e)}
                 errorText={this.state.errors.asset ? "This field is required" : ''}
+              />
+            </div>
+            <div className="slds-form-element slds-m-bottom_large">
+              <Checkbox
+                assistiveText={{
+                  label: 'Default',
+                }}
+                id="customerMarketing"
+                labels={{
+                  label: 'Curstomer marketing',
+                }}
+                checked={this.state.customerMarketing}
+                onChange={e => this.handleChange(e)}
               />
             </div>
           </section>
