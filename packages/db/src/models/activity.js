@@ -21,6 +21,7 @@ class ActivityModel {
           startDate: activity.startDate,
           endDate: activity.endDate,
           asset: activity.asset,
+          customerMarketing: activity.customerMarketing,
           programId: activity.Program ? activity.Program.name : ''
         })
       });
