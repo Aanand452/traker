@@ -32,7 +32,6 @@ class Table extends Component {
   state = {
     sortProperty: '',
     sortDirection: '',
-    search: '',
     isPanelOpen: false,
     data: [],
     displayedData: [],
@@ -78,7 +77,7 @@ class Table extends Component {
             iconVariant="border-filled"
             variant="icon"
             onClick={() => {
-              this.setState({ isPanelOpen: !this.state.isPanelOpen });
+              this.setState({ isPanelOpen: !this.state.isPanelOpen, data: this.props.data });
             }}
           />
         </ButtonGroup>
@@ -86,16 +85,22 @@ class Table extends Component {
     </Fragment>
   );
   
-  onSearch = text => {
-    this.setState({search: text});
-    if (!text){
+  onSearch = search => {
+    if (search.owner === "" && search.name === ""){
       this.setState({data: this.props.data});
       return false;
     }
+    
+    let data = [...this.state.data];
 
-    let data = [...this.props.data];
-    data = data.filter(item => item.name.includes(text))
-    this.setState({data});
+    if(search.owner) {
+      data = data.filter(item => item.owner.toLowerCase().includes(search.owner.toLowerCase()))
+    }
+    if(search.name) {
+      data = data.filter(item => item.name.toLowerCase().includes(search.name.toLowerCase()))
+    }
+
+    this.setState({ currentPage: 1, data });
   }
 
   onSort = (sortInfo) => {
@@ -120,7 +125,6 @@ class Table extends Component {
       data: this.props.data,
       sortProperty: '',
       sortDirection: '',
-      search: '',
       isPanelOpen: false,
       currentPage:1,
     })
@@ -175,7 +179,7 @@ class Table extends Component {
             variant="object-home"
           />
           {this.state.isPanelOpen && (
-            <Panel search={this.state.search} handleSearch={(e) => this.onSearch(e)} />
+            <Panel onSearch={this.onSearch} />
           )}
           <DataTable
             assistiveText={{
