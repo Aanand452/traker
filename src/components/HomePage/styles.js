@@ -16,7 +16,7 @@ export const CardsContainer = styled.ul`
 export const Card = styled.li`
   background-color: #ffffff;
   width: 22%;
-  border-radius: 10px;
+  border-radius: 14px;
   margin: 1.5rem 0;
 `;
 
