@@ -240,7 +240,7 @@ class Table extends Component {
   filter = (arr, functionFilters) => {
     return arr.filter((row) => {
       for (const property in functionFilters) {
-        if (!functionFilters[property](row[property])) return false;
+        if (!functionFilters[property](row[property] && row[property].toLowerCase())) return false;
       }
       return true;
     });

@@ -77,10 +77,10 @@ class FilterPanel extends Component {
       } else if (Array.isArray(filters[property]))
         functionFilters[property] = (value) =>
           filters[property][0].label === "All" ||
-          value.includes(filters[property][0].label);
+          value.includes(filters[property][0].label.toLowerCase());
       else
         functionFilters[property] = (value) =>
-          value.includes(filters[property]);
+          value && value.includes(filters[property].toLowerCase());
     }
 
     onFilter({ functionFilters, filters });

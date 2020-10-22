@@ -9,7 +9,8 @@ import {
   Textarea,
   Toast,
   ToastContainer,
-  IconSettings
+  IconSettings,
+  Checkbox
 } from '@salesforce/design-system-react';
 
 import { getAPIUrl } from '../../../config/config';
@@ -69,7 +70,7 @@ class Step2 extends Component {
         }
         <div className="slds-m-bottom_large slds-col slds-size_1-of-2">
           <Input
-            placeholder="Enter Campaign Id"
+            placeholder="Enter campaign id"
             label="Campaign Id"
             onChange={(event, data) => this.props.handleChange("campaignId", data.value)}
             value={this.props.row.campaignId}
@@ -130,6 +131,20 @@ class Step2 extends Component {
         </div>
         <div className="slds-m-bottom_large slds-col slds-size_1-of-2">
           <Input placeholder="Insert a valid URL here" onChange={(event, data) => this.props.handleChange("asset", data.value)} value={this.props.row.asset} label="Asset" errorText={this.props.error.asset}/>
+        </div>
+        <div className="slds-m-bottom_large slds-col slds-size_1-of-1">
+          <Checkbox
+            assistiveText={{
+              label: 'Default',
+            }}
+            id="curstomer-mkt"
+            labels={{
+              label: 'Curstomer marketing',
+            }}
+            onChange={e => {
+              this.props.handleChange("customerMarketing", e.target.checked)
+            }}
+          />
         </div>
         <div className="slds-col slds-size_1-of-1">
           <Button label="Go back" onClick={() => this.props.handleStep(1)} />
