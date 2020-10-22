@@ -1,12 +1,17 @@
 import Activity from '../dbmodels/activity';
 import db from '../dbmodels/';
 import { v4 as uuidv4 } from 'uuid';
+import moment from 'moment';
+import { Op } from 'sequelize';
 
 class ActivityModel {
-  static async getAllActivitiesByUser(id) {
+  static async getAllActivitiesByUser(id, date) {
     try{
       const activities = await db.Activity.findAll({
-        include: [db.User, db.Format, db.Region, db.Program]
+        include: [db.User, db.Format, db.Region, db.Program],
+        where: {
+          startDate : {[Op.gte]: date ? moment(date, 'DD/MM/YYYY') : moment().subtract(90, 'days')}
+        }
       });
 
       const minActivities = activities.map(activity => {
@@ -21,6 +26,7 @@ class ActivityModel {
           startDate: activity.startDate,
           endDate: activity.endDate,
           asset: activity.asset,
+          customerMarketing: activity.customerMarketing,
           programId: activity.Program ? activity.Program.name : ''
         })
       });
