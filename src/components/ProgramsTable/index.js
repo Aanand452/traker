@@ -77,7 +77,7 @@ class Table extends Component {
             iconVariant="border-filled"
             variant="icon"
             onClick={() => {
-              this.setState({ isPanelOpen: !this.state.isPanelOpen, data: this.props.data });
+              this.setState({ isPanelOpen: !this.state.isPanelOpen });
             }}
           />
         </ButtonGroup>
