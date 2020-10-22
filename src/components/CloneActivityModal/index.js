@@ -241,7 +241,7 @@ class CloneActivityModalComponent extends Component {
       let response = await fetch(`${this.API_URL}/activity`, config);
       if(response.status === 200) {
         this.props.toggleOpen("cloneModalIsOPen");
-        this.props.onToast(true, "The campaign was created successfully", "success");
+        this.props.onToast(true, "Activity was created successfully", "success");
         this.props.reloadActivities();
       } else throw new Error(response);
     } catch (err) {
@@ -268,7 +268,7 @@ class CloneActivityModalComponent extends Component {
               <Input
                 id="campaignId"
                 label="Campaign ID"
-                placeholder="Placeholder Text"
+                placeholder="Enter campaign id"
                 value={this.state.campaignId}
                 onChange={e => this.handleChange(e)}
               />

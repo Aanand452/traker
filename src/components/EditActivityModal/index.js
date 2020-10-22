@@ -302,7 +302,7 @@ class EditActivityModalComponent extends Component {
               <Input
                 id="campaignId"
                 label="Campaign ID"
-                placeholder="Placeholder Text"
+                placeholder="Enter campaign id"
                 value={this.state.campaignId}
                 onChange={e => this.handleChange(e)}
               />

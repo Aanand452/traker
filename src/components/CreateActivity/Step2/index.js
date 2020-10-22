@@ -70,7 +70,7 @@ class Step2 extends Component {
         }
         <div className="slds-m-bottom_large slds-col slds-size_1-of-2">
           <Input
-            placeholder="Enter Campaign Id"
+            placeholder="Enter campaign id"
             label="Campaign Id"
             onChange={(event, data) => this.props.handleChange("campaignId", data.value)}
             value={this.props.row.campaignId}

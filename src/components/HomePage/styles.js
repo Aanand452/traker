@@ -4,7 +4,9 @@ export const Container = styled.div`
   background-color: #f4f6f9;
 `;
 
-export const Banner = styled.img``;
+export const Banner = styled.img`
+  margin-top: 50px
+`;
 
 export const CardsContainer = styled.ul`
   display: flex;
