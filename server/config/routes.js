@@ -92,7 +92,8 @@ module.exports = function (app, config, passport) {
   app.get('/config', isAuthenticated, isUserAllowed, (req, res) => {
     res.send({
       tablaeu: process.env.TABLAEU || '/',
-      api: process.env.API || 'http://localhost:3000'
+      api: process.env.API || 'http://localhost:3000',
+      activitiesDate: process.env.ACTIVITIES_DATE
     });
   });
 
