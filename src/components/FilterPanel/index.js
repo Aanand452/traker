@@ -80,7 +80,7 @@ class FilterPanel extends Component {
           value.includes(filters[property][0].label.toLowerCase());
       else
         functionFilters[property] = (value) =>
-          value.includes(filters[property].toLowerCase());
+          value && value.includes(filters[property].toLowerCase());
     }
 
     onFilter({ functionFilters, filters });
