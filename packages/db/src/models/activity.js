@@ -92,8 +92,7 @@ class ActivityModel {
       const activity = await db.Activity.findAll({
         where: {
           title,
-          abstract,
-          asset
+          abstract
         }
       });
 
