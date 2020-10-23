@@ -171,12 +171,12 @@ class EditActivityModalComponent extends Component {
 
   handleChange = e => {
     let errors = {...this.state.errors};
-    if(e.target.id === 'asset') {
-      errors = {...this.state.errors, asset: false};
+    if(e.target.id === 'asset' && !this.isUrl(e.target.value)) {
+      errors = {...errors, asset: true};
     } else if(e.target.value && e.target.id !== 'campaignId') {
-      errors = {...this.state.errors, [e.target.id]: false};
+      errors = {...errors, [e.target.id]: false};
     } else {
-      errors = {...this.state.errors, [e.target.id]: true};
+      errors = {...errors, [e.target.id]: true};
     }
     
     delete errors.campaignId;
@@ -213,13 +213,13 @@ class EditActivityModalComponent extends Component {
   validate = body => {
     let errors = {...this.state.errors}
     for(let item in body) {
-      if(item === 'asset') {
-        errors = {...this.state.errors, asset: false};
+      if(item === 'asset' && !this.isUrl(body[item])) {
+        errors = {...errors, [item]: true};
       } else if(item === 'customerMarketing') {
-        errors = {...this.state.errors, customerMarketing: false};
+        errors = {...errors, customerMarketing: false};
       } else if(!body[item]) {
-        errors = {...this.state.errors, [item]: true};
-      }
+        errors = {...errors, [item]: true};
+      } 
     }
     delete errors.campaignId;
     delete errors.customerMarketing;
@@ -240,7 +240,7 @@ class EditActivityModalComponent extends Component {
         startDate: this.state.startDate,
         endDate: this.state.endDate,
         asset: this.state.asset,
-        customerMarketing: this.state.customerMarketing,
+        customerMarketing: this.state.customerMarketing || false,
         userId: localStorage.getItem('userId'),
         programId: this.state.programSelection[0] && this.state.programSelection[0].id,
       }
@@ -309,7 +309,7 @@ class EditActivityModalComponent extends Component {
             </div>
             <div className="slds-form-element slds-m-bottom_large">
               <Combobox
-                id="program"
+                id="programId"
                 required
                 events={{
                   onSelect: (event, data) => {
@@ -317,7 +317,7 @@ class EditActivityModalComponent extends Component {
                       data.selection.length === 0
                         ? this.state.programSelection
                         : data.selection;
-                    this.setState({ programSelection: selection });
+                    this.setState({ programSelection: selection, errors: {programId: false} });
                   },
                 }}
                 labels={{
@@ -328,7 +328,7 @@ class EditActivityModalComponent extends Component {
                 options={this.state.program}
                 selection={this.state.programSelection}
                 variant="readonly"
-                errorText={this.state.errors.program && "This field is required"}
+                errorText={this.state.errors.programId && "This field is required"}
               />
             </div>
             <div className="slds-form-element slds-m-bottom_large">
@@ -345,14 +345,14 @@ class EditActivityModalComponent extends Component {
             <div className="slds-form-element slds-m-bottom_large">
               <Combobox
                 required
-                id='format'
+                id='formatId'
                 events={{
                   onSelect: (event, data) => {
                     const selection =
                       data.selection.length === 0
                         ? this.state.formatSelection
                         : data.selection;
-                    this.setState({ formatSelection: selection });
+                    this.setState({ formatSelection: selection, errors: {formatId: false} });
                   }
                 }}
                 labels={{
@@ -363,7 +363,7 @@ class EditActivityModalComponent extends Component {
                 options={this.state.format}
                 selection={this.state.formatSelection}
                 variant="readonly"
-                errorText={this.state.errors.format && "This field is required"}
+                errorText={this.state.errors.formatId && "This field is required"}
               />
             </div>
             <div className="slds-form-element slds-m-bottom_large">
@@ -380,14 +380,14 @@ class EditActivityModalComponent extends Component {
             <div className="slds-form-element slds-m-bottom_large">
               <Combobox
                 required
-                id='region'
+                id='regionId'
                 events={{
                   onSelect: (event, data) => {
                     const selection =
                       data.selection.length === 0
                         ? this.state.regionSelection
                         : data.selection;
-                    this.setState({ regionSelection: selection });
+                    this.setState({ regionSelection: selection, errors: {regionId: false} });
                   },
                 }}
                 labels={{
@@ -398,7 +398,7 @@ class EditActivityModalComponent extends Component {
                 options={this.state.region}
                 selection={this.state.regionSelection}
                 variant="readonly"
-                errorText={this.state.errors.region && "This field is required"}
+                errorText={this.state.errors.regionId && "This field is required"}
               />
             </div>
             <div className={`slds-m-bottom_large slds-col slds-size_1-of-1 ${this.state.errors.startDate && "slds-has-error"}`}>
@@ -460,7 +460,7 @@ class EditActivityModalComponent extends Component {
                 placeholder="Insert a valid URL here"
                 value={this.state.asset}
                 onChange={e => this.handleChange(e)}
-                errorText={this.state.errors.asset ? "This field is required" : ''}
+                errorText={this.state.errors.asset && "This field must be a url"}
               />
             </div>
             <div className="slds-form-element slds-m-bottom_large">
