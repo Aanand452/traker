@@ -9,7 +9,8 @@ import {
   Button,
   Textarea,
   Panel,
-  Spinner
+  Spinner,
+  comboboxFilterAndLimit,
 } from '@salesforce/design-system-react';
 
 import BudgetInput from '../BudgetInput/BudgetInput'
@@ -23,6 +24,7 @@ class CreateProgramPage extends Component {
     lifecycleStages: [],
     apm1s: [],
     apm2s: [],
+    selectedApm2s: [],
     industries: [],
     segments: [],
     personas: [],
@@ -330,6 +332,37 @@ class CreateProgramPage extends Component {
                 />
               </div>
               <div className="slds-m-bottom_large slds-col slds-size_1-of-2">
+              <Combobox
+                events={{
+                  onRequestRemoveSelectedOption: (event, data) => {
+                    this.setState({
+                      inputValue: '',
+                      selectedApm2s: data.selection,
+                    });
+                  },
+                  onSelect: (event, data) => data.selection.length && this.setState({
+                    inputValue: '',
+                    selectedApm2s: data.selection,
+                  })
+                }}
+                labels={{
+                  label: 'APM2',
+                  placeholder: 'Select an option',
+                }}
+                menuItemVisibleLength={5}
+                multiple
+                options={comboboxFilterAndLimit({
+                  inputValue: this.state.program.apm2Id,
+                  limit: this.state.apm2s.length,
+                  options: this.state.apm2s,
+                  selection: this.state.selectedApm2s,
+                })}
+                selection={this.state.selectedApm2s}
+                name="apm2"
+                errorText={this.state.error.apm2Id}
+              />
+              </div>
+              {/* <div className="slds-m-bottom_large slds-col slds-size_1-of-2">
                 <Combobox
                   events={{onSelect: (event, data) => data.selection.length && this.handleChange("apm2Id", data.selection)}}
                   labels={{label: 'APM2'}}
@@ -340,7 +373,7 @@ class CreateProgramPage extends Component {
                   variant="readonly"
                   errorText={this.state.error.apm2Id}
                 />
-              </div>
+              </div> */}
               <div className="slds-m-bottom_large slds-col slds-size_1-of-2">
                 <Combobox
                   events={{onSelect: (event, data) => data.selection.length && this.handleChange("industryId", data.selection)}}
