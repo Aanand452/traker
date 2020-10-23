@@ -29,20 +29,22 @@ const parseDate = (date) => {
 
 const readAndInsertRow = async (row, index) => {
   try{
-    const prevActiv = await Activity.ETLCheckActivityExists(row[0], row[3], row[7]);
-    if(prevActiv){
-      if(moment(prevActiv.startDate).format('DD/MM/YYYY') != row[5] || moment(prevActiv.endDate).format('DD/MM/YYYY') != row[6]) {
-        prevActiv.startDate = parseDate(row[5]);
-        prevActiv.endDate = parseDate(row[6]);
+    var update = false;
+    const prevActiv = await Activity.ETLCheckActivityExists(row[0], row[3]);
+    // if(prevActiv){
+    //   if(moment(prevActiv.startDate).format('DD/MM/YYYY') != row[5] || moment(prevActiv.endDate).format('DD/MM/YYYY') != row[6]) {
+    //     prevActiv.startDate = parseDate(row[5]);
+    //     prevActiv.endDate = parseDate(row[6]);
 
-        const updatedActivity = Activity.updateActivity(prevActiv.activityId, prevActiv.dataValues);
+    //     const updatedActivity = Activity.updateActivity(prevActiv.activityId, prevActiv.dataValues);
 
-        if(updatedActivity === "error" || !updatedActivity) throw new Error(`Error updating the activity`);
-        else console.log(`\x1b[32m[${index}] Activity updated: ${prevActiv.title}\x1b[0m`);
-      } else console.log(`\x1b[33m[${index}] Activity not inserted: already exists (${row[0]})\x1b[0m`);
+    //     if(updatedActivity === "error" || !updatedActivity) throw new Error(`Error updating the activity`);
+    //     else console.log(`\x1b[32m[${index}] Activity updated: ${prevActiv.title}\x1b[0m`);
+    //   } else console.log(`\x1b[33m[${index}] Activity not inserted: already exists (${row[0]})\x1b[0m`);
       
-      return false;
-    }
+    //   return false;
+    // }
+    if(prevActiv) update = true;
 
     if(row[4]) {
       var regionId = await Region.getByName(row[4]);
@@ -89,7 +91,13 @@ const readAndInsertRow = async (row, index) => {
       programId
     };
     
-    const activity = await Activity.addNewActivity(body);
+    var activity;
+    
+    if(update) {
+      activity = Activity.updateActivity(prevActiv.activityId, body);}
+    else {
+      activity = await Activity.addNewActivity(body);
+    }
 
     if(activity === "error" || !activity) throw new Error(`Error saving the activity`);
     else console.log(`\x1b[32m[${index}] Activity inserted: ${body.title}\x1b[0m`);
