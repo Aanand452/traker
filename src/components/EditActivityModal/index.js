@@ -275,7 +275,7 @@ class EditActivityModalComponent extends Component {
           id: this.props.data.id
         });
         this.props.toggleOpen("editModalIsOPen")
-        this.props.onToast(true, "The campaign was edited successfully", "success");
+        this.props.onToast(true, "Activity was edited successfully", "success");
         this.props.reloadActivities();
       } else throw new Error(response);
     } catch (err) {
