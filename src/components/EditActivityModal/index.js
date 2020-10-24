@@ -171,8 +171,8 @@ class EditActivityModalComponent extends Component {
 
   handleChange = e => {
     let errors = {...this.state.errors};
-    if(e.target.id === 'asset' && !this.isUrl(e.target.value)) {
-      errors = {...errors, asset: true};
+    if(e.target.id === 'asset') {
+      errors = {...errors, asset: false};
     } else if(e.target.value && e.target.id !== 'campaignId') {
       errors = {...errors, [e.target.id]: false};
     } else {
@@ -213,13 +213,14 @@ class EditActivityModalComponent extends Component {
   validate = body => {
     let errors = {...this.state.errors}
     for(let item in body) {
-      if(item === 'asset' && !this.isUrl(body[item])) {
-        errors = {...errors, [item]: true};
-      } else if(item === 'customerMarketing') {
-        errors = {...errors, customerMarketing: false};
+      if(item === 'asset') {
+        errors = {...errors, asset: false};
       } else if(!body[item]) {
         errors = {...errors, [item]: true};
       } 
+    }
+    if(body['asset'].length > 0 && !this.isUrl(body['asset'])) {
+      errors = {...errors, asset: true};
     }
     delete errors.campaignId;
     delete errors.customerMarketing;
