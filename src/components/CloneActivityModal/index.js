@@ -166,8 +166,8 @@ class CloneActivityModalComponent extends Component {
 
   handleChange = e => {
     let errors = {...this.state.errors};
-    if(e.target.id === 'asset' && !this.isUrl(e.target.value)) {
-      errors = {...errors, asset: true};
+    if(e.target.id === 'asset') {
+      errors = {...errors, asset: false};
     } else if(e.target.value && e.target.id !== 'campaignId') {
       errors = {...errors, [e.target.id]: false};
     } else {
@@ -198,13 +198,14 @@ class CloneActivityModalComponent extends Component {
   validate = body => {
     let errors = {...this.state.errors}
     for(let item in body) {
-      if(item === 'asset' && !this.isUrl(body[item])) {
-        errors = {...errors, [item]: true};
-      } else if(item === 'customerMarketing') {
-        errors = {...errors, customerMarketing: false};
+      if(item === 'asset') {
+        errors = {...errors, asset: false};
       } else if(!body[item]) {
         errors = {...errors, [item]: true};
       } 
+    }
+    if(body['asset'].length > 0 && !this.isUrl(body['asset'])) {
+      errors = {...errors, asset: true};
     }
     delete errors.campaignId;
     delete errors.customerMarketing;
@@ -431,7 +432,7 @@ class CloneActivityModalComponent extends Component {
                 placeholder="Insert a valid URL here"
                 value={this.state.asset}
                 onChange={e => this.handleChange(e)}
-                errorText={this.state.errors.asset ? "This field is required" : ''}
+                errorText={this.state.errors.asset && "This field must be a url"}
               />
             </div>
             <div className="slds-form-element slds-m-bottom_large">
