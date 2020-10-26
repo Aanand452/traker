@@ -24,10 +24,16 @@ class CreateProgramPage extends Component {
     lifecycleStages: [],
     apm1s: [],
     apm2s: [],
-    selectedApm2s: [],
     industries: [],
     segments: [],
     personas: [],
+    selectedRegions: [],
+    selectedLifecycleStages: [],
+    selectedApm1s: [],
+    selectedApm2s: [],
+    selectedIndustries: [],
+    selectedSegments: [],
+    selectedPersonas: [],
     program: {},
     error: {},
     toast: {
@@ -184,6 +190,13 @@ class CreateProgramPage extends Component {
     this.setState({program: newRow});
   };
 
+  handleMultiField = (value, data) => {
+    const newRow = {...this.state.program, [value]: data};
+
+    this.validations(value, data);
+    this.setState({program: newRow});
+  };
+
   handleSubmit = async () => {
     this.setState({showLoader: true});
 
@@ -263,6 +276,7 @@ class CreateProgramPage extends Component {
             <div className="slds-grid slds-wrap slds-p-around_medium slds_full-width">
               <div className="slds-m-bottom_large slds-col slds-size_1-of-2">
                 <Input
+                  required
                   placeholder="Enter program name"
                   label="Program Name"
                   onChange={(event, data) => this.handleChange("name", data.value)}
@@ -272,6 +286,7 @@ class CreateProgramPage extends Component {
               </div>
               <div className="slds-m-bottom_large slds-col slds-size_1-of-2">
                 <Input
+                  required
                   placeholder="Enter program owner"
                   label="Program Owner"
                   onChange={(event, data) => this.handleChange("owner", data.value)}
@@ -281,6 +296,7 @@ class CreateProgramPage extends Component {
               </div>
               <div className="slds-m-bottom_large slds-col slds-size_1-of-2">
                 <BudgetInput
+                  required
                   label="budget"
                   onChange={(event, data) => this.handleChange("budget", data.value)}
                   value={this.state.program.budget || ''}
@@ -289,6 +305,7 @@ class CreateProgramPage extends Component {
               </div>
               <div className="slds-m-bottom_large slds-col slds-size_1-of-2">
                 <BudgetInput
+                  required
                   label="MP target"
                   onChange={(event, data) => this.handleChange("metrics", data.value)}
                   value={this.state.program.metrics || ''}
@@ -297,121 +314,206 @@ class CreateProgramPage extends Component {
               </div>
               <div className="slds-m-bottom_large slds-col slds-size_1-of-2">
                 <Combobox
-                  events={{onSelect: (event, data) => data.selection.length && this.handleChange("regionId", data.selection)}}
-                  labels={{label: 'Target Region'}}
+                  required
+                  events={{
+                    onRequestRemoveSelectedOption: (event, data) => {
+                      this.setState({
+                        selectedRegions: data.selection,
+                      });
+                    },
+                    onSelect: (event, data) => data.selection.length && this.setState({
+                      selectedRegions: data.selection,
+                    })
+                  }}
+                  labels={{
+                    label: 'Target Region',
+                    placeholder: 'Select an option',
+                  }}
+                  menuItemVisibleLength={5}
+                  multiple
+                  options={comboboxFilterAndLimit({
+                    limit: this.state.regions.length,
+                    options: this.state.regions,
+                    selection: this.state.selectedRegions,
+                  })}
+                  selection={this.state.selectedRegions}
                   name="region"
-                  options={this.state.regions}
-                  selection={this.state.program.regionId}
-                  value="region"
-                  variant="readonly"
                   errorText={this.state.error.regionId}
                 />
               </div>
               <div className="slds-m-bottom_large slds-col slds-size_1-of-2">
                 <Combobox
-                  events={{onSelect: (event, data) => data.selection.length && this.handleChange("lifecycleStageId", data.selection)}}
-                  labels={{label: 'Lifecycle Stage'}}
+                  events={{
+                    onRequestRemoveSelectedOption: (event, data) => {
+                      this.setState({
+                        selectedLifecycleStages: data.selection,
+                      });
+                    },
+                    onSelect: (event, data) => data.selection.length && this.setState({
+                      selectedLifecycleStages: data.selection,
+                    })
+                  }}
+                  labels={{
+                    label: 'Lifecycle Stage',
+                    placeholder: 'Select an option',
+                  }}
+                  menuItemVisibleLength={5}
+                  multiple
+                  options={comboboxFilterAndLimit({
+                    limit: this.state.lifecycleStages.length,
+                    options: this.state.lifecycleStages,
+                    selection: this.state.selectedLifecycleStages,
+                  })}
+                  selection={this.state.selectedLifecycleStages}
                   name="lifecycleStage"
-                  options={this.state.lifecycleStages}
-                  selection={this.state.program.lifecycleStageId}
-                  value="lifecycleStage"
-                  variant="readonly"
-                  errorText={this.state.error.lifecycleStageId}
                 />
               </div>
               <div className="slds-m-bottom_large slds-col slds-size_1-of-2">
                 <Combobox
-                  events={{onSelect: (event, data) => data.selection.length && this.handleChange("apm1Id", data.selection)}}
-                  labels={{label: 'APM1'}}
+                  required
+                  events={{
+                    onRequestRemoveSelectedOption: (event, data) => {
+                      this.setState({
+                        selectedApm1s: data.selection,
+                      });
+                    },
+                    onSelect: (event, data) => data.selection.length && this.setState({
+                      selectedApm1s: data.selection,
+                    })
+                  }}
+                  labels={{
+                    label: 'APM1',
+                    placeholder: 'Select an option',
+                  }}
+                  menuItemVisibleLength={5}
+                  multiple
+                  options={comboboxFilterAndLimit({
+                    limit: this.state.apm1s.length,
+                    options: this.state.apm1s,
+                    selection: this.state.selectedApm1s,
+                  })}
+                  selection={this.state.selectedApm1s}
                   name="apm1"
-                  options={this.state.apm1s}
-                  selection={this.state.program.apm1Id}
-                  value="apm1"
-                  variant="readonly"
                   errorText={this.state.error.apm1Id}
                 />
               </div>
               <div className="slds-m-bottom_large slds-col slds-size_1-of-2">
-              <Combobox
-                events={{
-                  onRequestRemoveSelectedOption: (event, data) => {
-                    this.setState({
-                      inputValue: '',
-                      selectedApm2s: data.selection,
-                    });
-                  },
-                  onSelect: (event, data) => data.selection.length && this.setState({
-                    inputValue: '',
-                    selectedApm2s: data.selection,
-                  })
-                }}
-                labels={{
-                  label: 'APM2',
-                  placeholder: 'Select an option',
-                }}
-                menuItemVisibleLength={5}
-                multiple
-                options={comboboxFilterAndLimit({
-                  inputValue: this.state.program.apm2Id,
-                  limit: this.state.apm2s.length,
-                  options: this.state.apm2s,
-                  selection: this.state.selectedApm2s,
-                })}
-                selection={this.state.selectedApm2s}
-                name="apm2"
-                errorText={this.state.error.apm2Id}
-              />
-              </div>
-              {/* <div className="slds-m-bottom_large slds-col slds-size_1-of-2">
                 <Combobox
-                  events={{onSelect: (event, data) => data.selection.length && this.handleChange("apm2Id", data.selection)}}
-                  labels={{label: 'APM2'}}
+                  events={{
+                    onRequestRemoveSelectedOption: (event, data) => {
+                      this.setState({
+                        selectedApm2s: data.selection,
+                      });
+                    },
+                    onSelect: (event, data) => data.selection.length && this.setState({
+                      selectedApm2s: data.selection,
+                    })
+                  }}
+                  labels={{
+                    label: 'APM2',
+                    placeholder: 'Select an option',
+                  }}
+                  menuItemVisibleLength={5}
+                  multiple
+                  options={comboboxFilterAndLimit({
+                    limit: this.state.apm2s.length,
+                    options: this.state.apm2s,
+                    selection: this.state.selectedApm2s,
+                  })}
+                  selection={this.state.selectedApm2s}
                   name="apm2"
-                  options={this.state.apm2s}
-                  selection={this.state.program.apm2Id}
-                  value="apm2"
-                  variant="readonly"
-                  errorText={this.state.error.apm2Id}
                 />
-              </div> */}
+              </div>
               <div className="slds-m-bottom_large slds-col slds-size_1-of-2">
                 <Combobox
-                  events={{onSelect: (event, data) => data.selection.length && this.handleChange("industryId", data.selection)}}
-                  labels={{label: 'Industry'}}
+                  required
+                  events={{
+                    onRequestRemoveSelectedOption: (event, data) => {
+                      this.setState({
+                        selectedIndustries: data.selection,
+                      });
+                    },
+                    onSelect: (event, data) => data.selection.length && this.setState({
+                      selectedIndustries: data.selection,
+                    })
+                  }}
+                  labels={{
+                    label: 'Industry',
+                    placeholder: 'Select an option',
+                  }}
+                  menuItemVisibleLength={5}
+                  multiple
+                  options={comboboxFilterAndLimit({
+                    limit: this.state.industries.length,
+                    options: this.state.industries,
+                    selection: this.state.selectedIndustries,
+                  })}
+                  selection={this.state.selectedIndustries}
                   name="industry"
-                  options={this.state.industries}
-                  selection={this.state.program.industryId}
-                  value="industry"
-                  variant="readonly"
                   errorText={this.state.error.industryId}
                 />
               </div>
               <div className="slds-m-bottom_large slds-col slds-size_1-of-2">
                 <Combobox
-                  events={{onSelect: (event, data) => data.selection.length && this.handleChange("segmentId", data.selection)}}
-                  labels={{label: 'Segment'}}
+                  required
+                  events={{
+                    onRequestRemoveSelectedOption: (event, data) => {
+                      this.setState({
+                        selectedSegments: data.selection,
+                      });
+                    },
+                    onSelect: (event, data) => data.selection.length && this.setState({
+                      selectedSegments: data.selection,
+                    })
+                  }}
+                  labels={{
+                    label: 'Segment',
+                    placeholder: 'Select an option',
+                  }}
+                  menuItemVisibleLength={5}
+                  multiple
+                  options={comboboxFilterAndLimit({
+                    limit: this.state.segments.length,
+                    options: this.state.segments,
+                    selection: this.state.selectedSegments,
+                  })}
+                  selection={this.state.selectedSegments}
                   name="segment"
-                  options={this.state.segments}
-                  selection={this.state.program.segmentId}
-                  value="segment"
-                  variant="readonly"
                   errorText={this.state.error.segmentId}
                 />
               </div>
               <div className="slds-m-bottom_large slds-col slds-size_1-of-2">
                 <Combobox
-                  events={{onSelect: (event, data) => data.selection.length && this.handleChange("personaId", data.selection)}}
-                  labels={{label: 'Persona'}}
+                  required
+                  events={{
+                    onRequestRemoveSelectedOption: (event, data) => {
+                      this.setState({
+                        selectedPersonas: data.selection,
+                      });
+                    },
+                    onSelect: (event, data) => data.selection.length && this.setState({
+                      selectedPersonas: data.selection,
+                    })
+                  }}
+                  labels={{
+                    label: 'Persona',
+                    placeholder: 'Select an option',
+                  }}
+                  menuItemVisibleLength={5}
+                  multiple
+                  options={comboboxFilterAndLimit({
+                    limit: this.state.personas.length,
+                    options: this.state.personas,
+                    selection: this.state.selectedPersonas,
+                  })}
+                  selection={this.state.selectedPersonas}
                   name="persona"
-                  options={this.state.personas}
-                  selection={this.state.program.personaId}
-                  value="persona"
-                  variant="readonly"
                   errorText={this.state.error.personaId}
                 />
               </div>
               <div className="slds-m-bottom_large slds-col slds-size_1-of-2">
                 <Textarea
+                  required
                   label="Customer Message"
                   errorText={this.state.error.customerMessage}
                   placeholder="Enter customer message"
