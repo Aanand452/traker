@@ -289,6 +289,7 @@ class EditProgramModalComponent extends Component {
           <section className="slds-p-around_large">
             <div className="slds-form-element slds-m-bottom_large">
               <Input
+                required
                 placeholder="Enter owner name"
                 label="Owner"
                 onChange={(event, data) => this.handleChange("owner", data.value)}
@@ -298,6 +299,7 @@ class EditProgramModalComponent extends Component {
             </div>
             <div className="slds-form-element slds-m-bottom_large">
               <Input
+                required
                 placeholder="Enter name"
                 label="Name"
                 onChange={(event, data) => this.handleChange("name", data.value)}
@@ -307,6 +309,8 @@ class EditProgramModalComponent extends Component {
             </div>
             <div className="slds-form-element slds-m-bottom_large">
               <BudgetInput
+                required
+                label="Budget"
                 onChange={(event, data) => this.handleChange("budget", data.value)}
                 value={this.state.program.budget}
                 errorText={this.state.error.budget}
@@ -314,6 +318,7 @@ class EditProgramModalComponent extends Component {
             </div>
             <div className="slds-form-element slds-m-bottom_large">
               <BudgetInput
+                required
                 label="MP target"
                 onChange={(event, data) => this.handleChange("metrics", data.value)}
                 value={this.state.program.metrics || ''}
@@ -322,6 +327,7 @@ class EditProgramModalComponent extends Component {
             </div>
             <div className="slds-form-element slds-m-bottom_large">
               <Combobox
+                required
                 events={{onSelect: (event, data) => data.selection.length && this.handleChange("regionId", data.selection)}}
                 labels={{label: 'Target Region'}}
                 name="region"
@@ -346,6 +352,7 @@ class EditProgramModalComponent extends Component {
             </div>
             <div className="slds-form-element slds-m-bottom_large">
               <Combobox
+                required
                 events={{onSelect: (event, data) => data.selection.length && this.handleChange("apm1Id", data.selection)}}
                 labels={{label: 'APM1'}}
                 name="apm1"
@@ -370,6 +377,7 @@ class EditProgramModalComponent extends Component {
             </div>
             <div className="slds-form-element slds-m-bottom_large">
               <Combobox
+                required
                 events={{onSelect: (event, data) => data.selection.length && this.handleChange("industryId", data.selection)}}
                 labels={{label: 'Industry'}}
                 name="industry"
@@ -382,6 +390,7 @@ class EditProgramModalComponent extends Component {
             </div>
             <div className="slds-form-element slds-m-bottom_large">
               <Combobox
+                required
                 events={{onSelect: (event, data) => data.selection.length && this.handleChange("segmentId", data.selection)}}
                 labels={{label: 'Segment'}}
                 name="segment"
@@ -394,6 +403,7 @@ class EditProgramModalComponent extends Component {
             </div>
             <div className="slds-form-element slds-m-bottom_large">
               <Combobox
+                required
                 events={{onSelect: (event, data) => data.selection.length && this.handleChange("personaId", data.selection)}}
                 labels={{label: 'Persona'}}
                 name="persona"
@@ -406,6 +416,7 @@ class EditProgramModalComponent extends Component {
             </div>
             <div className="slds-form-element slds-m-bottom_large">
               <Textarea
+                required
                 label="Customer Message"
                 errorText={this.state.error.customerMessage}
                 placeholder="Enter customer message"
