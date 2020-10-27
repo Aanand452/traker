@@ -147,7 +147,7 @@ class Step2 extends Component {
             }}
             id="curstomer-mkt"
             labels={{
-              label: 'Curstomer marketing',
+              label: 'Customer marketing',
             }}
             onChange={e => {
               this.props.handleChange("customerMarketing", e.target.checked)
