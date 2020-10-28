@@ -94,7 +94,6 @@ class Step2 extends Component {
             <abbr class="slds-required" title="required">*</abbr>Title
           </label>
           <Input
-            label="Title"
             errorText={this.props.error.title}
             placeholder="Enter title"
             value={this.props.row.title}

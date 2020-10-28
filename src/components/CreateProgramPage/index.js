@@ -282,7 +282,7 @@ class CreateProgramPage extends Component {
               <div className="slds-m-bottom_large slds-col slds-size_1-of-2">
                 <BudgetInput
                   required
-                  label="budget"
+                  label="Budget"
                   onChange={(event, data) => this.handleChange("budget", data.value)}
                   value={this.state.program.budget || ''}
                   errorText={this.state.error.budget}

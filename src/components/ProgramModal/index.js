@@ -203,11 +203,12 @@ class EditProgramModalComponent extends Component {
       }
     } else {
       inputs.forEach((input) => {
-        if(this.state.program[input]) {
+        if(this.state.program[input] && (this.state.program[input].length > 0 || this.state.program[input] > 0)) {
           delete errors[input];
         } else {
           errors = {...errors, [input]: "This field is required"};
         }
+
       })
     }
 
@@ -330,7 +331,7 @@ class EditProgramModalComponent extends Component {
                 required
                 events={{onSelect: (event, data) => data.selection.length && this.handleChange("regionId", data.selection)}}
                 labels={{label: 'Target Region'}}
-                name="region"
+                name="regionId"
                 options={this.state.regions}
                 selection={this.state.program.regionId}
                 value="region"
