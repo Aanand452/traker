@@ -146,9 +146,9 @@ class Step2 extends Component {
             assistiveText={{
               label: 'Default',
             }}
-            id="curstomer-mkt"
+            id="customer-mkt"
             labels={{
-              label: 'Curstomer marketing',
+              label: 'Customer marketing',
             }}
             onChange={e => {
               this.props.handleChange("customerMarketing", e.target.checked)
