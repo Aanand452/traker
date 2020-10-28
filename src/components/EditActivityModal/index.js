@@ -471,7 +471,7 @@ class EditActivityModalComponent extends Component {
                 }}
                 id="customerMarketing"
                 labels={{
-                  label: 'Customer marketing',
+                  label: 'Curstomer marketing',
                 }}
                 checked={this.state.customerMarketing}
                 onChange={e => this.handleChange(e)}
