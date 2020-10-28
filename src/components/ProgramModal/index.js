@@ -292,7 +292,7 @@ class EditProgramModalComponent extends Component {
               <Input
                 required
                 placeholder="Enter owner name"
-                label="Owner"
+                label="Program Owner"
                 onChange={(event, data) => this.handleChange("owner", data.value)}
                 errorText={this.state.error.owner}
                 value={this.state.program.owner}
@@ -302,7 +302,7 @@ class EditProgramModalComponent extends Component {
               <Input
                 required
                 placeholder="Enter name"
-                label="Name"
+                label="Program Name"
                 onChange={(event, data) => this.handleChange("name", data.value)}
                 errorText={this.state.error.name}
                 value={this.state.program.name}
