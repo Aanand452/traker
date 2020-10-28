@@ -89,27 +89,33 @@ class Step2 extends Component {
             errorText={this.props.error.format}
           />
         </div>
-        <div className="slds-m-bottom_large slds-col slds-size_1-of-2">
+        <div className="slds-m-bottom_large slds-col slds-size_1-of-2 slds-form-element">
+          <label class="slds-form-element__label" for="text-input-id-1">
+            <abbr class="slds-required" title="required">*</abbr>Title
+          </label>
           <Input
-            label="Title"
             errorText={this.props.error.title}
             placeholder="Enter title"
             value={this.props.row.title}
             onChange={(event) => this.props.handleChange("title", event.target.value)}
           />
         </div>
-        <div className="slds-m-bottom_large slds-col slds-size_1-of-2">
+        <div className="slds-m-bottom_large slds-col slds-size_1-of-2 slds-form-element">
+          <label class="slds-form-element__label" for="text-input-id-1">
+            <abbr class="slds-required" title="required">*</abbr>Abstract
+          </label>
           <Textarea
-            label="Abstract"
             errorText={this.props.error.abstract}
             placeholder="Enter abstract"
             value={this.props.row.abstract}
             onChange={(event) => this.props.handleChange("abstract", event.target.value)}
           />
         </div>
-        <div className={`slds-col slds-size_1-of-4 ${this.props.error.startDate && "slds-has-error"}`}>
+        <div className={`slds-col slds-size_1-of-4 slds-form-element ${this.props.error.startDate && "slds-has-error"}`}>
+          <label class="slds-form-element__label" for="text-input-id-1">
+            <abbr class="slds-required" title="required">*</abbr>Start date
+          </label>
           <Datepicker
-            labels={{label: 'Start Date'}}
             triggerClassName="slds-col slds-size_1-of-1"
             onChange={(event, data) => this.props.handleChange("startDate", data.formattedDate)}
             formatter={(date) => date ? moment(date).format('DD/MM/YYYY') : ''}
@@ -118,9 +124,11 @@ class Step2 extends Component {
           />
           {this.props.error.startDate && <div className="slds-form-element__help">{this.props.error.startDate}</div>}
         </div>
-        <div className={`slds-col slds-size_1-of-4 ${this.props.error.endDate && "slds-has-error"}`}>
+        <div className={`slds-col slds-size_1-of-4 slds-form-element ${this.props.error.endDate && "slds-has-error"}`}>
+          <label class="slds-form-element__label" for="text-input-id-1">
+            <abbr class="slds-required" title="required">*</abbr>End date
+          </label>
           <Datepicker
-            labels={{label: 'End Date'}}
             triggerClassName="slds-col slds-size_1-of-1"
             onChange={(event, data) => this.props.handleChange("endDate", data.formattedDate)}
             formatter={(date) => date ? moment(date).format('DD/MM/YYYY') : ''}
