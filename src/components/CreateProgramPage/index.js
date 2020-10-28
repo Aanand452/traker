@@ -261,6 +261,7 @@ class CreateProgramPage extends Component {
             <div className="slds-grid slds-wrap slds-p-around_medium slds_full-width">
               <div className="slds-m-bottom_large slds-col slds-size_1-of-2">
                 <Input
+                  required
                   placeholder="Enter program name"
                   label="Program Name"
                   onChange={(event, data) => this.handleChange("name", data.value)}
@@ -270,6 +271,7 @@ class CreateProgramPage extends Component {
               </div>
               <div className="slds-m-bottom_large slds-col slds-size_1-of-2">
                 <Input
+                  required
                   placeholder="Enter program owner"
                   label="Program Owner"
                   onChange={(event, data) => this.handleChange("owner", data.value)}
@@ -279,7 +281,8 @@ class CreateProgramPage extends Component {
               </div>
               <div className="slds-m-bottom_large slds-col slds-size_1-of-2">
                 <BudgetInput
-                  label="budget"
+                  required
+                  label="Budget"
                   onChange={(event, data) => this.handleChange("budget", data.value)}
                   value={this.state.program.budget || ''}
                   errorText={this.state.error.budget}
@@ -287,6 +290,7 @@ class CreateProgramPage extends Component {
               </div>
               <div className="slds-m-bottom_large slds-col slds-size_1-of-2">
                 <BudgetInput
+                  required
                   label="MP target"
                   onChange={(event, data) => this.handleChange("metrics", data.value)}
                   value={this.state.program.metrics || ''}
@@ -295,6 +299,7 @@ class CreateProgramPage extends Component {
               </div>
               <div className="slds-m-bottom_large slds-col slds-size_1-of-2">
                 <Combobox
+                  required
                   events={{onSelect: (event, data) => data.selection.length && this.handleChange("regionId", data.selection)}}
                   labels={{label: 'Target Region'}}
                   name="region"
@@ -319,6 +324,7 @@ class CreateProgramPage extends Component {
               </div>
               <div className="slds-m-bottom_large slds-col slds-size_1-of-2">
                 <Combobox
+                  required
                   events={{onSelect: (event, data) => data.selection.length && this.handleChange("apm1Id", data.selection)}}
                   labels={{label: 'APM1'}}
                   name="apm1"
@@ -343,6 +349,7 @@ class CreateProgramPage extends Component {
               </div>
               <div className="slds-m-bottom_large slds-col slds-size_1-of-2">
                 <Combobox
+                  required
                   events={{onSelect: (event, data) => data.selection.length && this.handleChange("industryId", data.selection)}}
                   labels={{label: 'Industry'}}
                   name="industry"
@@ -355,6 +362,7 @@ class CreateProgramPage extends Component {
               </div>
               <div className="slds-m-bottom_large slds-col slds-size_1-of-2">
                 <Combobox
+                  required
                   events={{onSelect: (event, data) => data.selection.length && this.handleChange("segmentId", data.selection)}}
                   labels={{label: 'Segment'}}
                   name="segment"
@@ -367,6 +375,7 @@ class CreateProgramPage extends Component {
               </div>
               <div className="slds-m-bottom_large slds-col slds-size_1-of-2">
                 <Combobox
+                  required
                   events={{onSelect: (event, data) => data.selection.length && this.handleChange("personaId", data.selection)}}
                   labels={{label: 'Persona'}}
                   name="persona"
@@ -379,6 +388,7 @@ class CreateProgramPage extends Component {
               </div>
               <div className="slds-m-bottom_large slds-col slds-size_1-of-2">
                 <Textarea
+                  required
                   label="Customer Message"
                   errorText={this.state.error.customerMessage}
                   placeholder="Enter customer message"
