@@ -442,7 +442,7 @@ class CloneActivityModalComponent extends Component {
                 }}
                 id="customerMarketing"
                 labels={{
-                  label: 'Curstomer marketing',
+                  label: 'Customer marketing',
                 }}
                 checked={this.state.customerMarketing}
                 onChange={e => this.handleChange(e)}
