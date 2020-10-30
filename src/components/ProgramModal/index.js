@@ -203,12 +203,13 @@ class EditProgramModalComponent extends Component {
       }
     } else {
       inputs.forEach((input) => {
-        if(this.state.program[input] && (this.state.program[input].length > 0 || this.state.program[input] > 0)) {
+        if(typeof this.state.program[input] === "number" && this.state.program[input] >= 0) {
+          delete errors[input];
+        } else if(this.state.program[input] && this.state.program[input].length > 0) {
           delete errors[input];
         } else {
           errors = {...errors, [input]: "This field is required"};
         }
-
       })
     }
 
@@ -233,7 +234,7 @@ class EditProgramModalComponent extends Component {
       let program = {
         name: this.state.program.name,
         owner: this.state.program.owner,
-        budget: this.state.program.budget,
+        budget: Number(this.state.program.budget),
         metrics: Number(this.state.program.metrics),
         regionId: this.state.program.regionId[0].region_id,
         personaId: this.state.program.personaId[0].id,
