@@ -234,7 +234,7 @@ class EditProgramModalComponent extends Component {
       let program = {
         name: this.state.program.name,
         owner: this.state.program.owner,
-        budget: this.state.program.budget,
+        budget: Number(this.state.program.budget),
         metrics: Number(this.state.program.metrics),
         regionId: this.state.program.regionId[0].region_id,
         personaId: this.state.program.personaId[0].id,
