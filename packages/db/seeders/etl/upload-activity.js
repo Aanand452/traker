@@ -86,7 +86,7 @@ const readAndInsertRow = async (row, index) => {
       regionId,
       startDate: parseDate(row[5]),
       endDate: parseDate(row[6]),
-      asset: row[7],
+      //asset: row[7],
       userId,
       programId
     };
