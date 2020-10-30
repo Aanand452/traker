@@ -203,12 +203,13 @@ class EditProgramModalComponent extends Component {
       }
     } else {
       inputs.forEach((input) => {
-        if(this.state.program[input] && (this.state.program[input].length > 0 || this.state.program[input] > 0)) {
+        if(typeof this.state.program[input] === "number" && this.state.program[input] >= 0) {
+          delete errors[input];
+        } else if(this.state.program[input] && this.state.program[input].length > 0) {
           delete errors[input];
         } else {
           errors = {...errors, [input]: "This field is required"};
         }
-
       })
     }
 
