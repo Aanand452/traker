@@ -161,7 +161,9 @@ class CreateProgramPage extends Component {
       }
     } else {
       inputs.forEach((input) => {
-        if(this.state.program[input]) {
+        if(typeof this.state.program[input] === "number" && this.state.program[input] >= 0) {
+          delete errors[input];
+        } else if(this.state.program[input] && this.state.program[input].length > 0) {
           delete errors[input];
         } else {
           errors = {...errors, [input]: "This field is required"};
@@ -189,8 +191,8 @@ class CreateProgramPage extends Component {
       const body = {
         name: this.state.program.name,
         owner: this.state.program.owner,
-        budget: this.state.program.budget,
-        metrics: this.state.program.metrics,
+        budget: Number(this.state.program.budget),
+        metrics: Number(this.state.program.metrics),
         customerMessage: this.state.program.customerMessage,
         regionId: this.state.program.regionId[0].region_id,
         apm1Id: this.state.program.apm1Id[0].id,
@@ -201,6 +203,8 @@ class CreateProgramPage extends Component {
       if(this.state.program.lifecycleStageId) body.lifecycleStageId = this.state.program.lifecycleStageId[0].id;
       if(this.state.program.apm2Id) body.apm2Id = this.state.program.apm2Id[0].id;
       if(this.state.program.kpi) body.otherKpis = this.state.program.kpi;
+
+      console.log(body)
 
       const config = {
         method: 'POST',
