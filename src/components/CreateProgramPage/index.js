@@ -204,8 +204,6 @@ class CreateProgramPage extends Component {
       if(this.state.program.apm2Id) body.apm2Id = this.state.program.apm2Id[0].id;
       if(this.state.program.kpi) body.otherKpis = this.state.program.kpi;
 
-      console.log(body)
-
       const config = {
         method: 'POST',
         headers: {
