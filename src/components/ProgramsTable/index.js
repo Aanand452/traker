@@ -20,11 +20,19 @@ import { Container } from './styles';
 import Pager from '../Pager';
 import Modal from '../ProgramModal';
 
-const CurrencyCell = ({ children, ...props }) => (
-  <DataTableCell title={children} {...props}>
-    {parseInt(children, 10) ? new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(children) : ''}
-  </DataTableCell>
-);
+const CurrencyCell = ({ children, ...props }) => {
+  
+  if(parseInt(children, 10) === 0) {
+    return <DataTableCell title={children} {...props}>
+      {new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumSignificantDigits: 1 }).format(children)}
+    </DataTableCell>
+  } else {
+    return <DataTableCell title={children} {...props}>
+      {parseInt(children, 10) ? new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(children) : ''}
+    </DataTableCell>
+  }
+}
+
 CurrencyCell.displayName = DataTableCell.displayName;
 
 

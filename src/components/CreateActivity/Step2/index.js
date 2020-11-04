@@ -91,7 +91,7 @@ class Step2 extends Component {
         </div>
         <div className="slds-m-bottom_large slds-col slds-size_1-of-2 slds-form-element">
           <label class="slds-form-element__label" for="text-input-id-1">
-            <abbr class="slds-required">*</abbr>Title
+            <abbr class="slds-required" title="required">*</abbr>Title
           </label>
           <Input
             errorText={this.props.error.title}
@@ -102,7 +102,7 @@ class Step2 extends Component {
         </div>
         <div className="slds-m-bottom_large slds-col slds-size_1-of-2 slds-form-element">
           <label class="slds-form-element__label" for="text-input-id-1">
-            <abbr class="slds-required">*</abbr>Abstract
+            <abbr class="slds-required" title="required">*</abbr>Abstract
           </label>
           <Textarea
             errorText={this.props.error.abstract}
@@ -113,7 +113,7 @@ class Step2 extends Component {
         </div>
         <div className={`slds-col slds-size_1-of-4 slds-form-element ${this.props.error.startDate && "slds-has-error"}`}>
           <label class="slds-form-element__label" for="text-input-id-1">
-            <abbr class="slds-required">*</abbr>Start Date
+            <abbr class="slds-required" title="required">*</abbr>Start date
           </label>
           <Datepicker
             triggerClassName="slds-col slds-size_1-of-1"
@@ -126,7 +126,7 @@ class Step2 extends Component {
         </div>
         <div className={`slds-col slds-size_1-of-4 slds-form-element ${this.props.error.endDate && "slds-has-error"}`}>
           <label class="slds-form-element__label" for="text-input-id-1">
-            <abbr class="slds-required">*</abbr>End Date
+            <abbr class="slds-required" title="required">*</abbr>End date
           </label>
           <Datepicker
             triggerClassName="slds-col slds-size_1-of-1"
@@ -145,7 +145,7 @@ class Step2 extends Component {
             assistiveText={{
               label: 'Default',
             }}
-            id="curstomer-mkt"
+            id="customer-mkt"
             labels={{
               label: 'Customer marketing',
             }}
