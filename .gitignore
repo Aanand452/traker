@@ -24,6 +24,7 @@ yarn-debug.log*
 yarn-error.log*
 
 data
+logs
 yarn-error.log
 lib
 .keys

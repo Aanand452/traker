@@ -13,11 +13,13 @@
     "import-programs": "babel-node --presets @babel/env ./seeders/etl/upload-program.js",
     "import-activities": "babel-node --presets @babel/env ./seeders/etl/upload-activity.js",
     "import-users": "babel-node --presets @babel/env ./seeders/etl/upload-user.js",
+    "check-activities": "babel-node --presets @babel/env ./seeders/etl/check-activities.js",
     "import-minor-tables": "babel-node --presets @babel/env ./seeders/etl/upload-minor-tables.js"
   },
   "dependencies": {
     "@babel/preset-env": "^7.11.5",
     "csv-parse": "^4.12.0",
+    "csv-writer": "^1.6.0",
     "currency-formatter": "^1.5.6",
     "momentjs": "^2.0.0",
     "pg": "^8.3.2",
