@@ -23,7 +23,7 @@ const HeaderProfileCustomContent = (props) => (
         <div className="slds-tile__detail">
             <p className="slds-truncate">
             <a onClick={props.onClick}>
-              Log Out
+              Log Out Tracker
             </a>
           </p>
         </div>
@@ -41,11 +41,32 @@ class NavBar extends Component{
     notification:{active:false, message:'', type: '', icon: '' }
   };
 
+  getCookie(cname) {
+    var name = cname + "=";
+    var decodedCookie = decodeURIComponent(document.cookie);
+    var ca = decodedCookie.split(';');
+    for(var i = 0; i <ca.length; i++) {
+      var c = ca[i];
+      while (c.charAt(0) == ' ') {
+        c = c.substring(1);
+      }
+      if (c.indexOf(name) == 0) {
+        return c.substring(name.length, c.length);
+      }
+    }
+    return "";
+  }
+
+  eraseCookie(name) {   
+    document.cookie = name+'=; Max-Age=-99999999;';  
+  }
+
   onClickLogout = e => {
     e.preventDefault();
     
     localStorage.getItem('userId') && localStorage.removeItem('userId');
-    this.props.history.push('/');
+    this.eraseCookie('userid');
+    document.location.replace('https://aloha.force.com/');
   }
 
   configUrls(data){
@@ -98,6 +119,8 @@ class NavBar extends Component{
         <IconSettings iconPath="/assets/icons">
           <GlobalHeader logoSrc='assets/images/logo.svg' >
             <GlobalHeaderProfile 
+              avatar='/images/avatar.png'
+              userName={this.getCookie('userName').replaceAll('"','')}
               popover={
                 <Popover
                   body={<HeaderProfileCustomContent onClick={this.onClickLogout} />}

@@ -34,6 +34,8 @@ module.exports = function (app, config, passport) {
       .then(function(data) {
         if(data.result.length > 0) {
           res.cookie('userid', JSON.stringify(data.result[0].userId));
+          res.cookie('userName', JSON.stringify(data.result[0].name));
+          //res.cookie('userProfile', JSON.stringify(data.result[0].username));
           next();
         } else {
           show403Error(req, res);

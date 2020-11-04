@@ -36,7 +36,6 @@ function getCookie(cname) {
 }
 
 localStorage.setItem('userId', getCookie('userid').replaceAll('"',''));
-console.log('DEBUG', getCookie('userid').replaceAll('"',''))
 
 if (user) {
   const userObj = JSON.parse(decodeURIComponent(user));
