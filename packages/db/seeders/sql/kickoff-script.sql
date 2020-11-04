@@ -95,61 +95,51 @@ INSERT INTO segment (segment_id, name) VALUES
   (uuid_generate_v4(), 'MMGB'),
   (uuid_generate_v4(), 'SMB');
 
-insert into tactic (tactic_id, name) values
-  (uuid_generate_v4(), 'Content'),
-  (uuid_generate_v4(), 'Digital'),
-  (uuid_generate_v4(), 'Exec Engagement'),
-  (uuid_generate_v4(), 'Event'),
-  (uuid_generate_v4(), 'Webinar'),
-  (uuid_generate_v4(), 'Enablement'),
-  (uuid_generate_v4(), 'Customer Stories'),
-  (uuid_generate_v4(), 'Lead Gen');
+insert into format (format_id, name) values
+  (uuid_generate_v4(), 'Blog'),
+  (uuid_generate_v4(), 'Video'),
+  (uuid_generate_v4(), 'Demo'),
+  (uuid_generate_v4(), 'Report'),
+  (uuid_generate_v4(), 'Infographic'),
+  (uuid_generate_v4(), 'Podcast'),
+  (uuid_generate_v4(), 'Research'),
+  (uuid_generate_v4(), 'Direct Mail'),
+  (uuid_generate_v4(), 'eBook');
 
-insert into format (format_id,tactic_id,name) values
-  (uuid_generate_v4(), null, 'Blog'),
-  (uuid_generate_v4(), null, 'Video'),
-  (uuid_generate_v4(), null, 'Demo'),
-  (uuid_generate_v4(), null, 'Report'),
-  (uuid_generate_v4(), null, 'Infographic'),
-  (uuid_generate_v4(), null, 'Podcast'),
-  (uuid_generate_v4(), null, 'Research'),
-  (uuid_generate_v4(), null, 'Direct Mail'),
-  (uuid_generate_v4(), null, 'eBook');
+insert into format (format_id, name) values
+  (uuid_generate_v4(), 'Paid Social'),
+  (uuid_generate_v4(), 'SEM'),
+  (uuid_generate_v4(), 'Display'),
+  (uuid_generate_v4(), 'Email'),
+  (uuid_generate_v4(), 'Organic Social'),
+  (uuid_generate_v4(), 'Website');
 
-insert into format (format_id,tactic_id,name) values
-  (uuid_generate_v4(), null, 'Paid Social'),
-  (uuid_generate_v4(), null, 'SEM'),
-  (uuid_generate_v4(), null, 'Display'),
-  (uuid_generate_v4(), null, 'Email'),
-  (uuid_generate_v4(), null, 'Organic Social'),
-  (uuid_generate_v4(), null, 'Website');
-
-insert into format (format_id,tactic_id,name) values
-  (uuid_generate_v4(), null, 'Rountable'),
-  (uuid_generate_v4(), null, 'SIC'),
-  (uuid_generate_v4(), null, 'Exec Visit');
+insert into format (format_id, name) values
+  (uuid_generate_v4(), 'Rountable'),
+  (uuid_generate_v4(), 'SIC'),
+  (uuid_generate_v4(), 'Exec Visit');
   
-insert into format (format_id,tactic_id,name) values
-  (uuid_generate_v4(), null, 'Strategic'),
-  (uuid_generate_v4(), null, 'Virtual'),
-  (uuid_generate_v4(), null, '3rd Party'),
-  (uuid_generate_v4(), null, 'Keynote');
+insert into format (format_id, name) values
+  (uuid_generate_v4(), 'Strategic'),
+  (uuid_generate_v4(), 'Virtual'),
+  (uuid_generate_v4(), '3rd Party'),
+  (uuid_generate_v4(), 'Keynote');
 
-insert into format (format_id,tactic_id,name) values
-  (uuid_generate_v4(), null, 'Webinar');
+insert into format (format_id, name) values
+  (uuid_generate_v4(), 'Webinar');
 
-insert into format (format_id,tactic_id,name) values
-  (uuid_generate_v4(), null, 'Enablement');
+insert into format (format_id, name) values
+  (uuid_generate_v4(), 'Enablement');
 
-insert into format (format_id,tactic_id,name) values
-  (uuid_generate_v4(), null, 'Films');
+insert into format (format_id, name) values
+  (uuid_generate_v4(), 'Films');
 
-insert into format (format_id,tactic_id,name) values
-  (uuid_generate_v4(), null, 'Lead Buy'),
-  (uuid_generate_v4(), null, 'Data Purchase'),
-  (uuid_generate_v4(), null, 'Telenurture'),
-  (uuid_generate_v4(), null, 'Email'),
-  (uuid_generate_v4(), null, '3rd Party - Email');
+insert into format (format_id, name) values
+  (uuid_generate_v4(), 'Lead Buy'),
+  (uuid_generate_v4(), 'Data Purchase'),
+  (uuid_generate_v4(), 'Telenurture'),
+  (uuid_generate_v4(), 'Email'),
+  (uuid_generate_v4(), '3rd Party - Email');
 
 insert into "user" (user_id, username, password) values
 (uuid_generate_v4(), 'miller.gonzalez@salesforce.com', '1234');

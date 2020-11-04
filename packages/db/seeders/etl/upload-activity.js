@@ -24,16 +24,27 @@ else{
 }
 
 const parseDate = (date) => {
-  return null;
+  return date ? moment(date, 'DD/MM/YYYY') : null;
 }
 
 const readAndInsertRow = async (row, index) => {
   try{
-    const activityId = await Activity.ETLCheckActivityExists(row[0], row[3], row[7]);
-    if(activityId){
-      console.log(`\x1b[33m[${index}] Activity not inserted: already exists (${row[0]})\x1b[0m`);
-      return false;
-    }
+    var update = false;
+    const prevActiv = await Activity.ETLCheckActivityExists(row[0], row[3]);
+    // if(prevActiv){
+    //   if(moment(prevActiv.startDate).format('DD/MM/YYYY') != row[5] || moment(prevActiv.endDate).format('DD/MM/YYYY') != row[6]) {
+    //     prevActiv.startDate = parseDate(row[5]);
+    //     prevActiv.endDate = parseDate(row[6]);
+
+    //     const updatedActivity = Activity.updateActivity(prevActiv.activityId, prevActiv.dataValues);
+
+    //     if(updatedActivity === "error" || !updatedActivity) throw new Error(`Error updating the activity`);
+    //     else console.log(`\x1b[32m[${index}] Activity updated: ${prevActiv.title}\x1b[0m`);
+    //   } else console.log(`\x1b[33m[${index}] Activity not inserted: already exists (${row[0]})\x1b[0m`);
+      
+    //   return false;
+    // }
+    if(prevActiv) update = true;
 
     if(row[4]) {
       var regionId = await Region.getByName(row[4]);
@@ -75,15 +86,21 @@ const readAndInsertRow = async (row, index) => {
       regionId,
       startDate: parseDate(row[5]),
       endDate: parseDate(row[6]),
-      asset: row[7],
+      //asset: row[7],
       userId,
       programId
     };
     
-    const activity = await Activity.addNewActivity(body);
+    var activity;
+    
+    if(update) {
+      activity = Activity.updateActivity(prevActiv.activityId, body);}
+    else {
+      activity = await Activity.addNewActivity(body);
+    }
 
     if(activity === "error" || !activity) throw new Error(`Error saving the activity`);
-    // else console.log(`\x1b[32m[${index}] Activity inserted: ${body.title}\x1b[0m`);
+    else console.log(`\x1b[32m[${index}] Activity inserted: ${body.title}\x1b[0m`);
   } catch(err){
     console.error('Activity not inserted', err);
   } 

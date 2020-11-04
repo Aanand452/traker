@@ -664,7 +664,7 @@ paths:
               - $ref: '#/definitions/Error'
 
   /activities/{userId}:
-    get:
+    post:
       x-swagger-router-controller: activity
       operationId: "getActivities"
       summary: Returns the list of activities by user.
@@ -675,6 +675,11 @@ paths:
           description: ID of user to fetch activities
           required: true
           type: string
+        - in: body 
+          name: body
+          required: true
+          schema:
+            $ref: '#/definitions/GetActivitiesBody'
       produces:
         - application/json
       responses:
@@ -794,6 +799,15 @@ definitions:
       userId:
         type: string
       programId:
+        type: string
+      customerMarketing:
+        type: boolean
+  
+  GetActivitiesBody:
+    description: Body used for get the activities based in a date filter
+    type: object
+    properties:
+      date:
         type: string
   
   DeleteActivity:
@@ -1101,6 +1115,8 @@ definitions:
         type: string
       programId:
         type: string
+      customerMarketing:
+        type: boolean
 
   Program:
     type: object
