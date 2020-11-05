@@ -871,7 +871,9 @@ definitions:
       lifecycleStageId:
         type: string
       apm1Id:
-        type: string
+        type: array
+        items:
+          type: string
       apm2Id:
         type: string
       industryId:

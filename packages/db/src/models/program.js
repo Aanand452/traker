@@ -1,5 +1,6 @@
 import db from '../dbmodels/';
 import { v4 as uuidv4 } from 'uuid';
+import ProgramApm1 from './programApm1'
 
 class ProgramModel {
   static async getAllPrograms() {
@@ -129,7 +130,7 @@ class ProgramModel {
 
       let region = await db.Region.findAll({ raw : true });
       let lifecycleStage = await db.LifecycleStage.findAll({ raw : true });
-      let apm1 = await db.APM1.findAll({ raw : true });
+      let apm1 = await ProgramApm1.getProgramApm1s(id);
       let apm2 = await db.APM2.findAll({ raw : true });
       let industry = await db.Industry.findAll({ raw : true });
       let segment = await db.Segment.findAll({ raw : true });
@@ -140,9 +141,6 @@ class ProgramModel {
       
       let lifecycleStageName =  lifecycleStage.filter(item => program.lifecycleStage === item.lifecycleStageId)[0] ? 
       lifecycleStage.filter(item => program.lifecycleStage === item.lifecycleStageId)[0].name : null;
-      
-      let apm1Name =  apm1.filter(item => program.apm1 === item.apm1Id)[0] ? 
-      apm1.filter(item => program.apm1 === item.apm1Id)[0].name : null;
       
       let apm2Name =  apm2.filter(item => program.apm2 === item.apm2Id)[0] ? 
       apm2.filter(item => program.apm2 === item.apm2Id)[0].name : null;
@@ -159,7 +157,7 @@ class ProgramModel {
       program = {...program,
         targetRegion: regionName,
         lifecycleStage: lifecycleStageName,
-        apm1: apm1Name,
+        apm1,
         apm2: apm2Name,
         industry: industryName,
         segment: segmentName,
@@ -212,9 +210,8 @@ class ProgramModel {
 
       body.programId = uuidv4();
       if(!body.programId) throw new Error("It was imposible to create a program due to an id error");
-      
+
       body.targetRegion = body.regionId;
-      body.apm1 = body.apm1Id;
       body.industry = body.industryId;
       body.segment = body.segmentId;
       body.persona = body.personaId;
@@ -222,6 +219,8 @@ class ProgramModel {
       if(body.apm2Id) body.apm2 = body.apm2Id;
 
       const program = await db.Program.create(body);
+
+      body.apm1Id.length && await ProgramApm1.addNewProgramApm1s(body.programId, body.apm1Id);
 
       return program;
     } catch (err) {
@@ -237,6 +236,8 @@ class ProgramModel {
       const program = await db.Program.findByPk(id);
       await program.destroy();
 
+      await ProgramApm1.removeProgramApm1s(id);
+
       return program;
     } catch (err) {
       console.error('Error deleting program', err);
@@ -248,7 +249,6 @@ class ProgramModel {
     try{
       body.targetRegion = body.regionId;
       body.lifecycleStage = body.lifecycleStageId;
-      body.apm1 = body.apm1Id;
       body.apm2 = body.apm2Id;
       body.industry = body.industryId;
       body.segment = body.segmentId;
@@ -259,6 +259,9 @@ class ProgramModel {
           program_id: id
         }
       });
+
+      await ProgramApm1.removeProgramApm1s(id);
+      body.apm1Id.length && await ProgramApm1.addNewProgramApm1s(id, body.apm1Id);
 
       return await db.Program.findByPk(id);
     } catch (err) {
