@@ -317,29 +317,13 @@ class CreateProgramPage extends Component {
               <div className="slds-m-bottom_large slds-col slds-size_1-of-2">
                 <Combobox
                   required
-                  events={{
-                    onRequestRemoveSelectedOption: (event, data) => {
-                      this.setState({
-                        selectedRegions: data.selection,
-                      });
-                    },
-                    onSelect: (event, data) => data.selection.length && this.setState({
-                      selectedRegions: data.selection,
-                    })
-                  }}
-                  labels={{
-                    label: 'Target Region',
-                    placeholder: 'Select an option',
-                  }}
-                  menuItemVisibleLength={5}
-                  multiple
-                  options={comboboxFilterAndLimit({
-                    limit: this.state.regions.length,
-                    options: this.state.regions,
-                    selection: this.state.selectedRegions,
-                  })}
-                  selection={this.state.selectedRegions}
-                  name="region"
+                  events={{onSelect: (event, data) => data.selection.length && this.handleChange("regionId", data.selection)}}
+                  labels={{label: 'Target Region'}}
+                  name="regionId"
+                  options={this.state.regions}
+                  selection={this.state.program.regionId}
+                  value="region"
+                  variant="readonly"
                   errorText={this.state.error.regionId}
                 />
               </div>
