@@ -885,7 +885,9 @@ definitions:
         items:
           type: string
       personaId:
-        type: string
+        type: array
+        items:
+          type: string
       otherKpis:
         type: string
 

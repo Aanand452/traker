@@ -13,7 +13,7 @@ class ProgramIndustryModel {
 
         resolve(result);
       } catch (err) {
-        console.error('Error creating program-apm1 relationship', err);
+        console.error('Error creating program-industry relationship', err);
         reject('Error');
       }
     });
@@ -51,7 +51,7 @@ class ProgramIndustryModel {
 
         resolve(result);
       } catch (err) {
-        console.error('Error deleting program-apm1s', err);
+        console.error('Error deleting program-industry', err);
         reject('Error');
       }
     });

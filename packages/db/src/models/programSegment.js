@@ -13,7 +13,7 @@ class ProgramSegmentModel {
 
         resolve(result);
       } catch (err) {
-        console.error('Error creating program-apm1 relationship', err);
+        console.error('Error creating program-segment relationship', err);
         reject('Error');
       }
     });
@@ -34,7 +34,7 @@ class ProgramSegmentModel {
 
         resolve(result);
       } catch (err) {
-        console.error('Error creating program-industry relationship', err);
+        console.error('Error creating program-segment relationship', err);
         reject('Error');
       }
     });
@@ -51,7 +51,7 @@ class ProgramSegmentModel {
 
         resolve(result);
       } catch (err) {
-        console.error('Error deleting program-apm1s', err);
+        console.error('Error deleting program-sements', err);
         reject('Error');
       }
     });
