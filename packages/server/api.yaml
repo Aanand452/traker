@@ -869,13 +869,17 @@ definitions:
       regionId:
         type: string
       lifecycleStageId:
-        type: string
+        type: array
+        items:
+          type: string
       apm1Id:
         type: array
         items:
           type: string
       apm2Id:
-        type: string
+        type: array
+        items:
+          type: string
       industryId:
         type: array
         items:
