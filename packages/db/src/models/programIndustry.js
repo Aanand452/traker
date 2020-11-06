@@ -9,9 +9,7 @@ class ProgramIndustryModel {
           where: { program_id: program }
         });
 
-        const industries = await db.Industry.findAll();
-
-        const result = programIndustries.map(proInd => industries.find(ind => ind.industryId === proInd.industryId).name);
+        const result = Promise.all(programIndustries.map(async programInd => await db.Industry.findByPk(programInd.industryId)));
 
         resolve(result);
       } catch (err) {
