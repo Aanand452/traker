@@ -8,9 +8,7 @@ class ProgramApm1Model {
         const programApms = await db.ProgramApm1.findAll({
           where: { program_id: program }
         });
-        const apms = await db.APM1.findAll();
-
-        const result = programApms.map(item => apms.find(apm => apm.apm1Id === item.apm1Id).name);
+        const result = Promise.all(programApms.map(async programApm => await db.APM1.findByPk(programApm.apm1Id)));
 
         resolve(result);
       } catch (err) {

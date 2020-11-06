@@ -27,24 +27,22 @@ class ProgramModel {
         raw : true 
       });
       
-
       let region = await db.Region.findAll({ raw : true });
       let lifecycleStage = await db.LifecycleStage.findAll({ raw : true });
-      let apm1 = await db.APM1.findAll({ raw : true });
       let apm2 = await db.APM2.findAll({ raw : true });
       let industry = await db.Industry.findAll({ raw : true });
       let segment = await db.Segment.findAll({ raw : true });
       let persona = await db.Persona.findAll({ raw : true });
 
-      let programData = program.map(el => {
+      let programData = Promise.all(program.map(async el => {
         let regionName = region.filter(item => el.targetRegion === item.regionId)[0] ? 
           region.filter(item => el.targetRegion === item.regionId)[0].name : null;
 
         let lifecycleStageName =  lifecycleStage.filter(item => el.lifecycleStage === item.lifecycleStageId)[0] ? 
           lifecycleStage.filter(item => el.lifecycleStage === item.lifecycleStageId)[0].name : null;
 
-        let apm1Name =  apm1.filter(item => el.apm1 === item.apm1Id)[0] ? 
-          apm1.filter(item => el.apm1 === item.apm1Id)[0].name : null;
+        let apm1s = await ProgramApm1.getProgramApm1s(el.programId);
+        apm1s = apm1s.map(apm1 => apm1.name);
 
         let apm2Name =  apm2.filter(item => el.apm2 === item.apm2Id)[0] ? 
           apm2.filter(item => el.apm2 === item.apm2Id)[0].name : null;
@@ -67,7 +65,7 @@ class ProgramModel {
           parentCampaignId: el.parentCampaignId,
           targetRegion: regionName,
           lifecycleStage: lifecycleStageName,
-          apm1: apm1Name,
+          apm1: apm1s,
           apm2: apm2Name,
           industry: industryName,
           segment: segmentName,
@@ -75,7 +73,7 @@ class ProgramModel {
           customerMessage: el.customerMessage,
           otherKpis: el.otherKpis
         }
-      });
+      }));
       
       return programData;
     } catch (err) {
@@ -130,7 +128,10 @@ class ProgramModel {
 
       let region = await db.Region.findAll({ raw : true });
       let lifecycleStage = await db.LifecycleStage.findAll({ raw : true });
-      let apm1 = await ProgramApm1.getProgramApm1s(id);
+
+      let apm1s = await ProgramApm1.getProgramApm1s(id);
+      apm1s = apm1s.map(apm1 => apm1.name);
+      
       let apm2 = await db.APM2.findAll({ raw : true });
       let industry = await db.Industry.findAll({ raw : true });
       let segment = await db.Segment.findAll({ raw : true });
@@ -157,7 +158,7 @@ class ProgramModel {
       program = {...program,
         targetRegion: regionName,
         lifecycleStage: lifecycleStageName,
-        apm1,
+        apm1: apm1s,
         apm2: apm2Name,
         industry: industryName,
         segment: segmentName,
