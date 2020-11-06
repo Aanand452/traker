@@ -881,7 +881,9 @@ definitions:
         items:
           type: string
       segmentId:
-        type: string
+        type: array
+        items:
+          type: string
       personaId:
         type: string
       otherKpis:
