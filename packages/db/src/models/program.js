@@ -39,22 +39,22 @@ class ProgramModel {
           region.filter(item => el.targetRegion === item.regionId)[0].name : null;
 
         let lifecycles = await ProgramLifecycle.getProgramLifecycles(el.programId);
-        lifecycles = lifecycles.map(lifecycle => lifecycle.name);
+        lifecycles = lifecycles.map(lifecycle => ({id: lifecycle.lifecycleStageId, label: lifecycle.name}));
 
         let apm1s = await ProgramApm1.getProgramApm1s(el.programId);
-        apm1s = apm1s.map(apm1 => apm1.name);
+        apm1s = apm1s.map(apm1 => ({id: apm1.apm1Id, label: apm1.name}));
 
         let apm2s = await ProgramApm2.getProgramApm2s(el.programId);
-        apm2s = apm2s.map(apm2 => apm2.name);
+        apm2s = apm2s.map(apm2 => ({id: apm2.apm2Id, label: apm2.name}));
 
         let industry =  await ProgramIndustry.getProgramIndustries(el.programId);
-        industry = industry.map(ind => ind.name);
+        industry = industry.map(ind => ({id: ind.industryId, label: ind.name}));
 
         let segment =  await ProgramSegment.getProgramSegments(el.programId);
-        segment = segment.map(seg => seg.name);
+        segment = segment.map(seg => ({id: seg.segmentId, label: seg.name}));
 
         let persona = await ProgramPersona.getProgramPersonas(el.programId);
-        persona = persona.map(per => per.name);
+        persona = persona.map(per => ({id: per.personaId, label: per.name}));
 
         return {
           programId: el.programId,
@@ -212,8 +212,8 @@ class ProgramModel {
       const program = await db.Program.create(body);
 
       body.apm1Id.length && await ProgramApm1.addNewProgramApm1s(body.programId, body.apm1Id);
-      body.apm2Id.length && await ProgramApm2.addNewProgramApm2s(body.programId, body.apm2Id);
-      body.lifecycleStageId.length && await ProgramLifecycle.addNewProgramLifecycles(body.programId, body.lifecycleStageId);
+      body.apm2Id && body.apm2Id.length && await ProgramApm2.addNewProgramApm2s(body.programId, body.apm2Id);
+      body.lifecycleStageId && body.lifecycleStageId.length && await ProgramLifecycle.addNewProgramLifecycles(body.programId, body.lifecycleStageId);
       body.industryId.length && await ProgramIndustry.addNewProgramIndustry(body.programId, body.industryId);
       body.segmentId.length && await ProgramSegment.addNewProgramSegment(body.programId, body.segmentId);
       body.personaId.length && await ProgramPersona.addNewProgramPersona(body.programId, body.personaId);
@@ -264,8 +264,8 @@ class ProgramModel {
       await ProgramPersona.removeProgramPersonas(id);
 
       body.apm1Id.length && await ProgramApm1.addNewProgramApm1s(id, body.apm1Id);
-      body.apm2Id.length && await ProgramApm2.addNewProgramApm2s(id, body.apm2Id);
-      body.lifecycleStageId.length && await ProgramLifecycle.addNewProgramLifecycles(id, body.lifecycleStageId);
+      body.apm2Id && body.apm2Id.length && await ProgramApm2.addNewProgramApm2s(id, body.apm2Id);
+      body.lifecycleStageId && body.lifecycleStageId.length && await ProgramLifecycle.addNewProgramLifecycles(id, body.lifecycleStageId);
       body.industryId.length && await ProgramIndustry.addNewProgramIndustry(id, body.industryId);
       body.segmentId.length && await ProgramSegment.addNewProgramSegment(id, body.segmentId);
       body.personaId.length && await ProgramPersona.addNewProgramPersona(id, body.personaId);
