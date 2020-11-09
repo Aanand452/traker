@@ -219,7 +219,7 @@ class EditActivityModalComponent extends Component {
         errors = {...errors, [item]: true};
       } 
     }
-    if(body['asset'].length > 0 && !this.isUrl(body['asset'])) {
+    if(body['asset'] !== null && body['asset'].length > 0 && !this.isUrl(body['asset'])) {
       errors = {...errors, asset: true};
     }
     delete errors.campaignId;
@@ -243,7 +243,7 @@ class EditActivityModalComponent extends Component {
         asset: this.state.asset,
         customerMarketing: this.state.customerMarketing || false,
         userId: localStorage.getItem('userId'),
-        programId: this.state.programSelection[0] && this.state.programSelection[0].id,
+        programId: this.state.programSelection[0] && this.state.programSelection[0].id
       }
       
       if(Object.values(this.validate(body)).some(el => el)) return;
@@ -273,7 +273,8 @@ class EditActivityModalComponent extends Component {
           endDate: this.state.endDate,
           asset: this.state.asset,
           customerMarketing: this.state.customerMarketing,
-          id: this.props.data.id
+          id: this.props.data.id,
+          userId: localStorage.getItem('userId'),
         });
         this.props.toggleOpen("editModalIsOPen")
         this.props.onToast(true, "Activity was edited successfully", "success");
