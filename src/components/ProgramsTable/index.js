@@ -38,7 +38,11 @@ const DropDownCell = ({ children, ...props }) => {
   let items = props.property;
   let options = props.item[items].map(el => el);
 
-  // options = props.item[items].join(", ")
+  if(options.length <= 0) {
+    return <DataTableCell title={children} {...props}>
+      
+    </DataTableCell>
+  }
   
   return <DataTableRowActions
           options={options}
@@ -49,18 +53,6 @@ const DropDownCell = ({ children, ...props }) => {
 
 CurrencyCell.displayName = DataTableCell.displayName;
 DropDownCell.displayName = DataTableCell.displayName;
-
-let options = [
-  { apm1 : [{id: 0,label: 'item 1'}, {id: 1, label: 'item 2'}, {id: 2, label: 'item 3'}], apm2 : [{id: 0,label: 'item 1'}, {id: 1, label: 'item 2'}, {id: 2, label: 'item 3'}], budget : 10, customerMessage : "1", industry : [{id: 0,label: 'item 1'}, {id: 1, label: 'item 2'}, {id: 2, label: 'item 3'}], lifecycleStage : [{id: 0,label: 'item 1'}, {id: 1, label: 'item 2'}, {id: 2, label: 'item 3'}], metrics : "10", name : "1", otherKpis : null, owner : "jp", parentCampaignId : null, persona : [{id: 0,label: 'item 1'}, {id: 1, label: 'item 2'}, {id: 2, label: 'item 3'}], programId : "14314347-8fec-422a-861d-384638d89415", segment : [{id: 0,label: 'item 1'}, {id: 1, label: 'item 2'}, {id: 2, label: 'item 3'}], targetRegion : "ANZ" },
-  { apm1 : [{id: 0,label: 'item 1'}, {id: 1, label: 'item 2'}, {id: 2, label: 'item 3'}], apm2 : [{id: 0,label: 'item 1'}, {id: 1, label: 'item 2'}, {id: 2, label: 'item 3'}], budget : 10, customerMessage : "1", industry : [{id: 0,label: 'item 1'}, {id: 1, label: 'item 2'}, {id: 2, label: 'item 3'}], lifecycleStage : [{id: 0,label: 'item 1'}, {id: 1, label: 'item 2'}, {id: 2, label: 'item 3'}], metrics : "10", name : "1", otherKpis : null, owner : "jp", parentCampaignId : null, persona : [{id: 0,label: 'item 4'}, {id: 1, label: 'item 5'}, {id: 2, label: 'item 6'}], programId : "14314347-8fec-422a-861d-384638d89415", segment : [{id: 0,label: 'item 1'}, {id: 1, label: 'item 2'}, {id: 2, label: 'item 3'}], targetRegion : "ANZ" },
-  { apm1 : [{id: 0,label: 'item 1'}, {id: 1, label: 'item 2'}, {id: 2, label: 'item 3'}], apm2 : [{id: 0,label: 'item 1'}, {id: 1, label: 'item 2'}, {id: 2, label: 'item 3'}], budget : 10, customerMessage : "1", industry : [{id: 0,label: 'item 1'}, {id: 1, label: 'item 2'}, {id: 2, label: 'item 3'}], lifecycleStage : [{id: 0,label: 'item 1'}, {id: 1, label: 'item 2'}, {id: 2, label: 'item 3'}], metrics : "10", name : "1", otherKpis : null, owner : "jp", parentCampaignId : null, persona : [{id: 0,label: 'item 7'}, {id: 1, label: 'item 8'}, {id: 2, label: 'item 9'}], programId : "14314347-8fec-422a-861d-384638d89415", segment : [{id: 0,label: 'item 1'}, {id: 1, label: 'item 2'}, {id: 2, label: 'item 3'}], targetRegion : "ANZ" },
-  { apm1 : [{id: 0,label: 'item 1'}, {id: 1, label: 'item 2'}, {id: 2, label: 'item 3'}], apm2 : [{id: 0,label: 'item 1'}, {id: 1, label: 'item 2'}, {id: 2, label: 'item 3'}], budget : 10, customerMessage : "1", industry : [{id: 0,label: 'item 1'}, {id: 1, label: 'item 2'}, {id: 2, label: 'item 3'}], lifecycleStage : [{id: 0,label: 'item 1'}, {id: 1, label: 'item 2'}, {id: 2, label: 'item 3'}], metrics : "10", name : "1", otherKpis : null, owner : "jp", parentCampaignId : null, persona : [{id: 0,label: 'item 7'}, {id: 1, label: 'item 8'}, {id: 2, label: 'item 9'}], programId : "14314347-8fec-422a-861d-384638d89415", segment : [{id: 0,label: 'item 1'}, {id: 1, label: 'item 2'}, {id: 2, label: 'item 3'}], targetRegion : "ANZ" },
-  { apm1 : [{id: 0,label: 'item 1'}, {id: 1, label: 'item 2'}, {id: 2, label: 'item 3'}], apm2 : [{id: 0,label: 'item 1'}, {id: 1, label: 'item 2'}, {id: 2, label: 'item 3'}], budget : 10, customerMessage : "1", industry : [{id: 0,label: 'item 1'}, {id: 1, label: 'item 2'}, {id: 2, label: 'item 3'}], lifecycleStage : [{id: 0,label: 'item 1'}, {id: 1, label: 'item 2'}, {id: 2, label: 'item 3'}], metrics : "10", name : "1", otherKpis : null, owner : "jp", parentCampaignId : null, persona : [{id: 0,label: 'item 7'}, {id: 1, label: 'item 8'}, {id: 2, label: 'item 9'}], programId : "14314347-8fec-422a-861d-384638d89415", segment : [{id: 0,label: 'item 1'}, {id: 1, label: 'item 2'}, {id: 2, label: 'item 3'}], targetRegion : "ANZ" },
-  { apm1 : [{id: 0,label: 'item 1'}, {id: 1, label: 'item 2'}, {id: 2, label: 'item 3'}], apm2 : [{id: 0,label: 'item 1'}, {id: 1, label: 'item 2'}, {id: 2, label: 'item 3'}], budget : 10, customerMessage : "1", industry : [{id: 0,label: 'item 1'}, {id: 1, label: 'item 2'}, {id: 2, label: 'item 3'}], lifecycleStage : [{id: 0,label: 'item 1'}, {id: 1, label: 'item 2'}, {id: 2, label: 'item 3'}], metrics : "10", name : "1", otherKpis : null, owner : "jp", parentCampaignId : null, persona : [{id: 0,label: 'item 7'}, {id: 1, label: 'item 8'}, {id: 2, label: 'item 9'}], programId : "14314347-8fec-422a-861d-384638d89415", segment : [{id: 0,label: 'item 1'}, {id: 1, label: 'item 2'}, {id: 2, label: 'item 3'}], targetRegion : "ANZ" },
-  { apm1 : [{id: 0,label: 'item 1'}, {id: 1, label: 'item 2'}, {id: 2, label: 'item 3'}], apm2 : [{id: 0,label: 'item 1'}, {id: 1, label: 'item 2'}, {id: 2, label: 'item 3'}], budget : 10, customerMessage : "1", industry : [{id: 0,label: 'item 1'}, {id: 1, label: 'item 2'}, {id: 2, label: 'item 3'}], lifecycleStage : [{id: 0,label: 'item 1'}, {id: 1, label: 'item 2'}, {id: 2, label: 'item 3'}], metrics : "10", name : "1", otherKpis : null, owner : "jp", parentCampaignId : null, persona : [{id: 0,label: 'item 7'}, {id: 1, label: 'item 8'}, {id: 2, label: 'item 9'}], programId : "14314347-8fec-422a-861d-384638d89415", segment : [{id: 0,label: 'item 1'}, {id: 1, label: 'item 2'}, {id: 2, label: 'item 3'}], targetRegion : "ANZ" },
-  { apm1 : [{id: 0,label: 'item 1'}, {id: 1, label: 'item 2'}, {id: 2, label: 'item 3'}], apm2 : [{id: 0,label: 'item 1'}, {id: 1, label: 'item 2'}, {id: 2, label: 'item 3'}], budget : 10, customerMessage : "1", industry : [{id: 0,label: 'item 1'}, {id: 1, label: 'item 2'}, {id: 2, label: 'item 3'}], lifecycleStage : [{id: 0,label: 'item 1'}, {id: 1, label: 'item 2'}, {id: 2, label: 'item 3'}], metrics : "10", name : "1", otherKpis : null, owner : "jp", parentCampaignId : null, persona : [{id: 0,label: 'item 7'}, {id: 1, label: 'item 8'}, {id: 2, label: 'item 9'}], programId : "14314347-8fec-422a-861d-384638d89415", segment : [{id: 0,label: 'item 1'}, {id: 1, label: 'item 2'}, {id: 2, label: 'item 3'}], targetRegion : "ANZ" },
-  { apm1 : [{id: 0,label: 'item 1'}, {id: 1, label: 'item 2'}, {id: 2, label: 'item 3'}], apm2 : [{id: 0,label: 'item 1'}, {id: 1, label: 'item 2'}, {id: 2, label: 'item 3'}], budget : 10, customerMessage : "1", industry : [{id: 0,label: 'item 1'}, {id: 1, label: 'item 2'}, {id: 2, label: 'item 3'}], lifecycleStage : [{id: 0,label: 'item 1'}, {id: 1, label: 'item 2'}, {id: 2, label: 'item 3'}], metrics : "10", name : "1", otherKpis : null, owner : "jp", parentCampaignId : null, persona : [{id: 0,label: 'item 7'}, {id: 1, label: 'item 8'}, {id: 2, label: 'item 9'}], programId : "14314347-8fec-422a-861d-384638d89415", segment : [{id: 0,label: 'item 1'}, {id: 1, label: 'item 2'}, {id: 2, label: 'item 3'}], targetRegion : "ANZ" },
-]
 
 class Table extends Component {
   state = {
@@ -226,8 +218,7 @@ class Table extends Component {
             }}
             fixedHeader
             fixedLayout
-            // items={this.state.displayedData}
-            items={options}
+            items={this.state.displayedData}
             id="DataTableExample-FixedHeaders"
             joined
             onSort={this.onSort}

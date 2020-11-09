@@ -27,14 +27,14 @@ class CreateProgramPage extends Component {
     industries: [],
     segments: [],
     personas: [],
-    selectedRegions: [],
-    selectedLifecycleStages: [],
-    selectedApm1s: [],
-    selectedApm2s: [],
-    selectedIndustries: [],
-    selectedSegments: [],
-    selectedPersonas: [],
-    program: {},
+    program: {
+      selectedApm1s: [],
+      selectedApm2s: [],
+      selectedLifecycleStages: [],
+      selectedIndustries: [],
+      selectedSegments: [],
+      selectedPersonas: []
+    },
     error: {},
     toast: {
       active: false
@@ -155,10 +155,10 @@ class CreateProgramPage extends Component {
       "metrics",
       "customerMessage",
       "regionId",
-      "apm1Id",
-      "industryId",
-      "segmentId",
-      "personaId"
+      "selectedApm1s",
+      "selectedIndustries",
+      "selectedSegments",
+      "selectedPersonas"
     ];
 
     if (input) {
@@ -192,17 +192,16 @@ class CreateProgramPage extends Component {
     this.setState({program: newRow});
   };
 
-  handleMultiField = (value, data) => {
-    const newRow = {...this.state.program, [value]: data};
-
-    this.validations(value, data);
-    this.setState({program: newRow});
-  };
-
   handleSubmit = async () => {
     this.setState({showLoader: true});
 
     try {
+
+      let apm1Id = this.state.program.selectedApm1s.map(el => el.id);
+      let industryId = this.state.program.selectedIndustries.map(el => el.id);
+      let segmentId = this.state.program.selectedSegments.map(el => el.id);
+      let personaId = this.state.program.selectedPersonas.map(el => el.id);
+
       const body = {
         name: this.state.program.name,
         owner: this.state.program.owner,
@@ -210,13 +209,13 @@ class CreateProgramPage extends Component {
         metrics: Number(this.state.program.metrics),
         customerMessage: this.state.program.customerMessage,
         regionId: this.state.program.regionId[0].region_id,
-        apm1Id: this.state.program.apm1Id[0].id,
-        industryId: this.state.program.industryId[0].id,
-        segmentId: this.state.program.segmentId[0].id,
-        personaId: this.state.program.personaId[0].id
+        apm1Id,
+        industryId,
+        segmentId,
+        personaId
       };
-      if(this.state.program.lifecycleStageId) body.lifecycleStageId = this.state.program.lifecycleStageId[0].id;
-      if(this.state.program.apm2Id) body.apm2Id = this.state.program.apm2Id[0].id;
+      if(this.state.program.lifecycleStageId) body.lifecycleStageId = this.state.program.selectedLifecycleStages.map(el => el.id);
+      if(this.state.program.apm2Id) body.apm2Id = this.state.program.selectedApm2s.map(el => el.id);
       if(this.state.program.kpi) body.otherKpis = this.state.program.kpi;
 
       const config = {
@@ -319,7 +318,6 @@ class CreateProgramPage extends Component {
                   required
                   events={{onSelect: (event, data) => data.selection.length && this.handleChange("regionId", data.selection)}}
                   labels={{label: 'Target Region'}}
-                  name="regionId"
                   options={this.state.regions}
                   selection={this.state.program.regionId}
                   value="region"
@@ -332,12 +330,10 @@ class CreateProgramPage extends Component {
                   events={{
                     onRequestRemoveSelectedOption: (event, data) => {
                       this.setState({
-                        selectedLifecycleStages: data.selection,
+                        program: { ...this.state.program, selectedLifecycleStages: data.selection }
                       });
                     },
-                    onSelect: (event, data) => data.selection.length && this.setState({
-                      selectedLifecycleStages: data.selection,
-                    })
+                    onSelect: (event, data) => data.selection.length && this.handleChange("selectedLifecycleStages", data.selection)
                   }}
                   labels={{
                     label: 'Lifecycle Stage',
@@ -348,10 +344,9 @@ class CreateProgramPage extends Component {
                   options={comboboxFilterAndLimit({
                     limit: this.state.lifecycleStages.length,
                     options: this.state.lifecycleStages,
-                    selection: this.state.selectedLifecycleStages,
+                    selection: this.state.program.selectedLifecycleStages
                   })}
-                  selection={this.state.selectedLifecycleStages}
-                  name="lifecycleStage"
+                  selection={this.state.program.selectedLifecycleStages}
                 />
               </div>
               <div className="slds-m-bottom_large slds-col slds-size_1-of-2">
@@ -360,12 +355,10 @@ class CreateProgramPage extends Component {
                   events={{
                     onRequestRemoveSelectedOption: (event, data) => {
                       this.setState({
-                        selectedApm1s: data.selection,
+                        program: { ...this.state.program, selectedApm1s: data.selection }
                       });
                     },
-                    onSelect: (event, data) => data.selection.length && this.setState({
-                      selectedApm1s: data.selection,
-                    })
+                    onSelect: (event, data) => data.selection.length && this.handleChange("selectedApm1s", data.selection)
                   }}
                   labels={{
                     label: 'APM1',
@@ -376,11 +369,10 @@ class CreateProgramPage extends Component {
                   options={comboboxFilterAndLimit({
                     limit: this.state.apm1s.length,
                     options: this.state.apm1s,
-                    selection: this.state.selectedApm1s,
+                    selection: this.state.program.selectedApm1s,
                   })}
-                  selection={this.state.selectedApm1s}
-                  name="apm1"
-                  errorText={this.state.error.apm1Id}
+                  selection={this.state.program.selectedApm1s}
+                  errorText={this.state.error.selectedApm1s}
                 />
               </div>
               <div className="slds-m-bottom_large slds-col slds-size_1-of-2">
@@ -388,12 +380,10 @@ class CreateProgramPage extends Component {
                   events={{
                     onRequestRemoveSelectedOption: (event, data) => {
                       this.setState({
-                        selectedApm2s: data.selection,
+                        program: { ...this.state.program, selectedApm2s: data.selection }
                       });
                     },
-                    onSelect: (event, data) => data.selection.length && this.setState({
-                      selectedApm2s: data.selection,
-                    })
+                    onSelect: (event, data) => data.selection.length && this.handleChange("selectedApm2s", data.selection)
                   }}
                   labels={{
                     label: 'APM2',
@@ -404,10 +394,9 @@ class CreateProgramPage extends Component {
                   options={comboboxFilterAndLimit({
                     limit: this.state.apm2s.length,
                     options: this.state.apm2s,
-                    selection: this.state.selectedApm2s,
+                    selection: this.state.program.selectedApm2s,
                   })}
-                  selection={this.state.selectedApm2s}
-                  name="apm2"
+                  selection={this.state.program.selectedApm2s}
                 />
               </div>
               <div className="slds-m-bottom_large slds-col slds-size_1-of-2">
@@ -416,12 +405,10 @@ class CreateProgramPage extends Component {
                   events={{
                     onRequestRemoveSelectedOption: (event, data) => {
                       this.setState({
-                        selectedIndustries: data.selection,
+                        program: { ...this.state.program, selectedIndustries: data.selection }
                       });
                     },
-                    onSelect: (event, data) => data.selection.length && this.setState({
-                      selectedIndustries: data.selection,
-                    })
+                    onSelect: (event, data) => data.selection.length && this.handleChange("selectedIndustries", data.selection)
                   }}
                   labels={{
                     label: 'Industry',
@@ -432,11 +419,10 @@ class CreateProgramPage extends Component {
                   options={comboboxFilterAndLimit({
                     limit: this.state.industries.length,
                     options: this.state.industries,
-                    selection: this.state.selectedIndustries,
+                    selection: this.state.program.selectedIndustries,
                   })}
-                  selection={this.state.selectedIndustries}
-                  name="industry"
-                  errorText={this.state.error.industryId}
+                  selection={this.state.program.selectedIndustries}
+                  errorText={this.state.error.selectedIndustries}
                 />
               </div>
               <div className="slds-m-bottom_large slds-col slds-size_1-of-2">
@@ -445,12 +431,10 @@ class CreateProgramPage extends Component {
                   events={{
                     onRequestRemoveSelectedOption: (event, data) => {
                       this.setState({
-                        selectedSegments: data.selection,
+                        program: { ...this.state.program, selectedSegments: data.selection }
                       });
                     },
-                    onSelect: (event, data) => data.selection.length && this.setState({
-                      selectedSegments: data.selection,
-                    })
+                    onSelect: (event, data) => data.selection.length && this.handleChange("selectedSegments", data.selection)
                   }}
                   labels={{
                     label: 'Segment',
@@ -461,11 +445,10 @@ class CreateProgramPage extends Component {
                   options={comboboxFilterAndLimit({
                     limit: this.state.segments.length,
                     options: this.state.segments,
-                    selection: this.state.selectedSegments,
+                    selection: this.state.program.selectedSegments,
                   })}
-                  selection={this.state.selectedSegments}
-                  name="segment"
-                  errorText={this.state.error.segmentId}
+                  selection={this.state.program.selectedSegments}
+                  errorText={this.state.error.selectedSegments}
                 />
               </div>
               <div className="slds-m-bottom_large slds-col slds-size_1-of-2">
@@ -474,12 +457,10 @@ class CreateProgramPage extends Component {
                   events={{
                     onRequestRemoveSelectedOption: (event, data) => {
                       this.setState({
-                        selectedPersonas: data.selection,
+                        program: { ...this.state.program, selectedPersonas: data.selection }
                       });
                     },
-                    onSelect: (event, data) => data.selection.length && this.setState({
-                      selectedPersonas: data.selection,
-                    })
+                    onSelect: (event, data) => data.selection.length && this.handleChange("selectedPersonas", data.selection)
                   }}
                   labels={{
                     label: 'Persona',
@@ -490,11 +471,10 @@ class CreateProgramPage extends Component {
                   options={comboboxFilterAndLimit({
                     limit: this.state.personas.length,
                     options: this.state.personas,
-                    selection: this.state.selectedPersonas,
+                    selection: this.state.program.selectedPersonas,
                   })}
-                  selection={this.state.selectedPersonas}
-                  name="persona"
-                  errorText={this.state.error.personaId}
+                  selection={this.state.program.selectedPersonas}
+                  errorText={this.state.error.selectedPersonas}
                 />
               </div>
               <div className="slds-m-bottom_large slds-col slds-size_1-of-2">

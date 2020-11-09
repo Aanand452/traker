@@ -34,7 +34,9 @@ class EditProgramModalComponent extends Component {
     selectedIndustries: [],
     selectedSegments: [],
     selectedPersonas: [],
-    program: {},
+    program: {
+      
+    },
     error: {},
     toast: {
       active: false
@@ -178,8 +180,11 @@ class EditProgramModalComponent extends Component {
       const { result } = await response.json();
       const personas = result.map(item => ({id: item.personaId, label: item.name}));
 
-      let personaId = personas.filter(el => el.label === this.props.program.persona);
+      
+      let personaId = this.props.program.persona;
       let program = { ...this.state.program, personaId };
+      
+      console.log(personaId)
 
       if(response.status === 200) this.setState({ personas, program });
       else throw new Error(response);
