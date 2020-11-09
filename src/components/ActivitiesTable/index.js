@@ -2,6 +2,7 @@ import React, { Component, Fragment } from "react";
 import { withRouter, Link } from "react-router-dom";
 import { connect } from "react-redux";
 import moment from "moment";
+import timezone from "moment-timezone";
 
 import {
   Button,
@@ -31,7 +32,7 @@ import FilterPanel from "../FilterPanel";
 
 const DateCell = ({ children, ...props }) => (
   <DataTableCell title={children} {...props}>
-    {moment(children).format("DD/MM/YYYY")}
+    {timezone(children).tz('Australia/Sydney').format("DD/MM/YYYY")}
   </DataTableCell>
 );
 DateCell.displayName = DataTableCell.displayName;
@@ -240,7 +241,7 @@ class Table extends Component {
   filter = (arr, functionFilters) => {
     return arr.filter((row) => {
       for (const property in functionFilters) {
-        if (!functionFilters[property](row[property])) return false;
+        if (!functionFilters[property](row[property] && row[property].toLowerCase())) return false;
       }
       return true;
     });

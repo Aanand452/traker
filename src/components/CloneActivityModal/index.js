@@ -10,7 +10,8 @@ import {
   Combobox,
   Datepicker,
   Input,
-  Textarea
+  Textarea,
+  Checkbox
 } from '@salesforce/design-system-react';
 
 
@@ -30,6 +31,7 @@ class CloneActivityModalComponent extends Component {
     endDate: moment(new Date(this.props.data.endDate)).format('DD/MM/YYYY'),
     asset: this.props.data.asset,
     campaignId: this.props.data.campaignId,
+    customerMarketing: this.props.data.customerMarketing,
     errors: {}
   }
 
@@ -165,15 +167,25 @@ class CloneActivityModalComponent extends Component {
   handleChange = e => {
     let errors = {...this.state.errors};
     if(e.target.id === 'asset') {
-      errors = {...this.state.errors, asset: false};
+      errors = {...errors, asset: false};
     } else if(e.target.value && e.target.id !== 'campaignId') {
-      errors = {...this.state.errors, [e.target.id]: false};
+      errors = {...errors, [e.target.id]: false};
     } else {
-      errors = {...this.state.errors, [e.target.id]: true};
+      errors = {...errors, [e.target.id]: true};
     }
     
     delete errors.campaignId;
-    this.setState({[e.target.id]: e.target.value, errors});
+    delete errors.customerMarketing;
+    if(e.target.id === "customerMarketing") {
+      this.setState({customerMarketing: e.target.checked, errors});
+    } else {
+      this.setState({[e.target.id]: e.target.value, errors});
+    }
+  }
+
+  isUrl = data => {
+    let regexp = new RegExp(/^((ftp|http|https):\/\/)?www\.([A-z]+)\.([A-z]{2,})/);
+    return regexp.test(data);
   }
 
   parseDatesGTM = row => {
@@ -187,12 +199,16 @@ class CloneActivityModalComponent extends Component {
     let errors = {...this.state.errors}
     for(let item in body) {
       if(item === 'asset') {
-        errors = {...this.state.errors, asset: false};
+        errors = {...errors, asset: false};
       } else if(!body[item]) {
-        errors = {...this.state.errors, [item]: true};
-      }
+        errors = {...errors, [item]: true};
+      } 
+    }
+    if(body['asset'].length > 0 && !this.isUrl(body['asset'])) {
+      errors = {...errors, asset: true};
     }
     delete errors.campaignId;
+    delete errors.customerMarketing;
     this.setState({ errors });
     return errors;
   }
@@ -210,6 +226,7 @@ class CloneActivityModalComponent extends Component {
         startDate: this.state.startDate,
         endDate: this.state.endDate,
         asset: this.state.asset,
+        customerMarketing: this.state.customerMarketing || false,
         userId: localStorage.getItem('userId'),
         programId: this.state.programSelection[0] && this.state.programSelection[0].id,
       }
@@ -230,7 +247,7 @@ class CloneActivityModalComponent extends Component {
       let response = await fetch(`${this.API_URL}/activity`, config);
       if(response.status === 200) {
         this.props.toggleOpen("cloneModalIsOPen");
-        this.props.onToast(true, "The campaign was created successfully", "success");
+        this.props.onToast(true, "Activity was created successfully", "success");
         this.props.reloadActivities();
       } else throw new Error(response);
     } catch (err) {
@@ -257,14 +274,14 @@ class CloneActivityModalComponent extends Component {
               <Input
                 id="campaignId"
                 label="Campaign ID"
-                placeholder="Placeholder Text"
+                placeholder="Enter campaign id"
                 value={this.state.campaignId}
                 onChange={e => this.handleChange(e)}
               />
             </div>
             <div className="slds-form-element slds-m-bottom_large">
               <Combobox
-                id="program"
+                id="programId"
                 required
                 events={{
                   onSelect: (event, data) => {
@@ -272,7 +289,7 @@ class CloneActivityModalComponent extends Component {
                       data.selection.length === 0
                         ? this.state.programSelection
                         : data.selection;
-                    this.setState({ programSelection: selection });
+                    this.setState({ programSelection: selection, errors: {programId: false} });
                   },
                 }}
                 labels={{
@@ -283,7 +300,7 @@ class CloneActivityModalComponent extends Component {
                 options={this.state.program}
                 selection={this.state.programSelection}
                 variant="readonly"
-                errorText={this.state.errors.program && "This field is required"}
+                errorText={this.state.errors.programId && "This field is required"}
               />
             </div>
             <div className="slds-form-element slds-m-bottom_large">
@@ -300,14 +317,14 @@ class CloneActivityModalComponent extends Component {
             <div className="slds-form-element slds-m-bottom_large">
               <Combobox
                 required
-                id='format'
+                id='formatId'
                 events={{
                   onSelect: (event, data) => {
                     const selection =
                       data.selection.length === 0
                         ? this.state.formatSelection
                         : data.selection;
-                    this.setState({ formatSelection: selection });
+                    this.setState({ formatSelection: selection, errors: {formatId: false} });
                   }
                 }}
                 labels={{
@@ -318,7 +335,7 @@ class CloneActivityModalComponent extends Component {
                 options={this.state.format}
                 selection={this.state.formatSelection}
                 variant="readonly"
-                errorText={this.state.errors.format && "This field is required"}
+                errorText={this.state.errors.formatId && "This field is required"}
               />
             </div>
             <div className="slds-form-element slds-m-bottom_large">
@@ -335,14 +352,14 @@ class CloneActivityModalComponent extends Component {
             <div className="slds-form-element slds-m-bottom_large">
               <Combobox
                 required
-                id='region'
+                id='regionId'
                 events={{
                   onSelect: (event, data) => {
                     const selection =
                       data.selection.length === 0
                         ? this.state.regionSelection
                         : data.selection;
-                    this.setState({ regionSelection: selection });
+                    this.setState({ regionSelection: selection, errors: {regionId: false} });
                   },
                 }}
                 labels={{
@@ -353,7 +370,7 @@ class CloneActivityModalComponent extends Component {
                 options={this.state.region}
                 selection={this.state.regionSelection}
                 variant="readonly"
-                errorText={this.state.errors.region && "This field is required"}
+                errorText={this.state.errors.regionId && "This field is required"}
               />
             </div>
             <div className={`slds-m-bottom_large slds-col slds-size_1-of-1 ${this.state.errors.startDate && "slds-has-error"}`}>
@@ -415,7 +432,20 @@ class CloneActivityModalComponent extends Component {
                 placeholder="Insert a valid URL here"
                 value={this.state.asset}
                 onChange={e => this.handleChange(e)}
-                errorText={this.state.errors.asset ? "This field is required" : ''}
+                errorText={this.state.errors.asset && "This field must be a url"}
+              />
+            </div>
+            <div className="slds-form-element slds-m-bottom_large">
+              <Checkbox
+                assistiveText={{
+                  label: 'Default',
+                }}
+                id="customerMarketing"
+                labels={{
+                  label: 'Customer marketing',
+                }}
+                checked={this.state.customerMarketing}
+                onChange={e => this.handleChange(e)}
               />
             </div>
           </section>
