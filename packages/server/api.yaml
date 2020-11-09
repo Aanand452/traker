@@ -23,11 +23,11 @@ paths:
         default:
           description: Invalid request.
           schema:
-            allOf: 
+            allOf:
               - $ref: '#/definitions/ResponseStatus'
               - $ref: '#/definitions/Error'
 
-  #FORMS  
+  #FORMS
   /program:
     get:
       x-swagger-router-controller: program
@@ -46,7 +46,7 @@ paths:
         default:
           description: Invalid request.
           schema:
-            allOf: 
+            allOf:
               - $ref: '#/definitions/ResponseStatus'
               - $ref: '#/definitions/Error'
     post:
@@ -72,8 +72,8 @@ paths:
             allOf:
               - $ref: '#/definitions/ResponseStatus'
               - $ref: '#/definitions/Error'
-  
-  /program/{id}:  
+
+  /program/{id}:
     get:
       x-swagger-router-controller: program
       operationId: "getProgramById"
@@ -173,7 +173,7 @@ paths:
         default:
           description: Invalid request.
           schema:
-            allOf: 
+            allOf:
               - $ref: '#/definitions/ResponseStatus'
               - $ref: '#/definitions/Error'
 
@@ -201,10 +201,10 @@ paths:
         default:
           description: Invalid request.
           schema:
-            allOf: 
+            allOf:
               - $ref: '#/definitions/ResponseStatus'
               - $ref: '#/definitions/Error'
-  
+
   /region:
     get:
       x-swagger-router-controller: region
@@ -223,7 +223,7 @@ paths:
         default:
           description: Invalid request.
           schema:
-            allOf: 
+            allOf:
               - $ref: '#/definitions/ResponseStatus'
               - $ref: '#/definitions/Error'
     post:
@@ -268,7 +268,7 @@ paths:
         default:
           description: Invalid request.
           schema:
-            allOf: 
+            allOf:
               - $ref: '#/definitions/ResponseStatus'
               - $ref: '#/definitions/Error'
     post:
@@ -313,7 +313,7 @@ paths:
         default:
           description: Invalid request.
           schema:
-            allOf: 
+            allOf:
               - $ref: '#/definitions/ResponseStatus'
               - $ref: '#/definitions/Error'
     post:
@@ -358,7 +358,7 @@ paths:
         default:
           description: Invalid request.
           schema:
-            allOf: 
+            allOf:
               - $ref: '#/definitions/ResponseStatus'
               - $ref: '#/definitions/Error'
     post:
@@ -403,7 +403,7 @@ paths:
         default:
           description: Invalid request.
           schema:
-            allOf: 
+            allOf:
               - $ref: '#/definitions/ResponseStatus'
               - $ref: '#/definitions/Error'
     post:
@@ -448,7 +448,7 @@ paths:
         default:
           description: Invalid request.
           schema:
-            allOf: 
+            allOf:
               - $ref: '#/definitions/ResponseStatus'
               - $ref: '#/definitions/Error'
     post:
@@ -493,7 +493,7 @@ paths:
         default:
           description: Invalid request.
           schema:
-            allOf: 
+            allOf:
               - $ref: '#/definitions/ResponseStatus'
               - $ref: '#/definitions/Error'
     post:
@@ -538,7 +538,7 @@ paths:
         default:
           description: Invalid request.
           schema:
-            allOf: 
+            allOf:
               - $ref: '#/definitions/ResponseStatus'
               - $ref: '#/definitions/Error'
     post:
@@ -589,7 +589,7 @@ paths:
         default:
           description: Invalid request.
           schema:
-            allOf: 
+            allOf:
               - $ref: '#/definitions/ResponseStatus'
               - $ref: '#/definitions/Error'
 
@@ -611,12 +611,12 @@ paths:
         default:
           description: Invalid request.
           schema:
-            allOf: 
+            allOf:
               - $ref: '#/definitions/ResponseStatus'
               - $ref: '#/definitions/Error'
 
   #REPORTS
-  /activity:  
+  /activity:
     post:
       x-swagger-router-controller: activity
       operationId: "addNewActivity"
@@ -675,7 +675,7 @@ paths:
           description: ID of user to fetch activities
           required: true
           type: string
-        - in: body 
+        - in: body
           name: body
           required: true
           schema:
@@ -692,11 +692,11 @@ paths:
         default:
           description: Invalid request.
           schema:
-            allOf: 
+            allOf:
               - $ref: '#/definitions/ResponseStatus'
               - $ref: '#/definitions/Error'
 
-  /activity/{id}:  
+  /activity/{id}:
     get:
       x-swagger-router-controller: activity
       operationId: "getActivityById"
@@ -721,7 +721,7 @@ paths:
             allOf:
               - $ref: '#/definitions/ResponseStatus'
               - $ref: '#/definitions/Error'
-    
+
     put:
       x-swagger-router-controller: activity
       operationId: "updateActivity"
@@ -770,7 +770,7 @@ paths:
         default:
           description: Invalid request.
           schema:
-            allOf: 
+            allOf:
               - $ref: '#/definitions/ResponseStatus'
               - $ref: '#/definitions/Error'
 
@@ -802,14 +802,14 @@ definitions:
         type: string
       customerMarketing:
         type: boolean
-  
+
   GetActivitiesBody:
     description: Body used for get the activities based in a date filter
     type: object
     properties:
       date:
         type: string
-  
+
   DeleteActivity:
     description: Body used for deleting one or more activities.
     type: object
@@ -818,7 +818,7 @@ definitions:
         type: array
         items:
           type: string
-  
+
   ProgramCreateBody:
     description: Body used for creating a new program.
     type: object
@@ -869,17 +869,29 @@ definitions:
       regionId:
         type: string
       lifecycleStageId:
-        type: string
+        type: array
+        items:
+          type: string
       apm1Id:
-        type: string
+        type: array
+        items:
+          type: string
       apm2Id:
-        type: string
+        type: array
+        items:
+          type: string
       industryId:
-        type: string
+        type: array
+        items:
+          type: string
       segmentId:
-        type: string
+        type: array
+        items:
+          type: string
       personaId:
-        type: string
+        type: array
+        items:
+          type: string
       otherKpis:
         type: string
 
@@ -891,7 +903,7 @@ definitions:
         type: array
         items:
           $ref: '#/definitions/Program'
-  
+
   ProgramResponse:
     description: A program get by Id
     type: object
@@ -909,7 +921,7 @@ definitions:
         type: array
         items:
           $ref: '#/definitions/Activity'
-                    
+
   FormatListResponse:
     description: A list of formats.
     type: object
@@ -1072,7 +1084,7 @@ definitions:
     properties:
       result:
         $ref: '#/definitions/Activity'
-          
+
   DoLoginBody:
     description: Body used for creating a new user.
     type: object
@@ -1081,15 +1093,15 @@ definitions:
         type: string
       password:
         type: string
-        
+
   Error:
     properties:
       message:
         type: string
     required:
       - message
-  
-  #MODELS     
+
+  #MODELS
   Activity:
     type: object
     properties:
@@ -1125,7 +1137,7 @@ definitions:
         type: string
       label:
         type: string
-        
+
   Format:
     type: object
     required:
@@ -1145,7 +1157,7 @@ definitions:
         type: string
       label:
         type: string
-              
+
   Region:
     type: object
     required:
@@ -1225,7 +1237,7 @@ definitions:
         type: string
       name:
         type: string
-            
+
 schemes: ['http', 'https']
 consumes: ['application/json']
 produces: ['application/json']

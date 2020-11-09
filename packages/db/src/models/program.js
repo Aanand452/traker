@@ -1,5 +1,11 @@
 import db from '../dbmodels/';
 import { v4 as uuidv4 } from 'uuid';
+import ProgramApm1 from './programApm1'
+import ProgramApm2 from './programApm2'
+import ProgramLifecycle from './programLifecycle'
+import ProgramIndustry from './programIndustry';
+import ProgramSegment from './programSegment';
+import ProgramPersona from './programPersona';
 
 class ProgramModel {
   static async getAllPrograms() {
@@ -10,7 +16,7 @@ class ProgramModel {
           ['name', 'ASC'],
         ],
       });
-      
+
       return program;
     } catch (err) {
       console.error('Error getting program list', err);
@@ -23,59 +29,52 @@ class ProgramModel {
         order: [
           ['name', 'ASC'],
         ],
-        raw : true 
+        raw : true
       });
-      
 
       let region = await db.Region.findAll({ raw : true });
-      let lifecycleStage = await db.LifecycleStage.findAll({ raw : true });
-      let apm1 = await db.APM1.findAll({ raw : true });
-      let apm2 = await db.APM2.findAll({ raw : true });
-      let industry = await db.Industry.findAll({ raw : true });
-      let segment = await db.Segment.findAll({ raw : true });
-      let persona = await db.Persona.findAll({ raw : true });
 
-      let programData = program.map(el => {
-        let regionName = region.filter(item => el.targetRegion === item.regionId)[0] ? 
+      let programData = Promise.all(program.map(async el => {
+        let regionName = region.filter(item => el.targetRegion === item.regionId)[0] ?
           region.filter(item => el.targetRegion === item.regionId)[0].name : null;
 
-        let lifecycleStageName =  lifecycleStage.filter(item => el.lifecycleStage === item.lifecycleStageId)[0] ? 
-          lifecycleStage.filter(item => el.lifecycleStage === item.lifecycleStageId)[0].name : null;
+        let lifecycles = await ProgramLifecycle.getProgramLifecycles(el.programId);
+        lifecycles = lifecycles.map(lifecycle => lifecycle.name);
 
-        let apm1Name =  apm1.filter(item => el.apm1 === item.apm1Id)[0] ? 
-          apm1.filter(item => el.apm1 === item.apm1Id)[0].name : null;
+        let apm1s = await ProgramApm1.getProgramApm1s(el.programId);
+        apm1s = apm1s.map(apm1 => apm1.name);
 
-        let apm2Name =  apm2.filter(item => el.apm2 === item.apm2Id)[0] ? 
-          apm2.filter(item => el.apm2 === item.apm2Id)[0].name : null;
+        let apm2s = await ProgramApm2.getProgramApm2s(el.programId);
+        apm2s = apm2s.map(apm2 => apm2.name);
 
-        let industryName =  industry.filter(item => el.industry === item.industryId)[0] ? 
-          industry.filter(item => el.industry === item.industryId)[0].name : null;
+        let industry =  await ProgramIndustry.getProgramIndustries(el.programId);
+        industry = industry.map(ind => ind.name);
 
-        let segmentName =  segment.filter(item => el.segment === item.segmentId)[0] ? 
-          segment.filter(item => el.segment === item.segmentId)[0].name : null;
+        let segment =  await ProgramSegment.getProgramSegments(el.programId);
+        segment = segment.map(seg => seg.name);
 
-        let personaName =  persona.filter(item => el.persona === item.personaId)[0] ? 
-          persona.filter(item => el.persona === item.personaId)[0].name : null;
+        let persona = await ProgramPersona.getProgramPersonas(el.programId);
+        persona = persona.map(per => per.name);
 
         return {
           programId: el.programId,
-          name: el.name,  
+          name: el.name,
           owner: el.owner,
           budget: el.budget,
           metrics: el.metrics,
           parentCampaignId: el.parentCampaignId,
           targetRegion: regionName,
-          lifecycleStage: lifecycleStageName,
-          apm1: apm1Name,
-          apm2: apm2Name,
-          industry: industryName,
-          segment: segmentName,
-          persona: personaName,
+          lifecycleStage: lifecycles,
+          apm1: apm1s,
+          apm2: apm2s,
+          industry,
+          segment,
+          persona,
           customerMessage: el.customerMessage,
           otherKpis: el.otherKpis
         }
-      });
-      
+      }));
+
       return programData;
     } catch (err) {
       console.error('Error getting program list', err);
@@ -88,7 +87,7 @@ class ProgramModel {
         where: {
           name: name
         },
-        raw : true 
+        raw : true
       });
 
       if(program.length) return program[0].programId;
@@ -111,7 +110,7 @@ class ProgramModel {
       });
 
       if(!programs) throw new Error('Error getting program list');
-      
+
       return programs;
     } catch (err) {
       console.error(err);
@@ -128,42 +127,37 @@ class ProgramModel {
       });
 
       let region = await db.Region.findAll({ raw : true });
-      let lifecycleStage = await db.LifecycleStage.findAll({ raw : true });
-      let apm1 = await db.APM1.findAll({ raw : true });
-      let apm2 = await db.APM2.findAll({ raw : true });
-      let industry = await db.Industry.findAll({ raw : true });
-      let segment = await db.Segment.findAll({ raw : true });
-      let persona = await db.Persona.findAll({ raw : true });
 
-      let regionName = region.filter(item => program.targetRegion === item.regionId)[0] ? 
+      let lifecycles = await ProgramLifecycle.getProgramLifecycles(id);
+      lifecycles = lifecycles.map(lifecycle => lifecycle.name);
+
+      let apm1s = await ProgramApm1.getProgramApm1s(id);
+      apm1s = apm1s.map(apm1 => apm1.name);
+
+      let apm2s = await ProgramApm2.getProgramApm2s(id);
+      apm2s = apm2s.map(apm2 => apm2.name);
+
+      let industries = await ProgramIndustry.getProgramIndustries(id);
+      industries = industries.map(ind => ind.name);
+
+      let segments = await ProgramSegment.getProgramSegments(id);
+      segments = segments.map(ind => ind.name);
+
+      let personas = await ProgramPersona.getProgramPersonas(id);
+      personas = personas.map(per => per.name);
+
+      let regionName = region.filter(item => program.targetRegion === item.regionId)[0] ?
       region.filter(item => program.targetRegion === item.regionId)[0].name : null;
-      
-      let lifecycleStageName =  lifecycleStage.filter(item => program.lifecycleStage === item.lifecycleStageId)[0] ? 
-      lifecycleStage.filter(item => program.lifecycleStage === item.lifecycleStageId)[0].name : null;
-      
-      let apm1Name =  apm1.filter(item => program.apm1 === item.apm1Id)[0] ? 
-      apm1.filter(item => program.apm1 === item.apm1Id)[0].name : null;
-      
-      let apm2Name =  apm2.filter(item => program.apm2 === item.apm2Id)[0] ? 
-      apm2.filter(item => program.apm2 === item.apm2Id)[0].name : null;
-      
-      let industryName =  industry.filter(item => program.industry === item.industryId)[0] ? 
-      industry.filter(item => program.industry === item.industryId)[0].name : null;
-      
-      let segmentName =  segment.filter(item => program.segment === item.segmentId)[0] ? 
-      segment.filter(item => program.segment === item.segmentId)[0].name : null;
-      
-      let personaName =  persona.filter(item => program.persona === item.personaId)[0] ? 
-      persona.filter(item => program.persona === item.personaId)[0].name : null;
-      
-      program = {...program,
+
+      program = {
+        ...program,
         targetRegion: regionName,
-        lifecycleStage: lifecycleStageName,
-        apm1: apm1Name,
-        apm2: apm2Name,
-        industry: industryName,
-        segment: segmentName,
-        persona: personaName,
+        lifecycleStage: lifecycles,
+        apm1: apm1s,
+        apm2: apm2s,
+        industry: industries,
+        segment: segments,
+        persona: personas,
       };
 
       return program;
@@ -212,16 +206,17 @@ class ProgramModel {
 
       body.programId = uuidv4();
       if(!body.programId) throw new Error("It was imposible to create a program due to an id error");
-      
+
       body.targetRegion = body.regionId;
-      body.apm1 = body.apm1Id;
-      body.industry = body.industryId;
-      body.segment = body.segmentId;
-      body.persona = body.personaId;
-      if(body.lifecycleStageId) body.lifecycleStage = body.lifecycleStageId;
-      if(body.apm2Id) body.apm2 = body.apm2Id;
 
       const program = await db.Program.create(body);
+
+      body.apm1Id.length && await ProgramApm1.addNewProgramApm1s(body.programId, body.apm1Id);
+      body.apm2Id.length && await ProgramApm2.addNewProgramApm2s(body.programId, body.apm2Id);
+      body.lifecycleStageId.length && await ProgramLifecycle.addNewProgramLifecycles(body.programId, body.lifecycleStageId);
+      body.industryId.length && await ProgramIndustry.addNewProgramIndustry(body.programId, body.industryId);
+      body.segmentId.length && await ProgramSegment.addNewProgramSegment(body.programId, body.segmentId);
+      body.personaId.length && await ProgramPersona.addNewProgramPersona(body.programId, body.personaId);
 
       return program;
     } catch (err) {
@@ -237,6 +232,13 @@ class ProgramModel {
       const program = await db.Program.findByPk(id);
       await program.destroy();
 
+      await ProgramApm1.removeProgramApm1s(id);
+      await ProgramApm2.removeProgramApm2s(id);
+      await ProgramLifecycle.removeProgramLifecycles(id);
+      await ProgramIndustry.removeProgramIndustries(id);
+      await ProgramSegment.removeProgramSegments(id);
+      await ProgramPersona.removeProgramPersonas(id);
+
       return program;
     } catch (err) {
       console.error('Error deleting program', err);
@@ -247,18 +249,26 @@ class ProgramModel {
   static async updateProgram(id, body) {
     try{
       body.targetRegion = body.regionId;
-      body.lifecycleStage = body.lifecycleStageId;
-      body.apm1 = body.apm1Id;
-      body.apm2 = body.apm2Id;
-      body.industry = body.industryId;
-      body.segment = body.segmentId;
-      body.persona = body.personaId;
 
       await db.Program.update(body, {
         where: {
           program_id: id
         }
       });
+
+      await ProgramApm1.removeProgramApm1s(id);
+      await ProgramApm2.removeProgramApm2s(id);
+      await ProgramLifecycle.removeProgramLifecycles(id);
+      await ProgramIndustry.removeProgramIndustries(id);
+      await ProgramSegment.removeProgramSegments(id);
+      await ProgramPersona.removeProgramPersonas(id);
+
+      body.apm1Id.length && await ProgramApm1.addNewProgramApm1s(id, body.apm1Id);
+      body.apm2Id.length && await ProgramApm2.addNewProgramApm2s(id, body.apm2Id);
+      body.lifecycleStageId.length && await ProgramLifecycle.addNewProgramLifecycles(id, body.lifecycleStageId);
+      body.industryId.length && await ProgramIndustry.addNewProgramIndustry(id, body.industryId);
+      body.segmentId.length && await ProgramSegment.addNewProgramSegment(id, body.segmentId);
+      body.personaId.length && await ProgramPersona.addNewProgramPersona(id, body.personaId);
 
       return await db.Program.findByPk(id);
     } catch (err) {

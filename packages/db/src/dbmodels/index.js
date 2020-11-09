@@ -3,7 +3,12 @@ import Format from './format';
 import Program from './program';
 import Tactic from './tactic';
 import User from './user';
-import ProgramUser from './programUser';
+import ProgramApm1 from './programApm1';
+import ProgramApm2 from './programApm2';
+import ProgramLifecycle from './programLifecycle';
+import ProgramIndustry from './programIndustry';
+import ProgramSegment from './programSegment';
+import ProgramPersona from './programPersona';
 import Region from './region';
 import LifecycleStage from './lifecycleStage';
 import APM1 from './apm1';
@@ -15,7 +20,7 @@ import Persona from './persona';
 let db = {};
 
 /**
- * 
+ *
  * TBD, Implement for logic to pull all models inside of this folder instead one by one
  * CHECK!! If new modes is added should be aggregated here
  */
@@ -25,7 +30,12 @@ db.Format = Format;
 db.Program = Program;
 db.Tactic = Tactic;
 db.User = User;
-db.ProgramUser = ProgramUser;
+db.ProgramApm1 = ProgramApm1;
+db.ProgramApm2 = ProgramApm2;
+db.ProgramLifecycle = ProgramLifecycle;
+db.ProgramIndustry = ProgramIndustry;
+db.ProgramSegment = ProgramSegment;
+db.ProgramPersona = ProgramPersona;
 db.Region = Region;
 db.LifecycleStage = LifecycleStage;
 db.APM1 = APM1;
@@ -35,7 +45,7 @@ db.Segment = Segment;
 db.Persona = Persona;
 
 /**
- * 
+ *
  * Run associations
  */
 Object.keys(db).forEach( nodeName => {
