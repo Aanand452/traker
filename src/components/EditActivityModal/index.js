@@ -459,7 +459,6 @@ class EditActivityModalComponent extends Component {
                 placeholder="Insert a valid URL here"
                 value={this.state.asset}
                 onChange={e => this.handleChange(e)}
-                errorText={this.state.errors.asset && "This field must be a url"}
               />
             </div>
             <div className="slds-form-element slds-m-bottom_large">
