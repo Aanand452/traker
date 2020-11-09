@@ -213,17 +213,14 @@ class EditActivityModalComponent extends Component {
   validate = body => {
     let errors = {...this.state.errors}
     for(let item in body) {
-      if(item === 'asset') {
-        errors = {...errors, asset: false};
-      } else if(!body[item]) {
+      if(!body[item]) {
         errors = {...errors, [item]: true};
       } 
     }
-    if(body['asset'] !== null && body['asset'].length > 0 && !this.isUrl(body['asset'])) {
-      errors = {...errors, asset: true};
-    }
+    
     delete errors.campaignId;
     delete errors.customerMarketing;
+    delete errors.asset;
     this.setState({ errors });
     return errors;
   }
@@ -462,7 +459,6 @@ class EditActivityModalComponent extends Component {
                 placeholder="Insert a valid URL here"
                 value={this.state.asset}
                 onChange={e => this.handleChange(e)}
-                errorText={this.state.errors.asset && "This field must be a url"}
               />
             </div>
             <div className="slds-form-element slds-m-bottom_large">
