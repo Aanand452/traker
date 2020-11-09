@@ -59,6 +59,11 @@ Activity.init({
     allowNull: true,
     type: DataTypes.TEXT,
     field: 'program_id',
+  },
+  customerMarketing: {
+    allowNull: true,
+    type: DataTypes.BOOLEAN,
+    field: 'customer_marketing',
   }
 }, {
   tableName: 'activity',

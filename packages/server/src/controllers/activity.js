@@ -4,8 +4,10 @@ import ActivityModel from '@sara/db/src/models/activity';
 
 const getActivities = async (req, res) => {  
   try {
-    var userId = req.swagger.params.userId.value;
-    const activities = await ActivityModel.getAllActivitiesByUser(userId);
+    const userId = req.swagger.params.userId.value;
+    const { date } = req.body
+
+    const activities = await ActivityModel.getAllActivitiesByUser(userId, date);
 
     if(activities === 'error') ApiUtils.responseWithError(res, httpStatus.INTERNAL_SERVER_ERROR);
     else if(!activities) ApiUtils.reposeWithhSuccess(res, null, httpStatus.NOT_FOUND);
