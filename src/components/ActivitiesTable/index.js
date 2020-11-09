@@ -2,6 +2,7 @@ import React, { Component, Fragment } from "react";
 import { withRouter, Link } from "react-router-dom";
 import { connect } from "react-redux";
 import moment from "moment";
+import timezone from "moment-timezone";
 
 import {
   Button,
@@ -20,6 +21,7 @@ import {
 
 import { getAPIUrl } from "../../config/config";
 import Modal from "../EditActivityModal";
+import CloneModal from "../CloneActivityModal";
 import Pager from "../Pager";
 
 // ACTIONS
@@ -30,7 +32,7 @@ import FilterPanel from "../FilterPanel";
 
 const DateCell = ({ children, ...props }) => (
   <DataTableCell title={children} {...props}>
-    {moment(children).format("DD/MM/YYYY")}
+    {timezone(children).tz('Australia/Sydney').format("DD/MM/YYYY")}
   </DataTableCell>
 );
 DateCell.displayName = DataTableCell.displayName;
@@ -58,6 +60,7 @@ class Table extends Component {
     isPanelOpen: false,
     data: [],
     editModalIsOPen: false,
+    cloneModalIsOPen: false,
     isDeletePromptOpen: false,
     displayedData: [],
     filters: {},
@@ -169,25 +172,29 @@ class Table extends Component {
     </Fragment>
   );
 
-  toggleOpen = () => {
-    this.setState({ editModalIsOPen: !this.state.editModalIsOPen });
+  toggleOpen = state => {
+    this.setState({ [state]: !this.state[state] });
   };
 
   editData = (row) => {
     let items = [...this.props.dataTable.items];
     items.splice(row.id, 1, row);
     this.setState({ items });
-    this.toggleOpen();
+    this.toggleOpen("editModalIsOPen");
   };
 
   handleRowAction = (item, { id }) => {
     switch (id) {
       case 0:
         this.props.setItem(item);
-        this.toggleOpen();
+        this.toggleOpen("editModalIsOPen");
         break;
       case 1:
         this.props.onDelete(item);
+        break;
+      case 2:
+        this.props.setItem(item);
+        this.toggleOpen("cloneModalIsOPen");
         break;
       default:
         break;
@@ -234,7 +241,7 @@ class Table extends Component {
   filter = (arr, functionFilters) => {
     return arr.filter((row) => {
       for (const property in functionFilters) {
-        if (!functionFilters[property](row[property])) return false;
+        if (!functionFilters[property](row[property] && row[property].toLowerCase())) return false;
       }
       return true;
     });
@@ -254,11 +261,18 @@ class Table extends Component {
   render() {
     return (
       <Container>
+        {this.state.cloneModalIsOPen && (
+          <CloneModal
+            data={this.props.dataTable.item}
+            onToast={this.onToast}
+            toggleOpen={this.toggleOpen}
+            reloadActivities={this.props.reloadActivities}
+          />
+        )}
         {this.state.editModalIsOPen && (
           <Modal
             data={this.props.dataTable.item}
             onToast={this.onToast}
-            title="Edit activity"
             toggleOpen={this.toggleOpen}
             reloadActivities={this.props.reloadActivities}
           />
@@ -354,6 +368,11 @@ class Table extends Component {
                 id: 1,
                 label: "Delete",
                 value: "2",
+              },
+              {
+                id: 2,
+                label: "Clone",
+                value: "3",
               },
             ]}
             menuPosition="overflowBoundaryElement"

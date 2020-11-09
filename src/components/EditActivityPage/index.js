@@ -15,6 +15,7 @@ class EditActivityPage extends Component {
     activities: [],
     selectedActivity: '',
     toast: {},
+    activitiesDate: '',
   }
 
   componentDidMount() {
@@ -35,15 +36,36 @@ class EditActivityPage extends Component {
     if(window.location.hostname === 'localhost') this.API_URL =  "http://localhost:3000/api/v1";
     else this.API_URL = await getAPIUrl();
     
+    await this.getConfig();
     this.getActivities();
+  }
+
+  async getConfig(){
+    try{
+      const request = await fetch('/config');
+      const data = await request.json();
+      request.status === 200 && this.setState({activitiesDate: data.activitiesDate});
+
+    } catch(e) {
+      console.error('ERROR: cannot get the url config: ', e);
+    }
   }
 
   getActivities = async () => {
     this.setState({showLoader: true});
     const user = localStorage.getItem('userId');
+    const body = { date: this.state.activitiesDate };
+    const config = {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(body)
+    };
 
     try {
-      const request = await fetch(`${this.API_URL}/activities/${user}`);
+      const request = await fetch(`${this.API_URL}/activities/${user}`, config);
       const response = await request.json();
 
       this.setState({activities: response.result.map(item => ({...item, id: item.activityId}))});

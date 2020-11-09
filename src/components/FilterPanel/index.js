@@ -77,10 +77,10 @@ class FilterPanel extends Component {
       } else if (Array.isArray(filters[property]))
         functionFilters[property] = (value) =>
           filters[property][0].label === "All" ||
-          value.includes(filters[property][0].label);
+          value.includes(filters[property][0].label.toLowerCase());
       else
         functionFilters[property] = (value) =>
-          value.includes(filters[property]);
+          value && value.includes(filters[property].toLowerCase());
     }
 
     onFilter({ functionFilters, filters });
@@ -94,7 +94,7 @@ class FilterPanel extends Component {
           onChange={(e) => this.handleChange("userId", e.target.value)}
           value={this.state.filters.userId}
           type="text"
-          label="Search owner"
+          label="Search by owner"
           className="slds-m-top_small"
         />
         <Input
