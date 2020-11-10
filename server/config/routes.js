@@ -35,6 +35,7 @@ module.exports = function (app, config, passport) {
         if(data.result.length > 0) {
           res.cookie('userid', JSON.stringify(data.result[0].userId));
           res.cookie('userName', JSON.stringify(data.result[0].name));
+          res.cookie('role', JSON.stringify(data.result[0].role || 'user'));
           //res.cookie('userProfile', JSON.stringify(data.result[0].username));
           next();
         } else {
