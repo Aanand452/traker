@@ -14,6 +14,7 @@ const APP_LOCKED_ALLOWED_USERS = APP_LOCKED.split(',') || [];
 
 module.exports = function (app, config, passport) {
   const isAuthenticated = (req, res, next) => {
+    console.log('auth', req.isAuthenticated());
     if (req.isAuthenticated()){
       res.cookie('user', JSON.stringify(req.user || ''), {
         domain: process.env.APP_DOMAIN || DEFAULT_DOMAIN
@@ -99,6 +100,9 @@ module.exports = function (app, config, passport) {
     res.clearCookie('userid');
     res.clearCookie('user');
     res.clearCookie('connect.sid');
+    res.clearCookie('userName');
+    res.clearCookie('role');
+    // 'https://aloha.force.com/'
     res.redirect(process.env.LOGOUT_URL || 'https://mgonzalez-dev-ed.lightning.force.com/secur/logout.jsp');
   })
 

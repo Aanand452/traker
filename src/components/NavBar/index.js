@@ -57,16 +57,11 @@ class NavBar extends Component{
     return "";
   }
 
-  eraseCookie(name) {   
-    document.cookie = name+'=; Max-Age=-99999999;';  
-  }
-
   onClickLogout = e => {
     e.preventDefault();
     
-    localStorage.getItem('userId') && localStorage.removeItem('userId');
-    this.eraseCookie('userid');
-    document.location.replace('https://aloha.force.com/');
+    localStorage.removeItem('userId');
+    document.location.replace('/logout');
   }
 
   configUrls(data){
