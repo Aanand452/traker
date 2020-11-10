@@ -33,8 +33,26 @@ const CurrencyCell = ({ children, ...props }) => {
   }
 }
 
-CurrencyCell.displayName = DataTableCell.displayName;
+const DropDownCell = ({ children, ...props }) => {
 
+  let items = props.property;
+  let options = props.item[items].map(el => el);
+
+  if(options.length <= 0) {
+    return <DataTableCell title={children} {...props}>
+      
+    </DataTableCell>
+  }
+  
+  return <DataTableRowActions
+          options={options}
+          menuPosition="overflowBoundaryElement"
+          dropdown={<Dropdown />}
+        />
+}
+
+CurrencyCell.displayName = DataTableCell.displayName;
+DropDownCell.displayName = DataTableCell.displayName;
 
 class Table extends Component {
   state = {
@@ -232,18 +250,30 @@ class Table extends Component {
               sortable
               isSorted={this.state.sortProperty === 'targetRegion'}
             />
-            <DataTableColumn label="Lifecycle Stage" property="lifecycleStage" />
-            <DataTableColumn label="APM1" property="apm1" />
-            <DataTableColumn label="APM2" property="apm2" />
+            <DataTableColumn label="Lifecycle Stage" property="lifecycleStage">
+              <DropDownCell />
+            </DataTableColumn>
+            <DataTableColumn label="APM1" property="apm1">
+              <DropDownCell />
+            </DataTableColumn>
+            <DataTableColumn label="APM2" property="apm2">
+             <DropDownCell />
+            </DataTableColumn>
             <DataTableColumn 
               label="Industry"
               property="industry"
               sortDirection={this.state.sortDirection}
               sortable
               isSorted={this.state.sortProperty === 'industry'}
-            />
-            <DataTableColumn label="Segment" property="segment" />
-            <DataTableColumn label="Persona" property="persona" />
+            >
+              <DropDownCell />
+            </DataTableColumn>
+            <DataTableColumn label="Segment" property="segment">
+              <DropDownCell />
+            </DataTableColumn>
+            <DataTableColumn label="Persona" property="persona">
+              <DropDownCell />
+            </DataTableColumn>
             <DataTableColumn label="Customer Message" property="customerMessage" />
             <DataTableColumn label="Other KPI's" property="otherKpis" />
             <DataTableRowActions
