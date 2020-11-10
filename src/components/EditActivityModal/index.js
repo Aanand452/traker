@@ -23,6 +23,10 @@ import {
 class EditActivityModalComponent extends Component {
 
   state = {
+    isProgramLoading: false,
+    isRegionLoading: false,
+    isFormatLoading: false,
+    isValidURL: true,
     program: [],
     region: [],
     format: [],
@@ -53,7 +57,7 @@ class EditActivityModalComponent extends Component {
   setupAndFetch = async () => {
     if(window.location.hostname === 'localhost') this.API_URL =  "http://localhost:3000/api/v1";
     else this.API_URL = await getAPIUrl();
-    
+
     this.initDropdowns();
   }
 
@@ -78,7 +82,7 @@ class EditActivityModalComponent extends Component {
         title: result.title,
         abstract: result.abstract,
         startDate: moment(new Date(result.startDate)).format('DD/MM/YYYY'),
-        endDate: moment(new Date(result.endDate)).format('DD/MM/YYYY'), 
+        endDate: moment(new Date(result.endDate)).format('DD/MM/YYYY'),
         asset: result.asset,
         campaignId: result.campaignId,
         programSelection: activityProgram,
@@ -91,46 +95,51 @@ class EditActivityModalComponent extends Component {
   }
 
   checkProgram = async () => {
+    this.setState({ isProgramLoading: true });
     return new Promise(async (resolve, reject) => {
       try {
         let response = await fetch(`${this.API_URL}/program`);
         let { result } = await response.json()
-  
+
         //salesforce datepicker requires id key
         result = result.map(el => {
           el.id = el.program_id;
           return el;
         });
-  
-        this.setState({ program: result });
+
+        this.setState({ program: result, isProgramLoading: false });
         resolve();
       } catch(err) {
         console.error(err)
+        this.setState({ isProgramLoading: false });
         reject(err);
       }
     })
-    
+
   }
 
   checkFormat = async () => {
+    this.setState({ isFormatLoading: true });
     return new Promise(async (resolve, reject) => {
       try {
         let response = await fetch(`${this.API_URL}/format`);
         let { result } = await response.json();
-        
+
         //salesforce datepicker requires id key
         result = result.map(el => ({...el, id: el.format_id, label: el.name}));
-        
-        this.setState({ format: result });
+
+        this.setState({ format: result, isFormatLoading: false });
         resolve();
       } catch(err) {
         console.error(err);
+        this.setState({ isFormatLoading: false });
         reject(err);
       }
     });
   }
 
   checkRegion = async () => {
+    this.setState({ isRegionLoading: true });
     return new Promise(async (resolve, reject) => {
       try {
         let response = await fetch(`${this.API_URL}/region`);
@@ -139,11 +148,12 @@ class EditActivityModalComponent extends Component {
           el.id = el.region_id;
           return el;
         });
-  
-        this.setState({ region: result });
+
+        this.setState({ region: result, isRegionLoading: false });
         resolve();
       } catch(err) {
-        console.error(err)
+        console.error(err);
+        this.setState({ isRegionLoading: false });
         reject();
       }
     });
@@ -178,7 +188,7 @@ class EditActivityModalComponent extends Component {
     } else {
       errors = {...errors, [e.target.id]: true};
     }
-    
+
     delete errors.campaignId;
     delete errors.customerMarketing;
     if(e.target.id === "customerMarketing") {
@@ -189,8 +199,12 @@ class EditActivityModalComponent extends Component {
   }
 
   isUrl = data => {
-    let regexp = new RegExp(/^((ftp|http|https):\/\/)?www\.([A-z]+)\.([A-z]{2,})/);
-    return regexp.test(data);
+    if (!data) {
+      this.setState({ isValidURL: true });
+      return;
+    }
+    const regexp = new RegExp(/^((ftp|http|https):\/\/)?(?:www\.|(?!www\.))[A-z0-9-_]+\.[A-z]{2,}(.*)?$/);
+    this.setState({ isValidURL: regexp.test(data) });
   }
 
   parseDatesToLocal = row => {
@@ -215,9 +229,9 @@ class EditActivityModalComponent extends Component {
     for(let item in body) {
       if(!body[item]) {
         errors = {...errors, [item]: true};
-      } 
+      }
     }
-    
+
     delete errors.campaignId;
     delete errors.customerMarketing;
     delete errors.asset;
@@ -227,7 +241,7 @@ class EditActivityModalComponent extends Component {
 
   editTable = async e => {
     e.preventDefault();
-    
+
     try {
       let body = {
         title: this.state.title,
@@ -242,9 +256,9 @@ class EditActivityModalComponent extends Component {
         userId: localStorage.getItem('userId'),
         programId: this.state.programSelection[0] && this.state.programSelection[0].id
       }
-      
+
       if(Object.values(this.validate(body)).some(el => el)) return;
-      
+
       body = this.parseDatesGTM(body);
 
       const config = {
@@ -257,7 +271,7 @@ class EditActivityModalComponent extends Component {
       }
 
       let response = await fetch(`${this.API_URL}/activity/${this.props.data.activityId}`, config);
-      
+
       if(response.status === 200) {
         this.props.editItem(this.props.dataTable.items, {
           campaignId: this.state.campaignId,
@@ -283,14 +297,30 @@ class EditActivityModalComponent extends Component {
     }
   }
 
-	render() {        
+	render() {
 		return (
       <IconSettings iconPath="/assets/icons">
         <Modal
           isOpen={true}
           footer={[
-            <Button label="Cancel" onClick={() => this.props.toggleOpen("editModalIsOPen")} key="CancelButton" />,
-            <Button type="submit" label="Save" variant="brand" onClick={this.editTable} key="SubmitButton" />,
+            <Button
+              label="Cancel"
+              onClick={() => this.props.toggleOpen("editModalIsOPen")}
+              key="CancelButton"
+            />,
+            <Button
+              type="submit"
+              label="Save"
+              variant="brand"
+              onClick={this.editTable}
+              key="SubmitButton"
+              disabled={
+                !this.state.isValidURL ||
+                this.state.isProgramLoading ||
+                this.state.isRegionLoading ||
+                this.state.isFormatLoading
+              }
+            />,
           ]}
           onRequestClose={() => this.props.toggleOpen("editModalIsOPen")}
           heading="Edit activity"
@@ -456,9 +486,13 @@ class EditActivityModalComponent extends Component {
                 id='asset'
                 label="Asset"
                 type='url'
+                errorText={!this.state.isValidURL && 'Insert a valid URL'}
                 placeholder="Insert a valid URL here"
                 value={this.state.asset}
-                onChange={e => this.handleChange(e)}
+                onChange={e => {
+                  this.isUrl(e.target.value);
+                  this.handleChange(e)
+                }}
               />
             </div>
             <div className="slds-form-element slds-m-bottom_large">
