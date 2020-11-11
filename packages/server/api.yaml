@@ -1178,7 +1178,7 @@ definitions:
     properties:
       username:
         type: string
-      role:
+      password:
         type: string
 
 

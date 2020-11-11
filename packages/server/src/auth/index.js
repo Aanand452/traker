@@ -29,4 +29,8 @@ const verifyToken = async (req, authOrSecDef, token, callback)  => {
   }
 }
 
-export { verifyToken };
+const signIn = (user)  => {
+  console.log(user);
+}
+
+export { verifyToken, signIn };
