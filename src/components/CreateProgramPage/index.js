@@ -271,7 +271,7 @@ class CreateProgramPage extends Component {
               />
             </ToastContainer>
           )}
-          {<Spinner size="small" variant="brand" assistiveText={{ label: "Loading..." }} />}
+          {this.state.showLoader && <Spinner size="small" variant="brand" assistiveText={{ label: "Loading..." }} />}
 
           <Panel>
             <Title>Create new program</Title>
