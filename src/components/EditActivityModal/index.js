@@ -26,7 +26,6 @@ class EditActivityModalComponent extends Component {
     isProgramLoading: false,
     isRegionLoading: false,
     isFormatLoading: false,
-    isValidURL: true,
     program: [],
     region: [],
     format: [],
@@ -182,7 +181,7 @@ class EditActivityModalComponent extends Component {
   handleChange = e => {
     let errors = {...this.state.errors};
     if(e.target.id === 'asset') {
-      errors = {...errors, asset: false};
+      errors = {...errors, asset: !this.isUrl(e.target.value)};
     } else if(e.target.value && e.target.id !== 'campaignId') {
       errors = {...errors, [e.target.id]: false};
     } else {
@@ -200,11 +199,10 @@ class EditActivityModalComponent extends Component {
 
   isUrl = data => {
     if (!data) {
-      this.setState({ isValidURL: true });
-      return;
+      return true;
     }
     const regexp = new RegExp(/^((ftp|http|https):\/\/)?(?:www\.|(?!www\.))[A-z0-9-_]+\.[A-z]{2,}(.*)?$/);
-    this.setState({ isValidURL: regexp.test(data) });
+    return regexp.test(data);
   }
 
   parseDatesToLocal = row => {
@@ -226,15 +224,23 @@ class EditActivityModalComponent extends Component {
 
   validate = body => {
     let errors = {...this.state.errors}
-    for(let item in body) {
-      if(!body[item]) {
-        errors = {...errors, [item]: true};
-      }
-    }
+    const requiredFields = [
+      'abstract',
+      'endDate',
+      'formatId',
+      'programId',
+      'regionId',
+      'startDate',
+      'title',
+      'userId',
+    ];
 
-    delete errors.campaignId;
-    delete errors.customerMarketing;
-    delete errors.asset;
+    requiredFields.forEach((reqField) => {
+      if(!body[reqField]) {
+        errors = {...errors, [reqField]: true};
+      }
+    })
+
     this.setState({ errors });
     return errors;
   }
@@ -315,7 +321,6 @@ class EditActivityModalComponent extends Component {
               onClick={this.editTable}
               key="SubmitButton"
               disabled={
-                !this.state.isValidURL ||
                 this.state.isProgramLoading ||
                 this.state.isRegionLoading ||
                 this.state.isFormatLoading
@@ -486,13 +491,10 @@ class EditActivityModalComponent extends Component {
                 id='asset'
                 label="Asset"
                 type='url'
-                errorText={!this.state.isValidURL && 'Insert a valid URL'}
+                errorText={this.state.errors.asset && 'Insert a valid URL'}
                 placeholder="Insert a valid URL here"
                 value={this.state.asset}
-                onChange={e => {
-                  this.isUrl(e.target.value);
-                  this.handleChange(e)
-                }}
+                onChange={e => this.handleChange(e)}
               />
             </div>
             <div className="slds-form-element slds-m-bottom_large">
