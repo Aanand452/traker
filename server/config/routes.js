@@ -21,14 +21,19 @@ module.exports = function (app, config, passport) {
       });
 
       var apiEnpoint = process.env.API ? process.env.API + '/login' : 'http://localhost:3000/api/v1/login'
+      var nameReplace = req.user.email.replace(/@.*$/,"");
+      var username = nameReplace!==req.user.email ? nameReplace : null;
+
       fetch(apiEnpoint,{
         method: 'POST',
         headers: {
           'Accept': 'application/json',
           'Content-Type': 'application/json',
         },
+        
         body: JSON.stringify({
-          username: req.user.email
+          username: req.user.email,
+          password: username
         })
       })
       .then((response) =>response.json())
@@ -37,7 +42,7 @@ module.exports = function (app, config, passport) {
           res.cookie('userid', JSON.stringify(data.result[0].userId));
           res.cookie('userName', JSON.stringify(data.result[0].name));
           res.cookie('role', JSON.stringify(data.result[0].role || 'user'));
-          //res.cookie('userProfile', JSON.stringify(data.result[0].username));
+          
           next();
         } else {
           show403Error(req, res);
