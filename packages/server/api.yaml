@@ -29,11 +29,6 @@ paths:
       x-swagger-router-controller: status
       operationId: "getInfo"
       summary: Returns 200 if the api is running
-      security:
-        - Bearer: []
-      x-security-scopes:
-        - admin
-        - user
       produces:
         - application/json
       responses:
@@ -62,6 +57,11 @@ paths:
       operationId: "getPrograms"
       summary: Returns the list of probrams.
       description: This will be used to populate the insert and update dropdowns
+      security:
+        - Bearer: []
+      x-security-scopes:
+        - admin
+        - user
       produces:
         - application/json
       responses:
@@ -82,6 +82,8 @@ paths:
       operationId: "addNewProgram"
       summary: Create a new program
       description: N/A
+      security:
+        - Bearer: []
       parameters:
       - name: body
         in: body
@@ -107,6 +109,8 @@ paths:
       operationId: "getProgramById"
       summary: get a program by id
       description: N/A
+      security:
+        - Bearer: []
       parameters:
         - in: path
           name: id
@@ -130,6 +134,8 @@ paths:
       x-swagger-router-controller: program
       operationId: "deleteProgram"
       summary: Delete a program
+      security:
+        - Bearer: []
       description: N/A
       parameters:
         - in: path
@@ -153,6 +159,8 @@ paths:
       x-swagger-router-controller: program
       operationId: "updateProgram"
       summary: Update a program
+      security:
+        - Bearer: []
       description: N/A
       parameters:
         - in: path
@@ -182,6 +190,8 @@ paths:
       x-swagger-router-controller: program
       operationId: "getProgramsFull"
       summary: Returns the list of programs.
+      security:
+        - Bearer: []
       description: This will be used to populate the activity table
       parameters:
         - in: path
@@ -210,6 +220,8 @@ paths:
       x-swagger-router-controller: program
       operationId: "getProgramsByRegionId"
       summary: Returns the list of programs.
+      security:
+        - Bearer: []
       description: This will be used to populate the activity table
       parameters:
         - in: path
@@ -238,7 +250,10 @@ paths:
       x-swagger-router-controller: region
       operationId: "getRegion"
       summary: Returns the list of regions.
+      security:
+        - Bearer: []
       description: This will be used to populate the insert and update dropdowns
+      
       produces:
         - application/json
       responses:
@@ -258,6 +273,8 @@ paths:
       x-swagger-router-controller: region
       operationId: "addNewRegion"
       summary: Create a new region
+      security:
+        - Bearer: []
       description: N/A
       parameters:
       - name: body
@@ -283,6 +300,8 @@ paths:
       x-swagger-router-controller: lifecycleStage
       operationId: "getAllLifecycleStages"
       summary: Returns the list of lifecycle stages.
+      security:
+        - Bearer: []
       description: This will be used to populate the insert and update dropdowns
       produces:
         - application/json
@@ -303,6 +322,8 @@ paths:
       x-swagger-router-controller: lifecycleStage
       operationId: "addNewLifecycleStage"
       summary: Create a new lifecycle
+      security:
+        - Bearer: []
       description: N/A
       parameters:
       - name: body
@@ -328,6 +349,8 @@ paths:
       x-swagger-router-controller: apm1
       operationId: "getAllAPM1"
       summary: Returns the list of apm1.
+      security:
+        - Bearer: []
       description: This will be used to populate the insert and update dropdowns
       produces:
         - application/json
@@ -348,6 +371,8 @@ paths:
       x-swagger-router-controller: apm1
       operationId: "addNewAPM1"
       summary: Create a new apm1
+      security:
+        - Bearer: []
       description: N/A
       parameters:
       - name: body
@@ -373,6 +398,8 @@ paths:
       x-swagger-router-controller: apm2
       operationId: "getAllAPM2"
       summary: Returns the list of apm2.
+      security:
+        - Bearer: []
       description: This will be used to populate the insert and update dropdowns
       produces:
         - application/json
@@ -394,6 +421,8 @@ paths:
       operationId: "addNewAPM2"
       summary: Create a new apm2
       description: N/A
+      security:
+        - Bearer: []
       parameters:
       - name: body
         in: body
@@ -418,6 +447,8 @@ paths:
       x-swagger-router-controller: industry
       operationId: "getAllIndustries"
       summary: Returns the list of industries.
+      security:
+        - Bearer: []
       description: This will be used to populate the insert and update dropdowns
       produces:
         - application/json
@@ -438,6 +469,8 @@ paths:
       x-swagger-router-controller: industry
       operationId: "addNewIndustry"
       summary: Create a new industry
+      security:
+        - Bearer: []
       description: N/A
       parameters:
       - name: body
@@ -463,6 +496,8 @@ paths:
       x-swagger-router-controller: segment
       operationId: "getAllSegments"
       summary: Returns the list of segments.
+      security:
+        - Bearer: []
       description: This will be used to populate the insert and update dropdowns
       produces:
         - application/json
@@ -484,6 +519,8 @@ paths:
       operationId: "addNewSegment"
       summary: Create a new segment
       description: N/A
+      security:
+        - Bearer: []
       parameters:
       - name: body
         in: body
@@ -508,6 +545,8 @@ paths:
       x-swagger-router-controller: persona
       operationId: "getAllPersonas"
       summary: Returns the list of personas.
+      security:
+        - Bearer: []
       description: This will be used to populate the insert and update dropdowns
       produces:
         - application/json
@@ -528,6 +567,8 @@ paths:
       x-swagger-router-controller: persona
       operationId: "addNewPersona"
       summary: Create a new persona
+      security:
+        - Bearer: []
       description: N/A
       parameters:
       - name: body
@@ -553,6 +594,8 @@ paths:
       x-swagger-router-controller: format
       operationId: "getAllFormats"
       summary: Returns the list of formats.
+      security:
+        - Bearer: []
       description: This will be used to populate the insert and update dropdowns
       produces:
         - application/json
@@ -573,6 +616,8 @@ paths:
       x-swagger-router-controller: format
       operationId: "addNewFormat"
       summary: Create a new format
+      security:
+        - Bearer: []
       description: N/A
       parameters:
       - name: body
@@ -598,6 +643,8 @@ paths:
       x-swagger-router-controller: format
       operationId: "getFormatsByTacticId"
       summary: Returns the list of formats filtered by tacticId.
+      security:
+        - Bearer: []
       parameters:
         - in: path
           name: tacticId
@@ -626,6 +673,8 @@ paths:
       x-swagger-router-controller: tactic
       operationId: "getTactics"
       summary: Returns the list of tactics.
+      security:
+        - Bearer: []
       description: This will be used to populate the insert and update dropdowns
       produces:
         - application/json
@@ -649,6 +698,8 @@ paths:
       x-swagger-router-controller: activity
       operationId: "addNewActivity"
       summary: Create a new activity
+      security:
+        - Bearer: []
       description: N/A
       parameters:
       - name: body
@@ -672,6 +723,8 @@ paths:
       x-swagger-router-controller: activity
       operationId: "deleteActivity"
       summary: Delete an activity
+      security:
+        - Bearer: []
       description: N/A
       parameters:
       - name: body
@@ -696,6 +749,8 @@ paths:
       x-swagger-router-controller: activity
       operationId: "getActivities"
       summary: Returns the list of activities by user.
+      security:
+        - Bearer: []
       description: This will be used to populate the activities table
       parameters:
         - in: path
@@ -729,6 +784,8 @@ paths:
       x-swagger-router-controller: activity
       operationId: "getActivityById"
       summary: get an activity by id
+      security:
+        - Bearer: []
       description: N/A
       parameters:
         - in: path
@@ -754,6 +811,8 @@ paths:
       x-swagger-router-controller: activity
       operationId: "updateActivity"
       summary: Update an activity by id
+      security:
+        - Bearer: []
       parameters:
         - in: path
           name: id

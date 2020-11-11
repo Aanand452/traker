@@ -4,9 +4,16 @@ import jwt from 'jsonwebtoken';
 const sharedSecret = process.env.JWT_KEY || 'secret'
 
 const sendError = (req) => {
-  return req.res.status(403).json({message: 'Error: Access Denied'});
+  return req.res.status(403).json({message: 'Access Denied'});
 }
-
+/**
+ * 
+ * @param 
+ * decodedToken = {
+ *  user_id: id
+ *  username: email
+ * }
+ */
 const validateToken = async (tokenString) => {
   let decodedToken = jwt.verify(tokenString, sharedSecret)
 
