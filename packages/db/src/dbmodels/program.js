@@ -40,36 +40,6 @@ Program.init({
     type: DataTypes.STRING,
     field: 'target_region',
   },
-  lifecycleStage: {
-    allowNull: true,
-    type: DataTypes.STRING,
-    field: 'lifecycle_stage',
-  },
-  apm1: {
-    allowNull: true,
-    type: DataTypes.STRING,
-    field: 'apm1',
-  },
-  apm2: {
-    allowNull: true,
-    type: DataTypes.STRING,
-    field: 'apm2',
-  },
-  industry: {
-    allowNull: true,
-    type: DataTypes.STRING,
-    field: 'industry',
-  },
-  segment: {
-    allowNull: true,
-    type: DataTypes.STRING,
-    field: 'segment',
-  },
-  persona: {
-    allowNull: true,
-    type: DataTypes.STRING,
-    field: 'persona',
-  },
   customerMessage: {
     allowNull: true,
     type: DataTypes.TEXT,
