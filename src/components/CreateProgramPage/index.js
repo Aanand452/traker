@@ -214,8 +214,9 @@ class CreateProgramPage extends Component {
         segmentId,
         personaId
       };
-      if(this.state.program.lifecycleStageId) body.lifecycleStageId = this.state.program.selectedLifecycleStages.map(el => el.id);
-      if(this.state.program.apm2Id) body.apm2Id = this.state.program.selectedApm2s.map(el => el.id);
+
+      if(this.state.program.selectedLifecycleStages) body.lifecycleStageId = this.state.program.selectedLifecycleStages.map(el => el.id);
+      if(this.state.program.selectedApm2s) body.apm2Id = this.state.program.selectedApm2s.map(el => el.id);
       if(this.state.program.kpi) body.otherKpis = this.state.program.kpi;
 
       const config = {
@@ -258,20 +259,20 @@ class CreateProgramPage extends Component {
 
   render() {
     return (
-      <IconSettings iconPath="assets/icons">
-        {this.state.toast.active && (
-          <ToastContainer>
-            <Toast
-              labels={{heading: this.state.toast.heading}}
-              variant={this.state.toast.variant}
-              duration={5000}
-              onRequestClose={() => this.setState({toast: {active: false}})}
-            />
-          </ToastContainer>
-        )}
-        {this.state.showLoader && <Spinner size="small" variant="brand" assistiveText={{ label: "Loading..." }} />}
+      <Container>
+        <IconSettings iconPath="assets/icons">
+          {this.state.toast.active && (
+            <ToastContainer>
+              <Toast
+                labels={{heading: this.state.toast.heading}}
+                variant={this.state.toast.variant}
+                duration={5000}
+                onRequestClose={() => this.setState({toast: {active: false}})}
+              />
+            </ToastContainer>
+          )}
+          {this.state.showLoader && <Spinner size="small" variant="brand" assistiveText={{ label: "Loading..." }} />}
 
-        <Container>
           <Panel>
             <Title>Create new program</Title>
             <div className="slds-grid slds-wrap slds-p-around_medium slds_full-width">
@@ -501,8 +502,8 @@ class CreateProgramPage extends Component {
               </div>
             </div>
           </Panel>
-        </Container>
-      </IconSettings>
+        </IconSettings>
+      </Container>
     )
   };
 };

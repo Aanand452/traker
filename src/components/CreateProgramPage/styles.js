@@ -8,4 +8,8 @@ export const Title = styled.h1`
 
 export const Container = styled.section`
   margin-top: 5.6rem;
+
+  & .slds-spinner_container {
+    position: fixed;
+  }
 `;

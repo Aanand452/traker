@@ -18,6 +18,9 @@ import {
 class CloneActivityModalComponent extends Component {
 
   state = {
+    isProgramLoading: false,
+    isRegionLoading: false,
+    isFormatLoading: false,
     program: [],
     region: [],
     format: [],
@@ -48,7 +51,7 @@ class CloneActivityModalComponent extends Component {
   setupAndFetch = async () => {
     if(window.location.hostname === 'localhost') this.API_URL =  "http://localhost:3000/api/v1";
     else this.API_URL = await getAPIUrl();
-    
+
     this.initDropdowns();
   }
 
@@ -86,46 +89,51 @@ class CloneActivityModalComponent extends Component {
   }
 
   checkProgram = async () => {
+    this.setState({ isProgramLoading: true });
     return new Promise(async (resolve, reject) => {
       try {
         let response = await fetch(`${this.API_URL}/program`);
-        let { result } = await response.json()
-  
+        let { result } = await response.json();
+
         //salesforce datepicker requires id key
         result = result.map(el => {
           el.id = el.program_id;
           return el;
         });
-  
-        this.setState({ program: result });
+
+        this.setState({ program: result, isProgramLoading: false });
         resolve();
       } catch(err) {
-        console.error(err)
+        console.error(err);
+        this.setState({ isProgramLoading: false });
         reject(err);
       }
     })
-    
+
   }
 
   checkFormat = async () => {
+    this.setState({ isFormatLoading: true });
     return new Promise(async (resolve, reject) => {
       try {
         let response = await fetch(`${this.API_URL}/format`);
         let { result } = await response.json();
-        
+
         //salesforce datepicker requires id key
         result = result.map(el => ({...el, id: el.format_id, label: el.name}));
-        
-        this.setState({ format: result });
+
+        this.setState({ format: result, isFormatLoading: false });
         resolve();
       } catch(err) {
         console.error(err);
+        this.setState({ isFormatLoading: false });
         reject(err);
       }
     });
   }
 
   checkRegion = async () => {
+    this.setState({ isRegionLoading: true });
     return new Promise(async (resolve, reject) => {
       try {
         let response = await fetch(`${this.API_URL}/region`);
@@ -134,11 +142,12 @@ class CloneActivityModalComponent extends Component {
           el.id = el.region_id;
           return el;
         });
-  
-        this.setState({ region: result });
+
+        this.setState({ region: result, isRegionLoading: false });
         resolve();
       } catch(err) {
-        console.error(err)
+        console.error(err);
+        this.setState({ isRegionLoading: false });
         reject();
       }
     });
@@ -167,13 +176,13 @@ class CloneActivityModalComponent extends Component {
   handleChange = e => {
     let errors = {...this.state.errors};
     if(e.target.id === 'asset') {
-      errors = {...errors, asset: false};
+      errors = {...errors, asset: !this.isUrl(e.target.value)};
     } else if(e.target.value && e.target.id !== 'campaignId') {
       errors = {...errors, [e.target.id]: false};
     } else {
       errors = {...errors, [e.target.id]: true};
     }
-    
+
     delete errors.campaignId;
     delete errors.customerMarketing;
     if(e.target.id === "customerMarketing") {
@@ -184,7 +193,10 @@ class CloneActivityModalComponent extends Component {
   }
 
   isUrl = data => {
-    let regexp = new RegExp(/^((ftp|http|https):\/\/)?www\.([A-z]+)\.([A-z]{2,})/);
+    if (!data) {
+      return true;
+    }
+    const regexp = new RegExp(/^((ftp|http|https):\/\/)?(?:www\.|(?!www\.))[A-z0-9-_]+\.[A-z]{2,}(.*)?$/);
     return regexp.test(data);
   }
 
@@ -205,18 +217,23 @@ class CloneActivityModalComponent extends Component {
 
   validate = body => {
     let errors = {...this.state.errors}
-    for(let item in body) {
-      if(item === 'asset') {
-        errors = {...errors, asset: false};
-      } else if(!body[item]) {
-        errors = {...errors, [item]: true};
-      } 
-    }
-    if(body['asset'].length > 0 && !this.isUrl(body['asset'])) {
-      errors = {...errors, asset: true};
-    }
-    delete errors.campaignId;
-    delete errors.customerMarketing;
+    const requiredFields = [
+      'abstract',
+      'endDate',
+      'formatId',
+      'programId',
+      'regionId',
+      'startDate',
+      'title',
+      'userId',
+    ];
+
+    requiredFields.forEach((reqField) => {
+      if(!body[reqField]) {
+        errors = {...errors, [reqField]: true};
+      }
+    })
+
     this.setState({ errors });
     return errors;
   }
@@ -240,7 +257,7 @@ class CloneActivityModalComponent extends Component {
       }
 
       if(Object.values(this.validate(body)).some(el => el)) return;
-      
+
       body = this.parseDatesGTM(body);
 
       const config = {
@@ -264,14 +281,29 @@ class CloneActivityModalComponent extends Component {
     }
   }
 
-	render() {        
+	render() {
 		return (
       <IconSettings iconPath="/assets/icons">
         <Modal
           isOpen={true}
           footer={[
-            <Button label="Cancel" onClick={() => this.props.toggleOpen("cloneModalIsOPen")} key="CancelButton" />,
-            <Button type="submit" label="Create" variant="brand" onClick={this.cloneTable} key="SubmitButton" />,
+            <Button
+              label="Cancel"
+              onClick={() => this.props.toggleOpen("cloneModalIsOPen")}
+              key="CancelButton"
+            />,
+            <Button
+              type="submit"
+              label="Create"
+              variant="brand"
+              onClick={this.cloneTable}
+              key="SubmitButton"
+              disabled={
+                this.state.isProgramLoading ||
+                this.state.isRegionLoading ||
+                this.state.isFormatLoading
+              }
+            />,
           ]}
           onRequestClose={() => this.props.toggleOpen("cloneModalIsOPen")}
           heading="Clone activity"
