@@ -35,8 +35,8 @@ class EditActivityModalComponent extends Component {
     activityId: this.props.data.activityId,
     title: this.props.data.title,
     abstract: this.props.data.abstract,
-    startDate: moment(new Date(this.props.data.startDate)).format('DD/MM/YYYY'),
-    endDate: moment(new Date(this.props.data.endDate)).format('DD/MM/YYYY'),
+    startDate: this.props.data.startDate,
+    endDate: this.props.data.endDate,
     asset: this.props.data.asset,
     campaignId: this.props.data.campaignId,
     customerMarketing: this.props.data.customerMarketing,
@@ -80,8 +80,8 @@ class EditActivityModalComponent extends Component {
       this.setState({...this.state,
         title: result.title,
         abstract: result.abstract,
-        startDate: moment(new Date(result.startDate)).format('DD/MM/YYYY'),
-        endDate: moment(new Date(result.endDate)).format('DD/MM/YYYY'),
+        startDate: this.parseDate(this.props.data.startDate),
+        endDate: this.parseDate(this.props.data.endDate),
         asset: result.asset,
         campaignId: result.campaignId,
         programSelection: activityProgram,
@@ -205,19 +205,17 @@ class EditActivityModalComponent extends Component {
     return regexp.test(data);
   }
 
-  parseDatesToLocal = row => {
-    let startDate =  moment.tz(row.startDate, moment.tz.guess()).toString();
-    let endDate =  moment.tz(row.endDate, moment.tz.guess()).toString();
-
-    row.startDate = startDate;
-    row.endDate = endDate;
-
-    return row;
+  parseDate = date => {
+    let [y, m, d] = date.slice(0, 10).split('-');
+    return `${d}/${m}/${y}`;
   }
 
   parseDatesGTM = row => {
-    row.startDate = moment(row.startDate, 'DD/MM/YYYY').format();
-    row.endDate = moment(row.endDate, 'DD/MM/YYYY').format();
+    let [m1, d1, y1] = row.startDate.split('/');
+    let [m2, d2, y2] = row.endDate.split('/');
+
+    row.startDate = `${d1}/${m1}/${y1}`;
+    row.endDate = `${d2}/${m2}/${y2}`;
 
     return row;
   }
@@ -456,7 +454,7 @@ class EditActivityModalComponent extends Component {
                 }}
                 formatter={(date) => date ? moment(date).format('DD/MM/YYYY') : ''}
                 parser={(dateString) => moment(dateString, 'DD/MM/YYYY').toDate()}
-                formattedValue={this.state.startDate}
+                formattedValue={this.parseDate(this.state.startDate)}
                 autocomplete="off"
               />
               {this.state.errors.startDate && <div class="slds-form-element__help">This field is required</div>}
@@ -481,7 +479,7 @@ class EditActivityModalComponent extends Component {
                 }}
                 formatter={(date) => date ? moment(date).format('DD/MM/YYYY') : ''}
                 parser={(dateString) => moment(dateString, 'DD/MM/YYYY').toDate()}
-                formattedValue={this.state.endDate}
+                formattedValue={this.parseDate(this.state.endDate)}
                 autocomplete="off"
               />
               {this.state.errors.endDate && <div class="slds-form-element__help">This field is required</div>}

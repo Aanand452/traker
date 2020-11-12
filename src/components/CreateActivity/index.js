@@ -233,13 +233,18 @@ class CreateActivity extends Component {
   };
 
   parseDatesGTM = row => {
-    row.startDate = moment(row.startDate, 'DD/MM/YYYY').format();
-    row.endDate = moment(row.endDate, 'DD/MM/YYYY').format();
+    let [m1, d1, y1] = row.startDate.split('/');
+    let [m2, d2, y2] = row.endDate.split('/');
+
+    row.startDate = `${d1}/${m1}/${y1}`;
+    row.endDate = `${d2}/${m2}/${y2}`;
 
     return row;
   }
 
   onSubmit = async body => {
+
+    
     try {
       body = this.parseDatesGTM(body);
       const config = {
