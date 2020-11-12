@@ -2,6 +2,7 @@ import React, { Component, Fragment } from "react";
 import { withRouter, Link } from "react-router-dom";
 import { connect } from "react-redux";
 import moment from "moment";
+import timezone from "moment-timezone";
 
 import {
   Button,
@@ -29,11 +30,22 @@ import { Container } from "./styles";
 
 import FilterPanel from "../FilterPanel";
 
-const DateCell = ({ children, ...props }) => (
-  <DataTableCell title={children} {...props}>
-    {moment(children).format("DD/MM/YYYY")}
+const DateCell = ({ children, ...props }) => {
+
+  let date = '';
+
+  if(children !== null) {
+    let [y, m, d] = children.slice(0, 10).split('-');
+    date = `${d}/${m}/${y}`;
+  }
+
+  return <DataTableCell title={children} {...props}>
+    {date}
+    {/* corregir agregar y editar activity usando moment gmt sidney +10 */}
+    {/* {moment(children).utc().utcOffset(600).format("DD/MM/YYYY")} */}
+    {/* {timezone(children).tz('Australia/Sydney').format("DD/MM/YYYY")} */}
   </DataTableCell>
-);
+};
 DateCell.displayName = DataTableCell.displayName;
 
 const CustomDataTableCell = ({ children, ...props }) => (

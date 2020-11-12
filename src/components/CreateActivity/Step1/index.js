@@ -92,27 +92,27 @@ class Step1 extends Component {
             </div>
             <div className="slds-m-bottom_large slds-col slds-size_1-of-2 slds-large-size_1-of-4">
               <strong>Lifecycle Stage:</strong>
-              <p>{this.props.items.lifecycleStage}</p>
+              {this.props.items.lifecycleStage && this.props.items.lifecycleStage.map((el, i) => <p key={i}>{el}</p>)}
             </div>
             <div className="slds-m-bottom_large slds-col slds-size_1-of-2 slds-large-size_1-of-4">
               <strong>APM1:</strong>
-              <p>{this.props.items.apm1}</p>
+              {this.props.items.apm1 && this.props.items.apm1.map((el, i) => <p key={i}>{el}</p>)}
             </div>
             <div className="slds-m-bottom_large slds-col slds-size_1-of-2 slds-large-size_1-of-4">
               <strong>APM2:</strong>
-              <p>{this.props.items.apm2}</p>
+              {this.props.items.apm2 && this.props.items.apm2.map((el, i) => <p key={i}>{el}</p>)}
             </div>
             <div className="slds-m-bottom_large slds-col slds-size_1-of-2 slds-large-size_1-of-4">
               <strong>Industry:</strong>
-              <p>{this.props.items.industry}</p>
+              {this.props.items.industry && this.props.items.industry.map((el, i) => <p key={i}>{el}</p>)}
             </div>
             <div className="slds-m-bottom_large slds-col slds-size_1-of-2 slds-large-size_1-of-4">
               <strong>Segment:</strong>
-              <p>{this.props.items.segment}</p>
+              {this.props.items.segment && this.props.items.segment.map((el, i) => <p key={i}>{el}</p>)}
             </div>
             <div className="slds-m-bottom_large slds-col slds-size_1-of-2 slds-large-size_1-of-4">
               <strong>Persona:</strong>
-              <p>{this.props.items.persona}</p>
+              {this.props.items.persona && this.props.items.persona.map((el, i) => <p key={i}>{el}</p>)}
             </div>
           </div>
           {
