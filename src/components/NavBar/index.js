@@ -15,6 +15,7 @@ import {
 import { NavContainer } from './styles';
 import NavigationBarLink from './NavigationBarLink';
 import { withRouter } from 'react-router-dom';
+import { getCookie } from '../../utils/cookie';
 
 const HeaderProfileCustomContent = (props) => (
   <div id="header-profile-custom-popover-content">
@@ -41,25 +42,9 @@ class NavBar extends Component{
     notification:{active:false, message:'', type: '', icon: '' }
   };
 
-  getCookie(cname) {
-    var name = cname + "=";
-    var decodedCookie = decodeURIComponent(document.cookie);
-    var ca = decodedCookie.split(';');
-    for(var i = 0; i <ca.length; i++) {
-      var c = ca[i];
-      while (c.charAt(0) == ' ') {
-        c = c.substring(1);
-      }
-      if (c.indexOf(name) == 0) {
-        return c.substring(name.length, c.length);
-      }
-    }
-    return "";
-  }
-
   onClickLogout = e => {
     e.preventDefault();
-    
+
     localStorage.removeItem('userId');
     document.location.replace('/logout');
   }
@@ -75,7 +60,7 @@ class NavBar extends Component{
     this.setState({progress:{active: true}});
     console.log(e.target.files)
     let number = 0
-    let interval = setInterval(() => {      
+    let interval = setInterval(() => {
       this.setState({progress:{active: true, percentage: number}});
       number += 1
       if(this.state.progress.percentage === 101) {
@@ -113,9 +98,9 @@ class NavBar extends Component{
       <NavContainer>
         <IconSettings iconPath="/assets/icons">
           <GlobalHeader logoSrc='assets/images/logo.svg' >
-            <GlobalHeaderProfile 
+            <GlobalHeaderProfile
               avatar='/images/avatar.png'
-              userName={this.getCookie('userName').replaceAll('"','')}
+              userName={getCookie('userName').replaceAll('"','')}
               popover={
                 <Popover
                   body={<HeaderProfileCustomContent onClick={this.onClickLogout} />}
@@ -133,9 +118,11 @@ class NavBar extends Component{
               <GlobalNavigationBarRegion region="secondary" navigation>
                 <NavigationBarLink to="/home" title="Home" />
                 <NavigationBarLink to="/my-activities" title="Activities" />
-                <NavigationBarLink to="/programs-view" title="Programs" />
+                {
+                  getCookie('role').replaceAll('"','') === 'admin' && <NavigationBarLink to="/programs-view" title="Programs" />
+                }
                 {this.state.tableauUrl !== '/' && <NavigationBarLink title="Go to reports" href={this.state.tableauUrl}/>}
-                
+
               </GlobalNavigationBarRegion>
             </GlobalNavigationBar>
           )}
