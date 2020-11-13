@@ -1,6 +1,7 @@
 import express from 'express';
 import swaggerTools from 'swagger-tools';
 import http from 'http';
+import { verifyToken } from './auth';
 import fs from 'fs';
 import jsyaml from 'js-yaml';
 import dotenv from 'dotenv';
@@ -24,9 +25,14 @@ class Server {
 
     swaggerTools.initializeMiddleware(swaggerDoc,  (middleware) => {
       this.app.use(middleware.swaggerMetadata());
+      this.app.use(middleware.swaggerSecurity({
+        Bearer: verifyToken
+      }));
+
       this.app.use(middleware.swaggerValidator());
       this.app.use(middleware.swaggerRouter(options));
-      this.app.use(middleware.swaggerUi());
+      serverPort === 3000 && this.app.use(middleware.swaggerUi());
+
       http.createServer(this.app).listen(serverPort, function () {
         console.log('Your server is listening on port %d (http://localhost:%d)', serverPort, serverPort);
       });
