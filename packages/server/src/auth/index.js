@@ -22,6 +22,8 @@ const validateToken = async (tokenString) => {
 }
 
 const verifyToken = async (req, authOrSecDef, token, callback)  => {
+  //disable atuh middleware while the FE is done
+  callback(null);
   if (token && token.indexOf("Bearer ") === 0) {
     await validateToken(token.split(' ')[1]) ? callback(null) : sendError(req);
   } else {
