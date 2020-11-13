@@ -9,6 +9,11 @@ import {
   SfdcCardLogin
 } from './styles';
 
+
+/**
+ * 
+ * TBD:: Deprecated since SSO 
+ */
 class Login extends Component {
 
   state = {

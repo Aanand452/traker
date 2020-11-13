@@ -1,28 +1,59 @@
 const path = require('path');
+const fetch = require("node-fetch");
+
 const HOME_URL = '/';
 const LOGIN_URL = '/login';
 const LOGOUT_URL = '/logout';
 const INDEX_FILE = path.resolve(__dirname, '../../build/index.html');
 const ERROR_403 = path.resolve(__dirname, '../static/forbidden.html');
-const DEFAULT_DOMAIN = '.sfdc-ww-pricelist-web-prod.herokuapp.com';
+const DEFAULT_DOMAIN = '.sfdc-activity-tracker.herokuapp.com';
 const ENV_UPLOAD_WHITELIST = process.env.UPLOAD_WHITELIST || '';
 const UPLOAD_WHITELIST = ENV_UPLOAD_WHITELIST.split(',') || [];
 const APP_LOCKED = process.env.APP_LOCKED || '';
 const APP_LOCKED_ALLOWED_USERS = APP_LOCKED.split(',') || [];
 
 module.exports = function (app, config, passport) {
-
   const isAuthenticated = (req, res, next) => {
-    next();
-    // if (req.isAuthenticated()){
-    //   res.cookie('user', JSON.stringify(req.user || ''), {
-    //     domain: process.env.APP_DOMAIN || DEFAULT_DOMAIN
-    //   });
-    //   return next();
-    // }
-    // else{
-    //   res.redirect(LOGIN_URL);
-    // }
+    if (req.isAuthenticated()){
+      res.cookie('user', JSON.stringify(req.user || ''), {
+        domain: process.env.APP_DOMAIN || DEFAULT_DOMAIN
+      });
+
+      var apiEnpoint = process.env.API ? process.env.API + '/login' : 'http://localhost:3000/api/v1/login'
+      var nameReplace = req.user.email.replace(/@.*$/,"");
+      var username = nameReplace!==req.user.email ? nameReplace : null;
+
+      fetch(apiEnpoint,{
+        method: 'POST',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+        },
+        
+        body: JSON.stringify({
+          username: req.user.email,
+          password: username
+        })
+      })
+      .then((response) =>response.json())
+      .then(function(data) {
+        if(data.result.length > 0) {
+          res.cookie('userid', JSON.stringify(data.result[0].userId));
+          res.cookie('userName', JSON.stringify(data.result[0].name));
+          res.cookie('role', JSON.stringify(data.result[0].role || 'user'));
+          
+          next();
+        } else {
+          show403Error(req, res);
+        }
+      }).catch((err) => {
+        console.error(err);
+        show403Error(req, res);
+      })
+    }
+    else{
+      res.redirect(LOGIN_URL);
+    }
   }
 
   const goToApp = (req, res) => {
@@ -62,34 +93,36 @@ module.exports = function (app, config, passport) {
   });
 
   app.get(LOGIN_URL,
-    // passport.authenticate(config.passport.strategy,
-    //   {
-    //     successRedirect: HOME_URL,
-    //     failureRedirect: LOGIN_URL
-    //   }
-    // )
+    passport.authenticate(config.passport.strategy,
+      {
+        successRedirect: HOME_URL,
+        failureRedirect: LOGIN_URL
+      }
+    )
   );
 
-  // app.post(config.passport.saml.path,
-  //   passport.authenticate(config.passport.strategy,
-  //     {
-  //       failureRedirect: HOME_URL,
-  //       failureFlash: true
-  //     }),
-  //   function (req, res) {
-  //     res.redirect(HOME_URL);
-  //   }
-  // );
+  app.get(LOGOUT_URL,(req, res) => {
+    res.clearCookie('userid');
+    res.clearCookie('user');
+    res.clearCookie('connect.sid');
+    res.clearCookie('userName');
+    res.clearCookie('role');
+    // 'https://aloha.force.com/'
+    res.redirect(process.env.LOGOUT_URL || 'https://mgonzalez-dev-ed.lightning.force.com/secur/logout.jsp');
+  })
 
-  app.get('/upload', isAuthenticated, isUserAllowed, (req, res) => {
-    if (!isUploadAllowed(req.user.email)) {
-      show403Error(req, res);
-    } else {
-      goToApp(req, res);
+  app.post(config.passport.saml.path,
+    passport.authenticate(config.passport.strategy,
+      {
+        failureRedirect: HOME_URL,
+        failureFlash: true
+      }),
+    function (req, res) {
+      res.redirect(HOME_URL);
     }
-  });
+  );
 
-  app.get('/config', isAuthenticated, isUserAllowed, (req, res) => {
+  app.get('/config', (req, res) => {
     res.send({
       tablaeu: process.env.TABLAEU || '/',
       api: process.env.API || 'http://localhost:3000',
