@@ -31,19 +31,8 @@ import { Container } from "./styles";
 import FilterPanel from "../FilterPanel";
 
 const DateCell = ({ children, ...props }) => {
-
-  let date = '';
-
-  if(children !== null) {
-    let [y, m, d] = children.slice(0, 10).split('-');
-    date = `${d}/${m}/${y}`;
-  }
-
   return <DataTableCell title={children} {...props}>
-    {date}
-    {/* corregir agregar y editar activity usando moment gmt sidney +10 */}
-    {/* {moment(children).utc().utcOffset(600).format("DD/MM/YYYY")} */}
-    {/* {timezone(children).tz('Australia/Sydney').format("DD/MM/YYYY")} */}
+    {children && moment(children).utc().format("DD/MM/YYYY")}
   </DataTableCell>
 };
 DateCell.displayName = DataTableCell.displayName;
