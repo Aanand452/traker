@@ -35,7 +35,7 @@ class FilterPanel extends Component {
     const endDate = moment(this.state.filters.endDate,'DD/MM/YYYY');
     return endDate.isBefore(date.date)
   }
-  
+
   checkStartDate = (date) => {
     const starDate = moment(this.state.filters.startDate,'DD/MM/YYYY');
     return starDate.isAfter(date.date)
@@ -51,7 +51,7 @@ class FilterPanel extends Component {
       if (property === "startDate" || property === "endDate") {
         const startMoment = moment(filters["startDate"], "DD/MM/YYYY");
         const endMoment = moment(filters["endDate"], "DD/MM/YYYY");
-        
+
         if (filters["startDate"] && !filters["endDate"]) {
           this.setState({ errors: {...this.state.errors, endDate: true} })
           return;
@@ -64,7 +64,7 @@ class FilterPanel extends Component {
             return;
           } else {
             functionFilters["startDate"] = (value) => {
-              return moment(value.split("T")[0], "YYYY-MM-DD").isBetween(
+              return moment(value, "YYYY-MM-DD").isBetween(
                 startMoment,
                 endMoment,
                 undefined,
@@ -73,7 +73,7 @@ class FilterPanel extends Component {
             };
           }
         }
-          
+
       } else if (Array.isArray(filters[property]))
         functionFilters[property] = (value) =>
           filters[property][0].label === "All" ||
