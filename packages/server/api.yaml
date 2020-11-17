@@ -795,7 +795,7 @@ definitions:
       endDate:
         type: string
       asset:
-        type: string
+        type: [string, 'null']
       userId:
         type: string
       programId:
