@@ -25,9 +25,9 @@ class Server {
 
     swaggerTools.initializeMiddleware(swaggerDoc,  (middleware) => {
       this.app.use(middleware.swaggerMetadata());
-      this.app.use(middleware.swaggerSecurity({
+      /*this.app.use(middleware.swaggerSecurity({
         Bearer: verifyToken
-      }));
+      }));*/
 
       this.app.use(middleware.swaggerValidator());
       this.app.use(middleware.swaggerRouter(options));
