@@ -65,7 +65,7 @@ class CreateActivity extends Component {
   setupAndFetch = async () => {
     if(window.location.hostname === 'localhost') this.API_URL =  "http://localhost:3000/api/v1";
     else this.API_URL = await getAPIUrl();
-    
+
     this.getUser();
     this.checkRegion();
     this.props.getFormData(this.state.row);
@@ -77,7 +77,7 @@ class CreateActivity extends Component {
       if(response.status === 200) {
         let { result } = await response.json();
         result = result.map(item => ({...item, id: item.region_id}))
-        
+
         this.setState({ regions: result, row: {...this.state.row, region: [result[0]]}});
         this.handleChange("region", [result[0]]);
       } else {
@@ -114,7 +114,7 @@ class CreateActivity extends Component {
       console.error(err);
     }
   }
-  
+
   async checkProgramDetail(id) {
     try {
       let response = await fetch(`${this.API_URL}/program/${id}`);
@@ -166,10 +166,13 @@ class CreateActivity extends Component {
   };
 
   isUrl = data => {
+    if (!data) {
+      return true;
+    }
     let regexp = new RegExp(
-      /^((ftp|http|https):\/\/)?www\.([A-z]+)\.([A-z]{2,})/
+      /^((ftp|http|https):\/\/)?(?:www\.|(?!www\.))[A-z0-9-_]+\.[A-z]{2,}(.*)?$/
     );
-    return data === "" || regexp.test(data);
+    return regexp.test(data);
   }
 
   validations = (input, data) => {
@@ -179,7 +182,14 @@ class CreateActivity extends Component {
     if (input) {
       if (inputs.includes(input) && !data) {
         errors = { ...errors, [input]: "This field is required" };
-      } else {
+      } else if(input === 'asset') {
+        if (!this.isUrl(data)) {
+          errors = { ...errors, [input]: 'Insert a valir URL' };
+        } else {
+          delete errors[input];
+        }
+      }
+      else {
         delete errors[input];
       }
     } else {
@@ -218,18 +228,23 @@ class CreateActivity extends Component {
     if (Object.keys(errors).length === 0) {
       this.onSubmit(row);
     }
-    
+
     return false;
   };
 
   parseDatesGTM = row => {
-    row.startDate = moment(row.startDate, 'DD/MM/YYYY').format();
-    row.endDate = moment(row.endDate, 'DD/MM/YYYY').format();
+    let [m1, d1, y1] = row.startDate.split('/');
+    let [m2, d2, y2] = row.endDate.split('/');
+
+    row.startDate = `${d1}/${m1}/${y1}`;
+    row.endDate = `${d2}/${m2}/${y2}`;
 
     return row;
   }
 
   onSubmit = async body => {
+
+    
     try {
       body = this.parseDatesGTM(body);
       const config = {
@@ -249,7 +264,7 @@ class CreateActivity extends Component {
       console.error(err);
     }
   }
-  
+
   handleStep = step => {
     let steps = this.state.steps.map(el => el.step <= step ? {...el, active: true} : {...el, active: false});
     this.setState({ steps });
@@ -285,7 +300,7 @@ class CreateActivity extends Component {
               regions={this.state.regions}
             />
             {
-              this.state.programs.length > 0 && this.state.steps.filter(el => el.active).length === 2  && 
+              this.state.programs.length > 0 && this.state.steps.filter(el => el.active).length === 2  &&
               <Step2
                 row={this.state.row}
                 handleStep={this.handleStep}

@@ -30,11 +30,11 @@ import { Container } from "./styles";
 
 import FilterPanel from "../FilterPanel";
 
-const DateCell = ({ children, ...props }) => (
-  <DataTableCell title={children} {...props}>
-    {timezone(children).tz('Australia/Sydney').format("DD/MM/YYYY")}
+const DateCell = ({ children, ...props }) => {
+  return <DataTableCell title={children} {...props}>
+    {children && moment(children).utc().format("DD/MM/YYYY")}
   </DataTableCell>
-);
+};
 DateCell.displayName = DataTableCell.displayName;
 
 const CustomDataTableCell = ({ children, ...props }) => (
