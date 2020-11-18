@@ -870,7 +870,7 @@ definitions:
       title:
         type: string
       campaignId:
-        type: string
+        type: [string, 'null']
       formatId:
         type: string
       abstract:
@@ -888,7 +888,7 @@ definitions:
       programId:
         type: string
       customerMarketing:
-        type: boolean
+        type: [boolean, 'null']
 
   GetActivitiesBody:
     description: Body used for get the activities based in a date filter
