@@ -1,5 +1,5 @@
 import UserModel from '@sara/db/src/models/user';
-import jwt from 'jsonwebtoken';
+import { sing } from 'jsonwebtoken';
 
 const sharedSecret = process.env.JWT_KEY || 'secret'
 
@@ -31,8 +31,16 @@ const verifyToken = async (req, authOrSecDef, token, callback)  => {
   }
 }
 
-const signIn = (user)  => {
-  console.log(user);
+const signIn = (info) => {
+  const user = { user_id: info.userId, username: info.username };
+  console.log('SINGIN ==========> ', sing);
+
+  const token = sing({ user }, 'secret', (err, token) => {
+    console.log('SINGIN T ==========> ', token);
+  });
+
+  console.log('SINGIN ==========> ', user);
+
 }
 
 export { verifyToken, signIn };

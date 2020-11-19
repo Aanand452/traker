@@ -10,10 +10,10 @@ const doLogin = async (req, res) => {
     let loginInfo = req.body.username &&
       await UserModel.getAutenticatedUser(req.body.username, req.body.password);
 
-    /*console.log(loginInfo);
-    if(loginInfo.result.length > 0){
-      var token = signIn(loginInfo.result);
-    }*/
+    console.log(loginInfo[0].userId);
+    if(loginInfo.length){
+      var token = signIn(loginInfo[0]);
+    }
     
     ApiUtils.reposeWithhSuccess(res, loginInfo, httpStatus.OK);
   } catch (err) {
