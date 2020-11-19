@@ -29,7 +29,7 @@ module.exports = function (app, config, passport) {
           'Accept': 'application/json',
           'Content-Type': 'application/json',
         },
-        
+
         body: JSON.stringify({
           username: req.user.email,
           password: username
@@ -41,7 +41,7 @@ module.exports = function (app, config, passport) {
           res.cookie('userid', JSON.stringify(data.result[0].userId));
           res.cookie('userName', JSON.stringify(data.result[0].name));
           res.cookie('role', JSON.stringify(data.result[0].role || 'user'));
-          
+
           next();
         } else {
           show403Error(req, res);
@@ -130,7 +130,12 @@ module.exports = function (app, config, passport) {
     });
   });
 
-  app.get('/*', isAuthenticated, isUserAllowed, (req, res) => {
+  const authMiddlewares = [];
+  if(process.env.SSO === 'true') {
+    authMiddlewares.push(isAuthenticated, isUserAllowed);
+  }
+
+  app.get('/*', ...authMiddlewares, (req, res) => {
     goToApp(req, res);
   });
 };
