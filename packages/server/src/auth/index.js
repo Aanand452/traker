@@ -1,5 +1,5 @@
 import UserModel from '@sara/db/src/models/user';
-import { sing } from 'jsonwebtoken';
+import jwt from 'jsonwebtoken';
 
 const sharedSecret = process.env.JWT_KEY || 'secret'
 
@@ -22,8 +22,6 @@ const validateToken = async (tokenString) => {
 }
 
 const verifyToken = async (req, authOrSecDef, token, callback)  => {
-  //disable atuh middleware while the FE is done
-  callback(null);
   if (token && token.indexOf("Bearer ") === 0) {
     await validateToken(token.split(' ')[1]) ? callback(null) : sendError(req);
   } else {
@@ -33,14 +31,10 @@ const verifyToken = async (req, authOrSecDef, token, callback)  => {
 
 const signIn = (info) => {
   const user = { user_id: info.userId, username: info.username };
-  console.log('SINGIN ==========> ', sing);
+  console.log(jwt.sign); 
 
-  const token = sing({ user }, 'secret', (err, token) => {
-    console.log('SINGIN T ==========> ', token);
-  });
-
-  console.log('SINGIN ==========> ', user);
-
+  var token = jwt.sign(user, 'secret');
+  console.log(token);
 }
 
 export { verifyToken, signIn };
