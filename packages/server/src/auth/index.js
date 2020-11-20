@@ -31,10 +31,8 @@ const verifyToken = async (req, authOrSecDef, token, callback)  => {
 
 const signIn = (info) => {
   const user = { user_id: info.userId, username: info.username };
-  console.log(jwt.sign); 
 
-  var token = jwt.sign(user, 'secret');
-  console.log(token);
+  return jwt.sign(user, 'secret');
 }
 
 export { verifyToken, signIn };
