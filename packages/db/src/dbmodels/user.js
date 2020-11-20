@@ -24,15 +24,20 @@ User.init({
     type: DataTypes.STRING,
     allowNull: false,
     field: 'password',
+  },
+  role: {
+    type: DataTypes.STRING,
+    allowNull: true,
+    field: 'role',
   }
 }, {
   tableName: 'user',
-  sequelize: sequelize, 
+  sequelize: sequelize,
   timestamps: false
 });
 
 User.associate = models => {
-  // User.belongsToMany(models.Program, { 
+  // User.belongsToMany(models.Program, {
   //   through: 'program_user',
   //   foreignKey: 'user_id'
   // });
