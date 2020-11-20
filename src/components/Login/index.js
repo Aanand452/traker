@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { getAPIUrl } from '../../config/config';
 import { withRouter } from 'react-router-dom';
 import { Input, Toast, ToastContainer, IconSettings } from '@salesforce/design-system-react';
+import { setCookie } from '../../utils/cookie';
 import {
   SfdcFlexColum,
   SfdcFixedLogo,
@@ -9,6 +10,11 @@ import {
   SfdcCardLogin
 } from './styles';
 
+
+/**
+ *
+ * TBD:: Deprecated since SSO
+ */
 class Login extends Component {
 
   state = {
@@ -60,15 +66,17 @@ class Login extends Component {
 
       if(response.status === 200) {
         let { result } = await response.json();
-        
+
         if(!this.validations(result)){
           result.length === 0 && this.setState({errors: {invalid: true}});
-          
+
           result.length > 0 && localStorage.setItem("userId", result[0].userId);
+          result.length > 0 && setCookie("userid", result[0].userId);
+          result.length > 0 && setCookie("role", result[0].role || 'user');
           result.length > 0 && this.props.history.push('/home');
         }
       } else throw new Error(response);
-      
+
     } catch (err) {
       this.setState({toast: {isOpened: true, heading: 'Something went wrong, please try again'}});
       console.error(err);
@@ -135,7 +143,7 @@ class Login extends Component {
       </SfdcLoginContainer>
     )
   }
-  
+
 }
 
 export default withRouter(Login);

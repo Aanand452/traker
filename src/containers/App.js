@@ -1,8 +1,14 @@
 import React from 'react';
 import NotFoundPage from '../containers/NotFoundPage';
-import { BrowserRouter as Router, Route, Switch, Redirect } from 'react-router-dom';
+import {
+  BrowserRouter as Router,
+  Route,
+  Switch,
+  Redirect
+} from 'react-router-dom';
 import 'moment/locale/en-au';
 import { SfdcPageAppWrapper } from './styles/page';
+import { getCookie } from '../utils/cookie';
 
 import Login from '../components/Login'
 import CreateActivityPage from '../components/CreateActivityPage'
@@ -20,7 +26,7 @@ function EditActivity() {
       <EditActivityPage />
     </div>
   )
-} 
+}
 
 function EditProgram() {
   return (
@@ -29,7 +35,7 @@ function EditProgram() {
       <EditProgramPage />
     </div>
   )
-} 
+}
 
 function CreateActivity(){
   return(
@@ -58,18 +64,55 @@ function CreateProgram() {
   );
 };
 
+
+
 function App({closeSettingsMenu, user}) {
   return (
     <Router>
-      
       <SfdcPageAppWrapper className="app" onClick={closeSettingsMenu}>
         <Switch>
-          <Route exact path="/" render={() => !localStorage.getItem("userId") ? <Login /> : <Redirect to='/home' />} />
-          <PrivateRoute exact path="/home" component={Home} />
-          <PrivateRoute exact path="/my-activities" component={EditActivity} />
-          <PrivateRoute exact path="/programs-view" component={EditProgram} />
-          <PrivateRoute exact path="/create-activity" component={CreateActivity} />
-          <PrivateRoute exact path="/create-program" component={CreateProgram} />
+          <Route
+            exact
+            path="/"
+            render={
+              () => !localStorage.getItem("userId")
+              ? <Login />
+              : <Redirect to='/home' />
+            }
+          />
+          <PrivateRoute
+            exact
+            path="/home"
+            component={Home}
+          />
+          <PrivateRoute
+            exact
+            path="/my-activities"
+            component={EditActivity}
+          />
+          <PrivateRoute
+            exact
+            path="/programs-view"
+            render={
+              () => getCookie('role').replaceAll('"','') === 'admin'
+              ? <EditProgram />
+              : <Redirect to='/' />
+            }
+          />
+          <PrivateRoute
+            exact
+            path="/create-activity"
+            component={CreateActivity}
+          />
+          <PrivateRoute
+            exact
+            path="/create-program"
+            render={
+              () => getCookie('role').replaceAll('"','') === 'admin'
+              ? <CreateProgram />
+              : <Redirect to='/' />
+            }
+          />
           <Route exact path="*" component={NotFoundPage} />
         </Switch>
       </SfdcPageAppWrapper>

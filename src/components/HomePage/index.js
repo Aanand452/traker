@@ -8,10 +8,10 @@ import {
   CardsContainer,
   Card,
   CardTitle,
-  CardBody,
   CardAction,
   CardImage
 } from './styles';
+import { getCookie } from '../../utils/cookie';
 
 const HomePage = () => (
   <Container>
@@ -35,24 +35,30 @@ const HomePage = () => (
           </Link>
         </CardAction>
       </Card>
-      <Card>
-        <CardImage src="/images/APAC_Activity_Tracker_Tile_Create_Program_notext_640x360.png" alt="Create program" />
-        <CardTitle>Create Program</CardTitle>
-        <CardAction>
-          <Link to="/create-program">
-            <Button variant="brand" label="Create new program" />
-          </Link>
-        </CardAction>
-      </Card>
-      <Card>
-        <CardImage src="/images/APAC_Activity_Tracker_Tile_Program_View_notext_640x360.png" alt="Programs" />
-        <CardTitle>View/Edit Programs</CardTitle>
-        <CardAction>
-          <Link to="/programs-view">
-            <Button variant="brand" label="Programs" />
-          </Link>
-        </CardAction>
-      </Card>
+      {
+        getCookie('role').replaceAll('"','') === 'admin' && (
+          <React.Fragment>
+            <Card>
+              <CardImage src="/images/APAC_Activity_Tracker_Tile_Create_Program_notext_640x360.png" alt="Create program" />
+              <CardTitle>Create Program</CardTitle>
+              <CardAction>
+                <Link to="/create-program">
+                  <Button variant="brand" label="Create new program" />
+                </Link>
+              </CardAction>
+            </Card>
+            <Card>
+              <CardImage src="/images/APAC_Activity_Tracker_Tile_Program_View_notext_640x360.png" alt="Programs" />
+              <CardTitle>View/Edit Programs</CardTitle>
+              <CardAction>
+                <Link to="/programs-view">
+                  <Button variant="brand" label="Programs" />
+                </Link>
+              </CardAction>
+            </Card>
+          </React.Fragment>
+        )
+      }
     </CardsContainer>
   </Container>
 );

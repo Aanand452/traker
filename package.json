@@ -1,5 +1,5 @@
 {
-  "name": "www-pricelist",
+  "name": "sfdc-activity-tracker",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
@@ -43,6 +43,7 @@
     "moment": "^2.27.0",
     "moment-timezone": "^0.5.31",
     "morgan": "1.7.0",
+    "node-fetch": "^2.6.1",
     "nodemon": "1.9.2",
     "object-assign": "4.1.1",
     "passport": "0.3.2",
@@ -74,7 +75,7 @@
     "whatwg-fetch": "2.0.3"
   },
   "scripts": {
-    "server": "nodemon  -r dotenv/config server/app.js",
+    "server": "nodemon -r dotenv/config server/app.js",
     "start": "node scripts/start.js",
     "postinstall": "node scripts/build.js",
     "test": "node scripts/test.js --env=jsdom"

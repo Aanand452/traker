@@ -15,6 +15,7 @@ import {
 import { NavContainer } from './styles';
 import NavigationBarLink from './NavigationBarLink';
 import { withRouter } from 'react-router-dom';
+import { getCookie } from '../../utils/cookie';
 
 const HeaderProfileCustomContent = (props) => (
   <div id="header-profile-custom-popover-content">
@@ -23,7 +24,7 @@ const HeaderProfileCustomContent = (props) => (
         <div className="slds-tile__detail">
             <p className="slds-truncate">
             <a onClick={props.onClick}>
-              Log Out
+              Log Out Tracker
             </a>
           </p>
         </div>
@@ -43,9 +44,9 @@ class NavBar extends Component{
 
   onClickLogout = e => {
     e.preventDefault();
-    
-    localStorage.getItem('userId') && localStorage.removeItem('userId');
-    this.props.history.push('/');
+
+    localStorage.removeItem('userId');
+    document.location.replace('/logout');
   }
 
   configUrls(data){
@@ -59,7 +60,7 @@ class NavBar extends Component{
     this.setState({progress:{active: true}});
     console.log(e.target.files)
     let number = 0
-    let interval = setInterval(() => {      
+    let interval = setInterval(() => {
       this.setState({progress:{active: true, percentage: number}});
       number += 1
       if(this.state.progress.percentage === 101) {
@@ -97,7 +98,9 @@ class NavBar extends Component{
       <NavContainer>
         <IconSettings iconPath="/assets/icons">
           <GlobalHeader logoSrc='assets/images/logo.svg' >
-            <GlobalHeaderProfile 
+            <GlobalHeaderProfile
+              avatar='/images/avatar.png'
+              userName={getCookie('userName').replaceAll('"','')}
               popover={
                 <Popover
                   body={<HeaderProfileCustomContent onClick={this.onClickLogout} />}
@@ -115,9 +118,11 @@ class NavBar extends Component{
               <GlobalNavigationBarRegion region="secondary" navigation>
                 <NavigationBarLink to="/home" title="Home" />
                 <NavigationBarLink to="/my-activities" title="Activities" />
-                <NavigationBarLink to="/programs-view" title="Programs" />
+                {
+                  getCookie('role').replaceAll('"','') === 'admin' && <NavigationBarLink to="/programs-view" title="Programs" />
+                }
                 {this.state.tableauUrl !== '/' && <NavigationBarLink title="Go to reports" href={this.state.tableauUrl}/>}
-                
+
               </GlobalNavigationBarRegion>
             </GlobalNavigationBar>
           )}
