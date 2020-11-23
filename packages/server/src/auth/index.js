@@ -32,7 +32,7 @@ const verifyToken = async (req, authOrSecDef, token, callback)  => {
 const signIn = (info) => {
   const user = { user_id: info.userId, username: info.username };
 
-  return jwt.sign(user, 'secret');
+  return jwt.sign(user, sharedSecret);
 }
 
 export { verifyToken, signIn };
