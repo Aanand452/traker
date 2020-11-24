@@ -18,7 +18,6 @@ const doLogin = async (req, res) => {
       userId: loginInfo[0].userId,
       username: loginInfo[0].username,
       name: loginInfo[0].name,
-      password: loginInfo[0].password,
       role: loginInfo[0].role,
       token
     };
