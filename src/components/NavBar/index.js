@@ -84,9 +84,7 @@ class NavBar extends Component{
 
   async getConfig(){
     try{
-      let response = await fetch('/config');
-      let data = await response.json();
-      console.log(data)
+      let response = await fetch('/config')
       response.status === 200 && this.configUrls(data);
 
     } catch(e) {
