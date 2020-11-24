@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import moment from 'moment-timezone';
 import { getAPIUrl } from '../../config/config';
-
+import { getCookie } from '../../utils/cookie';
 import {
   IconSettings,
   Modal,
@@ -69,7 +69,16 @@ class EditActivityModalComponent extends Component {
   }
 
   getActicityById = async id => {
-    let response = await fetch(`${this.API_URL}/activity/${id}`);
+    let token = getCookie('token').replaceAll('"','');
+    const config = {
+      method: 'GET',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      }
+    }
+    let response = await fetch(`${this.API_URL}/activity/${id}`, config);
     let { result } = await response.json();
 
     try{
@@ -97,7 +106,16 @@ class EditActivityModalComponent extends Component {
     this.setState({ isProgramLoading: true });
     return new Promise(async (resolve, reject) => {
       try {
-        let response = await fetch(`${this.API_URL}/program`);
+        let token = getCookie('token').replaceAll('"','');
+        const config = {
+          method: 'GET',
+          headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          }
+        }
+        let response = await fetch(`${this.API_URL}/program`, config);
         let { result } = await response.json()
 
         //salesforce datepicker requires id key
@@ -121,7 +139,16 @@ class EditActivityModalComponent extends Component {
     this.setState({ isFormatLoading: true });
     return new Promise(async (resolve, reject) => {
       try {
-        let response = await fetch(`${this.API_URL}/format`);
+        let token = getCookie('token').replaceAll('"','');
+        const config = {
+          method: 'GET',
+          headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          }
+        }
+        let response = await fetch(`${this.API_URL}/format`, config);
         let { result } = await response.json();
 
         //salesforce datepicker requires id key
@@ -141,7 +168,16 @@ class EditActivityModalComponent extends Component {
     this.setState({ isRegionLoading: true });
     return new Promise(async (resolve, reject) => {
       try {
-        let response = await fetch(`${this.API_URL}/region`);
+        let token = getCookie('token').replaceAll('"','');
+        const config = {
+          method: 'GET',
+          headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          }
+        }
+        let response = await fetch(`${this.API_URL}/region`, config);
         let { result } = await response.json();
         result = result.map(el => {
           el.id = el.region_id;
@@ -260,6 +296,7 @@ class EditActivityModalComponent extends Component {
         userId: localStorage.getItem('userId'),
         programId: this.state.programSelection[0] && this.state.programSelection[0].id
       }
+      let token = getCookie('token').replaceAll('"','');
 
       if(Object.values(this.validate(body)).some(el => el)) return;
 
@@ -270,6 +307,7 @@ class EditActivityModalComponent extends Component {
         headers: {
             'Accept': 'application/json',
             'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
         },
         body: JSON.stringify(body)
       }

@@ -16,13 +16,14 @@ import { NavContainer } from './styles';
 import NavigationBarLink from './NavigationBarLink';
 import { withRouter } from 'react-router-dom';
 import { getCookie } from '../../utils/cookie';
+import { setCookie } from '../../utils/cookie';
 
 const HeaderProfileCustomContent = (props) => (
   <div id="header-profile-custom-popover-content">
     <div className="slds-m-around_medium">
       <div className="slds-tile slds-tile_board slds-m-horizontal_small">
         <div className="slds-tile__detail">
-            <p className="slds-truncate">
+          <p className="slds-truncate">
             <a onClick={props.onClick}>
               Log Out Tracker
             </a>
@@ -46,7 +47,10 @@ class NavBar extends Component{
     e.preventDefault();
 
     localStorage.removeItem('userId');
-    document.location.replace('/logout');
+    setCookie('userid', null, 0);
+    setCookie('token', null, 0);
+    setCookie('role', null, 0);
+    this.props.history.push("/");
   }
 
   configUrls(data){
