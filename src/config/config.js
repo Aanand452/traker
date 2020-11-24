@@ -5,6 +5,7 @@ const fetchAPIUrl = async () => {
     try{
       let api = await fetch('/config');
       let response = await api.json();
+      console.log(response)
 
       if(response.api) resolve(response.api);   
     } catch (err) {

@@ -19,6 +19,7 @@ import {
   Toast,
 } from "@salesforce/design-system-react";
 
+import { getCookie } from '../../utils/cookie';
 import { getAPIUrl } from "../../config/config";
 import Modal from "../EditActivityModal";
 import CloneModal from "../CloneActivityModal";
@@ -90,7 +91,16 @@ class Table extends Component {
 
   async checkProgram() {
     try {
-      let response = await fetch(`${this.API_URL}/program`);
+      let token = getCookie('token').replaceAll('"','');
+      const config = {
+        method: 'GET',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        }
+      }
+      let response = await fetch(`${this.API_URL}/program`, config);
       if (response.status === 200) {
         let { result } = await response.json();
         this.setState({
@@ -104,7 +114,16 @@ class Table extends Component {
 
   async checkRegion() {
     try {
-      let response = await fetch(`${this.API_URL}/region`);
+      let token = getCookie('token').replaceAll('"','');
+      const config = {
+        method: 'GET',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        }
+      }
+      let response = await fetch(`${this.API_URL}/region`, config);
       if (response.status === 200) {
         let { result } = await response.json();
         this.setState({
@@ -120,7 +139,16 @@ class Table extends Component {
 
   async checkFormat() {
     try {
-      let response = await fetch(`${this.API_URL}/format`);
+      let token = getCookie('token').replaceAll('"','');
+      const config = {
+        method: 'GET',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        }
+      }
+      let response = await fetch(`${this.API_URL}/format`, config);
       if (response.status === 200) {
         let { result } = await response.json();
         result = result.map((item) => ({ label: item.name, ...item }));

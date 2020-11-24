@@ -66,14 +66,15 @@ class Login extends Component {
 
       if(response.status === 200) {
         let { result } = await response.json();
+        
+        if(!this.validations()){
+          let { userId, role, token } = result;
 
-        if(!this.validations(result)){
-          result.length === 0 && this.setState({errors: {invalid: true}});
-
-          result.length > 0 && localStorage.setItem("userId", result[0].userId);
-          result.length > 0 && setCookie("userid", result[0].userId);
-          result.length > 0 && setCookie("role", result[0].role || 'user');
-          result.length > 0 && this.props.history.push('/home');
+          userId && localStorage.setItem('userId', userId);
+          userId && setCookie('userid', userId);
+          token && setCookie('token', token);
+          setCookie('role', role || 'user');
+          this.props.history.push('/home');
         }
       } else throw new Error(response);
 
