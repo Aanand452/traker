@@ -11,8 +11,8 @@ class PanelComponent extends Component {
 
   state = {
     search: {
-      owner: '',
-      name: ''
+      owner: this.props.search.owner,
+      name: this.props.search.name
     }
   }
 
@@ -23,10 +23,12 @@ class PanelComponent extends Component {
       <PanelContainer>
         <Input
           onChange={e => this.handleChange("owner", e.target.value)} 
+          defaultValue={this.props.search.owner}
           type='text'
           label="Search by owner" />
         <Input
-          onChange={e => this.handleChange("name", e.target.value)} 
+          onChange={e => this.handleChange("name", e.target.value)}
+          defaultValue={this.props.search.name}
           type='text'
           label="Enter search text" />
         <Button

@@ -63,7 +63,11 @@ class Table extends Component {
     displayedData: [],
     editModalIsOPen: false,
     selectedprogram: {},
-    currentPage:1,
+    currentPage: 1,
+    search: {
+      owner: '',
+      name: ''
+    }
   };
 
   componentDidUpdate(prevProps) {
@@ -113,20 +117,20 @@ class Table extends Component {
   
   onSearch = search => {
     if (search.owner === "" && search.name === ""){
-      this.setState({data: this.props.data});
+      this.setState({data: this.props.data, search});
       return false;
     }
     
-    let data = [...this.state.data];
+    let data = [];
 
     if(search.owner) {
-      data = data.filter(item => item.owner.toLowerCase().includes(search.owner.toLowerCase()))
+      data = [...this.props.data].filter(item => item.owner.toLowerCase().includes(search.owner.toLowerCase()))
     }
     if(search.name) {
-      data = data.filter(item => item.name.toLowerCase().includes(search.name.toLowerCase()))
+      data = [...this.props.data].filter(item => item.name.toLowerCase().includes(search.name.toLowerCase()))
     }
 
-    this.setState({ currentPage: 1, data });
+    this.setState({ currentPage: 1, data, search });
   }
 
   onSort = (sortInfo) => {
@@ -182,6 +186,7 @@ class Table extends Component {
         break;
     }
   };
+  
 
   render() {
     return (
@@ -205,7 +210,7 @@ class Table extends Component {
             variant="object-home"
           />
           {this.state.isPanelOpen && (
-            <Panel onSearch={this.onSearch} />
+            <Panel onSearch={this.onSearch} search={this.state.search} />
           )}
           <DataTable
             assistiveText={{
