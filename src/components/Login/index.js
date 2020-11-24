@@ -70,6 +70,8 @@ class Login extends Component {
         if(!this.validations()){
           let { userId, role, token } = result;
 
+          userId && this.setState({errors: {invalid: true}});
+
           userId && localStorage.setItem('userId', userId);
           userId && setCookie('userid', userId);
           token && setCookie('token', token);
