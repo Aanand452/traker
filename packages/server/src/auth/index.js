@@ -22,8 +22,6 @@ const validateToken = async (tokenString) => {
 }
 
 const verifyToken = async (req, authOrSecDef, token, callback)  => {
-  //disable atuh middleware while the FE is done
-  callback(null);
   if (token && token.indexOf("Bearer ") === 0) {
     await validateToken(token.split(' ')[1]) ? callback(null) : sendError(req);
   } else {
@@ -31,8 +29,10 @@ const verifyToken = async (req, authOrSecDef, token, callback)  => {
   }
 }
 
-const signIn = (user)  => {
-  console.log(user);
+const signIn = (info) => {
+  const user = { user_id: info.userId, username: info.username };
+
+  return jwt.sign(user, sharedSecret);
 }
 
 export { verifyToken, signIn };

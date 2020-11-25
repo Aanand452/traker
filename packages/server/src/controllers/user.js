@@ -7,15 +7,22 @@ import { signIn } from '../auth';
 
 const doLogin = async (req, res) => {  
   try {
-    let loginInfo = req.body.username &&
+    const loginInfo = req.body.username &&
       await UserModel.getAutenticatedUser(req.body.username, req.body.password);
 
-    /*console.log(loginInfo);
-    if(loginInfo.result.length > 0){
-      var token = signIn(loginInfo.result);
-    }*/
-    
-    ApiUtils.reposeWithhSuccess(res, loginInfo, httpStatus.OK);
+    if(loginInfo.length){
+      var token = signIn(loginInfo[0]);
+    }
+
+    const login = {
+      userId: loginInfo[0].userId,
+      username: loginInfo[0].username,
+      name: loginInfo[0].name,
+      role: loginInfo[0].role,
+      token
+    };
+
+    ApiUtils.reposeWithhSuccess(res, login, httpStatus.OK);
   } catch (err) {
     ApiUtils.responseWithError(res, httpStatus.INTERNAL_SERVER_ERROR, err.toString());
   }
