@@ -22,7 +22,7 @@ class PanelComponent extends Component {
 		return (
       <PanelContainer>
         <Input
-          onChange={e => this.handleChange("owner", e.target.value)} 
+          onChange={e => this.handleChange("owner", e.target.value)}
           defaultValue={this.props.search.owner}
           type='text'
           label="Search by owner" />

@@ -16,7 +16,7 @@ class EditProgramPage extends Component {
       active: false
     },
     programs: [],
-    selectedProgram: ''
+    selectedProgram: '',
   }
 
   componentDidMount() {
@@ -55,6 +55,7 @@ class EditProgramPage extends Component {
       if(response.status === 200) {
         const { result } = await response.json();
         this.setState({programs: result});
+
       } else throw new Error(response);
     } catch (err) {
       console.error(err);
