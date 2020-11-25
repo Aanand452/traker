@@ -9,7 +9,6 @@ import {
 import 'moment/locale/en-au';
 import { SfdcPageAppWrapper } from './styles/page';
 import { getCookie } from '../utils/cookie';
-import jwt from 'jsonwebtoken';
 
 import Login from '../components/Login'
 import CreateActivityPage from '../components/CreateActivityPage'
@@ -68,10 +67,6 @@ function CreateProgram() {
 
 
 function App({closeSettingsMenu, user}) {
-
-  let token = getCookie('token');
-  let { user_id } = jwt.decode(token) || '';
-
   return (
     <Router>
       <SfdcPageAppWrapper className="app" onClick={closeSettingsMenu}>
@@ -80,7 +75,7 @@ function App({closeSettingsMenu, user}) {
             exact
             path="/"
             render={
-              () => !user_id
+              () => !localStorage.getItem("userId")
               ? <Login />
               : <Redirect to='/home' />
             }
