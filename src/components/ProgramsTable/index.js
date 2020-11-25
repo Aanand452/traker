@@ -21,7 +21,7 @@ import Pager from '../Pager';
 import Modal from '../ProgramModal';
 
 const CurrencyCell = ({ children, ...props }) => {
-  
+
   if(parseInt(children, 10) === 0) {
     return <DataTableCell title={children} {...props}>
       {new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumSignificantDigits: 1 }).format(children)}
@@ -40,10 +40,10 @@ const DropDownCell = ({ children, ...props }) => {
 
   if(options.length <= 0) {
     return <DataTableCell title={children} {...props}>
-      
+
     </DataTableCell>
   }
-  
+
   return <DataTableRowActions
           options={options}
           menuPosition="overflowBoundaryElement"
@@ -114,20 +114,22 @@ class Table extends Component {
       </PageHeaderControl>
     </Fragment>
   );
-  
-  onSearch = search => {
+
+  onSearch = (search) => {
     if (search.owner === "" && search.name === ""){
       this.setState({data: this.props.data, search});
       return false;
     }
-    
-    let data = [];
+
+    let data = [...this.props.data];
 
     if(search.owner) {
-      data = [...this.props.data].filter(item => item.owner.toLowerCase().includes(search.owner.toLowerCase()))
+      data = data.filter((item) => {
+        return item.owner ? item.owner.toLowerCase().includes(search.owner.toLowerCase()) : false;
+      });
     }
     if(search.name) {
-      data = [...this.props.data].filter(item => item.name.toLowerCase().includes(search.name.toLowerCase()))
+      data = data.filter(item => item.name.toLowerCase().includes(search.name.toLowerCase()))
     }
 
     this.setState({ currentPage: 1, data, search });
@@ -143,7 +145,7 @@ class Table extends Component {
       if (a[property] > b[property]) val = 1;
       if (a[property] < b[property]) val = -1;
       if (sortDirection === 'desc') val *= -1;
-    
+
       return val;
     });
 
@@ -163,7 +165,7 @@ class Table extends Component {
   handlePagination = (newData, currentPage) => {
     this.setState({displayedData: newData, currentPage});
   };
-  
+
   toggleOpen = bool => {
     this.setState({ editModalIsOPen: bool });
   };
@@ -186,7 +188,7 @@ class Table extends Component {
         break;
     }
   };
-  
+
 
   render() {
     return (
@@ -236,7 +238,7 @@ class Table extends Component {
               isSorted={this.state.sortProperty === 'name'}
             />
             <DataTableColumn label="Program Owner" property="owner" />
-            <DataTableColumn 
+            <DataTableColumn
               label="Budget"
               property="budget"
               sortDirection={this.state.sortDirection}
@@ -264,7 +266,7 @@ class Table extends Component {
             <DataTableColumn label="APM2" property="apm2">
              <DropDownCell />
             </DataTableColumn>
-            <DataTableColumn 
+            <DataTableColumn
               label="Industry"
               property="industry"
               sortDirection={this.state.sortDirection}
