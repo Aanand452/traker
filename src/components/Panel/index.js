@@ -30,7 +30,7 @@ class PanelComponent extends Component {
           onChange={e => this.handleChange("name", e.target.value)}
           defaultValue={this.props.search.name}
           type='text'
-          label="Enter search text" />
+          label="Search by name" />
         <Button
           onClick={() => this.props.onSearch(this.state.search)}
           className="slds-m-top_small"

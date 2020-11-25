@@ -121,13 +121,13 @@ class Table extends Component {
       return false;
     }
     
-    let data = [];
+    let data = [...this.props.data];
 
     if(search.owner) {
-      data = [...this.props.data].filter(item => item.owner.toLowerCase().includes(search.owner.toLowerCase()))
+      data = data.filter(item => item.owner ? item.owner.toLowerCase().includes(search.owner.toLowerCase()) : false)
     }
     if(search.name) {
-      data = [...this.props.data].filter(item => item.name.toLowerCase().includes(search.name.toLowerCase()))
+      data = data.filter(item => item.name.toLowerCase().includes(search.name.toLowerCase()))
     }
 
     this.setState({ currentPage: 1, data, search });
