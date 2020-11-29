@@ -22,7 +22,7 @@ ActivityLog.init({
   },
   change: {
     allowNull: false,
-    type: DataTypes.STRING,
+    type: DataTypes.TEXT,
     field: 'change',
   },
   changeDate: {
