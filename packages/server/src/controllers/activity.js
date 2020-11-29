@@ -31,14 +31,31 @@ const addNewActivity = async (req, res) => {
 const updateActivity = async (req, res) => {  
   try {
     var activityId = req.swagger.params.id.value;
-    var body = req.body
     
     const activityToCheck = await ActivityModel.getActivityById(activityId)
     if(!activityToCheck) {
       ApiUtils.reposeWithhSuccess(res, null, httpStatus.NOT_FOUND);
     } else {
+      if(activityToCheck.userId) {
+        var body = {
+          title: req.body.title,
+          campaignId: req.body.campaignId,
+          formatId: req.body.formatId,
+          abstract: req.body.title,
+          regionId: req.body.regionId,
+          startDate: req.body.startDate,
+          endDate: req.body.endDate,
+          asset: req.body.asset,
+          programId: req.body.programId,
+          customerMarketing: req.body.customerMarketing,
+        };
+      } else {
+        var body = req.body;
+      }
+
       const activity = await ActivityModel.updateActivity(activityId, body);
-      
+      await ActivityModel.logChanges(activityId, req.body.userId, activityToCheck, activity);
+
       if(activity === 'error') ApiUtils.responseWithError(res, httpStatus.INTERNAL_SERVER_ERROR);
       else ApiUtils.reposeWithhSuccess(res, activity, httpStatus.OK);
     }    
