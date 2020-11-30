@@ -30,14 +30,15 @@ const addNewActivity = async (req, res) => {
 
 const updateActivity = async (req, res) => {  
   try {
-    var activityId = req.swagger.params.id.value;
-    
-    const activityToCheck = await ActivityModel.getActivityById(activityId)
+    const activityId = req.swagger.params.id.value;
+    const activityToCheck = await ActivityModel.getActivityById(activityId);
+    let body;
+
     if(!activityToCheck) {
       ApiUtils.reposeWithhSuccess(res, null, httpStatus.NOT_FOUND);
     } else {
       if(activityToCheck.userId) {
-        var body = {
+        body = {
           title: req.body.title,
           campaignId: req.body.campaignId,
           formatId: req.body.formatId,
@@ -50,7 +51,7 @@ const updateActivity = async (req, res) => {
           customerMarketing: req.body.customerMarketing,
         };
       } else {
-        var body = req.body;
+        body = req.body;
       }
 
       const activity = await ActivityModel.updateActivity(activityId, body);
