@@ -109,7 +109,7 @@ class ActivityModel {
     try {
       const keys = ['userId', 'title', 'campaignId', 'formatId', 'abstract', 'regionId', 'startDate', 'endDate', 'asset', 'programId', 'customerMarketing'];
       const activityLogId = uuidv4();
-      var changes = [];
+      let changes = [];
 
       keys.forEach(key => {
         if(key === 'startDate' || key === 'endDate'){
