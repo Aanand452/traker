@@ -21,7 +21,7 @@ import Pager from '../Pager';
 import Modal from '../ProgramModal';
 
 const CurrencyCell = ({ children, ...props }) => {
-  
+
   if(parseInt(children, 10) === 0) {
     return <DataTableCell title={children} {...props}>
       {new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumSignificantDigits: 1 }).format(children)}
@@ -40,10 +40,10 @@ const DropDownCell = ({ children, ...props }) => {
 
   if(options.length <= 0) {
     return <DataTableCell title={children} {...props}>
-      
+
     </DataTableCell>
   }
-  
+
   return <DataTableRowActions
           options={options}
           menuPosition="overflowBoundaryElement"
@@ -63,12 +63,21 @@ class Table extends Component {
     displayedData: [],
     editModalIsOPen: false,
     selectedprogram: {},
-    currentPage:1,
+    currentPage: 1,
+    search: {
+      owner: '',
+      name: ''
+    }
   };
 
   componentDidUpdate(prevProps) {
     if (this.props.data !== prevProps.data) {
-      this.setState({data: this.props.data});
+      this.setState({data: this.props.data}, () => {
+        if(this.state.sortProperty && this.state.sortDirection) {
+          this.onSort({property: this.state.sortProperty, sortDirection: this.state.sortDirection})
+        }
+      });
+      this.onSearch(this.state.search);
     }
   }
 
@@ -89,14 +98,14 @@ class Table extends Component {
           assistiveText={{ icon: 'Refresh' }}
           iconCategory="utility"
           iconName="refresh"
-          iconVariant="border"
+          iconVariant="border-filled"
           variant="icon"
           onClick={this.resetTable}
         />
       </PageHeaderControl>
       <PageHeaderControl>
         <ButtonGroup id="button-group-page-header-controls">
-          <ButtonStateful
+          <Button
             assistiveText={{ icon: 'Filters' }}
             iconCategory="utility"
             iconName="filterList"
@@ -110,23 +119,25 @@ class Table extends Component {
       </PageHeaderControl>
     </Fragment>
   );
-  
+
   onSearch = search => {
     if (search.owner === "" && search.name === ""){
-      this.setState({data: this.props.data});
+      this.setState({data: this.props.data, search});
       return false;
     }
-    
-    let data = [...this.state.data];
+
+    let data = [...this.props.data];
 
     if(search.owner) {
-      data = data.filter(item => item.owner.toLowerCase().includes(search.owner.toLowerCase()))
+      data = data.filter((item) => {
+        return item.owner ? item.owner.toLowerCase().includes(search.owner.toLowerCase()) : false;
+      });
     }
     if(search.name) {
       data = data.filter(item => item.name.toLowerCase().includes(search.name.toLowerCase()))
     }
 
-    this.setState({ currentPage: 1, data });
+    this.setState({ currentPage: 1, data, search });
   }
 
   onSort = (sortInfo) => {
@@ -139,7 +150,7 @@ class Table extends Component {
       if (a[property] > b[property]) val = 1;
       if (a[property] < b[property]) val = -1;
       if (sortDirection === 'desc') val *= -1;
-    
+
       return val;
     });
 
@@ -152,14 +163,18 @@ class Table extends Component {
       sortProperty: '',
       sortDirection: '',
       isPanelOpen: false,
-      currentPage:1,
+      currentPage: 1,
+      search: {
+        owner: '',
+        name: ''
+      }
     })
   };
 
   handlePagination = (newData, currentPage) => {
     this.setState({displayedData: newData, currentPage});
   };
-  
+
   toggleOpen = bool => {
     this.setState({ editModalIsOPen: bool });
   };
@@ -183,11 +198,12 @@ class Table extends Component {
     }
   };
 
+
   render() {
     return (
       <Container>
         <IconSettings iconPath="/assets/icons">
-          {this.state.editModalIsOPen && <Modal onEdit={this.props.onEdit} program={this.state.selectedprogram} toggleOpen={this.toggleOpen} title='Edit program' ariaHideApp={false} />}
+          {this.state.editModalIsOPen && <Modal onSearch={this.onSearch} search={this.state.search} onEdit={this.props.onEdit} program={this.state.selectedprogram} toggleOpen={this.toggleOpen} title='Edit program' ariaHideApp={false} />}
           <PageHeader
             onRenderActions={this.actions}
             icon={
@@ -205,7 +221,7 @@ class Table extends Component {
             variant="object-home"
           />
           {this.state.isPanelOpen && (
-            <Panel onSearch={this.onSearch} />
+            <Panel onSearch={this.onSearch} search={this.state.search} />
           )}
           <DataTable
             assistiveText={{
@@ -231,7 +247,7 @@ class Table extends Component {
               isSorted={this.state.sortProperty === 'name'}
             />
             <DataTableColumn label="Program Owner" property="owner" />
-            <DataTableColumn 
+            <DataTableColumn
               label="Budget"
               property="budget"
               sortDirection={this.state.sortDirection}
@@ -259,7 +275,7 @@ class Table extends Component {
             <DataTableColumn label="APM2" property="apm2">
              <DropDownCell />
             </DataTableColumn>
-            <DataTableColumn 
+            <DataTableColumn
               label="Industry"
               property="industry"
               sortDirection={this.state.sortDirection}

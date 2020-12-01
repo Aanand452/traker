@@ -13,7 +13,7 @@ const APP_LOCKED = process.env.APP_LOCKED || '';
 const APP_LOCKED_ALLOWED_USERS = APP_LOCKED.split(',') || [];
 
 module.exports = function (app, config, passport) {
-  const isAuthenticated = (req, res, next) => {
+  const isAuthenticated = async (req, res, next) => {
     if (req.isAuthenticated()){
       res.cookie('user', JSON.stringify(req.user || ''), {
         domain: process.env.APP_DOMAIN || DEFAULT_DOMAIN
@@ -23,33 +23,34 @@ module.exports = function (app, config, passport) {
       var nameReplace = req.user.email.replace(/@.*$/,"");
       var username = nameReplace!==req.user.email ? nameReplace : null;
 
-      fetch(apiEnpoint,{
-        method: 'POST',
-        headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json',
-        },
-
-        body: JSON.stringify({
-          username: req.user.email,
-          password: username
-        })
-      })
-      .then((response) =>response.json())
-      .then(function(data) {
-        if(data.result.length > 0) {
-          res.cookie('userid', JSON.stringify(data.result[0].userId));
-          res.cookie('userName', JSON.stringify(data.result[0].name));
-          res.cookie('role', JSON.stringify(data.result[0].role || 'user'));
-
+      try {
+        const request = await fetch(apiEnpoint,{
+          method: 'POST',
+          headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+          },
+  
+          body: JSON.stringify({
+            username: req.user.email,
+            password: username
+          })
+        });
+        const response = await request.json();
+        
+        if(response.result.userId) {
+          res.cookie('userid', JSON.stringify(response.result.userId));
+          res.cookie('userName', JSON.stringify(response.result.name));
+          res.cookie('role', JSON.stringify(response.result.role || 'user'));
+          res.cookie('token', JSON.stringify(response.result.token));
           next();
         } else {
           show403Error(req, res);
         }
-      }).catch((err) => {
+      } catch (err) {
         console.error(err);
         show403Error(req, res);
-      })
+      }
     }
     else{
       res.redirect(LOGIN_URL);
@@ -107,6 +108,7 @@ module.exports = function (app, config, passport) {
     res.clearCookie('connect.sid');
     res.clearCookie('userName');
     res.clearCookie('role');
+    res.clearCookie('token');
     // 'https://aloha.force.com/'
     res.redirect(process.env.LOGOUT_URL || 'https://mgonzalez-dev-ed.lightning.force.com/secur/logout.jsp');
   })
@@ -129,7 +131,7 @@ module.exports = function (app, config, passport) {
       activitiesDate: process.env.ACTIVITIES_DATE
     });
   });
-
+  
   const authMiddlewares = [];
   if(process.env.SSO === 'true') {
     authMiddlewares.push(isAuthenticated, isUserAllowed);

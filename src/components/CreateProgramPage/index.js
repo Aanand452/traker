@@ -17,6 +17,7 @@ import BudgetInput from '../BudgetInput/BudgetInput'
 
 import { Title, Container } from './styles';
 import { getAPIUrl } from '../../config/config';
+import { getCookie } from '../../utils/cookie';
 
 class CreateProgramPage extends Component {
   state = {
@@ -57,7 +58,16 @@ class CreateProgramPage extends Component {
 
   getRegions = async () => {
     try {
-      const request = await fetch(`${this.API_URL}/region`);
+      let token = getCookie('token').replaceAll('"','');
+      const config = {
+        method: 'GET',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        }
+      }
+      const request = await fetch(`${this.API_URL}/region`, config);
       const response = await request.json();
 
       if(response.info.code === 200) this.setState({ regions: response.result });
@@ -69,7 +79,16 @@ class CreateProgramPage extends Component {
 
   getLifecycles = async () => {
     try {
-      const request = await fetch(`${this.API_URL}/lifecycle-stage`);
+      let token = getCookie('token').replaceAll('"','');
+      const config = {
+        method: 'GET',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        }
+      }
+      const request = await fetch(`${this.API_URL}/lifecycle-stage`, config);
       const response = await request.json();
       const lifecycles = response.result.map(item => ({id: item.lifecycleStageId, label: item.name}));
 
@@ -82,7 +101,16 @@ class CreateProgramPage extends Component {
 
   getAPM1 = async () => {
     try {
-      const request = await fetch(`${this.API_URL}/apm1`);
+      let token = getCookie('token').replaceAll('"','');
+      const config = {
+        method: 'GET',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        }
+      }
+      const request = await fetch(`${this.API_URL}/apm1`, config);
       const response = await request.json();
       const apm1 = response.result.map(item => ({id: item.apm1Id, label: item.name}));
 
@@ -96,7 +124,16 @@ class CreateProgramPage extends Component {
 
   getAPM2 = async () => {
     try {
-      const request = await fetch(`${this.API_URL}/apm2`);
+      let token = getCookie('token').replaceAll('"','');
+      const config = {
+        method: 'GET',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        }
+      }
+      const request = await fetch(`${this.API_URL}/apm2`, config);
       const response = await request.json();
       const apm2 = response.result.map(item => ({id: item.apm2Id, label: item.name}));
 
@@ -109,7 +146,16 @@ class CreateProgramPage extends Component {
 
   getIndustry = async () => {
     try {
-      const request = await fetch(`${this.API_URL}/industry`);
+      let token = getCookie('token').replaceAll('"','');
+      const config = {
+        method: 'GET',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        }
+      }
+      const request = await fetch(`${this.API_URL}/industry`, config);
       const response = await request.json();
       const industry = response.result.map(item => ({id: item.industryId, label: item.name}));
 
@@ -122,7 +168,16 @@ class CreateProgramPage extends Component {
 
   getSegment = async () => {
     try {
-      const request = await fetch(`${this.API_URL}/segment`);
+      let token = getCookie('token').replaceAll('"','');
+      const config = {
+        method: 'GET',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        }
+      }
+      const request = await fetch(`${this.API_URL}/segment`, config);
       const response = await request.json();
       const segment = response.result.map(item => ({id: item.segmentId, label: item.name}));
 
@@ -135,7 +190,16 @@ class CreateProgramPage extends Component {
 
   getPersona = async () => {
     try {
-      const request = await fetch(`${this.API_URL}/persona`);
+      let token = getCookie('token').replaceAll('"','');
+      const config = {
+        method: 'GET',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        }
+      }
+      const request = await fetch(`${this.API_URL}/persona`, config);
       const response = await request.json();
       const persona = response.result.map(item => ({id: item.personaId, label: item.name}));
 
@@ -202,6 +266,7 @@ class CreateProgramPage extends Component {
       let segmentId = this.state.program.selectedSegments.map(el => el.id);
       let personaId = this.state.program.selectedPersonas.map(el => el.id);
 
+      let token = getCookie('token').replaceAll('"','');
       const body = {
         name: this.state.program.name,
         owner: this.state.program.owner,
@@ -218,12 +283,13 @@ class CreateProgramPage extends Component {
       if(this.state.program.selectedLifecycleStages) body.lifecycleStageId = this.state.program.selectedLifecycleStages.map(el => el.id);
       if(this.state.program.selectedApm2s) body.apm2Id = this.state.program.selectedApm2s.map(el => el.id);
       if(this.state.program.kpi) body.otherKpis = this.state.program.kpi;
-
+      
       const config = {
         method: 'POST',
         headers: {
           'Accept': 'application/json',
           'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
         },
         body: JSON.stringify(body)
       };

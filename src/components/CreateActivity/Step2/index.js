@@ -13,6 +13,7 @@ import {
   Checkbox
 } from '@salesforce/design-system-react';
 
+import { getCookie } from '../../../utils/cookie';
 import { getAPIUrl } from '../../../config/config';
 
 class Step2 extends Component {
@@ -40,7 +41,16 @@ class Step2 extends Component {
 
   async getFormats() {
     try {
-      const request = await fetch(`${this.API_URL}/format`);
+      let token = getCookie('token').replaceAll('"','');
+      const config = {
+        method: 'GET',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        }
+      }
+      const request = await fetch(`${this.API_URL}/format`, config);
       
       if(request.status === 200) {
         let { result } = await request.json();
