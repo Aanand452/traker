@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { withRouter } from 'react-router-dom';
 import { Spinner, ToastContainer, Toast, IconSettings } from '@salesforce/design-system-react';
 
+import { getCookie } from '../../utils/cookie';
 import { getAPIUrl } from '../../config/config';
 import { Container } from './styles';
 import ProgramsTable from '../ProgramsTable';
@@ -15,7 +16,7 @@ class EditProgramPage extends Component {
       active: false
     },
     programs: [],
-    selectedProgram: ''
+    selectedProgram: '',
   }
 
   componentDidMount() {
@@ -41,10 +42,20 @@ class EditProgramPage extends Component {
     const user = localStorage.getItem('userId');
 
     try {
-      const response = await fetch(`${this.API_URL}/programs/${user}`);
+      let token = getCookie('token').replaceAll('"','');
+      const config = {
+        method: 'GET',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        }
+      }
+      const response = await fetch(`${this.API_URL}/programs/${user}`, config);
       if(response.status === 200) {
         const { result } = await response.json();
         this.setState({programs: result});
+
       } else throw new Error(response);
     } catch (err) {
       console.error(err);
@@ -77,11 +88,13 @@ class EditProgramPage extends Component {
       showLoader: true,
     });
 
+    let token = getCookie('token').replaceAll('"','');
     const config = {
       method: 'DELETE',
       headers: {
         'Accept': 'application/json',
         'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
       }
     }
 

@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { getAPIUrl } from '../../config/config';
+import { getCookie } from '../../utils/cookie';
 
 import {
   IconSettings,
@@ -74,7 +75,16 @@ class EditProgramModalComponent extends Component {
 
   getRegions = async () => {
     try {
-      const response = await fetch(`${this.API_URL}/region`);
+      let token = getCookie('token').replaceAll('"','');
+      const config = {
+        method: 'GET',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        }
+      }
+      const response = await fetch(`${this.API_URL}/region`, config);
       const { result } = await response.json();
 
       let regionId = result.filter(el => el.label === this.props.program.targetRegion);
@@ -89,7 +99,16 @@ class EditProgramModalComponent extends Component {
 
   getLifecycles = async () => {
     try {
-      const response = await fetch(`${this.API_URL}/lifecycle-stage`);
+      let token = getCookie('token').replaceAll('"','');
+      const config = {
+        method: 'GET',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        }
+      }
+      const response = await fetch(`${this.API_URL}/lifecycle-stage`, config);
       const { result } = await response.json();
       const lifecycleStages = result.map(item => ({id: item.lifecycleStageId, label: item.name}));
 
@@ -105,7 +124,16 @@ class EditProgramModalComponent extends Component {
 
   getAPM1 = async () => {
     try {
-      const response = await fetch(`${this.API_URL}/apm1`);
+      let token = getCookie('token').replaceAll('"','');
+      const config = {
+        method: 'GET',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        }
+      }
+      const response = await fetch(`${this.API_URL}/apm1`, config);
       const { result } = await response.json();
       const apm1s = result.map(item => ({id: item.apm1Id, label: item.name}));
 
@@ -121,7 +149,16 @@ class EditProgramModalComponent extends Component {
 
   getAPM2 = async () => {
     try {
-      const response = await fetch(`${this.API_URL}/apm2`);
+      let token = getCookie('token').replaceAll('"','');
+      const config = {
+        method: 'GET',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        }
+      }
+      const response = await fetch(`${this.API_URL}/apm2`, config);
       const { result } = await response.json();
       const apm2s = result.map(item => ({id: item.apm2Id, label: item.name}));
 
@@ -137,7 +174,16 @@ class EditProgramModalComponent extends Component {
 
   getIndustry = async () => {
     try {
-      const response = await fetch(`${this.API_URL}/industry`);
+      let token = getCookie('token').replaceAll('"','');
+      const config = {
+        method: 'GET',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        }
+      }
+      const response = await fetch(`${this.API_URL}/industry`, config);
       const { result } = await response.json();
       const industries = result.map(item => ({id: item.industryId, label: item.name}));
 
@@ -154,7 +200,16 @@ class EditProgramModalComponent extends Component {
 
   getSegment = async () => {
     try {
-      const response = await fetch(`${this.API_URL}/segment`);
+      let token = getCookie('token').replaceAll('"','');
+      const config = {
+        method: 'GET',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        }
+      }
+      const response = await fetch(`${this.API_URL}/segment`, config);
       const { result } = await response.json();
       const segments = result.map(item => ({id: item.segmentId, label: item.name}));
 
@@ -170,7 +225,16 @@ class EditProgramModalComponent extends Component {
 
   getPersona = async () => {
     try {
-      const response = await fetch(`${this.API_URL}/persona`);
+      let token = getCookie('token').replaceAll('"','');
+      const config = {
+        method: 'GET',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        }
+      }
+      const response = await fetch(`${this.API_URL}/persona`, config);
       const { result } = await response.json();
       const personas = result.map(item => ({id: item.personaId, label: item.name}));
       
@@ -241,6 +305,7 @@ class EditProgramModalComponent extends Component {
     let personaId = this.state.program.personaId.map(el => el.id);
 
     try {
+      let token = getCookie('token').replaceAll('"','');
       let program = {
         name: this.state.program.name,
         owner: this.state.program.owner,
@@ -260,8 +325,9 @@ class EditProgramModalComponent extends Component {
       const config = {
         method: 'PUT',
         headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
         },
         body: JSON.stringify(program)
       }

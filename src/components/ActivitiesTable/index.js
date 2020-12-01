@@ -2,7 +2,6 @@ import React, { Component, Fragment } from "react";
 import { withRouter, Link } from "react-router-dom";
 import { connect } from "react-redux";
 import moment from "moment";
-import timezone from "moment-timezone";
 
 import {
   Button,
@@ -19,6 +18,7 @@ import {
   Toast,
 } from "@salesforce/design-system-react";
 
+import { getCookie } from '../../utils/cookie';
 import { getAPIUrl } from "../../config/config";
 import Modal from "../EditActivityModal";
 import CloneModal from "../CloneActivityModal";
@@ -51,7 +51,7 @@ CustomDataTableCell.displayName = DataTableCell.displayName;
 class Table extends Component {
   state = {
     sortProperty: "",
-    sortDirection: null,
+    sortDirection: "",
     toast: {
       show: false,
       message: "A New Activity Has Been Added",
@@ -84,13 +84,27 @@ class Table extends Component {
 
   componentDidUpdate(prevProps) {
     if (this.props.data !== prevProps.data) {
-      this.setState({ data: this.props.data });
+      this.setState({ data: this.props.data }, () => {
+        if(this.state.sortProperty && this.state.sortDirection) {
+          this.onSort({property: this.state.sortProperty, sortDirection: this.state.sortDirection})
+        }
+      });
+      this.onFilter();
     }
   }
 
   async checkProgram() {
     try {
-      let response = await fetch(`${this.API_URL}/program`);
+      let token = getCookie('token').replaceAll('"','');
+      const config = {
+        method: 'GET',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        }
+      }
+      let response = await fetch(`${this.API_URL}/program`, config);
       if (response.status === 200) {
         let { result } = await response.json();
         this.setState({
@@ -104,7 +118,16 @@ class Table extends Component {
 
   async checkRegion() {
     try {
-      let response = await fetch(`${this.API_URL}/region`);
+      let token = getCookie('token').replaceAll('"','');
+      const config = {
+        method: 'GET',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        }
+      }
+      let response = await fetch(`${this.API_URL}/region`, config);
       if (response.status === 200) {
         let { result } = await response.json();
         this.setState({
@@ -120,7 +143,16 @@ class Table extends Component {
 
   async checkFormat() {
     try {
-      let response = await fetch(`${this.API_URL}/format`);
+      let token = getCookie('token').replaceAll('"','');
+      const config = {
+        method: 'GET',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        }
+      }
+      let response = await fetch(`${this.API_URL}/format`, config);
       if (response.status === 200) {
         let { result } = await response.json();
         result = result.map((item) => ({ label: item.name, ...item }));
@@ -247,8 +279,61 @@ class Table extends Component {
     });
   };
 
-  onFilter = ({ functionFilters, filters }) => {
+  handleChange = (name, value) => {
+    if(name === "startDate" && value !== "") {
+      this.setState({
+        errors: {...this.state.errors, startDate: false, repeated: false}
+      });
+    } else if(name === "endDate" && value !== "") {
+      this.setState({
+        errors: {...this.state.errors, endDate: false, repeated: false}
+      });
+    }
+    this.setState({ filters: { ...this.state.filters, [name]: value } });
+  };
+
+  onFilter = () => {
     let data = [...this.props.data];
+    const { filters } = this.state;
+    const functionFilters = {};
+
+    for (const property in filters) {
+
+      if (property === "startDate" || property === "endDate") {
+        const startMoment = moment(filters["startDate"], "DD/MM/YYYY");
+        const endMoment = moment(filters["endDate"], "DD/MM/YYYY");
+
+        if (filters["startDate"] && !filters["endDate"]) {
+          this.setState({ errors: {...this.state.errors, endDate: true} })
+          return;
+        } else if (!filters["startDate"] && filters["endDate"]) {
+          this.setState({ errors: {...this.state.errors, startDate: true} })
+          return;
+        } else if (filters["startDate"] && filters["endDate"]) {
+          if(filters["startDate"] === filters["endDate"]) {
+            this.setState({ errors: {...this.state.errors, repeated: true} })
+            return;
+          } else {
+            functionFilters["startDate"] = (value) => {
+              return moment(value, "YYYY-MM-DD").isBetween(
+                startMoment,
+                endMoment,
+                undefined,
+                "[]"
+              );
+            };
+          }
+        }
+
+      } else if (Array.isArray(filters[property]))
+        functionFilters[property] = (value) =>
+          filters[property][0].label === "All" ||
+          value.includes(filters[property][0].label.toLowerCase());
+      else
+        functionFilters[property] = (value) =>
+          value && value.includes(filters[property].toLowerCase());
+    }
+
     let filter = this.filter(data, functionFilters);
     this.setState({
       data: filter,
@@ -302,6 +387,8 @@ class Table extends Component {
             formats={this.state.formats}
             onFilter={this.onFilter}
             filters={this.state.filters}
+            handleChange={this.handleChange}
+            errors={this.state.errors}
           />
         )}
         <DataTable
@@ -331,7 +418,7 @@ class Table extends Component {
           <DataTableColumn
             sortDirection={this.state.sortDirection || "desc"}
             sortable
-            isSorted={this.state.sortProperty === "region"}
+            isSorted={this.state.sortProperty === "regionId"}
             label="Region"
             property="regionId"
           />

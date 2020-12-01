@@ -7,6 +7,7 @@ import {
   Toast,
 } from '@salesforce/design-system-react';
 
+import { getCookie } from '../../utils/cookie';
 import { getAPIUrl } from '../../config/config';
 import Prompt from '../Prompt';
 import Step1 from './Step1';
@@ -73,7 +74,17 @@ class CreateActivity extends Component {
 
   async checkRegion() {
     try {
-      let response = await fetch(`${this.API_URL}/region`);
+      let token = getCookie('token').replaceAll('"','');
+      const config = {
+        method: 'GET',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        }
+      }
+      let response = await fetch(`${this.API_URL}/region`, config);
+
       if(response.status === 200) {
         let { result } = await response.json();
         result = result.map(item => ({...item, id: item.region_id}))
@@ -91,7 +102,16 @@ class CreateActivity extends Component {
 
   async checkProgramByRegion(id) {
     try {
-      let response = await fetch(`${this.API_URL}/programs/region/${id}`);
+      let token = getCookie('token').replaceAll('"','');
+      const config = {
+        method: 'GET',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        }
+      }
+      let response = await fetch(`${this.API_URL}/programs/region/${id}`, config);
       if(response.status === 200) {
         let { result } = await response.json();
         let programs = result.map(el => ({...el, label: el.name, id: el.programId}));
@@ -117,7 +137,16 @@ class CreateActivity extends Component {
 
   async checkProgramDetail(id) {
     try {
-      let response = await fetch(`${this.API_URL}/program/${id}`);
+      let token = getCookie('token').replaceAll('"','');
+      const config = {
+        method: 'GET',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        }
+      }
+      let response = await fetch(`${this.API_URL}/program/${id}`, config);
 
       if(response.status === 200) {
         let { result } = await response.json();
@@ -133,7 +162,16 @@ class CreateActivity extends Component {
 
   async checkProgram() {
     try {
-      let response = await fetch(`${this.API_URL}/program`);
+      let token = getCookie('token').replaceAll('"','');
+      const config = {
+        method: 'GET',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        }
+      }
+      let response = await fetch(`${this.API_URL}/program`, config);
       if(response.status === 200) {
         let { result } = await response.json();
         this.setState({ programs: result, row: {...this.state.row, program: [result[0]]}});
@@ -246,12 +284,14 @@ class CreateActivity extends Component {
 
     
     try {
+      let token = getCookie('token').replaceAll('"','');
       body = this.parseDatesGTM(body);
       const config = {
         method: 'POST',
         headers: {
           'Accept': 'application/json',
           'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
         },
         body: JSON.stringify(body)
       }

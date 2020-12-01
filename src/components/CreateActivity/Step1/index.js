@@ -66,29 +66,25 @@ class Step1 extends Component {
             errorText={this.props.error.program}
           />
           <div className="slds-grid slds-wrap slds-m-left_xx-small slds-m-top_large">
-            <div className="slds-m-bottom_large slds-col slds-size_1-of-1">
-                <strong>MP Target:</strong>
-                <p>{currencyFormatter(this.props.items.metrics)}</p>
-            </div>
-            <div className="slds-m-bottom_large slds-col slds-size_1-of-1">
-                <strong>Customer Message:</strong>
-                <p>{this.props.items.customerMessage}</p>
-            </div>
             <div className="slds-m-bottom_large slds-col slds-size_1-of-2 slds-large-size_1-of-4">
               <strong>Program Owner:</strong>
               <p>{this.props.items.owner}</p>
+            </div>
+            <div className="slds-m-bottom_large slds-col slds-size_1-of-2 slds-large-size_1-of-4">
+              <strong>Region:</strong>
+              <p>{this.props.items.targetRegion}</p>
+            </div>
+            <div className="slds-m-bottom_large slds-col slds-size_1-of-2 slds-large-size_1-of-4">
+                <strong>MP Target:</strong>
+                <p>{currencyFormatter(this.props.items.metrics)}</p>
             </div>
             <div className="slds-m-bottom_large slds-col slds-size_1-of-2 slds-large-size_1-of-4">
               <strong>Budget:</strong>
               <p>{currencyFormatter(this.props.items.budget)}</p>
             </div>
             <div className="slds-m-bottom_large slds-col slds-size_1-of-2 slds-large-size_1-of-4">
-              <strong>Parent Campaign ID:</strong>
-              <p>{this.props.items.parentCampaignId }</p>
-            </div>
-            <div className="slds-m-bottom_large slds-col slds-size_1-of-2 slds-large-size_1-of-4">
-              <strong>Region:</strong>
-              <p>{this.props.items.targetRegion}</p>
+              <strong>Industry:</strong>
+              {this.props.items.industry && this.props.items.industry.map((el, i) => <p key={i}>{el}</p>)}
             </div>
             <div className="slds-m-bottom_large slds-col slds-size_1-of-2 slds-large-size_1-of-4">
               <strong>Lifecycle Stage:</strong>
@@ -103,16 +99,16 @@ class Step1 extends Component {
               {this.props.items.apm2 && this.props.items.apm2.map((el, i) => <p key={i}>{el}</p>)}
             </div>
             <div className="slds-m-bottom_large slds-col slds-size_1-of-2 slds-large-size_1-of-4">
-              <strong>Industry:</strong>
-              {this.props.items.industry && this.props.items.industry.map((el, i) => <p key={i}>{el}</p>)}
-            </div>
-            <div className="slds-m-bottom_large slds-col slds-size_1-of-2 slds-large-size_1-of-4">
               <strong>Segment:</strong>
               {this.props.items.segment && this.props.items.segment.map((el, i) => <p key={i}>{el}</p>)}
             </div>
             <div className="slds-m-bottom_large slds-col slds-size_1-of-2 slds-large-size_1-of-4">
               <strong>Persona:</strong>
               {this.props.items.persona && this.props.items.persona.map((el, i) => <p key={i}>{el}</p>)}
+            </div>
+            <div className="slds-m-bottom_large slds-col slds-size_1-of-1">
+                <strong>Customer Message:</strong>
+                <p>{this.props.items.customerMessage}</p>
             </div>
           </div>
           {

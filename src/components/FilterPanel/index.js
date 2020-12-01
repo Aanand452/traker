@@ -10,102 +10,37 @@ import {
 } from "@salesforce/design-system-react";
 
 class FilterPanel extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      errors: {},
-      filters: { ...props.filters },
-    };
-  }
-
-  handleChange = (name, value) => {
-    if(name === "startDate" && value !== "") {
-      this.setState({
-        errors: {...this.state.errors, startDate: false, repeated: false}
-      });
-    } else if(name === "endDate" && value !== "") {
-      this.setState({
-        errors: {...this.state.errors, endDate: false, repeated: false}
-      });
-    }
-    this.setState({ filters: { ...this.state.filters, [name]: value } });
-  };
-
   checkEndDate = (date) => {
-    const endDate = moment(this.state.filters.endDate,'DD/MM/YYYY');
+    const endDate = moment(this.props.filters.endDate,'DD/MM/YYYY');
     return endDate.isBefore(date.date)
   }
 
   checkStartDate = (date) => {
-    const starDate = moment(this.state.filters.startDate,'DD/MM/YYYY');
+    const starDate = moment(this.props.filters.startDate,'DD/MM/YYYY');
     return starDate.isAfter(date.date)
   }
-
-  onFilter = () => {
-    const { onFilter } = this.props;
-    const { filters } = this.state;
-    const functionFilters = {};
-
-    for (const property in filters) {
-      if (property === "startDate" || property === "endDate") {
-        const startMoment = moment(filters["startDate"], "DD/MM/YYYY");
-        const endMoment = moment(filters["endDate"], "DD/MM/YYYY");
-
-        if (filters["startDate"] && !filters["endDate"]) {
-          this.setState({ errors: {...this.state.errors, endDate: true} })
-          return;
-        } else if (!filters["startDate"] && filters["endDate"]) {
-          this.setState({ errors: {...this.state.errors, startDate: true} })
-          return;
-        } else if (filters["startDate"] && filters["endDate"]) {
-          if(filters["startDate"] === filters["endDate"]) {
-            this.setState({ errors: {...this.state.errors, repeated: true} })
-            return;
-          } else {
-            functionFilters["startDate"] = (value) => {
-              return moment(value, "YYYY-MM-DD").isBetween(
-                startMoment,
-                endMoment,
-                undefined,
-                "[]"
-              );
-            };
-          }
-        }
-
-      } else if (Array.isArray(filters[property]))
-        functionFilters[property] = (value) =>
-          filters[property][0].label === "All" ||
-          value.includes(filters[property][0].label.toLowerCase());
-      else
-        functionFilters[property] = (value) =>
-          value && value.includes(filters[property].toLowerCase());
-    }
-
-    onFilter({ functionFilters, filters });
-  };
 
   render() {
     const { regions = [], programs = [], formats = [] } = this.props;
     return (
       <PanelContainer>
         <Input
-          onChange={(e) => this.handleChange("userId", e.target.value)}
-          value={this.state.filters.userId}
+          onChange={(e) => this.props.handleChange("userId", e.target.value)}
+          value={this.props.filters.userId}
           type="text"
           label="Search by owner"
           className="slds-m-top_small"
         />
         <Input
-          onChange={(e) => this.handleChange("campaignId", e.target.value)}
-          value={this.state.filters.campaignId}
+          onChange={(e) => this.props.handleChange("campaignId", e.target.value)}
+          value={this.props.filters.campaignId}
           type="text"
           label="Search by campaign ID"
           className="slds-m-top_small"
         />
         <Input
-          onChange={(e) => this.handleChange("title", e.target.value)}
-          value={this.state.filters.title}
+          onChange={(e) => this.props.handleChange("title", e.target.value)}
+          value={this.props.filters.title}
           type="text"
           label="Search by title"
           className="slds-m-top_small"
@@ -116,12 +51,12 @@ class FilterPanel extends Component {
           events={{
             onSelect: (event, data) =>
               data.selection.length &&
-              this.handleChange("regionId", data.selection),
+              this.props.handleChange("regionId", data.selection),
           }}
           labels={{ label: "Region" }}
           name="region"
           options={regions}
-          selection={this.state.filters.regionId}
+          selection={this.props.filters.regionId}
           variant="readonly"
         />
         <Combobox
@@ -130,12 +65,12 @@ class FilterPanel extends Component {
           events={{
             onSelect: (event, data) =>
               data.selection.length &&
-              this.handleChange("programId", data.selection),
+              this.props.handleChange("programId", data.selection),
           }}
           labels={{ label: "Program" }}
           name="program"
           options={programs}
-          selection={this.state.filters.programId}
+          selection={this.props.filters.programId}
           variant="readonly"
         />
         <Combobox
@@ -144,18 +79,18 @@ class FilterPanel extends Component {
           events={{
             onSelect: (event, data) =>
               data.selection.length &&
-              this.handleChange("formatId", data.selection),
+              this.props.handleChange("formatId", data.selection),
           }}
           labels={{ label: "Format" }}
           name="format"
           options={formats}
-          selection={this.state.filters.formatId}
+          selection={this.props.filters.formatId}
           variant="readonly"
         />
         <div className=" slds-m-top_small">
           <p>Select range of dates</p>
         </div>
-        {this.state.errors.repeated && (
+        {this.props.errors.repeated && (
           <div className="slds-has-error">
             <div className="slds-form-element__help slds-has-error">
               Fields must be different
@@ -165,7 +100,7 @@ class FilterPanel extends Component {
         <div className="slds-grid slds-gutters">
           <div
             className={`slds-col slds-size_1-of-2 ${
-              this.state.errors.startDate && "slds-has-error"
+              this.props.errors.startDate && "slds-has-error"
             }`}
           >
             <Datepicker
@@ -173,16 +108,16 @@ class FilterPanel extends Component {
               labels={{ label: "Initial Date" }}
               triggerClassName="slds-size_1-of-1"
               onChange={(event, data) =>
-                this.handleChange("startDate", data.formattedDate)
+                this.props.handleChange("startDate", data.formattedDate)
               }
               formatter={(date) =>
                 date ? moment(date).format("DD/MM/YYYY") : ""
               }
               parser={(dateString) => moment(dateString, "DD/MM/YYYY").toDate()}
-              formattedValue={this.state.filters.startDate}
-              dateDisabled={this.state.filters.endDate ? this.checkEndDate.bind(this) :undefined}
+              formattedValue={this.props.filters.startDate}
+              dateDisabled={this.props.filters.endDate ? this.checkEndDate.bind(this) :undefined}
             />
-            {this.state.errors.startDate && (
+            {this.props.errors.startDate && (
               <div className="slds-form-element__help">
                 This field is required
               </div>
@@ -190,7 +125,7 @@ class FilterPanel extends Component {
           </div>
           <div
             className={`slds-size_1-of-2 ${
-              this.state.errors.endDate && "slds-has-error"
+              this.props.errors.endDate && "slds-has-error"
             }`}
           >
             <Datepicker
@@ -198,16 +133,16 @@ class FilterPanel extends Component {
               labels={{ label: "Final Date" }}
               triggerClassName="slds-col slds-size_1-of-1"
               onChange={(event, data) =>
-                this.handleChange("endDate", data.formattedDate)
+                this.props.handleChange("endDate", data.formattedDate)
               }
               formatter={(date) =>
                 date ? moment(date).format("DD/MM/YYYY") : ""
               }
               parser={(dateString) => moment(dateString, "DD/MM/YYYY").toDate()}
-              formattedValue={this.state.filters.endDate}
-              dateDisabled={this.state.filters.startDate ? this.checkStartDate.bind(this) :undefined}
+              formattedValue={this.props.filters.endDate}
+              dateDisabled={this.props.filters.startDate ? this.checkStartDate.bind(this) :undefined}
             />
-            {this.state.errors.endDate && (
+            {this.props.errors.endDate && (
               <div className="slds-form-element__help">
                 This field is required
               </div>
@@ -216,7 +151,7 @@ class FilterPanel extends Component {
         </div>
 
         <Button
-          onClick={this.onFilter}
+          onClick={this.props.onFilter}
           className="slds-m-top_small"
           label="Search"
           variant="brand"

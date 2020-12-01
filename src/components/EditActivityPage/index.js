@@ -6,6 +6,7 @@ import { Container } from './styles';
 import ActivitiesTable from '../ActivitiesTable';
 import { getAPIUrl } from '../../config/config';
 import ConfirmationDailog from '../Prompt';
+import { getCookie } from '../../utils/cookie';
 
 class EditActivityPage extends Component {
   state = {
@@ -55,11 +56,13 @@ class EditActivityPage extends Component {
     this.setState({showLoader: true});
     const user = localStorage.getItem('userId');
     const body = { date: this.state.activitiesDate };
+    let token = getCookie('token').replaceAll('"','');
     const config = {
       method: 'POST',
       headers: {
         'Accept': 'application/json',
         'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
       },
       body: JSON.stringify(body)
     };
@@ -92,12 +95,14 @@ class EditActivityPage extends Component {
       showConfirmationDialog: false,
       showLoader: true,
     });
-
+    
+    let token = getCookie('token').replaceAll('"','');
     const config = {
       method: 'DELETE',
       headers: {
         'Accept': 'application/json',
         'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
       },
       body: JSON.stringify({activityId: this.state.selectedActivity})
     }
