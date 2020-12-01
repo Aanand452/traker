@@ -1,4 +1,5 @@
 import Activity from '../dbmodels/activity';
+import ActivityLog from '../dbmodels/activityLog';
 import db from '../dbmodels/';
 import { v4 as uuidv4 } from 'uuid';
 import moment from 'moment';
@@ -11,7 +12,10 @@ class ActivityModel {
         include: [db.User, db.Format, db.Region, db.Program],
         where: {
           startDate : {[Op.gte]: date ? moment(date, 'DD/MM/YYYY') : moment().subtract(90, 'days')}
-        }
+        },
+        order: [
+          ['title', 'ASC'],
+        ]
       });
 
       const minActivities = activities.map(activity => {
@@ -100,6 +104,48 @@ class ActivityModel {
       else return false;
     } catch (err) {
       console.error('Error getting activity', err);
+      return 'error';
+    }
+  };
+
+  static async logChanges(id, user, previous, activity) {
+    try {
+      const keys = ['userId', 'title', 'campaignId', 'formatId', 'abstract', 'regionId', 'startDate', 'endDate', 'asset', 'programId', 'customerMarketing'];
+      const activityLogId = uuidv4();
+      let changes = [];
+
+      keys.forEach(key => {
+        if(key === 'startDate' || key === 'endDate'){
+          if(moment(activity[key]).format('DD/MM/YYYY') !== moment(previous[key]).format('DD/MM/YYYY')) {
+            changes.push({
+              field: key,
+              from: previous[key],
+              to: activity[key]
+            })
+          }
+        } else {
+          if(activity[key] !== previous[key]) {
+            changes.push({
+              field: key,
+              from: previous[key],
+              to: activity[key]
+            })
+          }
+        }
+      });
+
+      const body = {
+        activityLogId,
+        activityId: id,
+        userId: user,
+        change: JSON.stringify(changes),
+        changeDate: Date.now()
+      };
+
+      const log = await ActivityLog.create(body);
+      return log;
+    } catch (err) {
+      console.error('Error creating activity Log', err);
       return 'error';
     }
   };
