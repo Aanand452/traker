@@ -12,7 +12,10 @@ class ActivityModel {
         include: [db.User, db.Format, db.Region, db.Program],
         where: {
           startDate : {[Op.gte]: date ? moment(date, 'DD/MM/YYYY') : moment().subtract(90, 'days')}
-        }
+        },
+        order: [
+          ['title', 'ASC'],
+        ]
       });
 
       const minActivities = activities.map(activity => {
