@@ -50,7 +50,7 @@ class NavBar extends Component{
     setCookie('userid', null, 0);
     setCookie('token', null, 0);
     setCookie('role', null, 0);
-    this.props.history.push("/");
+    document.location.replace('/logout');
   }
 
   configUrls(data){
