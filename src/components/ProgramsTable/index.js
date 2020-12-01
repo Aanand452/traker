@@ -72,7 +72,11 @@ class Table extends Component {
 
   componentDidUpdate(prevProps) {
     if (this.props.data !== prevProps.data) {
-      this.setState({data: this.props.data});
+      this.setState({data: this.props.data}, () => {
+        if(this.state.sortProperty && this.state.sortDirection) {
+          this.onSort({property: this.state.sortProperty, sortDirection: this.state.sortDirection})
+        }
+      });
       this.onSearch(this.state.search);
     }
   }
