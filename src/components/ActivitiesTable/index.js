@@ -51,7 +51,7 @@ CustomDataTableCell.displayName = DataTableCell.displayName;
 class Table extends Component {
   state = {
     sortProperty: "",
-    sortDirection: null,
+    sortDirection: "",
     toast: {
       show: false,
       message: "A New Activity Has Been Added",
@@ -84,7 +84,11 @@ class Table extends Component {
 
   componentDidUpdate(prevProps) {
     if (this.props.data !== prevProps.data) {
-      this.setState({ data: this.props.data });
+      this.setState({ data: this.props.data }, () => {
+        if(this.state.sortProperty && this.state.sortDirection) {
+          this.onSort({property: this.state.sortProperty, sortDirection: this.state.sortDirection})
+        }
+      });
       this.onFilter();
     }
   }
@@ -414,7 +418,7 @@ class Table extends Component {
           <DataTableColumn
             sortDirection={this.state.sortDirection || "desc"}
             sortable
-            isSorted={this.state.sortProperty === "region"}
+            isSorted={this.state.sortProperty === "regionId"}
             label="Region"
             property="regionId"
           />
