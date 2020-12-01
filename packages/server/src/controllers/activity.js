@@ -42,7 +42,7 @@ const updateActivity = async (req, res) => {
           title: req.body.title,
           campaignId: req.body.campaignId,
           formatId: req.body.formatId,
-          abstract: req.body.title,
+          abstract: req.body.abstract,
           regionId: req.body.regionId,
           startDate: req.body.startDate,
           endDate: req.body.endDate,
