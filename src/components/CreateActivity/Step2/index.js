@@ -100,8 +100,8 @@ class Step2 extends Component {
           />
         </div>
         <div className="slds-m-bottom_large slds-col slds-size_1-of-2 slds-form-element">
-          <label class="slds-form-element__label" for="text-input-id-1">
-            <abbr class="slds-required" title="required">*</abbr>Title
+          <label className="slds-form-element__label">
+            <abbr className="slds-required" title="required">*</abbr>Title
           </label>
           <Input
             errorText={this.props.error.title}
@@ -111,8 +111,8 @@ class Step2 extends Component {
           />
         </div>
         <div className="slds-m-bottom_large slds-col slds-size_1-of-2 slds-form-element">
-          <label class="slds-form-element__label" for="text-input-id-1">
-            <abbr class="slds-required" title="required">*</abbr>Abstract
+          <label className="slds-form-element__label">
+            <abbr className="slds-required" title="required">*</abbr>Abstract
           </label>
           <Textarea
             errorText={this.props.error.abstract}
@@ -122,8 +122,8 @@ class Step2 extends Component {
           />
         </div>
         <div className={`slds-col slds-size_1-of-4 slds-form-element ${this.props.error.startDate && "slds-has-error"}`}>
-          <label class="slds-form-element__label" for="text-input-id-1">
-            <abbr class="slds-required" title="required">*</abbr>Start date
+          <label className="slds-form-element__label">
+            <abbr className="slds-required" title="required">*</abbr>Start date
           </label>
           <Datepicker
             triggerClassName="slds-col slds-size_1-of-1"
@@ -135,8 +135,8 @@ class Step2 extends Component {
           {this.props.error.startDate && <div className="slds-form-element__help">{this.props.error.startDate}</div>}
         </div>
         <div className={`slds-col slds-size_1-of-4 slds-form-element ${this.props.error.endDate && "slds-has-error"}`}>
-          <label class="slds-form-element__label" for="text-input-id-1">
-            <abbr class="slds-required" title="required">*</abbr>End date
+          <label className="slds-form-element__label">
+            <abbr className="slds-required" title="required">*</abbr>End date
           </label>
           <Datepicker
             triggerClassName="slds-col slds-size_1-of-1"
@@ -145,7 +145,7 @@ class Step2 extends Component {
             parser={(dateString) => moment(dateString, 'DD/MM/YYYY').toDate()}
             formattedValue={this.props.row.endDate}
           />
-          {this.props.error.endDate && <div class="slds-form-element__help">{this.props.error.endDate}</div>}
+          {this.props.error.endDate && <div className="slds-form-element__help">{this.props.error.endDate}</div>}
         </div>
         <div className="slds-m-bottom_large slds-col slds-size_1-of-2">
           <Input placeholder="Insert a valid URL here" onChange={(event, data) => this.props.handleChange("asset", data.value)} value={this.props.row.asset} label="Asset" errorText={this.props.error.asset}/>
