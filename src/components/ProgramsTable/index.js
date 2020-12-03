@@ -3,7 +3,6 @@ import { withRouter, Link } from 'react-router-dom';
 import {
   Button,
   ButtonGroup,
-  ButtonStateful,
   DataTable,
   DataTableColumn,
   DataTableCell,
@@ -21,13 +20,12 @@ import Pager from '../Pager';
 import Modal from '../ProgramModal';
 
 const CurrencyCell = ({ children, ...props }) => {
-
   if(parseInt(children, 10) === 0) {
-    return <DataTableCell title={children} {...props}>
+    return <DataTableCell title={children.toString()} {...props}>
       {new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumSignificantDigits: 1 }).format(children)}
     </DataTableCell>
   } else {
-    return <DataTableCell title={children} {...props}>
+    return <DataTableCell title={typeof children === 'number' ? children.toString() : children} {...props}>
       {parseInt(children, 10) ? new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(children) : ''}
     </DataTableCell>
   }
@@ -39,9 +37,7 @@ const DropDownCell = ({ children, ...props }) => {
   let options = props.item[items].map(el => el);
 
   if(options.length <= 0) {
-    return <DataTableCell title={children} {...props}>
-
-    </DataTableCell>
+    return <DataTableCell title="" {...props}></DataTableCell>
   }
 
   return <DataTableRowActions
@@ -57,7 +53,7 @@ DropDownCell.displayName = DataTableCell.displayName;
 class Table extends Component {
   state = {
     sortProperty: '',
-    sortDirection: '',
+    sortDirection: null,
     isPanelOpen: false,
     data: [],
     displayedData: [],
@@ -242,7 +238,7 @@ class Table extends Component {
             <DataTableColumn
               label="Program Name"
               property="name"
-              sortDirection={this.state.sortDirection}
+              sortDirection={this.state.sortDirection || "desc"}
               sortable
               isSorted={this.state.sortProperty === 'name'}
             />
@@ -250,7 +246,7 @@ class Table extends Component {
             <DataTableColumn
               label="Budget"
               property="budget"
-              sortDirection={this.state.sortDirection}
+              sortDirection={this.state.sortDirection || "desc"}
               sortable
               isSorted={this.state.sortProperty === 'budget'}
             >
@@ -262,7 +258,7 @@ class Table extends Component {
             <DataTableColumn
               label="Target Region"
               property="targetRegion"
-              sortDirection={this.state.sortDirection}
+              sortDirection={this.state.sortDirection || "desc"}
               sortable
               isSorted={this.state.sortProperty === 'targetRegion'}
             />
@@ -278,7 +274,7 @@ class Table extends Component {
             <DataTableColumn
               label="Industry"
               property="industry"
-              sortDirection={this.state.sortDirection}
+              sortDirection={this.state.sortDirection || "desc"}
               sortable
               isSorted={this.state.sortProperty === 'industry'}
             >

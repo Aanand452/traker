@@ -15,7 +15,6 @@ import {
   Checkbox
 } from '@salesforce/design-system-react';
 
-
 class CloneActivityModalComponent extends Component {
 
   state = {

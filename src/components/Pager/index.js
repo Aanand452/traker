@@ -40,7 +40,7 @@ const Pager = memo(props => {
   const getCurrentData = (currentPage) => {
     const start = (itemsPerPage*currentPage)-itemsPerPage;
     const end = (itemsPerPage*currentPage);
-    const newData = data.slice(start, end);
+    const newData = data.map(el => ({id: el.programId, ...el})).slice(start, end);
     
     setDisplayedItems(newData, currentPage);
   };

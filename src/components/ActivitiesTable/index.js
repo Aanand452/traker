@@ -51,7 +51,7 @@ CustomDataTableCell.displayName = DataTableCell.displayName;
 class Table extends Component {
   state = {
     sortProperty: "",
-    sortDirection: "",
+    sortDirection: null,
     toast: {
       show: false,
       message: "A New Activity Has Been Added",
