@@ -9,7 +9,19 @@ import {
   Input,
 } from "@salesforce/design-system-react";
 
+
 class FilterPanel extends Component {
+
+  btnRef = component => {
+    if(component) {
+      document.addEventListener('keydown', e => {
+        if(e.key === "Enter") {
+          this.props.onFilter()
+        }
+      })
+    }
+  }
+
   checkEndDate = (date) => {
     const endDate = moment(this.props.filters.endDate,'DD/MM/YYYY');
     return endDate.isBefore(date.date)
@@ -151,6 +163,7 @@ class FilterPanel extends Component {
         </div>
 
         <Button
+          buttonRef={this.btnRef}
           onClick={this.props.onFilter}
           className="slds-m-top_small"
           label="Search"
