@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import { withRouter } from 'react-router-dom';
 import {
   IconSettings,
   ToastContainer,
@@ -355,4 +354,4 @@ class CreateActivity extends Component {
   };
 };
 
-export default withRouter(CreateActivity);
+export default CreateActivity;
