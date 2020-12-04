@@ -3,26 +3,26 @@ import httpStatus from 'http-status-codes';
 import UserModel from '@sara/db/src/models/user';
 import { signIn } from '../auth';
 
-
-
 const doLogin = async (req, res) => {  
   try {
     const loginInfo = req.body.username &&
       await UserModel.getAutenticatedUser(req.body.username, req.body.password);
 
-    if(loginInfo.length){
+    if(loginInfo !== 'Error' && loginInfo.length){
       var token = signIn(loginInfo[0]);
+
+      const login = {
+        userId: loginInfo[0].userId,
+        username: loginInfo[0].username,
+        name: loginInfo[0].name,
+        role: loginInfo[0].role,
+        token
+      };
+
+      ApiUtils.reposeWithhSuccess(res, login, httpStatus.OK);
+    } else {
+      ApiUtils.responseWithError(res, httpStatus.INTERNAL_SERVER_ERROR, 'Authentication error');
     }
-
-    const login = {
-      userId: loginInfo[0].userId,
-      username: loginInfo[0].username,
-      name: loginInfo[0].name,
-      role: loginInfo[0].role,
-      token
-    };
-
-    ApiUtils.reposeWithhSuccess(res, login, httpStatus.OK);
   } catch (err) {
     ApiUtils.responseWithError(res, httpStatus.INTERNAL_SERVER_ERROR, err.toString());
   }
