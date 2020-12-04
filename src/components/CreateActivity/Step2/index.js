@@ -161,6 +161,7 @@ class Step2 extends Component {
                 onClick={() => {
                   this.props.addAsset(this.props.row.asset);
                 }}
+                disabled={!!this.props.error.asset || !this.props.row.asset}
               />
             }
             placeholder="Insert a valid URL here"

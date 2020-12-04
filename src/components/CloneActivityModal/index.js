@@ -12,8 +12,11 @@ import {
   Datepicker,
   Input,
   Textarea,
-  Checkbox
+  Checkbox,
+  InputIcon,
 } from '@salesforce/design-system-react';
+
+import { PillContianerStyled } from '../CreateActivity/styles';
 
 class CloneActivityModalComponent extends Component {
 
@@ -32,7 +35,8 @@ class CloneActivityModalComponent extends Component {
     abstract: this.props.data.abstract,
     startDate: this.props.data.startDate,
     endDate: this.props.data.endDate,
-    asset: this.props.data.asset,
+    asset: '',
+    assets: [],
     campaignId: this.props.data.campaignId,
     customerMarketing: this.props.data.customerMarketing,
     errors: {}
@@ -86,7 +90,12 @@ class CloneActivityModalComponent extends Component {
         abstract: result.abstract,
         startDate: this.parseDate(this.props.data.startDate),
         endDate: this.parseDate(this.props.data.endDate),
-        asset: result.asset,
+        asset: '',
+        assets: [{
+          id: result.asset,
+          title: result.asset,
+          label: result.asset,
+        }],
         campaignId: result.campaignId,
         programSelection: activityProgram,
         regionSelection: activityRegion,
@@ -212,7 +221,7 @@ class CloneActivityModalComponent extends Component {
   handleChange = e => {
     let errors = {...this.state.errors};
     if(e.target.id === 'asset') {
-      errors = {...errors, asset: !this.isUrl(e.target.value)};
+      errors = {...errors, asset: !this.isUrl(e.target.value), assetRepeat: false};
     } else if(e.target.value && e.target.id !== 'campaignId') {
       errors = {...errors, [e.target.id]: false};
     } else {
@@ -296,7 +305,7 @@ class CloneActivityModalComponent extends Component {
       if(Object.values(this.validate(body)).some(el => el)) return;
 
       body = this.parseDatesGTM(body);
-      
+
       const config = {
         method: 'POST',
         headers: {
@@ -317,6 +326,42 @@ class CloneActivityModalComponent extends Component {
       console.error(err);
       this.props.onToast(true, "Something went wrong, please try again", "error");
     }
+  }
+
+  addAsset = (asset) => {
+    if (this.state.assets.some(val => val.title === asset)) {
+      return this.setState((state) => ({
+        errors: {
+          ...state.errors,
+          assetRepeat: true,
+        },
+      }));
+    }
+
+    this.setState((state) => ({
+      assets: [
+        ...state.assets,
+        {
+          id: asset,
+          label: asset,
+          title: asset
+        }
+      ],
+    }));
+    this.handleChange({ target: { id: 'asset', value: '' }});
+  }
+
+  editAsset = (asset) => {
+    this.setState((state) => ({
+      asset,
+      assets: state.assets.filter((val) => val.title !== asset),
+    }));
+  }
+
+  deleteAsset = (asset) => {
+    this.setState((state) => ({
+      assets: state.assets.filter((val) => val.title !== asset),
+    }));
   }
 
 	render() {
@@ -506,12 +551,45 @@ class CloneActivityModalComponent extends Component {
               <Input
                 id='asset'
                 label="Asset"
+                iconRight={
+                  <InputIcon
+                    assistiveText={{
+                      icon: 'add',
+                    }}
+                    name="add"
+                    category="utility"
+                    onClick={() => {
+                      this.addAsset(this.state.asset);
+                    }}
+                    disabled={this.state.errors.asset || !this.state.asset}
+                  />
+                }
                 type='url'
                 placeholder="Insert a valid URL here"
                 value={this.state.asset}
                 onChange={e => this.handleChange(e)}
-                errorText={this.state.errors.asset && "This field must be a url"}
+                errorText={(() => {
+                  if (this.state.errors.asset) {
+                    return 'This field must be a url';
+                  }
+                  if (this.state.errors.assetRepeat) {
+                    return 'Repeated URL';
+                  }
+                })()}
               />
+              {
+                !!this.state.assets.length && (
+                  <PillContianerStyled
+                    options={this.state.assets}
+                    onClickPill={(e, data) => {
+                      this.editAsset(data.option.label);
+                    }}
+                    onRequestRemovePill={(e, data) => {
+                      this.deleteAsset(data.option.label);
+                    }}
+                  />
+                )
+              }
             </div>
             <div className="slds-form-element slds-m-bottom_large">
               <Checkbox
