@@ -66,6 +66,7 @@ class Table extends Component {
     filters: {},
     errors: {},
     currentPage: 1,
+    expandTable: true,
   };
 
   componentDidMount() {
@@ -182,11 +183,21 @@ class Table extends Component {
       <PageHeaderControl>
         <ButtonGroup id="button-group-page-header-controls">
           <Button
+            assistiveText={{ icon: "Expand" }}
+            iconCategory="utility"
+            iconName={this.state.expandTable ? "expand" : "contract"}
+            iconVariant="border-filled"
+            variant="icon"
+            title={this.state.expandTable ? "Expand table" : "Contract table"}
+            onClick={() => this.setState({ expandTable: !this.state.expandTable})}
+          />
+          <Button
             assistiveText={{ icon: "Refresh" }}
             iconCategory="utility"
             iconName="refresh"
             iconVariant="border-filled"
             variant="icon"
+            title="Refresh table"
             onClick={this.resetTable}
           />
           <Button
@@ -195,6 +206,7 @@ class Table extends Component {
             iconName="filterList"
             iconVariant="border-filled"
             variant="icon"
+            title="Filter"
             onClick={() =>
               this.setState({ isPanelOpen: !this.state.isPanelOpen })
             }
@@ -401,13 +413,12 @@ class Table extends Component {
             selectRow: "Select this row",
           }}
           fixedHeader
-          fixedLayout
+          fixedLayout={this.state.expandTable}
           items={this.state.displayedData}
           id="activitiesTable"
           joined
           onRowChange={this.props.selectItem}
           onSort={this.onSort}
-          selection={this.props.dataTable.selection}
         >
           <DataTableColumn label="Owner" property="userId" />
           <DataTableColumn label="Program" property="programId" />
