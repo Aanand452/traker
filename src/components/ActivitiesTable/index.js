@@ -404,7 +404,6 @@ class Table extends Component {
           />
         )}
         <DataTable
-          ref={this.table}
           assistiveText={{
             actionsHeader: "actions",
             columnSort: "sort this column",
