@@ -31,6 +31,7 @@ class CreateActivity extends Component {
     regions: [],
     programs: [],
     formats: [],
+    assets: [],
     error: {},
     isDeletePromptOpen: false,
     items: {},
@@ -246,7 +247,19 @@ class CreateActivity extends Component {
     e.preventDefault();
     const errors = this.validations();
     let { loggedUser } = this.state;
-    let { abstract, asset, format, endDate, program, region, startDate, title, campaignId, customerMarketing } = this.state.row;
+    let {
+      abstract,
+      asset,
+      format,
+      endDate,
+      program,
+      region,
+      startDate,
+      title,
+      campaignId,
+      customerMarketing,
+    } = this.state.row;
+
     let row = {
       userId: loggedUser,
       abstract,
@@ -279,8 +292,6 @@ class CreateActivity extends Component {
   }
 
   onSubmit = async body => {
-
-    
     try {
       let token = getCookie('token').replaceAll('"','');
       body = this.parseDatesGTM(body);
@@ -306,6 +317,46 @@ class CreateActivity extends Component {
   handleStep = step => {
     let steps = this.state.steps.map(el => el.step <= step ? {...el, active: true} : {...el, active: false});
     this.setState({ steps });
+  }
+
+  addAsset = (asset) => {
+    if (this.state.assets.some(val => val.title === asset)) {
+      return this.setState((state) => ({
+        error: {
+          ...state.error,
+          asset: 'Repeated URL',
+        },
+      }));
+    }
+
+    this.setState((state) => ({
+      ...state,
+      assets: [
+        ...state.assets,
+        {
+          id: asset,
+          label: asset,
+          title: asset
+        }
+      ],
+    }));
+    this.handleChange('asset', '');
+  }
+
+  editAsset = (asset) => {
+    this.setState((state) => ({
+      row: {
+        ...state.row,
+        asset: asset,
+      },
+      assets: state.assets.filter((val) => val.title !== asset),
+    }));
+  }
+
+  deleteAsset = (asset) => {
+    this.setState((state) => ({
+      assets: state.assets.filter((val) => val.title !== asset),
+    }));
   }
 
   render() {
@@ -345,6 +396,10 @@ class CreateActivity extends Component {
                 handleChange={this.handleChange}
                 error={this.state.error}
                 formats={this.state.formats}
+                assets={this.state.assets}
+                addAsset={this.addAsset}
+                editAsset={this.editAsset}
+                deleteAsset={this.deleteAsset}
               />
             }
           </form>
