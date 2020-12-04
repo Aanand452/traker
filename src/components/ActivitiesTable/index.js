@@ -48,6 +48,29 @@ const CustomDataTableCell = ({ children, ...props }) => (
 );
 CustomDataTableCell.displayName = DataTableCell.displayName;
 
+const DropDownCell = ({ children, ...props }) => {
+  let items = props.property;
+
+  if (!Array.isArray(props.item[items])) {
+    return <CustomDataTableCell {...props}>{props.item[items]}</CustomDataTableCell>
+  }
+  let options = props.item[items].map(el => el);
+
+  if(options.length <= 0) {
+    return <DataTableCell title="" {...props}/>
+  }
+
+  return (
+    <DataTableRowActions
+      options={options}
+      menuPosition="overflowBoundaryElement"
+      dropdown={<Dropdown />}
+    />
+  );
+}
+
+DropDownCell.displayName = DataTableCell.displayName;
+
 class Table extends Component {
   state = {
     sortProperty: "",
@@ -452,7 +475,7 @@ class Table extends Component {
             <DateCell />
           </DataTableColumn>
           <DataTableColumn label="Assets" property="asset">
-            <CustomDataTableCell />
+            <DropDownCell />
           </DataTableColumn>
 
           <DataTableRowActions
