@@ -2,7 +2,6 @@ import React, { Component, Fragment } from "react";
 import { withRouter, Link } from "react-router-dom";
 import { connect } from "react-redux";
 import moment from "moment";
-import "./styles.css";
 
 import {
   Button,
