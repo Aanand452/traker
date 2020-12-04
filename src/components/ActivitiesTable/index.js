@@ -2,6 +2,7 @@ import React, { Component, Fragment } from "react";
 import { withRouter, Link } from "react-router-dom";
 import { connect } from "react-redux";
 import moment from "moment";
+import "./styles.css";
 
 import {
   Button,
@@ -404,6 +405,7 @@ class Table extends Component {
           />
         )}
         <DataTable
+          ref={this.table}
           assistiveText={{
             actionsHeader: "actions",
             columnSort: "sort this column",
@@ -419,7 +421,6 @@ class Table extends Component {
           joined
           onRowChange={this.props.selectItem}
           onSort={this.onSort}
-          columnBordered
         >
           <DataTableColumn label="Owner" property="userId" />
           <DataTableColumn label="Program" property="programId" />
@@ -441,7 +442,7 @@ class Table extends Component {
             sortable
             sortDirection={this.state.sortDirection || "desc"}
           >
-            <DateCell fixedLayout />
+            <DateCell />
           </DataTableColumn>
           <DataTableColumn
             isSorted={this.state.sortProperty === "endDate"}
