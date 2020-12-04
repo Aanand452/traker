@@ -20,8 +20,6 @@ module.exports = function (app, config, passport) {
       });
 
       var apiEnpoint = process.env.API ? process.env.API + '/login' : 'http://localhost:3000/api/v1/login'
-      var nameReplace = req.user.email.replace(/@.*$/,"");
-      var username = nameReplace!==req.user.email ? nameReplace : null;
 
       try {
         const request = await fetch(apiEnpoint,{
@@ -33,7 +31,7 @@ module.exports = function (app, config, passport) {
   
           body: JSON.stringify({
             username: req.user.email,
-            password: process.env.AUTH_KEY || username
+            password: process.env.AUTH_KEY
           })
         });
         const response = await request.json();
