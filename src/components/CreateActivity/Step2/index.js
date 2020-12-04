@@ -11,6 +11,7 @@ import {
   ToastContainer,
   IconSettings,
   Checkbox,
+  InputIcon,
 } from '@salesforce/design-system-react';
 
 import { getCookie } from '../../../utils/cookie';
@@ -150,18 +151,23 @@ class Step2 extends Component {
         </div>
         <div className="slds-m-bottom_large slds-col slds-size_1-of-2">
           <Input
+            iconRight={
+              <InputIcon
+                assistiveText={{
+                  icon: 'add',
+                }}
+                name="add"
+                category="utility"
+                onClick={() => {
+                  this.props.addAsset(this.props.row.asset);
+                }}
+              />
+            }
             placeholder="Insert a valid URL here"
             onChange={(event, data) => this.props.handleChange("asset", data.value)}
             value={this.props.row.asset}
             label="Asset"
             errorText={this.props.error.asset}
-          />
-          <Button
-            label="Add asset"
-            type="button"
-            onClick={() => {
-              this.props.addAsset(this.props.row.asset);
-            }}
           />
           {
             !!this.props.assets.length && (
