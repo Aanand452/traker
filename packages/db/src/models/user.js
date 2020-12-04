@@ -1,7 +1,8 @@
 import db from '../dbmodels/'
 import { v4 as uuidv4 } from 'uuid';
 import dotenv from 'dotenv';
-if(!process.env.AUTH_KEY) dotenv.config();
+
+if(!process.env.PORT) dotenv.config();
 
 class UserModel {
   static async getAutenticatedUser(usr, pass) {
