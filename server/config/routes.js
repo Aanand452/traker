@@ -33,7 +33,7 @@ module.exports = function (app, config, passport) {
   
           body: JSON.stringify({
             username: req.user.email,
-            password: username
+            password: process.env.AUTH_KEY || username
           })
         });
         const response = await request.json();
