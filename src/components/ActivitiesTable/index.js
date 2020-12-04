@@ -67,20 +67,10 @@ class Table extends Component {
     errors: {},
     currentPage: 1,
     expandTable: true,
-    pressed: false
   };
-
-  table = React.createRef()
 
   componentDidMount() {
     this.setupAndFetch();
-    console.log(this.table.current)
-    this.getclasses()
-  }
-
-  getclasses = () => {
-    let select = document.querySelectorAll('.slds-table thead tr th:not(:last-child) .slds-cell-fixed');
-    
   }
 
   setupAndFetch = async () => {
@@ -414,7 +404,6 @@ class Table extends Component {
           />
         )}
         <DataTable
-          ref={this.table}
           assistiveText={{
             actionsHeader: "actions",
             columnSort: "sort this column",
