@@ -249,7 +249,6 @@ class CreateActivity extends Component {
     let { loggedUser } = this.state;
     let {
       abstract,
-      asset,
       format,
       endDate,
       program,
@@ -259,6 +258,8 @@ class CreateActivity extends Component {
       campaignId,
       customerMarketing,
     } = this.state.row;
+
+    const asset = this.state.assets.map((asset) => asset.label).join(', ');
 
     let row = {
       userId: loggedUser,

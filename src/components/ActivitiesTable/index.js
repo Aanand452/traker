@@ -48,28 +48,32 @@ const CustomDataTableCell = ({ children, ...props }) => (
 );
 CustomDataTableCell.displayName = DataTableCell.displayName;
 
-const DropDownCell = ({ children, ...props }) => {
+const DropDownCellAsset = ({ children, ...props }) => {
   let items = props.property;
 
-  if (!Array.isArray(props.item[items])) {
-    return <CustomDataTableCell {...props}>{props.item[items]}</CustomDataTableCell>
+  if (props.item[items]) {
+    const assets = props.item[items].split(', ');
+    if (assets.length > 1) {
+      const options = assets.map((asset) => ({ label: 'view asset', value: asset }));
+      return (
+        <DataTableRowActions
+          options={options}
+          menuPosition="overflowBoundaryElement"
+          dropdown={
+            <Dropdown
+              onSelect={({ value }) => {
+                window.open(value, '_blank');
+              }}
+            />
+          }
+        />
+      );
+    }
   }
-  let options = props.item[items].map(el => el);
-
-  if(options.length <= 0) {
-    return <DataTableCell title="" {...props}/>
-  }
-
-  return (
-    <DataTableRowActions
-      options={options}
-      menuPosition="overflowBoundaryElement"
-      dropdown={<Dropdown />}
-    />
-  );
+  return <CustomDataTableCell {...props}>{props.item[items]}</CustomDataTableCell>
 }
 
-DropDownCell.displayName = DataTableCell.displayName;
+DropDownCellAsset.displayName = DataTableCell.displayName;
 
 class Table extends Component {
   state = {
@@ -475,7 +479,7 @@ class Table extends Component {
             <DateCell />
           </DataTableColumn>
           <DataTableColumn label="Assets" property="asset">
-            <DropDownCell />
+            <DropDownCellAsset />
           </DataTableColumn>
 
           <DataTableRowActions

@@ -85,17 +85,18 @@ class CloneActivityModalComponent extends Component {
       var activityRegion = this.state.region.filter(el => el.region_id === result.regionId);
       var activityFormat = this.state.format.filter(el => el.format_id === result.formatId);
 
+      const assets = result.asset ? result.asset.split(', ').map(asset => ({
+        id: asset,
+        title: asset,
+        label: asset,
+      })) : [];
       this.setState({...this.state,
         title: result.title,
         abstract: result.abstract,
         startDate: this.parseDate(this.props.data.startDate),
         endDate: this.parseDate(this.props.data.endDate),
         asset: '',
-        assets: [{
-          id: result.asset,
-          title: result.asset,
-          label: result.asset,
-        }],
+        assets,
         campaignId: result.campaignId,
         programSelection: activityProgram,
         regionSelection: activityRegion,
@@ -295,7 +296,7 @@ class CloneActivityModalComponent extends Component {
         regionId: this.state.regionSelection[0] && this.state.regionSelection[0].id,
         startDate: this.state.startDate,
         endDate: this.state.endDate,
-        asset: this.state.asset,
+        asset: this.state.assets.map((asset) => asset.label).join(', '),
         customerMarketing: this.state.customerMarketing || false,
         userId: localStorage.getItem('userId'),
         programId: this.state.programSelection[0] && this.state.programSelection[0].id,
