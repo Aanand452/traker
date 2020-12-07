@@ -74,8 +74,6 @@ class Table extends Component {
   componentDidMount() {
     this.setupAndFetch();
     let table = document.getElementsByTagName('table')[0];
-    let row = document.getElementsByClassName('slds-hint-parent');
-    console.log(row[0])
     this.resizableTable(table);
   }
   
@@ -93,9 +91,9 @@ class Table extends Component {
   }
 
   setListener = div => {
-    let pageX, curCol, nxtCol, curColWidth, nxtColWidth;
+    let pageX, curCol, nxtCol, curColWidth, nxtColWidth, colName;
     div.addEventListener('mousedown', e => {
-      e.preventDefault();
+      colName = e.target.previousSibling.title;
       curCol = e.target.parentElement;
       nxtCol = curCol.nextElementSibling;
       pageX = e.pageX;
@@ -103,14 +101,28 @@ class Table extends Component {
       if(nxtCol) {
         nxtColWidth = nxtCol.offsetWidth;
       }
+      this.setState({
+        columnWidth: {
+          ...this.state.columnWidth,
+          [colName]: curColWidth
+        }
+      })
     });
     div.addEventListener('mousemove', e => {
+      // console.log(e)
+      colName = e.target.previousSibling.title;
       if(curCol) {
         let diffX = e.pageX - pageX;
         if(nxtCol) {
           nxtCol.style.width = (nxtColWidth - (diffX)) + 'px';
         }
         curCol.style.width = (curColWidth + (diffX)) + 'px';
+        this.setState({
+          columnWidth: {
+            ...this.state.columnWidth,
+            [colName]: curColWidth + (diffX)
+          }
+        })
       }
     });
     div.addEventListener('mouseup', function(e) {
@@ -127,13 +139,13 @@ class Table extends Component {
     div.classList.add("border")
     div.style.top = 0;
     div.style.right = 0;
-    div.style.width = '5px';
+    div.style.width = '15px';
     div.style.position = 'absolute';
     div.style.cursor = 'col-resize';
     div.style.backgroundColor = 'red';
     div.style.userSelect = 'none';
     div.style.height = '100vh';
-    div.style.zIndex = 999;
+    div.style.zIndex = 1;
     return div;
   }
 
@@ -484,14 +496,8 @@ class Table extends Component {
           joined
           onRowChange={this.props.selectItem}
           onSort={this.onSort}
-          onFixedHeaderResize={(event, obj) => {
-            
-            obj.headerRefs.forEach((el, i) => {
-              let div = this.createDiv();
-            });
-          }}
         >
-          <DataTableColumn width={this.state.columnWidth['Owner'] || '300px'} label="Owner" property="userId" />
+          <DataTableColumn width={this.state.columnWidth['Owner'] || 'auto'} label="Owner" property="userId" />
           <DataTableColumn width={this.state.columnWidth['Program'] || 'auto'} label="Program" property="programId" />
           <DataTableColumn width={this.state.columnWidth['Campaign ID'] || 'auto'} label="Campaign ID" property="campaignId" />
           <DataTableColumn width={this.state.columnWidth['Title'] || 'auto'} label="Title" property="title" />
