@@ -2,6 +2,7 @@ import React, { Component, Fragment } from "react";
 import { withRouter, Link } from "react-router-dom";
 import { connect } from "react-redux";
 import moment from "moment";
+import "./styles.css"; 
 
 import {
   Button,
@@ -67,10 +68,73 @@ class Table extends Component {
     errors: {},
     currentPage: 1,
     expandTable: true,
+    columnWidth: {}
   };
 
   componentDidMount() {
     this.setupAndFetch();
+    let table = document.getElementsByTagName('table')[0];
+    let row = document.getElementsByClassName('slds-hint-parent');
+    console.log(row[0])
+    this.resizableTable(table);
+  }
+  
+  resizableTable(table) {
+    let row = table.getElementsByTagName('tr')[0];
+    let cols = row.children;
+
+    table.style.overflow = 'hidden';
+
+    for(let i = 0; i < cols.length; i++) {
+      let div = this.createDiv();
+      cols[i].children[1].children[0].appendChild(div);
+      this.setListener(div)
+    }
+  }
+
+  setListener = div => {
+    let pageX, curCol, nxtCol, curColWidth, nxtColWidth;
+    div.addEventListener('mousedown', e => {
+      e.preventDefault();
+      curCol = e.target.parentElement;
+      nxtCol = curCol.nextElementSibling;
+      pageX = e.pageX;
+      curColWidth = curCol.offsetWidth;
+      if(nxtCol) {
+        nxtColWidth = nxtCol.offsetWidth;
+      }
+    });
+    div.addEventListener('mousemove', e => {
+      if(curCol) {
+        let diffX = e.pageX - pageX;
+        if(nxtCol) {
+          nxtCol.style.width = (nxtColWidth - (diffX)) + 'px';
+        }
+        curCol.style.width = (curColWidth + (diffX)) + 'px';
+      }
+    });
+    div.addEventListener('mouseup', function(e) {
+      curCol = undefined;
+      nxtCol = undefined;
+      pageX = undefined;
+      nxtColWidth = undefined;
+      curColWidth = undefined;
+    })
+  }
+
+  createDiv() {
+    let div = document.createElement('div');
+    div.classList.add("border")
+    div.style.top = 0;
+    div.style.right = 0;
+    div.style.width = '5px';
+    div.style.position = 'absolute';
+    div.style.cursor = 'col-resize';
+    div.style.backgroundColor = 'red';
+    div.style.userSelect = 'none';
+    div.style.height = '100vh';
+    div.style.zIndex = 999;
+    return div;
   }
 
   setupAndFetch = async () => {
@@ -412,6 +476,7 @@ class Table extends Component {
             selectAllRows: "Select all rows",
             selectRow: "Select this row",
           }}
+          columnBordered
           fixedHeader
           fixedLayout={this.state.expandTable}
           items={this.state.displayedData}
@@ -419,14 +484,21 @@ class Table extends Component {
           joined
           onRowChange={this.props.selectItem}
           onSort={this.onSort}
+          onFixedHeaderResize={(event, obj) => {
+            
+            obj.headerRefs.forEach((el, i) => {
+              let div = this.createDiv();
+            });
+          }}
         >
-          <DataTableColumn label="Owner" property="userId" />
-          <DataTableColumn label="Program" property="programId" />
-          <DataTableColumn label="Campaign ID" property="campaignId" />
-          <DataTableColumn label="Title" property="title" />
-          <DataTableColumn label="Format" property="formatId" />
-          <DataTableColumn label="Abstract" property="abstract" />
+          <DataTableColumn width={this.state.columnWidth['Owner'] || '300px'} label="Owner" property="userId" />
+          <DataTableColumn width={this.state.columnWidth['Program'] || 'auto'} label="Program" property="programId" />
+          <DataTableColumn width={this.state.columnWidth['Campaign ID'] || 'auto'} label="Campaign ID" property="campaignId" />
+          <DataTableColumn width={this.state.columnWidth['Title'] || 'auto'} label="Title" property="title" />
+          <DataTableColumn width={this.state.columnWidth['Format'] || 'auto'} label="Format" property="formatId" />
+          <DataTableColumn width={this.state.columnWidth['Abstract'] || 'auto'} label="Abstract" property="abstract" />
           <DataTableColumn
+            width={this.state.columnWidth['Region'] || 'auto'}
             sortDirection={this.state.sortDirection || "desc"}
             sortable
             isSorted={this.state.sortProperty === "regionId"}
@@ -434,6 +506,7 @@ class Table extends Component {
             property="regionId"
           />
           <DataTableColumn
+            width={this.state.columnWidth['Start date'] || 'auto'}
             isSorted={this.state.sortProperty === "startDate"}
             label="Start date"
             property="startDate"
@@ -443,6 +516,7 @@ class Table extends Component {
             <DateCell />
           </DataTableColumn>
           <DataTableColumn
+            width={this.state.columnWidth['End date'] || 'auto'}
             isSorted={this.state.sortProperty === "endDate"}
             label="End date"
             property="endDate"
@@ -451,7 +525,7 @@ class Table extends Component {
           >
             <DateCell />
           </DataTableColumn>
-          <DataTableColumn label="Assets" property="asset">
+          <DataTableColumn width={this.state.columnWidth['Assets'] || 'auto'} label="Assets" property="asset">
             <CustomDataTableCell />
           </DataTableColumn>
 
