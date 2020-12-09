@@ -2,7 +2,7 @@ import React, { Component, Fragment } from "react";
 import { withRouter, Link } from "react-router-dom";
 import { connect } from "react-redux";
 import moment from "moment";
-import "./styles.css"; 
+import "./styles.css";
 
 import {
   Button,
@@ -68,39 +68,77 @@ class Table extends Component {
     errors: {},
     currentPage: 1,
     expandTable: true,
-    columnWidth: {}
+    columnWidth: {},
+    tableExtraWidth: 0
   };
+
+  table = React.createRef()
 
   componentDidMount() {
     this.setupAndFetch();
-    let table = document.getElementsByTagName('table')[0];
-    this.resizableTable(table);
+    this.resizableTable(this.table.current.scrollerRef.children[0]);
   }
+
+  componentDidUpdate(prevProps, prevState) {
+    if (this.props.data !== prevProps.data) {
+      this.setState({ data: this.props.data }, () => {
+        if(this.state.sortProperty && this.state.sortDirection) {
+          this.onSort({property: this.state.sortProperty, sortDirection: this.state.sortDirection})
+        }
+      });
+      this.onFilter();
+    }
+  }
+
+  // shouldComponentUpdate(nextProps, nextState) {
+  //   if(this.state.columnWidth === nextState.columnWidth) {
+  //     return false;
+  //   } else {
+  //     return true
+  //   }
+  // }
   
   resizableTable(table) {
     let row = table.getElementsByTagName('tr')[0];
     let cols = row.children;
 
     table.style.overflow = 'hidden';
-
-    for(let i = 0; i < cols.length; i++) {
+    
+    this.setState({
+      columnWidth: {
+        Owner: (table.offsetWidth - 52) / 10,
+        Program: (table.offsetWidth - 52) / 10,
+        "Campaign ID": (table.offsetWidth - 52) / 10,
+        Title: (table.offsetWidth - 52) / 10,
+        Format: (table.offsetWidth - 52) / 10,
+        Abstract: (table.offsetWidth - 52) / 10,
+        Region: (table.offsetWidth - 52) / 10,
+        "Start date": (table.offsetWidth - 52) / 10,
+        "End date": (table.offsetWidth - 52) / 10,
+        Assets: (table.offsetWidth - 52) / 10,
+      },
+      tableWidth: table.offsetWidth
+    });
+    
+    for(let i = 0; i < cols.length - 1; i++) {
       let div = this.createDiv();
-      cols[i].children[1].children[0].appendChild(div);
-      this.setListener(div)
+      let parent = cols[i].children[1].children[0];
+
+      if(parent.children.length <= 1) {
+        cols[i].children[1].children[0].appendChild(div);
+      }
+      this.setListener(div);
     }
   }
 
   setListener = div => {
-    let pageX, curCol, nxtCol, curColWidth, nxtColWidth, colName;
+    let pageX, curCol, curColWidth, colName;
+    
     div.addEventListener('mousedown', e => {
       colName = e.target.previousSibling.title;
       curCol = e.target.parentElement;
-      nxtCol = curCol.nextElementSibling;
       pageX = e.pageX;
       curColWidth = curCol.offsetWidth;
-      if(nxtCol) {
-        nxtColWidth = nxtCol.offsetWidth;
-      }
       this.setState({
         columnWidth: {
           ...this.state.columnWidth,
@@ -108,41 +146,56 @@ class Table extends Component {
         }
       })
     });
+
     div.addEventListener('mousemove', e => {
-      // console.log(e)
-      colName = e.target.previousSibling.title;
-      if(curCol) {
+      colName = e.target.previousSibling && e.target.previousSibling.title;
+      if(curCol && colName) {
         let diffX = e.pageX - pageX;
-        if(nxtCol) {
-          nxtCol.style.width = (nxtColWidth - (diffX)) + 'px';
-        }
-        curCol.style.width = (curColWidth + (diffX)) + 'px';
-        this.setState({
+        this.setState(prev => ({
           columnWidth: {
-            ...this.state.columnWidth,
-            [colName]: curColWidth + (diffX)
-          }
-        })
+            ...prev.columnWidth,
+            [colName]: curColWidth + (diffX) <= 80 ? 80 : curColWidth + (diffX)
+          },
+          tableExtraWidth: prev.tableExtraWidth += diffX
+        }))
       }
     });
-    div.addEventListener('mouseup', function(e) {
+
+    div.addEventListener('dblclick', e => {
+      this.setState({
+        columnWidth: {
+          Owner: (this.state.tableWidth- 52) / 10,
+          Program: (this.state.tableWidth- 52) / 10,
+          "Campaign ID": (this.state.tableWidth- 52) / 10,
+          Title: (this.state.tableWidth- 52) / 10,
+          Format: (this.state.tableWidth- 52) / 10,
+          Abstract: (this.state.tableWidth- 52) / 10,
+          Region: (this.state.tableWidth- 52) / 10,
+          "Start date": (this.state.tableWidth- 52) / 10,
+          "End date": (this.state.tableWidth- 52) / 10,
+          Assets: (this.state.tableWidth- 52) / 10,
+        },
+        tableExtraWidth: 0
+      })
+    });
+
+    document.addEventListener('mouseup', function(e) {
       curCol = undefined;
-      nxtCol = undefined;
       pageX = undefined;
-      nxtColWidth = undefined;
       curColWidth = undefined;
-    })
+    });
   }
 
   createDiv() {
     let div = document.createElement('div');
+    div.setAttribute("title", "Double click to reset columns' size")
     div.classList.add("border")
     div.style.top = 0;
     div.style.right = 0;
-    div.style.width = '15px';
+    div.style.width = '35px';
     div.style.position = 'absolute';
     div.style.cursor = 'col-resize';
-    div.style.backgroundColor = 'red';
+    // div.style.backgroundColor = 'red';
     div.style.userSelect = 'none';
     div.style.height = '100vh';
     div.style.zIndex = 1;
@@ -158,17 +211,6 @@ class Table extends Component {
     this.checkRegion();
     this.checkFormat();
   };
-
-  componentDidUpdate(prevProps) {
-    if (this.props.data !== prevProps.data) {
-      this.setState({ data: this.props.data }, () => {
-        if(this.state.sortProperty && this.state.sortDirection) {
-          this.onSort({property: this.state.sortProperty, sortDirection: this.state.sortDirection})
-        }
-      });
-      this.onFilter();
-    }
-  }
 
   async checkProgram() {
     try {
@@ -258,6 +300,30 @@ class Table extends Component {
     <Fragment>
       <PageHeaderControl>
         <ButtonGroup id="button-group-page-header-controls">
+          {
+            this.state.expandTable &&
+            this.state.tableExtraWidth > 0 &&
+            (<Button
+              assistiveText={{ icon: "Contract" }}
+              iconCategory="utility"
+              iconName={"contract_alt"}
+              iconVariant="border-filled"
+              variant="icon"
+              title={"Reset columns' size"}
+              onClick={() => this.setState({ columnWidth: {
+                Owner: (this.state.tableWidth- 52) / 10,
+                Program: (this.state.tableWidth- 52) / 10,
+                "Campaign ID": (this.state.tableWidth- 52) / 10,
+                Title: (this.state.tableWidth- 52) / 10,
+                Format: (this.state.tableWidth- 52) / 10,
+                Abstract: (this.state.tableWidth- 52) / 10,
+                Region: (this.state.tableWidth- 52) / 10,
+                "Start date": (this.state.tableWidth- 52) / 10,
+                "End date": (this.state.tableWidth- 52) / 10,
+                Assets: (this.state.tableWidth- 52) / 10,
+              }, tableExtraWidth: 0})}
+            />)
+          }
           <Button
             assistiveText={{ icon: "Expand" }}
             iconCategory="utility"
@@ -496,6 +562,7 @@ class Table extends Component {
           joined
           onRowChange={this.props.selectItem}
           onSort={this.onSort}
+          ref={this.table}
         >
           <DataTableColumn width={this.state.columnWidth['Owner'] || 'auto'} label="Owner" property="userId" />
           <DataTableColumn width={this.state.columnWidth['Program'] || 'auto'} label="Program" property="programId" />
@@ -532,7 +599,7 @@ class Table extends Component {
             <DateCell />
           </DataTableColumn>
           <DataTableColumn width={this.state.columnWidth['Assets'] || 'auto'} label="Assets" property="asset">
-            <CustomDataTableCell />
+            <CustomDataTableCell fixedLayout />
           </DataTableColumn>
 
           <DataTableRowActions
