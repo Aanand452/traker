@@ -11,13 +11,12 @@ import {
   ToastContainer,
   IconSettings,
   Checkbox,
-  InputIcon,
 } from '@salesforce/design-system-react';
 
 import { getCookie } from '../../../utils/cookie';
 import { getAPIUrl } from '../../../config/config';
 
-import { PillContianerStyled } from '../styles';
+import { PillContianerStyled, InputIconStyled } from '../styles';
 
 class Step2 extends Component {
   state = {
@@ -152,7 +151,7 @@ class Step2 extends Component {
         <div className="slds-m-bottom_large slds-col slds-size_1-of-2">
           <Input
             iconRight={
-              <InputIcon
+              <InputIconStyled
                 assistiveText={{
                   icon: 'add',
                 }}
@@ -166,6 +165,15 @@ class Step2 extends Component {
             }
             placeholder="Insert a valid URL here"
             onChange={(event, data) => this.props.handleChange("asset", data.value)}
+            onKeyPress={(e) => {
+              if (e.key === 'Enter') {
+                e.preventDefault();
+                if(!!this.props.error.asset || !this.props.row.asset) {
+                  return;
+                }
+                this.props.addAsset(this.props.row.asset);
+              }
+            }}
             value={this.props.row.asset}
             label="Asset"
             errorText={this.props.error.asset}

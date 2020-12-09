@@ -13,10 +13,9 @@ import {
   Input,
   Textarea,
   Checkbox,
-  InputIcon,
 } from '@salesforce/design-system-react';
 
-import { PillContianerStyled } from '../CreateActivity/styles';
+import { PillContianerStyled, InputIconStyled } from '../CreateActivity/styles';
 
 class CloneActivityModalComponent extends Component {
 
@@ -553,7 +552,7 @@ class CloneActivityModalComponent extends Component {
                 id='asset'
                 label="Asset"
                 iconRight={
-                  <InputIcon
+                  <InputIconStyled
                     assistiveText={{
                       icon: 'add',
                     }}
@@ -569,6 +568,15 @@ class CloneActivityModalComponent extends Component {
                 placeholder="Insert a valid URL here"
                 value={this.state.asset}
                 onChange={e => this.handleChange(e)}
+                onKeyPress={(e) => {
+                  if (e.key === 'Enter') {
+                    e.preventDefault();
+                    if(this.state.errors.asset || !this.state.asset) {
+                      return;
+                    }
+                    this.addAsset(this.state.asset);
+                  }
+                }}
                 errorText={(() => {
                   if (this.state.errors.asset) {
                     return 'This field must be a url';
