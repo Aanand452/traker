@@ -190,7 +190,6 @@ class Table extends Component {
       e.stopPropagation();
       
       if(curCol && colName) {
-        console.log(e.pageX)
         let diffX = e.pageX - pageX;
         div.style.borderRight = `1px dashed #1589ee`;
         div.style.right = `${-diffX}px`;
