@@ -118,8 +118,11 @@ class Table extends Component {
   }
 
   resetResizableTable = () => {
-    // this.resizableTable(this.table.current.scrollerRef.children[0]);
-    this.setState({ expandTable: !this.state.expandTable})
+    this.setState(prev => ({ expandTable: !prev.expandTable }), () => {
+      if(this.state.expandTable) {
+        this.resizableTable(this.table.current.scrollerRef.children[0])
+      }
+    })
   }
   
   resizableTable(table) {
@@ -146,20 +149,29 @@ class Table extends Component {
     
     for(let i = 0; i < cols.length - 1; i++) {
       let div = this.createDiv();
-      let parent = cols[i].children[1].children[0];
-
-      if(parent.children.length <= 1) {
-        cols[i].children[1].children[0].appendChild(div);
-      }
+      cols[i].children[1].children[0].appendChild(div);
       this.setListener(div);
     }
   }
 
   setListener = div => {
     let pageX, curCol, curColWidth, colName;
+
+    div.addEventListener('click', e => {
+      e.preventDefault();
+      e.stopPropagation();
+    });
     
     div.addEventListener('mousedown', e => {
-      colName = e.target.previousSibling.title;
+      e.preventDefault();
+      e.stopPropagation();
+
+      if(e.target.parentElement.children.length <= 2) {
+        colName = e.target.previousSibling && e.target.previousSibling.title;
+      } else {
+        colName = e.target.parentElement.children[1] && e.target.parentElement.children[1].title;
+      }
+
       curCol = e.target.parentElement;
       pageX = e.pageX;
       curColWidth = curCol.offsetWidth;
@@ -168,11 +180,19 @@ class Table extends Component {
           ...this.state.columnWidth,
           [colName]: curColWidth
         }
-      })
+      });
     });
 
     document.addEventListener('mousemove', e => {
-      colName = e.target.previousSibling && e.target.previousSibling.title;
+      e.preventDefault()
+      e.stopPropagation();
+
+      if(e.target.parentElement.children.length <= 2) {
+        colName = e.target.previousSibling && e.target.previousSibling.title;
+      } else {
+        colName = e.target.parentElement.children[1] && e.target.parentElement.children[1].title;
+      }
+      
       if(curCol && colName) {
         let diffX = e.pageX - pageX;
         div.style.borderRight = `1px dashed #1589ee`;
@@ -182,6 +202,8 @@ class Table extends Component {
     });
     
     div.addEventListener('dblclick', e => {
+      e.preventDefault();
+      e.stopPropagation();
       this.setState({
         columnWidth: {
           Owner: (this.state.tableWidth- 52) / 10,
@@ -196,11 +218,18 @@ class Table extends Component {
           Assets: (this.state.tableWidth- 52) / 10,
         },
         tableExtraWidth: 0
-      })
+      });
     });
     
     document.addEventListener('mouseup', e => {
-      colName = e.target.previousSibling && e.target.previousSibling.title;
+      e.preventDefault();
+      e.stopPropagation();
+
+      if(e.target.parentElement.children.length <= 2) {
+        colName = e.target.previousSibling && e.target.previousSibling.title;
+      } else {
+        colName = e.target.parentElement.children[1] && e.target.parentElement.children[1].title;
+      }
       
       if(curCol && colName) {
         let diffX = e.pageX - pageX;
@@ -233,7 +262,6 @@ class Table extends Component {
     div.style.right = 0;
     div.style.width = '35px';
     div.style.position = 'absolute';
-    div.style.background = 'red';
     div.style.cursor = 'col-resize';
     div.style.userSelect = 'none';
     div.style.height = '100vh';
