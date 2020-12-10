@@ -89,14 +89,6 @@ class Table extends Component {
       this.onFilter();
     }
   }
-
-  // shouldComponentUpdate(nextProps, nextState) {
-  //   if(this.state.columnWidth === nextState.columnWidth) {
-  //     return false;
-  //   } else {
-  //     return true
-  //   }
-  // }
   
   resizableTable(table) {
     let row = table.getElementsByTagName('tr')[0];
@@ -147,20 +139,16 @@ class Table extends Component {
       })
     });
 
-    div.addEventListener('mousemove', e => {
+    document.addEventListener('mousemove', e => {
       colName = e.target.previousSibling && e.target.previousSibling.title;
       if(curCol && colName) {
         let diffX = e.pageX - pageX;
-        this.setState(prev => ({
-          columnWidth: {
-            ...prev.columnWidth,
-            [colName]: curColWidth + (diffX) <= 80 ? 80 : curColWidth + (diffX)
-          },
-          tableExtraWidth: prev.tableExtraWidth += diffX
-        }))
+        div.style.borderRight = `1px dashed #1589ee`;
+        div.style.right = `${-diffX}px`;
+        div.style.zIndex = 3;
       }
     });
-
+    
     div.addEventListener('dblclick', e => {
       this.setState({
         columnWidth: {
@@ -178,8 +166,27 @@ class Table extends Component {
         tableExtraWidth: 0
       })
     });
+    
+    document.addEventListener('mouseup', e => {
+      colName = e.target.previousSibling && e.target.previousSibling.title;
+      
+      if(curCol && colName) {
+        let diffX = e.pageX - pageX;
+        
+        this.setState(prev => ({
+          columnWidth: {
+            ...prev.columnWidth,
+            [colName]: curColWidth + (diffX) <= 80 ? 80 : curColWidth + (diffX)
+          },
+          tableExtraWidth: prev.tableExtraWidth += diffX
+        }));
 
-    document.addEventListener('mouseup', function(e) {
+      }
+      
+      div.style.borderRight = "none";
+      div.style.right = 0;
+      div.style.zIndex = 2;
+
       curCol = undefined;
       pageX = undefined;
       curColWidth = undefined;
@@ -195,10 +202,9 @@ class Table extends Component {
     div.style.width = '35px';
     div.style.position = 'absolute';
     div.style.cursor = 'col-resize';
-    // div.style.backgroundColor = 'red';
     div.style.userSelect = 'none';
     div.style.height = '100vh';
-    div.style.zIndex = 1;
+    div.style.zIndex = 2;
     return div;
   }
 
