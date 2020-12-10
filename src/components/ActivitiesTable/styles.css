@@ -1,0 +1,7 @@
+.border {
+  transition: 0.05s ease;
+}
+
+.border:hover {
+  background-color: #dddbda8c;
+}
