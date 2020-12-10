@@ -49,6 +49,33 @@ const CustomDataTableCell = ({ children, ...props }) => (
 );
 CustomDataTableCell.displayName = DataTableCell.displayName;
 
+const DropDownCellAsset = ({ children, ...props }) => {
+  let items = props.property;
+
+  if (props.item[items]) {
+    const assets = props.item[items].split(', ');
+    if (assets.length > 1) {
+      const options = assets.map((asset) => ({ label: 'view asset', value: asset }));
+      return (
+        <DataTableRowActions
+          options={options}
+          menuPosition="overflowBoundaryElement"
+          dropdown={
+            <Dropdown
+              onSelect={({ value }) => {
+                window.open(value, '_blank');
+              }}
+            />
+          }
+        />
+      );
+    }
+  }
+  return <CustomDataTableCell {...props}>{props.item[items]}</CustomDataTableCell>
+}
+
+DropDownCellAsset.displayName = DataTableCell.displayName;
+
 class Table extends Component {
   state = {
     sortProperty: "",
@@ -88,6 +115,11 @@ class Table extends Component {
       });
       this.onFilter();
     }
+  }
+
+  resetResizableTable = () => {
+    // this.resizableTable(this.table.current.scrollerRef.children[0]);
+    this.setState({ expandTable: !this.state.expandTable})
   }
   
   resizableTable(table) {
@@ -201,6 +233,7 @@ class Table extends Component {
     div.style.right = 0;
     div.style.width = '35px';
     div.style.position = 'absolute';
+    div.style.background = 'red';
     div.style.cursor = 'col-resize';
     div.style.userSelect = 'none';
     div.style.height = '100vh';
@@ -337,7 +370,7 @@ class Table extends Component {
             iconVariant="border-filled"
             variant="icon"
             title={this.state.expandTable ? "Expand table" : "Contract table"}
-            onClick={() => this.setState({ expandTable: !this.state.expandTable})}
+            onClick={this.resetResizableTable}
           />
           <Button
             assistiveText={{ icon: "Refresh" }}
@@ -605,7 +638,7 @@ class Table extends Component {
             <DateCell />
           </DataTableColumn>
           <DataTableColumn width={this.state.columnWidth['Assets'] || 'auto'} label="Assets" property="asset">
-            <CustomDataTableCell fixedLayout />
+            <CustomDataTableCell />
           </DataTableColumn>
 
           <DataTableRowActions
