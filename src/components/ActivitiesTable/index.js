@@ -96,7 +96,8 @@ class Table extends Component {
     currentPage: 1,
     expandTable: true,
     columnWidth: {},
-    tableExtraWidth: 0
+    tableExtraWidth: 0,
+    noRowHover: false
   };
 
   table = React.createRef()
@@ -148,7 +149,7 @@ class Table extends Component {
     });
     
     for(let i = 0; i < cols.length - 1; i++) {
-      let div = this.createDiv();
+      let div = this.createDiv(1, '35px');
       cols[i].children[1].children[0].appendChild(div);
       this.setListener(div);
     }
@@ -156,6 +157,7 @@ class Table extends Component {
 
   setListener = div => {
     let pageX, curCol, curColWidth, colName;
+    
 
     div.addEventListener('click', e => {
       e.preventDefault();
@@ -178,7 +180,7 @@ class Table extends Component {
       this.setState({
         columnWidth: {
           ...this.state.columnWidth,
-          [colName]: curColWidth
+          [colName]: curColWidth,
         }
       });
     });
@@ -186,18 +188,14 @@ class Table extends Component {
     document.addEventListener('mousemove', e => {
       e.preventDefault()
       e.stopPropagation();
-
-      if(e.target.parentElement.children.length <= 2) {
-        colName = e.target.previousSibling && e.target.previousSibling.title;
-      } else {
-        colName = e.target.parentElement.children[1] && e.target.parentElement.children[1].title;
-      }
       
       if(curCol && colName) {
+        console.log(e.pageX)
         let diffX = e.pageX - pageX;
         div.style.borderRight = `1px dashed #1589ee`;
         div.style.right = `${-diffX}px`;
         div.style.zIndex = 3;
+        this.setState({noRowHover: true})
       }
     });
     
@@ -206,16 +204,16 @@ class Table extends Component {
       e.stopPropagation();
       this.setState({
         columnWidth: {
-          Owner: (this.state.tableWidth- 52) / 10,
-          Program: (this.state.tableWidth- 52) / 10,
-          "Campaign ID": (this.state.tableWidth- 52) / 10,
-          Title: (this.state.tableWidth- 52) / 10,
-          Format: (this.state.tableWidth- 52) / 10,
-          Abstract: (this.state.tableWidth- 52) / 10,
-          Region: (this.state.tableWidth- 52) / 10,
-          "Start date": (this.state.tableWidth- 52) / 10,
-          "End date": (this.state.tableWidth- 52) / 10,
-          Assets: (this.state.tableWidth- 52) / 10,
+          Owner: (this.state.tableWidth - 52) / 10,
+          Program: (this.state.tableWidth - 52) / 10,
+          "Campaign ID": (this.state.tableWidth - 52) / 10,
+          Title: (this.state.tableWidth - 52) / 10,
+          Format: (this.state.tableWidth - 52) / 10,
+          Abstract: (this.state.tableWidth - 52) / 10,
+          Region: (this.state.tableWidth - 52) / 10,
+          "Start date": (this.state.tableWidth - 52) / 10,
+          "End date": (this.state.tableWidth - 52) / 10,
+          Assets: (this.state.tableWidth - 52) / 10,
         },
         tableExtraWidth: 0
       });
@@ -224,7 +222,7 @@ class Table extends Component {
     document.addEventListener('mouseup', e => {
       e.preventDefault();
       e.stopPropagation();
-
+      
       if(e.target.parentElement.children.length <= 2) {
         colName = e.target.previousSibling && e.target.previousSibling.title;
       } else {
@@ -239,14 +237,14 @@ class Table extends Component {
             ...prev.columnWidth,
             [colName]: curColWidth + (diffX) <= 80 ? 80 : curColWidth + (diffX)
           },
-          tableExtraWidth: prev.tableExtraWidth += diffX
+          tableExtraWidth: prev.tableExtraWidth += diffX,
+          noRowHover: false
         }));
-
       }
       
       div.style.borderRight = "none";
       div.style.right = 0;
-      div.style.zIndex = 2;
+      div.style.zIndex = 1;
 
       curCol = undefined;
       pageX = undefined;
@@ -254,18 +252,18 @@ class Table extends Component {
     });
   }
 
-  createDiv() {
+  createDiv(zIndex = 1, width = '15px') {
     let div = document.createElement('div');
     div.setAttribute("title", "Double click to reset columns' size")
     div.classList.add("border")
     div.style.top = 0;
     div.style.right = 0;
-    div.style.width = '35px';
+    div.style.width = width;
     div.style.position = 'absolute';
     div.style.cursor = 'col-resize';
     div.style.userSelect = 'none';
     div.style.height = '100vh';
-    div.style.zIndex = 2;
+    div.style.zIndex = zIndex;
     return div;
   }
 
@@ -630,6 +628,7 @@ class Table extends Component {
           onRowChange={this.props.selectItem}
           onSort={this.onSort}
           ref={this.table}
+          noRowHover={this.state.noRowHover}
         >
           <DataTableColumn width={this.state.columnWidth['Owner'] || 'auto'} label="Owner" property="userId" />
           <DataTableColumn width={this.state.columnWidth['Program'] || 'auto'} label="Program" property="programId" />
