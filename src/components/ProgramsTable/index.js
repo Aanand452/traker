@@ -137,19 +137,19 @@ class Table extends Component {
 
     this.setState({
       columnWidth: {
-        'Program Owner': (table.offsetWidth - 52) / 10,
-        'Program Name': (table.offsetWidth - 52) / 10,
-        'Budget': (table.offsetWidth - 52) / 10,
-        'MP Target': (table.offsetWidth - 52) / 10,
-        'Target Region': (table.offsetWidth - 52) / 10,
-        'Lifecycle Stage': (table.offsetWidth - 52) / 10,
-        'APM1': (table.offsetWidth - 52) / 10,
-        'APM2': (table.offsetWidth - 52) / 10,
-        'Industry': (table.offsetWidth - 52) / 10,
-        'Segment': (table.offsetWidth - 52) / 10,
-        'Persona': (table.offsetWidth - 52) / 10,
-        'Customer Message': (table.offsetWidth - 52) / 10,
-        'Other KPI\'s': (table.offsetWidth - 52) / 10,
+        'Program Owner': (table.offsetWidth - 52) / 13,
+        'Program Name': (table.offsetWidth - 52) / 13,
+        'Budget': (table.offsetWidth - 52) / 13,
+        'MP Target': (table.offsetWidth - 52) / 13,
+        'Target Region': (table.offsetWidth - 52) / 13,
+        'Lifecycle Stage': (table.offsetWidth - 52) / 13,
+        'APM1': (table.offsetWidth - 52) / 13,
+        'APM2': (table.offsetWidth - 52) / 13,
+        'Industry': (table.offsetWidth - 52) / 13,
+        'Segment': (table.offsetWidth - 52) / 13,
+        'Persona': (table.offsetWidth - 52) / 13,
+        'Customer Message': (table.offsetWidth - 52) / 13,
+        'Other KPI\'s': (table.offsetWidth - 52) / 13,
       },
       tableWidth: table.offsetWidth
     });
@@ -209,19 +209,19 @@ class Table extends Component {
       e.stopPropagation();
       this.setState({
         columnWidth: {
-          'Program Owner': (this.state.tableWidth - 52) / 10,
-          'Program Name': (this.state.tableWidth - 52) / 10,
-          'Budget': (this.state.tableWidth - 52) / 10,
-          'MP Target': (this.state.tableWidth - 52) / 10,
-          'Target Region': (this.state.tableWidth - 52) / 10,
-          'Lifecycle Stage': (this.state.tableWidth - 52) / 10,
-          'APM1': (this.state.tableWidth - 52) / 10,
-          'APM2': (this.state.tableWidth - 52) / 10,
-          'Industry': (this.state.tableWidth - 52) / 10,
-          'Segment': (this.state.tableWidth - 52) / 10,
-          'Persona': (this.state.tableWidth - 52) / 10,
-          'Customer Message': (this.state.tableWidth - 52) / 10,
-          'Other KPI\'s': (this.state.tableWidth - 52) / 10,
+          'Program Owner': (this.state.tableWidth - 52) / 13,
+          'Program Name': (this.state.tableWidth - 52) / 13,
+          'Budget': (this.state.tableWidth - 52) / 13,
+          'MP Target': (this.state.tableWidth - 52) / 13,
+          'Target Region': (this.state.tableWidth - 52) / 13,
+          'Lifecycle Stage': (this.state.tableWidth - 52) / 13,
+          'APM1': (this.state.tableWidth - 52) / 13,
+          'APM2': (this.state.tableWidth - 52) / 13,
+          'Industry': (this.state.tableWidth - 52) / 13,
+          'Segment': (this.state.tableWidth - 52) / 13,
+          'Persona': (this.state.tableWidth - 52) / 13,
+          'Customer Message': (this.state.tableWidth - 52) / 13,
+          'Other KPI\'s': (this.state.tableWidth - 52) / 13,
         },
         tableExtraWidth: 0
       });
@@ -230,6 +230,10 @@ class Table extends Component {
     document.addEventListener('mouseup', (e) => {
       e.preventDefault();
       e.stopPropagation();
+
+      if (!e.target.parentElement) {
+        return;
+      }
 
       if(e.target.parentElement.children.length <= 2) {
         colName = e.target.previousSibling && e.target.previousSibling.title;
@@ -301,19 +305,19 @@ class Table extends Component {
               title={"Reset columns' size"}
               onClick={() => this.setState({
                 columnWidth: {
-                  'Program Owner': (this.state.tableWidth - 52) / 10,
-                  'Program Name': (this.state.tableWidth - 52) / 10,
-                  'Budget': (this.state.tableWidth - 52) / 10,
-                  'MP Target': (this.state.tableWidth - 52) / 10,
-                  'Target Region': (this.state.tableWidth - 52) / 10,
-                  'Lifecycle Stage': (this.state.tableWidth - 52) / 10,
-                  'APM1': (this.state.tableWidth - 52) / 10,
-                  'APM2': (this.state.tableWidth - 52) / 10,
-                  'Industry': (this.state.tableWidth - 52) / 10,
-                  'Segment': (this.state.tableWidth - 52) / 10,
-                  'Persona': (this.state.tableWidth - 52) / 10,
-                  'Customer Message': (this.state.tableWidth - 52) / 10,
-                  'Other KPI\'s': (this.state.tableWidth - 52) / 10,
+                  'Program Owner': (this.state.tableWidth - 52) / 13,
+                  'Program Name': (this.state.tableWidth - 52) / 13,
+                  'Budget': (this.state.tableWidth - 52) / 13,
+                  'MP Target': (this.state.tableWidth - 52) / 13,
+                  'Target Region': (this.state.tableWidth - 52) / 13,
+                  'Lifecycle Stage': (this.state.tableWidth - 52) / 13,
+                  'APM1': (this.state.tableWidth - 52) / 13,
+                  'APM2': (this.state.tableWidth - 52) / 13,
+                  'Industry': (this.state.tableWidth - 52) / 13,
+                  'Segment': (this.state.tableWidth - 52) / 13,
+                  'Persona': (this.state.tableWidth - 52) / 13,
+                  'Customer Message': (this.state.tableWidth - 52) / 13,
+                  'Other KPI\'s': (this.state.tableWidth - 52) / 13,
                 },
                 tableExtraWidth: 0
               })}
@@ -472,6 +476,13 @@ class Table extends Component {
             ref={this.table}
             noRowHover={this.state.noRowHover}
             columnBordered
+            className={
+              `${
+                this.state.displayedData && this.state.displayedData.length < 5
+                  ? 'padding_bottom'
+                  : ''
+              }`
+            }
           >
             <DataTableColumn
               label="Program Name"

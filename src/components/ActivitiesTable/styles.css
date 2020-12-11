@@ -5,3 +5,7 @@
 .border:hover {
   background-color: #dddbda8c;
 }
+
+.padding_bottom {
+  padding-bottom: 150px;
+};

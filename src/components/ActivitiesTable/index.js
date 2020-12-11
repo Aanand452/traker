@@ -222,6 +222,10 @@ class Table extends Component {
       e.preventDefault();
       e.stopPropagation();
 
+      if (!e.target.parentElement) {
+        return;
+      }
+
       if(e.target.parentElement.children.length <= 2) {
         colName = e.target.previousSibling && e.target.previousSibling.title;
       } else {
@@ -628,6 +632,13 @@ class Table extends Component {
           onSort={this.onSort}
           ref={this.table}
           noRowHover={this.state.noRowHover}
+          className={
+            `${
+              this.state.displayedData && this.state.displayedData.length < 5
+                ? 'padding_bottom'
+                : ''
+            }`
+          }
         >
           <DataTableColumn
             width={this.state.columnWidth['Owner'] || 'auto'}
