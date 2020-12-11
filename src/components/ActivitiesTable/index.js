@@ -261,7 +261,7 @@ class Table extends Component {
     div.style.position = 'absolute';
     div.style.cursor = 'col-resize';
     div.style.userSelect = 'none';
-    div.style.height = '100vh';
+    div.style.height = '100%';
     div.style.zIndex = zIndex;
     return div;
   }
@@ -629,12 +629,36 @@ class Table extends Component {
           ref={this.table}
           noRowHover={this.state.noRowHover}
         >
-          <DataTableColumn width={this.state.columnWidth['Owner'] || 'auto'} label="Owner" property="userId" />
-          <DataTableColumn width={this.state.columnWidth['Program'] || 'auto'} label="Program" property="programId" />
-          <DataTableColumn width={this.state.columnWidth['Campaign ID'] || 'auto'} label="Campaign ID" property="campaignId" />
-          <DataTableColumn width={this.state.columnWidth['Title'] || 'auto'} label="Title" property="title" />
-          <DataTableColumn width={this.state.columnWidth['Format'] || 'auto'} label="Format" property="formatId" />
-          <DataTableColumn width={this.state.columnWidth['Abstract'] || 'auto'} label="Abstract" property="abstract" />
+          <DataTableColumn
+            width={this.state.columnWidth['Owner'] || 'auto'}
+            label="Owner"
+            property="userId"
+          />
+          <DataTableColumn
+            width={this.state.columnWidth['Program'] || 'auto'}
+            label="Program"
+            property="programId"
+          />
+          <DataTableColumn
+            width={this.state.columnWidth['Campaign ID'] || 'auto'}
+            label="Campaign ID"
+            property="campaignId"
+          />
+          <DataTableColumn
+            width={this.state.columnWidth['Title'] || 'auto'}
+            label="Title"
+            property="title"
+          />
+          <DataTableColumn
+            width={this.state.columnWidth['Format'] || 'auto'}
+            label="Format"
+            property="formatId"
+          />
+          <DataTableColumn
+            width={this.state.columnWidth['Abstract'] || 'auto'}
+            label="Abstract"
+            property="abstract"
+          />
           <DataTableColumn
             width={this.state.columnWidth['Region'] || 'auto'}
             sortDirection={this.state.sortDirection || "desc"}
@@ -663,7 +687,11 @@ class Table extends Component {
           >
             <DateCell />
           </DataTableColumn>
-          <DataTableColumn width={this.state.columnWidth['Assets'] || 'auto'} label="Assets" property="asset">
+          <DataTableColumn
+            width={this.state.columnWidth['Assets'] || 'auto'}
+            label="Assets"
+            property="asset"
+          >
             <DropDownCellAsset />
           </DataTableColumn>
 

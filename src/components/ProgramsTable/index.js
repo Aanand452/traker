@@ -270,7 +270,7 @@ class Table extends Component {
     div.style.position = 'absolute';
     div.style.cursor = 'col-resize';
     div.style.userSelect = 'none';
-    div.style.height = '100vh';
+    div.style.height = '100%';
     div.style.zIndex = zIndex;
     return div;
   }
