@@ -125,13 +125,13 @@ class Table extends Component {
       }
     })
   }
-  
+
   resizableTable(table) {
     let row = table.getElementsByTagName('tr')[0];
     let cols = row.children;
 
     table.style.overflow = 'hidden';
-    
+
     this.setState({
       columnWidth: {
         Owner: (table.offsetWidth - 52) / 10,
@@ -147,7 +147,7 @@ class Table extends Component {
       },
       tableWidth: table.offsetWidth
     });
-    
+
     for(let i = 0; i < cols.length - 1; i++) {
       let div = this.createDiv(1, '35px');
       cols[i].children[1].children[0].appendChild(div);
@@ -157,13 +157,13 @@ class Table extends Component {
 
   setListener = div => {
     let pageX, curCol, curColWidth, colName;
-    
+
 
     div.addEventListener('click', e => {
       e.preventDefault();
       e.stopPropagation();
     });
-    
+
     div.addEventListener('mousedown', e => {
       e.preventDefault();
       e.stopPropagation();
@@ -188,7 +188,7 @@ class Table extends Component {
     document.addEventListener('mousemove', e => {
       e.preventDefault()
       e.stopPropagation();
-      
+
       if(curCol && colName) {
         let diffX = e.pageX - pageX;
         div.style.borderRight = `1px dashed #1589ee`;
@@ -197,7 +197,7 @@ class Table extends Component {
         this.setState({noRowHover: true})
       }
     });
-    
+
     div.addEventListener('dblclick', e => {
       e.preventDefault();
       e.stopPropagation();
@@ -217,20 +217,20 @@ class Table extends Component {
         tableExtraWidth: 0
       });
     });
-    
+
     document.addEventListener('mouseup', e => {
       e.preventDefault();
       e.stopPropagation();
-      
+
       if(e.target.parentElement.children.length <= 2) {
         colName = e.target.previousSibling && e.target.previousSibling.title;
       } else {
         colName = e.target.parentElement.children[1] && e.target.parentElement.children[1].title;
       }
-      
+
       if(curCol && colName) {
         let diffX = e.pageX - pageX;
-        
+
         this.setState(prev => ({
           columnWidth: {
             ...prev.columnWidth,
@@ -240,7 +240,7 @@ class Table extends Component {
           noRowHover: false
         }));
       }
-      
+
       div.style.borderRight = "none";
       div.style.right = 0;
       div.style.zIndex = 1;
@@ -664,7 +664,7 @@ class Table extends Component {
             <DateCell />
           </DataTableColumn>
           <DataTableColumn width={this.state.columnWidth['Assets'] || 'auto'} label="Assets" property="asset">
-            <CustomDataTableCell />
+            <DropDownCellAsset />
           </DataTableColumn>
 
           <DataTableRowActions
