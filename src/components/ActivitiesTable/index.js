@@ -125,13 +125,13 @@ class Table extends Component {
       }
     })
   }
-  
+
   resizableTable(table) {
     let row = table.getElementsByTagName('tr')[0];
     let cols = row.children;
 
     table.style.overflow = 'hidden';
-    
+
     this.setState({
       columnWidth: {
         Owner: (table.offsetWidth - 52) / 10,
@@ -147,7 +147,7 @@ class Table extends Component {
       },
       tableWidth: table.offsetWidth
     });
-    
+
     for(let i = 0; i < cols.length - 1; i++) {
       let div = this.createDiv(1, '35px');
       cols[i].children[1].children[0].appendChild(div);
@@ -157,13 +157,13 @@ class Table extends Component {
 
   setListener = div => {
     let pageX, curCol, curColWidth, colName;
-    
+
 
     div.addEventListener('click', e => {
       e.preventDefault();
       e.stopPropagation();
     });
-    
+
     div.addEventListener('mousedown', e => {
       e.preventDefault();
       e.stopPropagation();
@@ -188,7 +188,7 @@ class Table extends Component {
     document.addEventListener('mousemove', e => {
       e.preventDefault()
       e.stopPropagation();
-      
+
       if(curCol && colName) {
         let diffX = e.pageX - pageX;
         div.style.borderRight = `1px dashed #1589ee`;
@@ -197,7 +197,7 @@ class Table extends Component {
         this.setState({noRowHover: true})
       }
     });
-    
+
     div.addEventListener('dblclick', e => {
       e.preventDefault();
       e.stopPropagation();
@@ -217,20 +217,24 @@ class Table extends Component {
         tableExtraWidth: 0
       });
     });
-    
+
     document.addEventListener('mouseup', e => {
       e.preventDefault();
       e.stopPropagation();
-      
+
+      if (!e.target.parentElement) {
+        return;
+      }
+
       if(e.target.parentElement.children.length <= 2) {
         colName = e.target.previousSibling && e.target.previousSibling.title;
       } else {
         colName = e.target.parentElement.children[1] && e.target.parentElement.children[1].title;
       }
-      
+
       if(curCol && colName) {
         let diffX = e.pageX - pageX;
-        
+
         this.setState(prev => ({
           columnWidth: {
             ...prev.columnWidth,
@@ -240,7 +244,7 @@ class Table extends Component {
           noRowHover: false
         }));
       }
-      
+
       div.style.borderRight = "none";
       div.style.right = 0;
       div.style.zIndex = 1;
@@ -261,7 +265,7 @@ class Table extends Component {
     div.style.position = 'absolute';
     div.style.cursor = 'col-resize';
     div.style.userSelect = 'none';
-    div.style.height = '100vh';
+    div.style.height = '100%';
     div.style.zIndex = zIndex;
     return div;
   }
@@ -628,13 +632,44 @@ class Table extends Component {
           onSort={this.onSort}
           ref={this.table}
           noRowHover={this.state.noRowHover}
+          className={
+            `${
+              this.state.displayedData && this.state.displayedData.length < 5
+                ? 'padding_bottom'
+                : ''
+            }`
+          }
         >
-          <DataTableColumn width={this.state.columnWidth['Owner'] || 'auto'} label="Owner" property="userId" />
-          <DataTableColumn width={this.state.columnWidth['Program'] || 'auto'} label="Program" property="programId" />
-          <DataTableColumn width={this.state.columnWidth['Campaign ID'] || 'auto'} label="Campaign ID" property="campaignId" />
-          <DataTableColumn width={this.state.columnWidth['Title'] || 'auto'} label="Title" property="title" />
-          <DataTableColumn width={this.state.columnWidth['Format'] || 'auto'} label="Format" property="formatId" />
-          <DataTableColumn width={this.state.columnWidth['Abstract'] || 'auto'} label="Abstract" property="abstract" />
+          <DataTableColumn
+            width={this.state.columnWidth['Owner'] || 'auto'}
+            label="Owner"
+            property="userId"
+          />
+          <DataTableColumn
+            width={this.state.columnWidth['Program'] || 'auto'}
+            label="Program"
+            property="programId"
+          />
+          <DataTableColumn
+            width={this.state.columnWidth['Campaign ID'] || 'auto'}
+            label="Campaign ID"
+            property="campaignId"
+          />
+          <DataTableColumn
+            width={this.state.columnWidth['Title'] || 'auto'}
+            label="Title"
+            property="title"
+          />
+          <DataTableColumn
+            width={this.state.columnWidth['Format'] || 'auto'}
+            label="Format"
+            property="formatId"
+          />
+          <DataTableColumn
+            width={this.state.columnWidth['Abstract'] || 'auto'}
+            label="Abstract"
+            property="abstract"
+          />
           <DataTableColumn
             width={this.state.columnWidth['Region'] || 'auto'}
             sortDirection={this.state.sortDirection || "desc"}
@@ -663,8 +698,12 @@ class Table extends Component {
           >
             <DateCell />
           </DataTableColumn>
-          <DataTableColumn width={this.state.columnWidth['Assets'] || 'auto'} label="Assets" property="asset">
-            <CustomDataTableCell />
+          <DataTableColumn
+            width={this.state.columnWidth['Assets'] || 'auto'}
+            label="Assets"
+            property="asset"
+          >
+            <DropDownCellAsset />
           </DataTableColumn>
 
           <DataTableRowActions
