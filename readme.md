@@ -116,3 +116,11 @@ Run the scripts given in the directory `./packages/db/seed/dummy` , these are re
 
   whole API documentation is given in this link [http://localhost:3000/docs/](http://localhost:3000/docs/) 
 
+
+## Login into the app
+
+  Create a .env file at the root of the project inside this file, add the `AUTH_KEY` variable, when there is a request to the login endpoint `/login` API will check if this env var match with the password sent through the body request.
+
+  In the frontend app, we also have to create the same env var, and the value of these two has to be the same.
+
+  Remind that Heroku has its way to set the env vars and applies to test and production environments.
