@@ -16,13 +16,9 @@ class PanelComponent extends Component {
     }
   }
 
-  btnRef = component => {
-    if(component) {
-      document.addEventListener('keydown', e => {
-        if(e.key === "Enter") {
-          this.props.onSearch(this.state.search)
-        }
-      })  
+  onKeyPress = e => {
+    if(e.key === "Enter") {
+      this.props.onSearch(this.state.search)
     }
   }
 
@@ -32,17 +28,18 @@ class PanelComponent extends Component {
 		return (
       <PanelContainer>
         <Input
+          onKeyPress={e => this.onKeyPress(e)}
           onChange={e => this.handleChange("owner", e.target.value)}
           defaultValue={this.props.search.owner}
           type='text'
           label="Search by owner" />
         <Input
+          onKeyPress={e => this.onKeyPress(e)}
           onChange={e => this.handleChange("name", e.target.value)}
           defaultValue={this.props.search.name}
           type='text'
           label="Search by name" />
         <Button
-          buttonRef={this.btnRef}
           onClick={() => this.props.onSearch(this.state.search)}
           className="slds-m-top_small"
           label="Search"

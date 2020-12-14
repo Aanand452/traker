@@ -12,13 +12,9 @@ import {
 
 class FilterPanel extends Component {
 
-  btnRef = component => {
-    if(component) {
-      document.addEventListener('keydown', e => {
-        if(e.key === "Enter") {
-          this.props.onFilter()
-        }
-      })
+  onKeyPress = e => {
+    if(e.key === "Enter") {
+      this.props.onFilter();
     }
   }
 
@@ -37,6 +33,7 @@ class FilterPanel extends Component {
     return (
       <PanelContainer>
         <Input
+          onKeyPress={e => this.onKeyPress(e)}
           onChange={(e) => this.props.handleChange("userId", e.target.value)}
           value={this.props.filters.userId}
           type="text"
@@ -44,6 +41,7 @@ class FilterPanel extends Component {
           className="slds-m-top_small"
         />
         <Input
+          onKeyPress={e => this.onKeyPress(e)}
           onChange={(e) => this.props.handleChange("campaignId", e.target.value)}
           value={this.props.filters.campaignId}
           type="text"
@@ -51,6 +49,7 @@ class FilterPanel extends Component {
           className="slds-m-top_small"
         />
         <Input
+          onKeyPress={e => this.onKeyPress(e)}
           onChange={(e) => this.props.handleChange("title", e.target.value)}
           value={this.props.filters.title}
           type="text"
@@ -163,7 +162,7 @@ class FilterPanel extends Component {
         </div>
 
         <Button
-          buttonRef={this.btnRef}
+          buttonRef={this.onKeyPress}
           onClick={this.props.onFilter}
           className="slds-m-top_small"
           label="Search"
