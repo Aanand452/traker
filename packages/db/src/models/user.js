@@ -1,18 +1,21 @@
 import db from '../dbmodels/'
 import { v4 as uuidv4 } from 'uuid';
+import dotenv from 'dotenv';
+
+if(process.env.PORT === '3000') dotenv.config();
 
 class UserModel {
-  static async getAutenticatedUser(usr, pwd) {
+  static async getAutenticatedUser(usr, pass) {
     try{
       const user = await db.User.findAll({
         where: {
-          username: usr,
-          password: pwd
+          username: usr
         },
         timestamps: false
       });
       
-      return user;
+      if(user && pass && process.env.AUTH_KEY && pass === process.env.AUTH_KEY) return user;
+      else return 'Error'
     } catch (err) {
       console.error('Error getting user login', err);
     }
