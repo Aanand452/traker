@@ -9,6 +9,7 @@ import {
 import 'moment/locale/en-au';
 import { SfdcPageAppWrapper } from './styles/page';
 import { getCookie } from '../utils/cookie';
+import { Settings } from '@salesforce/design-system-react';
 
 import Login from '../components/Login'
 import CreateActivityPage from '../components/CreateActivityPage'
@@ -18,6 +19,8 @@ import EditActivityPage from '../components/EditActivityPage';
 import EditProgramPage from '../components/EditProgramPage';
 import HomePage from '../components/HomePage';
 import PrivateRoute from '../components/PrivateRoute';
+
+Settings.setAppElement('#root');
 
 function EditActivity() {
   return (

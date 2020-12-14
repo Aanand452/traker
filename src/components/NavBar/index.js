@@ -107,6 +107,7 @@ class NavBar extends Component{
               userName={getCookie('userName').replaceAll('"','')}
               popover={
                 <Popover
+                  ariaLabelledby="nav-heading"
                   body={<HeaderProfileCustomContent onClick={this.onClickLogout} />}
                   id="header-profile-popover-id"
                 />

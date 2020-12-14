@@ -5,7 +5,7 @@ export const PanelContainer = styled.div`
   background: #fff;
   position: absolute;
   right: 0;
-  z-index: 1;
+  z-index: 3;
   color: #080707;
   padding: 1rem;
   border: 1px solid #dddbda;

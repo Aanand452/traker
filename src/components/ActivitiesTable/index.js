@@ -2,6 +2,7 @@ import React, { Component, Fragment } from "react";
 import { withRouter, Link } from "react-router-dom";
 import { connect } from "react-redux";
 import moment from "moment";
+import "./styles.css";
 
 import {
   Button,
@@ -48,10 +49,37 @@ const CustomDataTableCell = ({ children, ...props }) => (
 );
 CustomDataTableCell.displayName = DataTableCell.displayName;
 
+const DropDownCellAsset = ({ children, ...props }) => {
+  let items = props.property;
+
+  if (props.item[items]) {
+    const assets = props.item[items].split(', ');
+    if (assets.length > 1) {
+      const options = assets.map((asset) => ({ label: 'view asset', value: asset }));
+      return (
+        <DataTableRowActions
+          options={options}
+          menuPosition="overflowBoundaryElement"
+          dropdown={
+            <Dropdown
+              onSelect={({ value }) => {
+                window.open(value, '_blank');
+              }}
+            />
+          }
+        />
+      );
+    }
+  }
+  return <CustomDataTableCell {...props}>{props.item[items]}</CustomDataTableCell>
+}
+
+DropDownCellAsset.displayName = DataTableCell.displayName;
+
 class Table extends Component {
   state = {
     sortProperty: "",
-    sortDirection: "",
+    sortDirection: null,
     toast: {
       show: false,
       message: "A New Activity Has Been Added",
@@ -66,10 +94,180 @@ class Table extends Component {
     filters: {},
     errors: {},
     currentPage: 1,
+    expandTable: true,
+    columnWidth: {},
+    tableExtraWidth: 0,
+    noRowHover: false
   };
+
+  table = React.createRef()
 
   componentDidMount() {
     this.setupAndFetch();
+    this.resizableTable(this.table.current.scrollerRef.children[0]);
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    if (this.props.data !== prevProps.data) {
+      this.setState({ data: this.props.data }, () => {
+        if(this.state.sortProperty && this.state.sortDirection) {
+          this.onSort({property: this.state.sortProperty, sortDirection: this.state.sortDirection})
+        }
+      });
+      this.onFilter();
+    }
+  }
+
+  resetResizableTable = () => {
+    this.setState(prev => ({ expandTable: !prev.expandTable }), () => {
+      if(this.state.expandTable) {
+        this.resizableTable(this.table.current.scrollerRef.children[0])
+      }
+    })
+  }
+
+  resizableTable(table) {
+    let row = table.getElementsByTagName('tr')[0];
+    let cols = row.children;
+
+    table.style.overflow = 'hidden';
+
+    this.setState({
+      columnWidth: {
+        Owner: (table.offsetWidth - 52) / 10,
+        Program: (table.offsetWidth - 52) / 10,
+        "Campaign ID": (table.offsetWidth - 52) / 10,
+        Title: (table.offsetWidth - 52) / 10,
+        Format: (table.offsetWidth - 52) / 10,
+        Abstract: (table.offsetWidth - 52) / 10,
+        Region: (table.offsetWidth - 52) / 10,
+        "Start date": (table.offsetWidth - 52) / 10,
+        "End date": (table.offsetWidth - 52) / 10,
+        Assets: (table.offsetWidth - 52) / 10,
+      },
+      tableWidth: table.offsetWidth
+    });
+
+    for(let i = 0; i < cols.length - 1; i++) {
+      let div = this.createDiv(1, '35px');
+      cols[i].children[1].children[0].appendChild(div);
+      this.setListener(div);
+    }
+  }
+
+  setListener = div => {
+    let pageX, curCol, curColWidth, colName;
+
+
+    div.addEventListener('click', e => {
+      e.preventDefault();
+      e.stopPropagation();
+    });
+
+    div.addEventListener('mousedown', e => {
+      e.preventDefault();
+      e.stopPropagation();
+
+      if(e.target.parentElement.children.length <= 2) {
+        colName = e.target.previousSibling && e.target.previousSibling.title;
+      } else {
+        colName = e.target.parentElement.children[1] && e.target.parentElement.children[1].title;
+      }
+
+      curCol = e.target.parentElement;
+      pageX = e.pageX;
+      curColWidth = curCol.offsetWidth;
+      this.setState({
+        columnWidth: {
+          ...this.state.columnWidth,
+          [colName]: curColWidth,
+        }
+      });
+    });
+
+    document.addEventListener('mousemove', e => {
+      e.preventDefault()
+      e.stopPropagation();
+
+      if(curCol && colName) {
+        let diffX = e.pageX - pageX;
+        div.style.borderRight = `1px dashed #1589ee`;
+        div.style.right = `${-diffX}px`;
+        div.style.zIndex = 3;
+        this.setState({noRowHover: true})
+      }
+    });
+
+    div.addEventListener('dblclick', e => {
+      e.preventDefault();
+      e.stopPropagation();
+      this.setState({
+        columnWidth: {
+          Owner: (this.state.tableWidth - 52) / 10,
+          Program: (this.state.tableWidth - 52) / 10,
+          "Campaign ID": (this.state.tableWidth - 52) / 10,
+          Title: (this.state.tableWidth - 52) / 10,
+          Format: (this.state.tableWidth - 52) / 10,
+          Abstract: (this.state.tableWidth - 52) / 10,
+          Region: (this.state.tableWidth - 52) / 10,
+          "Start date": (this.state.tableWidth - 52) / 10,
+          "End date": (this.state.tableWidth - 52) / 10,
+          Assets: (this.state.tableWidth - 52) / 10,
+        },
+        tableExtraWidth: 0
+      });
+    });
+
+    document.addEventListener('mouseup', e => {
+      e.preventDefault();
+      e.stopPropagation();
+
+      if (!e.target.parentElement) {
+        return;
+      }
+
+      if(e.target.parentElement.children.length <= 2) {
+        colName = e.target.previousSibling && e.target.previousSibling.title;
+      } else {
+        colName = e.target.parentElement.children[1] && e.target.parentElement.children[1].title;
+      }
+
+      if(curCol && colName) {
+        let diffX = e.pageX - pageX;
+
+        this.setState(prev => ({
+          columnWidth: {
+            ...prev.columnWidth,
+            [colName]: curColWidth + (diffX) <= 80 ? 80 : curColWidth + (diffX)
+          },
+          tableExtraWidth: prev.tableExtraWidth += diffX,
+          noRowHover: false
+        }));
+      }
+
+      div.style.borderRight = "none";
+      div.style.right = 0;
+      div.style.zIndex = 1;
+
+      curCol = undefined;
+      pageX = undefined;
+      curColWidth = undefined;
+    });
+  }
+
+  createDiv(zIndex = 1, width = '15px') {
+    let div = document.createElement('div');
+    div.setAttribute("title", "Double click to reset columns' size")
+    div.classList.add("border")
+    div.style.top = 0;
+    div.style.right = 0;
+    div.style.width = width;
+    div.style.position = 'absolute';
+    div.style.cursor = 'col-resize';
+    div.style.userSelect = 'none';
+    div.style.height = '100%';
+    div.style.zIndex = zIndex;
+    return div;
   }
 
   setupAndFetch = async () => {
@@ -81,17 +279,6 @@ class Table extends Component {
     this.checkRegion();
     this.checkFormat();
   };
-
-  componentDidUpdate(prevProps) {
-    if (this.props.data !== prevProps.data) {
-      this.setState({ data: this.props.data }, () => {
-        if(this.state.sortProperty && this.state.sortDirection) {
-          this.onSort({property: this.state.sortProperty, sortDirection: this.state.sortDirection})
-        }
-      });
-      this.onFilter();
-    }
-  }
 
   async checkProgram() {
     try {
@@ -181,12 +368,46 @@ class Table extends Component {
     <Fragment>
       <PageHeaderControl>
         <ButtonGroup id="button-group-page-header-controls">
+          {
+            this.state.expandTable &&
+            this.state.tableExtraWidth > 0 &&
+            (<Button
+              assistiveText={{ icon: "Contract" }}
+              iconCategory="utility"
+              iconName={"contract_alt"}
+              iconVariant="border-filled"
+              variant="icon"
+              title={"Reset columns' size"}
+              onClick={() => this.setState({ columnWidth: {
+                Owner: (this.state.tableWidth- 52) / 10,
+                Program: (this.state.tableWidth- 52) / 10,
+                "Campaign ID": (this.state.tableWidth- 52) / 10,
+                Title: (this.state.tableWidth- 52) / 10,
+                Format: (this.state.tableWidth- 52) / 10,
+                Abstract: (this.state.tableWidth- 52) / 10,
+                Region: (this.state.tableWidth- 52) / 10,
+                "Start date": (this.state.tableWidth- 52) / 10,
+                "End date": (this.state.tableWidth- 52) / 10,
+                Assets: (this.state.tableWidth- 52) / 10,
+              }, tableExtraWidth: 0})}
+            />)
+          }
+          <Button
+            assistiveText={{ icon: "Expand" }}
+            iconCategory="utility"
+            iconName={this.state.expandTable ? "expand" : "contract"}
+            iconVariant="border-filled"
+            variant="icon"
+            title={this.state.expandTable ? "Expand table" : "Contract table"}
+            onClick={this.resetResizableTable}
+          />
           <Button
             assistiveText={{ icon: "Refresh" }}
             iconCategory="utility"
             iconName="refresh"
             iconVariant="border-filled"
             variant="icon"
+            title="Refresh table"
             onClick={this.resetTable}
           />
           <Button
@@ -195,6 +416,7 @@ class Table extends Component {
             iconName="filterList"
             iconVariant="border-filled"
             variant="icon"
+            title="Filter"
             onClick={() =>
               this.setState({ isPanelOpen: !this.state.isPanelOpen })
             }
@@ -400,22 +622,56 @@ class Table extends Component {
             selectAllRows: "Select all rows",
             selectRow: "Select this row",
           }}
+          columnBordered
           fixedHeader
-          fixedLayout
+          fixedLayout={this.state.expandTable}
           items={this.state.displayedData}
           id="activitiesTable"
           joined
           onRowChange={this.props.selectItem}
           onSort={this.onSort}
-          selection={this.props.dataTable.selection}
+          ref={this.table}
+          noRowHover={this.state.noRowHover}
+          className={
+            `${
+              this.state.displayedData && this.state.displayedData.length < 5
+                ? 'padding_bottom'
+                : ''
+            }`
+          }
         >
-          <DataTableColumn label="Owner" property="userId" />
-          <DataTableColumn label="Program" property="programId" />
-          <DataTableColumn label="Campaign ID" property="campaignId" />
-          <DataTableColumn label="Title" property="title" />
-          <DataTableColumn label="Format" property="formatId" />
-          <DataTableColumn label="Abstract" property="abstract" />
           <DataTableColumn
+            width={this.state.columnWidth['Owner'] || 'auto'}
+            label="Owner"
+            property="userId"
+          />
+          <DataTableColumn
+            width={this.state.columnWidth['Program'] || 'auto'}
+            label="Program"
+            property="programId"
+          />
+          <DataTableColumn
+            width={this.state.columnWidth['Campaign ID'] || 'auto'}
+            label="Campaign ID"
+            property="campaignId"
+          />
+          <DataTableColumn
+            width={this.state.columnWidth['Title'] || 'auto'}
+            label="Title"
+            property="title"
+          />
+          <DataTableColumn
+            width={this.state.columnWidth['Format'] || 'auto'}
+            label="Format"
+            property="formatId"
+          />
+          <DataTableColumn
+            width={this.state.columnWidth['Abstract'] || 'auto'}
+            label="Abstract"
+            property="abstract"
+          />
+          <DataTableColumn
+            width={this.state.columnWidth['Region'] || 'auto'}
             sortDirection={this.state.sortDirection || "desc"}
             sortable
             isSorted={this.state.sortProperty === "regionId"}
@@ -423,6 +679,7 @@ class Table extends Component {
             property="regionId"
           />
           <DataTableColumn
+            width={this.state.columnWidth['Start date'] || 'auto'}
             isSorted={this.state.sortProperty === "startDate"}
             label="Start date"
             property="startDate"
@@ -432,6 +689,7 @@ class Table extends Component {
             <DateCell />
           </DataTableColumn>
           <DataTableColumn
+            width={this.state.columnWidth['End date'] || 'auto'}
             isSorted={this.state.sortProperty === "endDate"}
             label="End date"
             property="endDate"
@@ -440,8 +698,12 @@ class Table extends Component {
           >
             <DateCell />
           </DataTableColumn>
-          <DataTableColumn label="Assets" property="asset">
-            <CustomDataTableCell />
+          <DataTableColumn
+            width={this.state.columnWidth['Assets'] || 'auto'}
+            label="Assets"
+            property="asset"
+          >
+            <DropDownCellAsset />
           </DataTableColumn>
 
           <DataTableRowActions
