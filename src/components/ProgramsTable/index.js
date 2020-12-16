@@ -129,6 +129,28 @@ class Table extends Component {
     })
   }
 
+  removeLocalStorageColumns = () => {
+    let columns = ["Program Owner", "Program Name", "Budget", "MP Target", "Target Region", "Lifecycle Stage", "APM1", "APM2", "Industry", "Segment", "Persona", "Customer Message", "Other KPI's"];
+    for(let i = 0; i < columns.length; i++) {
+      localStorage.removeItem(columns[i])
+    }
+    this.setState({ columnWidth: {
+      "Program Owner": (document.body.clientWidth - 52) / 13,
+      "Program Name": (document.body.clientWidth - 52) / 13,
+      Budget: (document.body.clientWidth - 52) / 13,
+      "MP Target": (document.body.clientWidth - 52) / 13,
+      "Target Region": (document.body.clientWidth - 52) / 13,
+      "Lifecycle Stage": (document.body.clientWidth - 52) / 13,
+      APM1: (document.body.clientWidth - 52) / 13,
+      APM2: (document.body.clientWidth - 52) / 13,
+      Industry: (document.body.clientWidth - 52) / 13,
+      Segment: (document.body.clientWidth - 52) / 13,
+      Persona: (document.body.clientWidth - 52) / 13,
+      "Customer Message": (document.body.clientWidth - 52) / 13,
+      "Other KPI's": (document.body.clientWidth - 52) / 13,
+    }, tableExtraWidth: 0})
+  }
+
   resizableTable(table) {
     let row = table.getElementsByTagName('tr')[0];
     let cols = row.children;
@@ -137,21 +159,20 @@ class Table extends Component {
 
     this.setState({
       columnWidth: {
-        'Program Owner': (table.offsetWidth - 52) / 13,
-        'Program Name': (table.offsetWidth - 52) / 13,
-        'Budget': (table.offsetWidth - 52) / 13,
-        'MP Target': (table.offsetWidth - 52) / 13,
-        'Target Region': (table.offsetWidth - 52) / 13,
-        'Lifecycle Stage': (table.offsetWidth - 52) / 13,
-        'APM1': (table.offsetWidth - 52) / 13,
-        'APM2': (table.offsetWidth - 52) / 13,
-        'Industry': (table.offsetWidth - 52) / 13,
-        'Segment': (table.offsetWidth - 52) / 13,
-        'Persona': (table.offsetWidth - 52) / 13,
-        'Customer Message': (table.offsetWidth - 52) / 13,
-        'Other KPI\'s': (table.offsetWidth - 52) / 13,
-      },
-      tableWidth: table.offsetWidth
+        'Program Owner': localStorage.getItem("Program Owner") ? Number(localStorage.getItem("Program Owner")) : ((document.body.clientWidth - 52) / 13),
+        'Program Name': localStorage.getItem("Program Name") ? Number(localStorage.getItem("Program Name")) : ((document.body.clientWidth - 52) / 13),
+        'Budget': localStorage.getItem("Budget") ? Number(localStorage.getItem("Budget")) : ((document.body.clientWidth - 52) / 13),
+        'MP Target': localStorage.getItem("MP Target") ? Number(localStorage.getItem("MP Target")) : ((document.body.clientWidth - 52) / 13),
+        'Target Region': localStorage.getItem("Target Region") ? Number(localStorage.getItem("Target Region")) : ((document.body.clientWidth - 52) / 13),
+        'Lifecycle Stage': localStorage.getItem("Lifecycle Stage") ? Number(localStorage.getItem("Lifecycle Stage")) : ((document.body.clientWidth - 52) / 13),
+        'APM1': localStorage.getItem("APM1") ? Number(localStorage.getItem("APM1")) : ((document.body.clientWidth - 52) / 13),
+        'APM2': localStorage.getItem("APM2") ? Number(localStorage.getItem("APM2")) : ((document.body.clientWidth - 52) / 13),
+        'Industry': localStorage.getItem("Industry") ? Number(localStorage.getItem("Industry")) : ((document.body.clientWidth - 52) / 13),
+        'Segment': localStorage.getItem("Segment") ? Number(localStorage.getItem("Segment")) : ((document.body.clientWidth - 52) / 13),
+        'Persona': localStorage.getItem("Persona") ? Number(localStorage.getItem("Persona")) : ((document.body.clientWidth - 52) / 13),
+        'Customer Message': localStorage.getItem("Customer Message") ? Number(localStorage.getItem("Customer Message")) : ((document.body.clientWidth - 52) / 13),
+        'Other KPI\'s': localStorage.getItem("Other KPI's") ? Number(localStorage.getItem("Other KPI's")) : ((document.body.clientWidth - 52) / 13),
+      }
     });
 
     for(let i = 0; i < cols.length - 1; i++) {
@@ -207,24 +228,7 @@ class Table extends Component {
     div.addEventListener('dblclick', (e) => {
       e.preventDefault();
       e.stopPropagation();
-      this.setState({
-        columnWidth: {
-          'Program Owner': (this.state.tableWidth - 52) / 13,
-          'Program Name': (this.state.tableWidth - 52) / 13,
-          'Budget': (this.state.tableWidth - 52) / 13,
-          'MP Target': (this.state.tableWidth - 52) / 13,
-          'Target Region': (this.state.tableWidth - 52) / 13,
-          'Lifecycle Stage': (this.state.tableWidth - 52) / 13,
-          'APM1': (this.state.tableWidth - 52) / 13,
-          'APM2': (this.state.tableWidth - 52) / 13,
-          'Industry': (this.state.tableWidth - 52) / 13,
-          'Segment': (this.state.tableWidth - 52) / 13,
-          'Persona': (this.state.tableWidth - 52) / 13,
-          'Customer Message': (this.state.tableWidth - 52) / 13,
-          'Other KPI\'s': (this.state.tableWidth - 52) / 13,
-        },
-        tableExtraWidth: 0
-      });
+      this.removeLocalStorageColumns();
     });
 
     document.addEventListener('mouseup', (e) => {
@@ -243,6 +247,8 @@ class Table extends Component {
 
       if(curCol && colName) {
         let diffX = e.pageX - pageX;
+
+        localStorage.setItem(colName, curColWidth + (diffX) <= 80 ? "80" : Number(curColWidth + (diffX)));
 
         this.setState(prev => ({
           columnWidth: {
@@ -295,7 +301,6 @@ class Table extends Component {
         <ButtonGroup id="button-group-page-header-controls">
           {
             this.state.expandTable &&
-            this.state.tableExtraWidth > 0 &&
             (<Button
               assistiveText={{ icon: "Contract" }}
               iconCategory="utility"
@@ -303,24 +308,7 @@ class Table extends Component {
               iconVariant="border-filled"
               variant="icon"
               title={"Reset columns' size"}
-              onClick={() => this.setState({
-                columnWidth: {
-                  'Program Owner': (this.state.tableWidth - 52) / 13,
-                  'Program Name': (this.state.tableWidth - 52) / 13,
-                  'Budget': (this.state.tableWidth - 52) / 13,
-                  'MP Target': (this.state.tableWidth - 52) / 13,
-                  'Target Region': (this.state.tableWidth - 52) / 13,
-                  'Lifecycle Stage': (this.state.tableWidth - 52) / 13,
-                  'APM1': (this.state.tableWidth - 52) / 13,
-                  'APM2': (this.state.tableWidth - 52) / 13,
-                  'Industry': (this.state.tableWidth - 52) / 13,
-                  'Segment': (this.state.tableWidth - 52) / 13,
-                  'Persona': (this.state.tableWidth - 52) / 13,
-                  'Customer Message': (this.state.tableWidth - 52) / 13,
-                  'Other KPI\'s': (this.state.tableWidth - 52) / 13,
-                },
-                tableExtraWidth: 0
-              })}
+              onClick={this.removeLocalStorageColumns}
             />)
           }
           <Button
@@ -490,12 +478,12 @@ class Table extends Component {
               sortDirection={this.state.sortDirection || "desc"}
               sortable
               isSorted={this.state.sortProperty === 'name'}
-              width={this.state.columnWidth['Program Name'] || 'auto'}
+              width={this.state.columnWidth['Program Name']}
             />
             <DataTableColumn
               label="Program Owner"
               property="owner"
-              width={this.state.columnWidth['Program Owner'] || 'auto'}
+              width={this.state.columnWidth['Program Owner']}
             />
             <DataTableColumn
               label="Budget"
@@ -503,14 +491,14 @@ class Table extends Component {
               sortDirection={this.state.sortDirection || "desc"}
               sortable
               isSorted={this.state.sortProperty === 'budget'}
-              width={this.state.columnWidth['Budget'] || 'auto'}
+              width={this.state.columnWidth['Budget']}
             >
               <CurrencyCell />
             </DataTableColumn>
             <DataTableColumn
               label="MP Target"
               property="metrics"
-              width={this.state.columnWidth['MP Target'] || 'auto'}
+              width={this.state.columnWidth['MP Target']}
             >
               <CurrencyCell />
             </DataTableColumn>
@@ -520,26 +508,26 @@ class Table extends Component {
               sortDirection={this.state.sortDirection || "desc"}
               sortable
               isSorted={this.state.sortProperty === 'targetRegion'}
-              width={this.state.columnWidth['Target Region'] || 'auto'}
+              width={this.state.columnWidth['Target Region']}
             />
             <DataTableColumn
               label="Lifecycle Stage"
               property="lifecycleStage"
-              width={this.state.columnWidth['Lifecycle Stage'] || 'auto'}
+              width={this.state.columnWidth['Lifecycle Stage']}
             >
               <DropDownCell />
             </DataTableColumn>
             <DataTableColumn
               label="APM1"
               property="apm1"
-              width={this.state.columnWidth['APM1'] || 'auto'}
+              width={this.state.columnWidth['APM1']}
             >
               <DropDownCell />
             </DataTableColumn>
             <DataTableColumn
               label="APM2"
               property="apm2"
-              width={this.state.columnWidth['APM2'] || 'auto'}
+              width={this.state.columnWidth['APM2']}
             >
              <DropDownCell />
             </DataTableColumn>
@@ -549,33 +537,33 @@ class Table extends Component {
               sortDirection={this.state.sortDirection || "desc"}
               sortable
               isSorted={this.state.sortProperty === 'industry'}
-              width={this.state.columnWidth['Industry'] || 'auto'}
+              width={this.state.columnWidth['Industry']}
             >
               <DropDownCell />
             </DataTableColumn>
             <DataTableColumn
               label="Segment"
               property="segment"
-              width={this.state.columnWidth['Segment'] || 'auto'}
+              width={this.state.columnWidth['Segment']}
             >
               <DropDownCell />
             </DataTableColumn>
             <DataTableColumn
               label="Persona"
               property="persona"
-              width={this.state.columnWidth['Persona']|| 'auto'}
+              width={this.state.columnWidth['Persona']}
             >
               <DropDownCell />
             </DataTableColumn>
             <DataTableColumn
               label="Customer Message"
               property="customerMessage"
-              width={this.state.columnWidth['Customer Message'] || 'auto'}
+              width={this.state.columnWidth['Customer Message']}
             />
             <DataTableColumn
               label="Other KPI's"
               property="otherKpis"
-              width={this.state.columnWidth['Other KPI\'s'] || 'auto'}
+              width={this.state.columnWidth['Other KPI\'s']}
             />
             <DataTableRowActions
               options={[

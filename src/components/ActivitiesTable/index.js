@@ -126,26 +126,44 @@ class Table extends Component {
     })
   }
 
+  removeLocalStorageColumns = () => {
+    let columns = ["Owner", "Program", "Campaign ID", "Title", "Format", "Abstract", "Region", "Start date", "End date", "Assets"];
+    for(let i = 0; i < columns.length; i++) {
+      localStorage.removeItem(columns[i])
+    }
+    this.setState({ columnWidth: {
+      Owner: (document.body.clientWidth - 52) / 10,
+      Program: (document.body.clientWidth - 52) / 10,
+      "Campaign ID": (document.body.clientWidth - 52) / 10,
+      Title: (document.body.clientWidth - 52) / 10,
+      Format: (document.body.clientWidth - 52) / 10,
+      Abstract: (document.body.clientWidth - 52) / 10,
+      Region: (document.body.clientWidth - 52) / 10,
+      "Start date": (document.body.clientWidth - 52) / 10,
+      "End date": (document.body.clientWidth - 52) / 10,
+      Assets: (document.body.clientWidth - 52) / 10,
+    }, tableExtraWidth: 0})
+  }
+
   resizableTable(table) {
     let row = table.getElementsByTagName('tr')[0];
     let cols = row.children;
-
+    
     table.style.overflow = 'hidden';
 
     this.setState({
       columnWidth: {
-        Owner: (table.offsetWidth - 52) / 10,
-        Program: (table.offsetWidth - 52) / 10,
-        "Campaign ID": (table.offsetWidth - 52) / 10,
-        Title: (table.offsetWidth - 52) / 10,
-        Format: (table.offsetWidth - 52) / 10,
-        Abstract: (table.offsetWidth - 52) / 10,
-        Region: (table.offsetWidth - 52) / 10,
-        "Start date": (table.offsetWidth - 52) / 10,
-        "End date": (table.offsetWidth - 52) / 10,
-        Assets: (table.offsetWidth - 52) / 10,
-      },
-      tableWidth: table.offsetWidth
+        Owner: localStorage.getItem("Owner") ? Number(localStorage.getItem("Owner")) : ((document.body.clientWidth - 52) / 10),
+        Program: localStorage.getItem("Program") ? Number(localStorage.getItem("Program")) : ((document.body.clientWidth - 52) / 10),
+        "Campaign ID": localStorage.getItem("Campaign ID") ? Number(localStorage.getItem("Campaign ID")) : ((document.body.clientWidth - 52) / 10),
+        Title: localStorage.getItem("Title") ? Number(localStorage.getItem("Title")) : ((document.body.clientWidth - 52) / 10),
+        Format: localStorage.getItem("Format") ? Number(localStorage.getItem("Format")) : ((document.body.clientWidth - 52) / 10),
+        Abstract: localStorage.getItem("Abstract") ? Number(localStorage.getItem("Abstract")) : ((document.body.clientWidth - 52) / 10),
+        Region: localStorage.getItem("Region") ? Number(localStorage.getItem("Region")) : ((document.body.clientWidth - 52) / 10),
+        "Start date": localStorage.getItem("Start date") ? Number(localStorage.getItem("Start date")) : ((document.body.clientWidth - 52) / 10),
+        "End date": localStorage.getItem("End date") ? Number(localStorage.getItem("End date")) : ((document.body.clientWidth - 52) / 10),
+        Assets: localStorage.getItem("Assets") ? Number(localStorage.getItem("Assets")) : ((document.body.clientWidth - 52) / 10),
+      }
     });
 
     for(let i = 0; i < cols.length - 1; i++) {
@@ -201,21 +219,7 @@ class Table extends Component {
     div.addEventListener('dblclick', e => {
       e.preventDefault();
       e.stopPropagation();
-      this.setState({
-        columnWidth: {
-          Owner: (this.state.tableWidth - 52) / 10,
-          Program: (this.state.tableWidth - 52) / 10,
-          "Campaign ID": (this.state.tableWidth - 52) / 10,
-          Title: (this.state.tableWidth - 52) / 10,
-          Format: (this.state.tableWidth - 52) / 10,
-          Abstract: (this.state.tableWidth - 52) / 10,
-          Region: (this.state.tableWidth - 52) / 10,
-          "Start date": (this.state.tableWidth - 52) / 10,
-          "End date": (this.state.tableWidth - 52) / 10,
-          Assets: (this.state.tableWidth - 52) / 10,
-        },
-        tableExtraWidth: 0
-      });
+      this.removeLocalStorageColumns();
     });
 
     document.addEventListener('mouseup', e => {
@@ -234,6 +238,8 @@ class Table extends Component {
 
       if(curCol && colName) {
         let diffX = e.pageX - pageX;
+
+        localStorage.setItem(colName, curColWidth + (diffX) <= 80 ? "80" : Number(curColWidth + (diffX)));
 
         this.setState(prev => ({
           columnWidth: {
@@ -370,7 +376,6 @@ class Table extends Component {
         <ButtonGroup id="button-group-page-header-controls">
           {
             this.state.expandTable &&
-            this.state.tableExtraWidth > 0 &&
             (<Button
               assistiveText={{ icon: "Contract" }}
               iconCategory="utility"
@@ -378,18 +383,7 @@ class Table extends Component {
               iconVariant="border-filled"
               variant="icon"
               title={"Reset columns' size"}
-              onClick={() => this.setState({ columnWidth: {
-                Owner: (this.state.tableWidth- 52) / 10,
-                Program: (this.state.tableWidth- 52) / 10,
-                "Campaign ID": (this.state.tableWidth- 52) / 10,
-                Title: (this.state.tableWidth- 52) / 10,
-                Format: (this.state.tableWidth- 52) / 10,
-                Abstract: (this.state.tableWidth- 52) / 10,
-                Region: (this.state.tableWidth- 52) / 10,
-                "Start date": (this.state.tableWidth- 52) / 10,
-                "End date": (this.state.tableWidth- 52) / 10,
-                Assets: (this.state.tableWidth- 52) / 10,
-              }, tableExtraWidth: 0})}
+              onClick={this.removeLocalStorageColumns}
             />)
           }
           <Button
@@ -641,37 +635,37 @@ class Table extends Component {
           }
         >
           <DataTableColumn
-            width={this.state.columnWidth['Owner'] || 'auto'}
+            width={this.state.columnWidth['Owner']}
             label="Owner"
             property="userId"
           />
           <DataTableColumn
-            width={this.state.columnWidth['Program'] || 'auto'}
+            width={this.state.columnWidth['Program']}
             label="Program"
             property="programId"
           />
           <DataTableColumn
-            width={this.state.columnWidth['Campaign ID'] || 'auto'}
+            width={this.state.columnWidth['Campaign ID']}
             label="Campaign ID"
             property="campaignId"
           />
           <DataTableColumn
-            width={this.state.columnWidth['Title'] || 'auto'}
+            width={this.state.columnWidth['Title']}
             label="Title"
             property="title"
           />
           <DataTableColumn
-            width={this.state.columnWidth['Format'] || 'auto'}
+            width={this.state.columnWidth['Format']}
             label="Format"
             property="formatId"
           />
           <DataTableColumn
-            width={this.state.columnWidth['Abstract'] || 'auto'}
+            width={this.state.columnWidth['Abstract']}
             label="Abstract"
             property="abstract"
           />
           <DataTableColumn
-            width={this.state.columnWidth['Region'] || 'auto'}
+            width={this.state.columnWidth['Region']}
             sortDirection={this.state.sortDirection || "desc"}
             sortable
             isSorted={this.state.sortProperty === "regionId"}
@@ -679,7 +673,7 @@ class Table extends Component {
             property="regionId"
           />
           <DataTableColumn
-            width={this.state.columnWidth['Start date'] || 'auto'}
+            width={this.state.columnWidth['Start date']}
             isSorted={this.state.sortProperty === "startDate"}
             label="Start date"
             property="startDate"
@@ -689,7 +683,7 @@ class Table extends Component {
             <DateCell />
           </DataTableColumn>
           <DataTableColumn
-            width={this.state.columnWidth['End date'] || 'auto'}
+            width={this.state.columnWidth['End date']}
             isSorted={this.state.sortProperty === "endDate"}
             label="End date"
             property="endDate"
@@ -699,7 +693,7 @@ class Table extends Component {
             <DateCell />
           </DataTableColumn>
           <DataTableColumn
-            width={this.state.columnWidth['Assets'] || 'auto'}
+            width={this.state.columnWidth['Assets']}
             label="Assets"
             property="asset"
           >
