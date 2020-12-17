@@ -423,7 +423,7 @@ class CloneActivityModalComponent extends Component {
                 options={this.state.program}
                 selection={this.state.programSelection}
                 variant="readonly"
-                errorText={this.state.errors.programId && "This field is required"}
+                errorText={this.state.errors.programId ? "This field is required" : ""}
               />
             </div>
             <div className="slds-form-element slds-m-bottom_large">
@@ -458,7 +458,7 @@ class CloneActivityModalComponent extends Component {
                 options={this.state.format}
                 selection={this.state.formatSelection}
                 variant="readonly"
-                errorText={this.state.errors.formatId && "This field is required"}
+                errorText={this.state.errors.formatId ? "This field is required" : ""}
               />
             </div>
             <div className="slds-form-element slds-m-bottom_large">
@@ -493,7 +493,7 @@ class CloneActivityModalComponent extends Component {
                 options={this.state.region}
                 selection={this.state.regionSelection}
                 variant="readonly"
-                errorText={this.state.errors.regionId && "This field is required"}
+                errorText={this.state.errors.regionId ? "This field is required" : ""}
               />
             </div>
             <div className={`slds-m-bottom_large slds-col slds-size_1-of-1 ${this.state.errors.startDate && "slds-has-error"}`}>
