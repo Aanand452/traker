@@ -292,6 +292,17 @@ class EditActivityModalComponent extends Component {
     e.preventDefault();
 
     try {
+      let asset = this.state.assets.map((asset) => asset.label).join(', ');
+
+      if(this.state.asset) {
+        let assetArr = asset.split(',');
+        asset = [...assetArr, this.state.asset].join(', ');
+      }
+
+      if(asset.startsWith(',')) {
+        asset = asset.slice(1).trim();
+      }
+
       let body = {
         title: this.state.title,
         campaignId: this.state.campaignId,
@@ -300,7 +311,7 @@ class EditActivityModalComponent extends Component {
         regionId: this.state.regionSelection[0] && this.state.regionSelection[0].id,
         startDate: this.state.startDate,
         endDate: this.state.endDate,
-        asset: this.state.assets.map((asset) => asset.label).join(', '),
+        asset,
         customerMarketing: this.state.customerMarketing || false,
         userId: localStorage.getItem('userId'),
         programId: this.state.programSelection[0] && this.state.programSelection[0].id
