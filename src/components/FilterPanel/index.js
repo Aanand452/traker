@@ -35,7 +35,7 @@ class FilterPanel extends Component {
         <Input
           onKeyPress={e => this.onKeyPress(e)}
           onChange={(e) => this.props.handleChange("userId", e.target.value)}
-          value={this.props.filters.userId}
+          defaultValue={this.props.filters.userId}
           type="text"
           label="Search by owner"
           className="slds-m-top_small"
@@ -43,7 +43,7 @@ class FilterPanel extends Component {
         <Input
           onKeyPress={e => this.onKeyPress(e)}
           onChange={(e) => this.props.handleChange("campaignId", e.target.value)}
-          value={this.props.filters.campaignId}
+          defaultValue={this.props.filters.campaignId}
           type="text"
           label="Search by campaign ID"
           className="slds-m-top_small"
@@ -51,7 +51,7 @@ class FilterPanel extends Component {
         <Input
           onKeyPress={e => this.onKeyPress(e)}
           onChange={(e) => this.props.handleChange("title", e.target.value)}
-          value={this.props.filters.title}
+          defaultValue={this.props.filters.title}
           type="text"
           label="Search by title"
           className="slds-m-top_small"
@@ -67,7 +67,7 @@ class FilterPanel extends Component {
           labels={{ label: "Region" }}
           name="region"
           options={regions}
-          selection={this.props.filters.regionId}
+          selection={this.props.filters.regionId || [regions[0]]}
           variant="readonly"
         />
         <Combobox
@@ -81,7 +81,7 @@ class FilterPanel extends Component {
           labels={{ label: "Program" }}
           name="program"
           options={programs}
-          selection={this.props.filters.programId}
+          selection={this.props.filters.programId || [programs[0]]}
           variant="readonly"
         />
         <Combobox
@@ -95,7 +95,7 @@ class FilterPanel extends Component {
           labels={{ label: "Format" }}
           name="format"
           options={formats}
-          selection={this.props.filters.formatId}
+          selection={this.props.filters.formatId || [formats[0]]}
           variant="readonly"
         />
         <div className=" slds-m-top_small">

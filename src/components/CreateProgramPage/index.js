@@ -70,7 +70,9 @@ class CreateProgramPage extends Component {
       const request = await fetch(`${this.API_URL}/region`, config);
       const response = await request.json();
 
-      if(response.info.code === 200) this.setState({ regions: response.result });
+      let regions = response.result.map(el => ({...el, id: el.region_id}))
+
+      if(response.info.code === 200) this.setState({ regions });
       else throw new Error(response.info.status);
     } catch (err) {
       this.showError(err);

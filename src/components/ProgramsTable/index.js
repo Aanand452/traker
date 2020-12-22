@@ -384,7 +384,7 @@ class Table extends Component {
     this.setState({
       data: this.props.data,
       sortProperty: '',
-      sortDirection: '',
+      sortDirection: null,
       isPanelOpen: false,
       currentPage: 1,
       search: {
@@ -478,12 +478,12 @@ class Table extends Component {
               sortDirection={this.state.sortDirection || "desc"}
               sortable
               isSorted={this.state.sortProperty === 'name'}
-              width={this.state.columnWidth['Program Name']}
+              width={`${this.state.columnWidth['Program Name']}px`}
             />
             <DataTableColumn
               label="Program Owner"
               property="owner"
-              width={this.state.columnWidth['Program Owner']}
+              width={`${this.state.columnWidth['Program Owner']}px`}
             />
             <DataTableColumn
               label="Budget"
@@ -491,14 +491,14 @@ class Table extends Component {
               sortDirection={this.state.sortDirection || "desc"}
               sortable
               isSorted={this.state.sortProperty === 'budget'}
-              width={this.state.columnWidth['Budget']}
+              width={`${this.state.columnWidth['Budget']}px`}
             >
               <CurrencyCell />
             </DataTableColumn>
             <DataTableColumn
               label="MP Target"
               property="metrics"
-              width={this.state.columnWidth['MP Target']}
+              width={`${this.state.columnWidth['MP Target']}px`}
             >
               <CurrencyCell />
             </DataTableColumn>
@@ -508,26 +508,26 @@ class Table extends Component {
               sortDirection={this.state.sortDirection || "desc"}
               sortable
               isSorted={this.state.sortProperty === 'targetRegion'}
-              width={this.state.columnWidth['Target Region']}
+              width={`${this.state.columnWidth['Target Region']}px`}
             />
             <DataTableColumn
               label="Lifecycle Stage"
               property="lifecycleStage"
-              width={this.state.columnWidth['Lifecycle Stage']}
+              width={`${this.state.columnWidth['Lifecycle Stage']}px`}
             >
               <DropDownCell />
             </DataTableColumn>
             <DataTableColumn
               label="APM1"
               property="apm1"
-              width={this.state.columnWidth['APM1']}
+              width={`${this.state.columnWidth['APM1']}px`}
             >
               <DropDownCell />
             </DataTableColumn>
             <DataTableColumn
               label="APM2"
               property="apm2"
-              width={this.state.columnWidth['APM2']}
+              width={`${this.state.columnWidth['APM2']}px`}
             >
              <DropDownCell />
             </DataTableColumn>
@@ -537,33 +537,33 @@ class Table extends Component {
               sortDirection={this.state.sortDirection || "desc"}
               sortable
               isSorted={this.state.sortProperty === 'industry'}
-              width={this.state.columnWidth['Industry']}
+              width={`${this.state.columnWidth['Industry']}px`}
             >
               <DropDownCell />
             </DataTableColumn>
             <DataTableColumn
               label="Segment"
               property="segment"
-              width={this.state.columnWidth['Segment']}
+              width={`${this.state.columnWidth['Segment']}px`}
             >
               <DropDownCell />
             </DataTableColumn>
             <DataTableColumn
               label="Persona"
               property="persona"
-              width={this.state.columnWidth['Persona']}
+              width={`${this.state.columnWidth['Persona']}px`}
             >
               <DropDownCell />
             </DataTableColumn>
             <DataTableColumn
               label="Customer Message"
               property="customerMessage"
-              width={this.state.columnWidth['Customer Message']}
+              width={`${this.state.columnWidth['Customer Message']}px`}
             />
             <DataTableColumn
               label="Other KPI's"
               property="otherKpis"
-              width={this.state.columnWidth['Other KPI\'s']}
+              width={`${this.state.columnWidth['Other KPI\'s']}px`}
             />
             <DataTableRowActions
               options={[

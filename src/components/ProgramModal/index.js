@@ -87,10 +87,12 @@ class EditProgramModalComponent extends Component {
       const response = await fetch(`${this.API_URL}/region`, config);
       const { result } = await response.json();
 
-      let regionId = result.filter(el => el.label === this.props.program.targetRegion);
+      let regions = result.map(el => ({...el, id: el.region_id}))
+
+      let regionId = regions.filter(el => el.label === this.props.program.targetRegion);
       let program = { ...this.state.program, regionId };
 
-      if(response.status === 200) this.setState({ regions: result, program });
+      if(response.status === 200) this.setState({ regions, program });
       else throw new Error(response);
     } catch (err) {
       this.showError(err);
@@ -357,8 +359,8 @@ class EditProgramModalComponent extends Component {
         <Modal
           isOpen={true}
           footer={[
-            <Button label="Cancel" onClick={() => this.props.toggleOpen(false)} />,
-            <Button type="submit" label="Save" variant="brand" onClick={() => this.validations() && this.toggleConfirmBox()} />,
+            <Button key="cancelBtn" label="Cancel" onClick={() => this.props.toggleOpen(false)} />,
+            <Button key="submitBtn" type="submit" label="Save" variant="brand" onClick={() => this.validations() && this.toggleConfirmBox()} />,
           ]}
           onRequestClose={() => this.props.toggleOpen(false)}
           heading={this.props.title}
