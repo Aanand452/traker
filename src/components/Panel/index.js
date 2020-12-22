@@ -16,17 +16,25 @@ class PanelComponent extends Component {
     }
   }
 
+  onKeyPress = e => {
+    if(e.key === "Enter") {
+      this.props.onSearch(this.state.search)
+    }
+  }
+
   handleChange = (key, value) => this.setState({ search: {...this.state.search, [key]: value} })
 
 	render() {
 		return (
       <PanelContainer>
         <Input
+          onKeyPress={e => this.onKeyPress(e)}
           onChange={e => this.handleChange("owner", e.target.value)}
           defaultValue={this.props.search.owner}
           type='text'
           label="Search by owner" />
         <Input
+          onKeyPress={e => this.onKeyPress(e)}
           onChange={e => this.handleChange("name", e.target.value)}
           defaultValue={this.props.search.name}
           type='text'
