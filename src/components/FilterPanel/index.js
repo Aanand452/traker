@@ -162,7 +162,6 @@ class FilterPanel extends Component {
         </div>
 
         <Button
-          buttonRef={this.onKeyPress}
           onClick={this.props.onFilter}
           className="slds-m-top_small"
           label="Search"
