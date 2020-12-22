@@ -46,11 +46,18 @@ class NavBar extends Component{
   onClickLogout = e => {
     e.preventDefault();
 
-    localStorage.removeItem('userId');
+    this.clearLocalStorage();
     setCookie('userid', null, 0);
     setCookie('token', null, 0);
     setCookie('role', null, 0);
     document.location.replace('/logout');
+  }
+
+  clearLocalStorage = () => {
+    let items = ["userId", "Owner", "Program", "Campaign ID", "Title", "Format", "Abstract", "Region", "Start date", "End date", "Assets", "Program Owner", "Program Name", "Budget", "MP Target", "Target Region", "Lifecycle Stage", "APM1", "APM2", "Industry", "Segment", "Persona", "Customer Message", "Other KPI's"];
+    for(let i = 0; i < items.length; i++) {
+      localStorage.removeItem(items[i])
+    }
   }
 
   configUrls(data){
