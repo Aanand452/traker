@@ -46,3 +46,15 @@ You can find some information on how to perform common tasks. [here](https://git
 - [react-select](https://www.npmjs.com/package/react-select): Used for dropdown pickers.
 - [react-highlight-words](https://www.npmjs.com/package/react-highlight-words): Used for highlighting searched words in the price lists.
 - [lodash](https://www.npmjs.com/package/lodash): Used for some specific array processing in the app for a better compatibility among browsers.
+
+## Login into the app
+
+  Create a .env file at the root of the project inside this file, add the `AUTH_KEY` variable, when there is a request to the login endpoint `/login` API will check if this env var match with the password sent through the body request.
+
+  There are two ways to login, which depends on the value of the env var `SSO`:
+    - If `SSO` equals `'true'` then, you will be redirected to an external salesforce authenticator; if the login goes well, there will be a new request, this time to the API, and the `AUTH_KEY` will be sent automatically.
+    - If `SSO` different to `'true'` you have to send the `AUTH_KEY` as a password in the respective input.
+
+  In the backend app, we also have to create the same env var, and the value of these two has to be the same.
+
+  Remind that Heroku has its way to set the env vars and applies to test and production environments.
