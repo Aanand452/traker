@@ -245,7 +245,6 @@ class CreateActivity extends Component {
 
   validateSubmit = (e) => {
     e.preventDefault();
-    const errors = this.validations();
     let { loggedUser } = this.state;
     let {
       abstract,
@@ -262,7 +261,15 @@ class CreateActivity extends Component {
     let asset = this.state.assets.map((asset) => asset.label).join(', ');
 
     if(this.state.row.asset) {
-      let assetArr = asset.split(',');
+      if (this.state.assets.some(val => val.title.toLowerCase() === this.state.row.asset.toLowerCase())) {
+        return this.setState((state) => ({
+          error: {
+            ...state.error,
+            asset: 'Repeated URL',
+          },
+        }));
+      }
+      let assetArr = asset.split(', ');
       asset = [...assetArr, this.state.row.asset].join(', ');
     }
 
@@ -283,6 +290,8 @@ class CreateActivity extends Component {
       campaignId,
       customerMarketing
     }
+
+    const errors = this.validations();
 
     if (Object.keys(errors).length === 0) {
       this.onSubmit(row);
@@ -330,7 +339,7 @@ class CreateActivity extends Component {
   }
 
   addAsset = (asset) => {
-    if (this.state.assets.some(val => val.title === asset)) {
+    if (this.state.assets.some(val => val.title.toLowerCase() === asset.toLowerCase())) {
       return this.setState((state) => ({
         error: {
           ...state.error,
