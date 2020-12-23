@@ -295,7 +295,7 @@ class EditActivityModalComponent extends Component {
       let asset = this.state.assets.map((asset) => asset.label).join(', ');
 
       if(this.state.asset) {
-        if (this.state.assets.some(val => val.title === this.state.asset)) {
+        if (this.state.assets.some(val => val.title.toLowerCase() === this.state.asset.toLowerCase())) {
           return this.setState((state) => ({
             errors: {
               ...state.errors,
@@ -368,7 +368,7 @@ class EditActivityModalComponent extends Component {
   }
 
   addAsset = (asset) => {
-    if (this.state.assets.some(val => val.title === asset)) {
+    if (this.state.assets.some(val => val.title.toLowerCase() === asset.toLowerCase())) {
       return this.setState((state) => ({
         errors: {
           ...state.errors,

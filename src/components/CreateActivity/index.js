@@ -261,7 +261,7 @@ class CreateActivity extends Component {
     let asset = this.state.assets.map((asset) => asset.label).join(', ');
 
     if(this.state.row.asset) {
-      if (this.state.assets.some(val => val.title === this.state.row.asset)) {
+      if (this.state.assets.some(val => val.title.toLowerCase() === this.state.row.asset.toLowerCase())) {
         return this.setState((state) => ({
           error: {
             ...state.error,
@@ -339,7 +339,7 @@ class CreateActivity extends Component {
   }
 
   addAsset = (asset) => {
-    if (this.state.assets.some(val => val.title === asset)) {
+    if (this.state.assets.some(val => val.title.toLowerCase() === asset.toLowerCase())) {
       return this.setState((state) => ({
         error: {
           ...state.error,
