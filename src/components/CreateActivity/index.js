@@ -259,7 +259,16 @@ class CreateActivity extends Component {
       customerMarketing,
     } = this.state.row;
 
-    const asset = this.state.assets.map((asset) => asset.label).join(', ');
+    let asset = this.state.assets.map((asset) => asset.label).join(', ');
+
+    if(this.state.row.asset) {
+      let assetArr = asset.split(',');
+      asset = [...assetArr, this.state.row.asset].join(', ');
+    }
+
+    if(asset.startsWith(',')) {
+      asset = asset.slice(1).trim();
+    }
 
     let row = {
       userId: loggedUser,
