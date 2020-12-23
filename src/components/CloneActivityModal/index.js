@@ -290,7 +290,15 @@ class CloneActivityModalComponent extends Component {
       let asset = this.state.assets.map((asset) => asset.label).join(', ');
 
       if(this.state.asset) {
-        let assetArr = asset.split(',');
+        if (this.state.assets.some(val => val.title === this.state.asset)) {
+          return this.setState((state) => ({
+            errors: {
+              ...state.errors,
+              assetRepeat: true,
+            },
+          }));
+        }
+        let assetArr = asset.split(', ');
         asset = [...assetArr, this.state.asset].join(', ');
       }
 
