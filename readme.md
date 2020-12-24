@@ -119,8 +119,11 @@ Run the scripts given in the directory `./packages/db/seed/dummy` , these are re
 
 ## Login into the app
 
-  Create a .env file at the root of the project inside this file, add the `AUTH_KEY` variable, when there is a request to the login endpoint `/login` API will check if this env var match with the password sent through the body request.
+  Before run the project you need to create a .env file at the root of the project inside this file, add the `AUTH_KEY` variable, when there is a request to the login endpoint `/login` API will check if this env var match with the password sent through the body request.
 
   In the frontend app, we also have to create the same env var, and the value of these two has to be the same.
+  There are two ways to login into the app, for more information refer to the frontend's app readme [https://github.globant.com/miller-gonzalez/salesforce-reporter-app](https://github.globant.com/miller-gonzalez/salesforce-reporter-app)
+
+  One of those need the setup and configuration of a salesforce org, to know more about it, read the official documentation on the next link [https://help.salesforce.com/articleView?id=setup_overview.htm&type=5](https://help.salesforce.com/articleView?id=setup_overview.htm&type=5)
 
   Remind that Heroku has its way to set the env vars and applies to test and production environments.
