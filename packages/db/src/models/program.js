@@ -305,7 +305,7 @@ class ProgramModel {
         if(program[key] !== previous[key]) {
           changes.push({
             field: key,
-            from: previous[key] || '',
+            from: previous[key],
             to: program[key],
           })
         }

@@ -79,6 +79,7 @@ const deleteProgram = async (req, res) => {
   try {
     const programId = req.swagger.params.id.value;
     const userId = req.swagger.params.userId.value;
+    const programToCheck = await ProgramModel.getProgramById(programId);
     const request = await ProgramModel.deleteProgram(programId);
 
     if(request === 'error') {
@@ -86,7 +87,7 @@ const deleteProgram = async (req, res) => {
     } else if(!request) {
       ApiUtils.reposeWithhSuccess(res, null, httpStatus.NOT_FOUND);
     } else {
-      await ProgramModel.logChanges(programId, userId, {}, {}, 'delete');
+      await ProgramModel.logChanges(programId, userId, programToCheck, {}, 'delete');
       ApiUtils.reposeWithhSuccess(res, request, httpStatus.OK);
     }
   } catch (err) {
