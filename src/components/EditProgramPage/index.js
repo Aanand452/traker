@@ -33,7 +33,7 @@ class EditProgramPage extends Component {
   setupAndFetch = async () => {
     if(window.location.hostname === 'localhost') this.API_URL =  "http://localhost:3000/api/v1";
     else this.API_URL = await getAPIUrl();
-    
+
     this.getPrograms();
   }
 
@@ -68,7 +68,7 @@ class EditProgramPage extends Component {
       });
     }
 
-    this.setState({showLoader: false});  
+    this.setState({showLoader: false});
   }
 
   onDelete = program => {
@@ -88,18 +88,19 @@ class EditProgramPage extends Component {
       showLoader: true,
     });
 
-    let token = getCookie('token').replaceAll('"','');
+    const token = getCookie('token').replaceAll('"','');
+    const userId = getCookie('userid').replaceAll('"','');
     const config = {
       method: 'DELETE',
       headers: {
         'Accept': 'application/json',
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`
+        'Authorization': `Bearer ${token}`,
       }
     }
 
     try {
-      const response = await fetch(`${this.API_URL}/program/${this.state.selectedProgram}`, config)
+      const response = await fetch(`${this.API_URL}/program/${this.state.selectedProgram}/${userId}`, config)
       if(response.status === 200) {
         await this.getPrograms();
 
