@@ -20,6 +20,7 @@ const getActivities = async (req, res) => {
 const addNewActivity = async (req, res) => {  
   try {
     const activity = await ActivityModel.addNewActivity(req.body);
+    await ActivityModel.logChanges(activity.activityId, req.body.userId, {}, activity, 'create');
     
     if(activity === 'error') ApiUtils.responseWithError(res, httpStatus.INTERNAL_SERVER_ERROR);
     else ApiUtils.reposeWithhSuccess(res, activity, httpStatus.OK);
@@ -55,7 +56,7 @@ const updateActivity = async (req, res) => {
       }
 
       const activity = await ActivityModel.updateActivity(activityId, body);
-      await ActivityModel.logChanges(activityId, req.body.userId, activityToCheck, activity);
+      await ActivityModel.logChanges(activityId, req.body.userId, activityToCheck, activity, 'update');
 
       if(activity === 'error') ApiUtils.responseWithError(res, httpStatus.INTERNAL_SERVER_ERROR);
       else ApiUtils.reposeWithhSuccess(res, activity, httpStatus.OK);
@@ -80,8 +81,9 @@ const getActivityById = async (req, res) => {
 
 const deleteActivity = async (req, res) => {
   try {
-    const activityId = req.body.activityId;
+    const {activityId, userId} = req.body;
     const request = await ActivityModel.deleteActivity(activityId);
+    await ActivityModel.logChanges(activityId, userId, request, {}, 'delete');
 
     if(request === 'error') ApiUtils.responseWithError(res, httpStatus.INTERNAL_SERVER_ERROR);
     else if(!request) ApiUtils.reposeWithhSuccess(res, null, httpStatus.NOT_FOUND);

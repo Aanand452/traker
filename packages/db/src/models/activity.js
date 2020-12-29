@@ -108,7 +108,7 @@ class ActivityModel {
     }
   };
 
-  static async logChanges(id, user, previous, activity) {
+  static async logChanges(id, user, previous, activity, method) {
     try {
       const keys = ['userId', 'title', 'campaignId', 'formatId', 'abstract', 'regionId', 'startDate', 'endDate', 'asset', 'programId', 'customerMarketing'];
       const activityLogId = uuidv4();
@@ -116,7 +116,7 @@ class ActivityModel {
 
       keys.forEach(key => {
         if(key === 'startDate' || key === 'endDate'){
-          if(moment(activity[key]).format('DD/MM/YYYY') !== moment(previous[key]).format('DD/MM/YYYY')) {
+          if(!activity[key] || !previous[key] || moment(activity[key]).format('DD/MM/YYYY') !== moment(previous[key]).format('DD/MM/YYYY')) {
             changes.push({
               field: key,
               from: previous[key],
@@ -139,7 +139,8 @@ class ActivityModel {
         activityId: id,
         userId: user,
         change: JSON.stringify(changes),
-        changeDate: Date.now()
+        changeDate: Date.now(),
+        method
       };
 
       const log = await ActivityLog.create(body);
