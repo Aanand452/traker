@@ -159,8 +159,6 @@ paths:
             allOf:
               - $ref: '#/definitions/ResponseStatus'
               - $ref: '#/definitions/Error'
-
-  /program/{id}/{userId}:
     delete:
       x-swagger-router-controller: program
       operationId: "deleteProgram"
@@ -174,11 +172,10 @@ paths:
           description: ID of program to be deleted
           required: true
           type: string
-        - in: path
-          name: userId
-          description: ID of user
-          required: true
-          type: string
+        - in: body
+          name: body
+          schema:
+            $ref: '#/definitions/ProgramBodyDelete'
       responses:
         200:
           description: Success
@@ -943,6 +940,13 @@ definitions:
         type: string
       personaId:
         type: string
+      userId:
+        type: string
+
+  ProgramBodyDelete:
+    description: Body used for delete program.
+    type: object
+    properties:
       userId:
         type: string
 

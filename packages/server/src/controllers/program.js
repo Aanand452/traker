@@ -78,7 +78,7 @@ const addNewProgram = async (req, res) => {
 const deleteProgram = async (req, res) => {
   try {
     const programId = req.swagger.params.id.value;
-    const userId = req.swagger.params.userId.value;
+    const userId = req.body.userId;
     const programToCheck = await ProgramModel.getProgramById(programId);
     const request = await ProgramModel.deleteProgram(programId);
 
