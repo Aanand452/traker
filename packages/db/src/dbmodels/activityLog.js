@@ -29,6 +29,11 @@ ActivityLog.init({
     allowNull: false,
     type: DataTypes.DATE,
     field: 'change_date',
+  },
+  method: {
+    allowNull: false,
+    type: DataTypes.STRING,
+    field: 'method',
   }
 }, {
   tableName: 'activity_logs',
