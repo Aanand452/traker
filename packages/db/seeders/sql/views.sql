@@ -23,3 +23,15 @@ a.asset,
 a.customer_marketing
 from activity a;
 
+-- program log report
+create view program_log_report as
+select
+  pl.program_log_id,
+  (select name from "user" where user_id = pl.user_id ) "user",
+  pl.program_id,
+  (select name from program where program_id = pl.program_id ) "program",
+  pl.change_date,
+  pl.method,
+  pl.change
+from program_logs pl;
+
