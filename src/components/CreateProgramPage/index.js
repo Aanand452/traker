@@ -247,7 +247,7 @@ class CreateProgramPage extends Component {
 
     this.setState({error: errors});
     if(Object.keys(errors).length > 0) return false;
-    
+
     return true;
   };
 
@@ -268,8 +268,10 @@ class CreateProgramPage extends Component {
       let segmentId = this.state.program.selectedSegments.map(el => el.id);
       let personaId = this.state.program.selectedPersonas.map(el => el.id);
 
-      let token = getCookie('token').replaceAll('"','');
+      const token = getCookie('token').replaceAll('"','');
+      const userId = getCookie('userid').replaceAll('"','');
       const body = {
+        userId,
         name: this.state.program.name,
         owner: this.state.program.owner,
         budget: Number(this.state.program.budget),
@@ -279,13 +281,13 @@ class CreateProgramPage extends Component {
         apm1Id,
         industryId,
         segmentId,
-        personaId
+        personaId,
       };
 
       if(this.state.program.selectedLifecycleStages) body.lifecycleStageId = this.state.program.selectedLifecycleStages.map(el => el.id);
       if(this.state.program.selectedApm2s) body.apm2Id = this.state.program.selectedApm2s.map(el => el.id);
       if(this.state.program.kpi) body.otherKpis = this.state.program.kpi;
-      
+
       const config = {
         method: 'POST',
         headers: {
