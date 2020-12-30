@@ -97,6 +97,7 @@ class EditActivityPage extends Component {
     });
     
     let token = getCookie('token').replaceAll('"','');
+    let userId = getCookie('userid').replaceAll('"','');
     const config = {
       method: 'DELETE',
       headers: {
@@ -104,7 +105,10 @@ class EditActivityPage extends Component {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${token}`
       },
-      body: JSON.stringify({activityId: this.state.selectedActivity})
+      body: JSON.stringify({
+        activityId: this.state.selectedActivity,
+        userId
+      })
     }
 
     try {
