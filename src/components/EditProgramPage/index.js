@@ -96,11 +96,14 @@ class EditProgramPage extends Component {
         'Accept': 'application/json',
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${token}`,
-      }
+      },
+      body: JSON.stringify({
+        userId,
+      })
     }
 
     try {
-      const response = await fetch(`${this.API_URL}/program/${this.state.selectedProgram}/${userId}`, config)
+      const response = await fetch(`${this.API_URL}/program/${this.state.selectedProgram}`, config)
       if(response.status === 200) {
         await this.getPrograms();
 
