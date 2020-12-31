@@ -60,6 +60,7 @@ const addNewProgram = async (req, res) => {
   try {
     const program = await ProgramModel.addNewProgram(req.body);
 
+
     if(program === 'Error') {
       ApiUtils.reposeWithhSuccess(res, httpStatus.INTERNAL_SERVER_ERROR);
     } else if(program === 'ValidationError') {
@@ -67,7 +68,8 @@ const addNewProgram = async (req, res) => {
     } else if(!program) {
       ApiUtils.reposeWithhSuccess(res, httpStatus.NOT_FOUND);
     } else {
-      await ProgramModel.logChanges(program.programId, req.body.userId, {}, program, 'create');
+      const programToCheck = await ProgramModel.getProgramById(program.programId);
+      await ProgramModel.logChanges(program.programId, req.body.userId, {}, programToCheck, 'create');
       ApiUtils.reposeWithhSuccess(res, program, httpStatus.OK);
     }
   } catch (err) {
