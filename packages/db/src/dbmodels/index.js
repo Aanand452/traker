@@ -1,5 +1,6 @@
 import Activity from './activity';
 import ActivityLog from './activityLog';
+import ProgramLog from './programLog';
 import Format from './format';
 import Program from './program';
 import Tactic from './tactic';
@@ -28,6 +29,7 @@ let db = {};
 
 db.Activity = Activity;
 db.ActivityLog = ActivityLog;
+db.ProgramLog = ProgramLog;
 db.Format = Format;
 db.Program = Program;
 db.Tactic = Tactic;

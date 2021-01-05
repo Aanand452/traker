@@ -1,4 +1,4 @@
-import db from '../dbmodels/';
+import db from '../dbmodels';
 import { v4 as uuidv4 } from 'uuid';
 import ProgramApm1 from './programApm1'
 import ProgramApm2 from './programApm2'
@@ -256,6 +256,7 @@ class ProgramModel {
         }
       });
 
+
       await ProgramApm1.removeProgramApm1s(id);
       await ProgramApm2.removeProgramApm2s(id);
       await ProgramLifecycle.removeProgramLifecycles(id);
@@ -270,12 +271,62 @@ class ProgramModel {
       body.segmentId.length && await ProgramSegment.addNewProgramSegment(id, body.segmentId);
       body.personaId.length && await ProgramPersona.addNewProgramPersona(id, body.personaId);
 
-      return await db.Program.findByPk(id);
+
+      return await ProgramModel.getProgramById(id);
     } catch (err) {
       console.error('Error updating an program', err);
       return 'error';
     }
   }
+
+   static async logChanges(id, user, previous, program, method) {
+    try {
+      const keys = [
+        'name',
+        'owner',
+        'budget',
+        'metrics',
+        'parentCampaignId',
+        'customerMessage',
+        'businessGoals',
+        'otherKpis',
+        'apm1',
+        'apm2',
+        'lifecycleStage',
+        'industry',
+        'segment',
+        'persona',
+        'targetRegion',
+      ];
+      const programLogId = uuidv4();
+      let changes = [];
+
+      keys.forEach(key => {
+        if(program[key] !== previous[key]) {
+          changes.push({
+            field: key,
+            from: previous[key],
+            to: program[key],
+          })
+        }
+      });
+
+      const body = {
+        programLogId,
+        programId: id,
+        userId: user,
+        change: JSON.stringify(changes),
+        changeDate: Date.now(),
+        method,
+      };
+
+      const log = await db.ProgramLog.create(body);
+      return log;
+    } catch (err) {
+      console.error('Error creating program Log', err);
+      return 'error';
+    }
+  };
 }
 
 export default ProgramModel;

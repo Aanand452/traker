@@ -1,24 +1,29 @@
 import { Model, DataTypes } from 'sequelize';
 import { sequelize } from '../connector';
 
-class ActivityLog extends Model {}
+class ProgramLog extends Model {}
 
-ActivityLog.init({
-  activityLogId: {
+ProgramLog.init({
+  programLogId: {
     allowNull: false,
     primaryKey: true,
     type: DataTypes.STRING,
-    field: 'activity_log_id',
+    field: 'program_log_id',
   },
-  activityId: {
+  programId: {
     allowNull: false,
     type: DataTypes.STRING,
-    field: 'activity_id',
+    field: 'program_id',
   },
   userId: {
     allowNull: false,
     type: DataTypes.STRING,
     field: 'user_id',
+  },
+  method: {
+    allowNull: false,
+    type: DataTypes.STRING,
+    field: 'method',
   },
   change: {
     allowNull: false,
@@ -29,16 +34,11 @@ ActivityLog.init({
     allowNull: false,
     type: DataTypes.DATE,
     field: 'change_date',
-  },
-  method: {
-    allowNull: false,
-    type: DataTypes.STRING,
-    field: 'method',
   }
 }, {
-  tableName: 'activity_logs',
-  sequelize: sequelize, 
+  tableName: 'program_logs',
+  sequelize: sequelize,
   timestamps: false
 });
 
-export default ActivityLog;
+export default ProgramLog;
