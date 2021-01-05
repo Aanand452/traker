@@ -287,6 +287,25 @@ class CloneActivityModalComponent extends Component {
     e.preventDefault();
 
     try {
+      let asset = this.state.assets.map((asset) => asset.label).join(', ');
+
+      if(this.state.asset) {
+        if (this.state.assets.some(val => val.title.toLowerCase() === this.state.asset.toLowerCase())) {
+          return this.setState((state) => ({
+            errors: {
+              ...state.errors,
+              assetRepeat: true,
+            },
+          }));
+        }
+        let assetArr = asset.split(', ');
+        asset = [...assetArr, this.state.asset].join(', ');
+      }
+
+      if(asset.startsWith(',')) {
+        asset = asset.slice(1).trim();
+      }
+
       let body = {
         title: this.state.title,
         campaignId: this.state.campaignId,
@@ -295,7 +314,7 @@ class CloneActivityModalComponent extends Component {
         regionId: this.state.regionSelection[0] && this.state.regionSelection[0].id,
         startDate: this.state.startDate,
         endDate: this.state.endDate,
-        asset: this.state.assets.map((asset) => asset.label).join(', '),
+        asset,
         customerMarketing: this.state.customerMarketing || false,
         userId: localStorage.getItem('userId'),
         programId: this.state.programSelection[0] && this.state.programSelection[0].id,
@@ -329,7 +348,7 @@ class CloneActivityModalComponent extends Component {
   }
 
   addAsset = (asset) => {
-    if (this.state.assets.some(val => val.title === asset)) {
+    if (this.state.assets.some(val => val.title.toLowerCase() === asset.toLowerCase())) {
       return this.setState((state) => ({
         errors: {
           ...state.errors,
@@ -423,7 +442,7 @@ class CloneActivityModalComponent extends Component {
                 options={this.state.program}
                 selection={this.state.programSelection}
                 variant="readonly"
-                errorText={this.state.errors.programId && "This field is required"}
+                errorText={this.state.errors.programId ? "This field is required" : ""}
               />
             </div>
             <div className="slds-form-element slds-m-bottom_large">
@@ -458,7 +477,7 @@ class CloneActivityModalComponent extends Component {
                 options={this.state.format}
                 selection={this.state.formatSelection}
                 variant="readonly"
-                errorText={this.state.errors.formatId && "This field is required"}
+                errorText={this.state.errors.formatId ? "This field is required" : ""}
               />
             </div>
             <div className="slds-form-element slds-m-bottom_large">
@@ -493,7 +512,7 @@ class CloneActivityModalComponent extends Component {
                 options={this.state.region}
                 selection={this.state.regionSelection}
                 variant="readonly"
-                errorText={this.state.errors.regionId && "This field is required"}
+                errorText={this.state.errors.regionId ? "This field is required" : ""}
               />
             </div>
             <div className={`slds-m-bottom_large slds-col slds-size_1-of-1 ${this.state.errors.startDate && "slds-has-error"}`}>

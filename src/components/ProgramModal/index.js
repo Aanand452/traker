@@ -29,7 +29,7 @@ class EditProgramModalComponent extends Component {
     segments: [],
     personas: [],
     program: {
-      
+
     },
     error: {},
     toast: {
@@ -46,7 +46,7 @@ class EditProgramModalComponent extends Component {
   setupAndFetch = async () => {
     if(window.location.hostname === 'localhost') this.API_URL =  "http://localhost:3000/api/v1";
     else this.API_URL = await getAPIUrl();
-    
+
     this.setProgramInState();
     this.getRegions();
     this.getLifecycles();
@@ -87,10 +87,12 @@ class EditProgramModalComponent extends Component {
       const response = await fetch(`${this.API_URL}/region`, config);
       const { result } = await response.json();
 
-      let regionId = result.filter(el => el.label === this.props.program.targetRegion);
+      let regions = result.map(el => ({...el, id: el.region_id}))
+
+      let regionId = regions.filter(el => el.label === this.props.program.targetRegion);
       let program = { ...this.state.program, regionId };
 
-      if(response.status === 200) this.setState({ regions: result, program });
+      if(response.status === 200) this.setState({ regions, program });
       else throw new Error(response);
     } catch (err) {
       this.showError(err);
@@ -237,7 +239,7 @@ class EditProgramModalComponent extends Component {
       const response = await fetch(`${this.API_URL}/persona`, config);
       const { result } = await response.json();
       const personas = result.map(item => ({id: item.personaId, label: item.name}));
-      
+
       let personaId = this.props.program.persona;
       let program = { ...this.state.program, personaId };
 
@@ -283,7 +285,7 @@ class EditProgramModalComponent extends Component {
 
     this.setState({error: errors});
     if(Object.keys(errors).length > 0) return false;
-    
+
     return true;
   };
 
@@ -306,7 +308,9 @@ class EditProgramModalComponent extends Component {
 
     try {
       let token = getCookie('token').replaceAll('"','');
+      const userId = getCookie('userid').replaceAll('"','');
       let program = {
+        userId,
         name: this.state.program.name,
         owner: this.state.program.owner,
         budget: Number(this.state.program.budget),
@@ -321,7 +325,7 @@ class EditProgramModalComponent extends Component {
       if(this.state.program.apm2Id.length) program.apm2Id = this.state.program.apm2Id.map(el => el.id);
       if(this.state.program.lifecycleStageId.length) program.lifecycleStageId = this.state.program.lifecycleStageId.map(el => el.id);
       if(this.state.program.kpi) program.otherKpis = this.state.program.kpi;
-      
+
       const config = {
         method: 'PUT',
         headers: {
@@ -341,7 +345,7 @@ class EditProgramModalComponent extends Component {
     }
   }
 
-	render() {     
+	render() {
 		return (
       <IconSettings iconPath="/assets/icons">
         {this.state.toast.active && (
@@ -357,8 +361,8 @@ class EditProgramModalComponent extends Component {
         <Modal
           isOpen={true}
           footer={[
-            <Button label="Cancel" onClick={() => this.props.toggleOpen(false)} />,
-            <Button type="submit" label="Save" variant="brand" onClick={() => this.validations() && this.toggleConfirmBox()} />,
+            <Button key="cancelBtn" label="Cancel" onClick={() => this.props.toggleOpen(false)} />,
+            <Button key="submitBtn" type="submit" label="Save" variant="brand" onClick={() => this.validations() && this.toggleConfirmBox()} />,
           ]}
           onRequestClose={() => this.props.toggleOpen(false)}
           heading={this.props.title}
