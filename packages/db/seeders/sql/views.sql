@@ -26,23 +26,20 @@ from activity a;
 -- program log report
 create view program_log_report as
 select
-  pl.program_log_id,
-  (select name from "user" where user_id = pl.user_id ) "user",
   pl.program_id,
-  (select name from program where program_id = pl.program_id ) "program",
-  date_trunc('day', pl.change_date) "change_date",
+  (select name from program where program_id = pl.program_id ) "program name",
+  (select name from "user" where user_id = pl.user_id ) "user name",
   pl.method,
-  pl.change
+  pl.change,
+  date_trunc('day', pl.change_date) "change date"
 from program_logs pl;
 
 -- activity logs report 
 CREATE VIEW activity_logs_report AS SELECT
-  a.activity_log_id,
   a.activity_id,
-  (SELECT title FROM activity WHERE activity_id = a.activity_id LIMIT 1) "title",
-  a.user_id,
-  (SELECT username from "user" WHERE user_id = a.user_id LIMIT 1) "username",
+  (SELECT title FROM activity WHERE activity_id = a.activity_id LIMIT 1) "activity title",
+  (SELECT name FROM "user" WHERE user_id = a.user_id LIMIT 1) "user name",
+  a.method,
   a.change,
-  date_trunc('day', a.change_date) "change_date",
-  a.method
+  date_trunc('day', a.change_date) "change date"
 FROM activity_logs a;
