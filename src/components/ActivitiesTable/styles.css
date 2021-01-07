@@ -13,3 +13,7 @@
 .slds-table_bordered tbody td {
   border-bottom: 1px solid #DDDBDA;
 }
+
+.dialog-classname {
+  max-width: 80vw;
+}

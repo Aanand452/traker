@@ -28,6 +28,7 @@ class EditProgramModalComponent extends Component {
     industries: [],
     segments: [],
     personas: [],
+    quarter: [{id:"1", label:"1"}, {id:"2", label:"2"}, {id:"3", label:"3"}, {id:"4", label:"4"}],
     program: {
 
     },
@@ -262,7 +263,9 @@ class EditProgramModalComponent extends Component {
       "apm1Id",
       "industryId",
       "segmentId",
-      "personaId"
+      "personaId",
+      "year",
+      "quarter"
     ];
 
     if (input) {
@@ -315,6 +318,8 @@ class EditProgramModalComponent extends Component {
         owner: this.state.program.owner,
         budget: Number(this.state.program.budget),
         metrics: Number(this.state.program.metrics),
+        quarter: Number(this.state.program.quarter[0].id),
+        year: Number(this.state.program.year),
         regionId: this.state.program.regionId[0].region_id,
         personaId,
         segmentId,
@@ -596,6 +601,31 @@ class EditProgramModalComponent extends Component {
                 value={this.state.program.kpi || ''}
                 onChange={(event, data) => this.handleChange("kpi", event.target.value)}
               />
+            </div>
+            <div className="slds-grid slds-gutters">
+              <div className="slds-m-bottom_large slds-col slds-size_1-of-2 slds-form-element">
+                <Input
+                  required
+                  placeholder="Enter fiscal year"
+                  label="Fiscal year"
+                  onChange={(event, data) => this.handleChange("year", data.value)}
+                  errorText={this.state.error.year}
+                  value={this.state.program.year}
+                  type="number"
+                />
+              </div>
+              <div className="slds-m-bottom_large slds-col slds-size_1-of-2 slds-form-element">
+                <Combobox
+                  required
+                  events={{onSelect: (event, data) => data.selection.length && this.handleChange("quarter", data.selection)}}
+                  labels={{label: 'Quarter'}}
+                  options={this.state.quarter}
+                  selection={this.state.program.quarter}
+                  value="quarter"
+                  variant="readonly"
+                  errorText={this.state.error.quarter}
+                />
+              </div>
             </div>
           </section>
         </Modal>
