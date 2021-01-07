@@ -208,6 +208,7 @@ class ProgramModel {
       if(!body.programId) throw new Error("It was imposible to create a program due to an id error");
 
       body.targetRegion = body.regionId;
+      body.year_quarter = Number(`${body.year}${body.quarter}`);
 
       const program = await db.Program.create(body);
 
@@ -249,7 +250,8 @@ class ProgramModel {
   static async updateProgram(id, body) {
     try{
       body.targetRegion = body.regionId;
-
+      body.year_quarter = Number(`${body.year}${body.quarter}`);
+      
       await db.Program.update(body, {
         where: {
           program_id: id
