@@ -6,6 +6,7 @@ import ProgramLifecycle from './programLifecycle'
 import ProgramIndustry from './programIndustry';
 import ProgramSegment from './programSegment';
 import ProgramPersona from './programPersona';
+import { Op } from "sequelize";
 
 class ProgramModel {
   static async getAllPrograms() {
@@ -23,12 +24,18 @@ class ProgramModel {
     }
   }
 
-  static async getAllProgramsFullByUser(id) {
+  static async getAllProgramsFullByUser(id, programsStartDate, programsEndDate) {
     try{
+      const regex = /[a-zA-Z]/g;
       let program = await db.Program.findAll({
         order: [
           ['name', 'ASC'],
         ],
+        where: {
+            year_quarter: {
+              [Op.between]: [programsStartDate.replace(regex, ''), programsEndDate.replace(regex, '')]
+            }
+        },
         raw : true
       });
 
