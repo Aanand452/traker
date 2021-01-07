@@ -56,7 +56,7 @@ Program.init({
     field: 'other_kpis',
   },
   year_quarter: {
-    allowNull: true,
+    allowNull: false,
     type: DataTypes.INTEGER,
     field: 'year_quarter',
   },
