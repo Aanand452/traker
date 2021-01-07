@@ -55,14 +55,19 @@ Program.init({
     type: DataTypes.STRING,
     field: 'other_kpis',
   },
+  year_quarter: {
+    allowNull: false,
+    type: DataTypes.INTEGER,
+    field: 'year_quarter',
+  },
 }, {
   tableName: 'program',
-  sequelize: sequelize, 
+  sequelize: sequelize,
   timestamps: false
 });
 
 Program.associate = models => {
-  // Program.belongsToMany(models.User, { 
+  // Program.belongsToMany(models.User, {
   //   through: 'program_user',
   //   foreignKey: 'program_id'
   // });
