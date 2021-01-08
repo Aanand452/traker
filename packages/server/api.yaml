@@ -225,7 +225,7 @@ paths:
               - $ref: '#/definitions/Error'
 
   /programs/region/{regionId}:
-    get:
+    post:
       x-swagger-router-controller: program
       operationId: "getProgramsByRegionId"
       summary: Returns the list of programs.
@@ -238,6 +238,11 @@ paths:
           description: ID of region to fetch programs
           required: true
           type: string
+        - name: body
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/FullProgramsBody'
       produces:
         - application/json
       responses:

@@ -34,10 +34,10 @@ class ProgramModel {
         programStartDate = Number(`${year - 1}4`);
         programEndDate = Number(`${year}4`);
       } else {
+        const regex = /[a-zA-Z]/g;
         programStartDate = programsStartDate.replace(regex, '');
         programEndDate = programsEndDate.replace(regex, '');
       }
-      const regex = /[a-zA-Z]/g;
 
       let program = await db.Program.findAll({
         order: [
@@ -122,11 +122,25 @@ class ProgramModel {
     }
   };
 
-  static async getProgramsByRegionId(id) {
+  static async getProgramsByRegionId(id, programsStartDate, programsEndDate) {
     try{
+      let programStartDate = null;
+      let programEndDate = null;
+      if (!programsStartDate || !programsEndDate) {
+        const year = moment().year();
+        programStartDate = Number(`${year - 1}4`);
+        programEndDate = Number(`${year}4`);
+      } else {
+        const regex = /[a-zA-Z]/g;
+        programStartDate = programsStartDate.replace(regex, '');
+        programEndDate = programsEndDate.replace(regex, '');
+      }
       let programs = await db.Program.findAll({
         where: {
-          target_region: id
+          target_region: id,
+          year_quarter: {
+            [Op.between]: [programStartDate, programEndDate]
+          }
         },
         order: [
           ['name', 'ASC'],
