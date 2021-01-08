@@ -27,8 +27,6 @@ class ProgramModel {
   static async getAllProgramsFullByUser(id, programsStartDate, programsEndDate) {
     try{
       const regex = /[a-zA-Z]/g;
-      const programsStartDate = 20204; // This line is used to test and is going to be removed
-      const programsEndDate = 20204; // This line is used to test and is going to be removed
 
       let program = await db.Program.findAll({
         order: [
@@ -36,8 +34,7 @@ class ProgramModel {
         ],
         where: {
             year_quarter: {
-              [Op.between]: [programsStartDate, programsEndDate] // This line is used to test and is going to be removed
-              // [Op.between]: [programsStartDate.replace(regex, ''), programsEndDate.replace(regex, '')]
+              [Op.between]: [programsStartDate.replace(regex, ''), programsEndDate.replace(regex, '')]
             }
         },
         raw : true
