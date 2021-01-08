@@ -33,7 +33,8 @@ const getProgramsFull = async (req, res) => {
 const getProgramsByRegionId = async (req, res) => {
   try {
     var regionId = req.swagger.params.regionId.value;
-    const programs = await ProgramModel.getProgramsByRegionId(regionId);
+    const { programsStartDate, programsEndDate } = req.body;
+    const programs = await ProgramModel.getProgramsByRegionId(regionId, programsStartDate, programsEndDate);
 
     if(programs === 'error') ApiUtils.responseWithError(res, httpStatus.INTERNAL_SERVER_ERROR);
     else if(!programs) ApiUtils.reposeWithhSuccess(res, null, httpStatus.NOT_FOUND);

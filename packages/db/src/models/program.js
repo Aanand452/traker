@@ -7,6 +7,7 @@ import ProgramIndustry from './programIndustry';
 import ProgramSegment from './programSegment';
 import ProgramPersona from './programPersona';
 import { Op } from "sequelize";
+import moment from "moment";
 
 class ProgramModel {
   static async getAllPrograms() {
@@ -26,7 +27,17 @@ class ProgramModel {
 
   static async getAllProgramsFullByUser(id, programsStartDate, programsEndDate) {
     try{
-      const regex = /[a-zA-Z]/g;
+      let programStartDate = null;
+      let programEndDate = null;
+      if (!programsStartDate || !programsEndDate) {
+        const year = moment().year();
+        programStartDate = Number(`${year - 1}4`);
+        programEndDate = Number(`${year}4`);
+      } else {
+        const regex = /[a-zA-Z]/g;
+        programStartDate = programsStartDate.replace(regex, '');
+        programEndDate = programsEndDate.replace(regex, '');
+      }
 
       let program = await db.Program.findAll({
         order: [
@@ -34,7 +45,7 @@ class ProgramModel {
         ],
         where: {
             year_quarter: {
-              [Op.between]: [programsStartDate.replace(regex, ''), programsEndDate.replace(regex, '')]
+              [Op.between]: [programStartDate, programEndDate]
             }
         },
         raw : true
@@ -111,11 +122,25 @@ class ProgramModel {
     }
   };
 
-  static async getProgramsByRegionId(id) {
+  static async getProgramsByRegionId(id, programsStartDate, programsEndDate) {
     try{
+      let programStartDate = null;
+      let programEndDate = null;
+      if (!programsStartDate || !programsEndDate) {
+        const year = moment().year();
+        programStartDate = Number(`${year - 1}4`);
+        programEndDate = Number(`${year}4`);
+      } else {
+        const regex = /[a-zA-Z]/g;
+        programStartDate = programsStartDate.replace(regex, '');
+        programEndDate = programsEndDate.replace(regex, '');
+      }
       let programs = await db.Program.findAll({
         where: {
-          target_region: id
+          target_region: id,
+          year_quarter: {
+            [Op.between]: [programStartDate, programEndDate]
+          }
         },
         order: [
           ['name', 'ASC'],
@@ -223,14 +248,14 @@ class ProgramModel {
       body.targetRegion = body.regionId;
       body.year_quarter = Number(`${body.year}${body.quarter}`);
       const program = await db.Program.create(body);
-      
+
       body.apm1Id.length && await ProgramApm1.addNewProgramApm1s(body.programId, body.apm1Id);
       body.apm2Id && body.apm2Id.length && await ProgramApm2.addNewProgramApm2s(body.programId, body.apm2Id);
       body.lifecycleStageId && body.lifecycleStageId.length && await ProgramLifecycle.addNewProgramLifecycles(body.programId, body.lifecycleStageId);
       body.industryId.length && await ProgramIndustry.addNewProgramIndustry(body.programId, body.industryId);
       body.segmentId.length && await ProgramSegment.addNewProgramSegment(body.programId, body.segmentId);
       body.personaId.length && await ProgramPersona.addNewProgramPersona(body.programId, body.personaId);
-      
+
       return program;
     } catch (err) {
       console.error('Error creating program', err);
