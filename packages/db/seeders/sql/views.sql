@@ -34,7 +34,7 @@ select
   date_trunc('day', pl.change_date) "change date"
 from program_logs pl;
 
--- activity logs report 
+-- activity logs report
 CREATE VIEW activity_logs_report AS SELECT
   a.activity_id,
   (SELECT title FROM activity WHERE activity_id = a.activity_id LIMIT 1) "activity title",
@@ -43,3 +43,16 @@ CREATE VIEW activity_logs_report AS SELECT
   a.change,
   date_trunc('day', a.change_date) "change date"
 FROM activity_logs a;
+
+-- program report v1
+create view program_report as select
+  p.program_id,
+  p.name,
+  p.owner,
+  p.budget,
+  p.metrics,
+  p.customer_message,
+  (select name from region where region_id = p.target_region ) region,
+  p.other_kpis,
+  ('FY' || substr('' || p.year_quarter, 1, 4) || 'Q' || substr('' || p.year_quarter, 5, 1))
+from program p;
