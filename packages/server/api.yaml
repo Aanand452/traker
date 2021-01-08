@@ -1005,6 +1005,12 @@ definitions:
           type: string
       otherKpis:
         type: string
+      year:
+        type: number
+      quarter:
+        type: number
+      year_quarter:
+        type: number
 
   ProgramListResponse:
     description: A list of programs.
