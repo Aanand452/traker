@@ -30,7 +30,7 @@ class CreateProgramPage extends Component {
     industries: [],
     segments: [],
     personas: [],
-    quarter: [{id:"1", label:"1"}, {id:"2", label:"2"}, {id:"3", label:"3"}, {id:"4", label:"4"}],
+    quarter: [{id:"1", label:"Q1"}, {id:"2", label:"Q2"}, {id:"3", label:"Q3"}, {id:"4", label:"Q4"}],
     program: {
       selectedApm1s: [],
       selectedApm2s: [],
@@ -38,6 +38,7 @@ class CreateProgramPage extends Component {
       selectedIndustries: [],
       selectedSegments: [],
       selectedPersonas: [],
+      year: ""
     },
     error: {},
     toast: {
@@ -245,6 +246,9 @@ class CreateProgramPage extends Component {
         } else if(this.state.program[input] && this.state.program[input].length > 0) {
           delete errors[input];
         } else {
+          if(this.state.program["year"].length !== 4) {
+            errors = {...errors, year: "This field is required"};
+          }
           errors = {...errors, [input]: "This field is required"};
         }
       })
@@ -257,6 +261,12 @@ class CreateProgramPage extends Component {
   };
 
   handleChange = (value, data) => {
+    
+    if(value === "year" && isNaN(data)) {
+      this.setState({year: ""});
+      return;
+    }
+
     const newRow = {...this.state.program, [value]: data};
 
     this.validations(value, data);
@@ -582,8 +592,7 @@ class CreateProgramPage extends Component {
                   onChange={(event, data) => this.handleChange("year", data.value)}
                   errorText={this.state.error.year}
                   value={this.state.program.year}
-                  minValue={0}
-                  type="number"
+                  maxLength="4"
                 />
               </div>
               <div className="slds-m-bottom_large slds-col slds-size_1-of-4 slds-form-element">

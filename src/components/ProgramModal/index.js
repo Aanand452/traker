@@ -28,9 +28,9 @@ class EditProgramModalComponent extends Component {
     industries: [],
     segments: [],
     personas: [],
-    quarter: [{id:"1", label:"1"}, {id:"2", label:"2"}, {id:"3", label:"3"}, {id:"4", label:"4"}],
+    quarter: [{id:"1", label:"Q1"}, {id:"2", label:"Q2"}, {id:"3", label:"Q3"}, {id:"4", label:"Q4"}],
     program: {
-
+      year: ""
     },
     error: {},
     toast: {
@@ -59,8 +59,8 @@ class EditProgramModalComponent extends Component {
   }
 
   setProgramInState = () => {
-    let { budget, customerMessage, metrics, name, parentCampaignId, owner, otherKpis } = this.props.program;
-    this.setState({ program: { budget, customerMessage, metrics, name, parentCampaignId, owner, kpi: otherKpis } })
+    let { budget, customerMessage, metrics, name, parentCampaignId, owner, otherKpis, year, quarter } = this.props.program;
+    this.setState({ program: { budget, customerMessage, metrics, name, parentCampaignId, owner, kpi: otherKpis, year, quarter: [{id: quarter, label: `Q${quarter}`}] } })
   }
 
   showError = err => {
@@ -281,6 +281,9 @@ class EditProgramModalComponent extends Component {
         } else if(this.state.program[input] && this.state.program[input].length > 0) {
           delete errors[input];
         } else {
+          if(this.state.program["year"].length !== 4) {
+            errors = {...errors, year: "This field is required"};
+          }
           errors = {...errors, [input]: "This field is required"};
         }
       })
@@ -293,6 +296,10 @@ class EditProgramModalComponent extends Component {
   };
 
   handleChange = (value, data) => {
+    if(value === "year" && isNaN(data)) {
+      this.setState({year: ""});
+      return;
+    }
     let program = {...this.state.program, [value]: data};
     this.validations(value, data);
     this.setState({ program });
@@ -611,7 +618,7 @@ class EditProgramModalComponent extends Component {
                   onChange={(event, data) => this.handleChange("year", data.value)}
                   errorText={this.state.error.year}
                   value={this.state.program.year}
-                  type="number"
+                  maxLength="4"
                 />
               </div>
               <div className="slds-m-bottom_large slds-col slds-size_1-of-2 slds-form-element">
