@@ -27,6 +27,7 @@ class ProgramModel {
   static async getAllProgramsFullByUser(id, programsStartDate, programsEndDate) {
     try{
       const regex = /[a-zA-Z]/g;
+
       let program = await db.Program.findAll({
         order: [
           ['name', 'ASC'],
@@ -63,6 +64,9 @@ class ProgramModel {
         let persona = await ProgramPersona.getProgramPersonas(el.programId);
         persona = persona.map(per => ({id: per.personaId, label: per.name}));
 
+        let year = el.year_quarter.toString().slice(0,4);
+        let quarter = el.year_quarter.toString().slice(4,5);
+
         return {
           programId: el.programId,
           name: el.name,
@@ -78,7 +82,9 @@ class ProgramModel {
           segment,
           persona,
           customerMessage: el.customerMessage,
-          otherKpis: el.otherKpis
+          otherKpis: el.otherKpis,
+          year,
+          quarter
         }
       }));
 
@@ -215,16 +221,16 @@ class ProgramModel {
       if(!body.programId) throw new Error("It was imposible to create a program due to an id error");
 
       body.targetRegion = body.regionId;
-
+      body.year_quarter = Number(`${body.year}${body.quarter}`);
       const program = await db.Program.create(body);
-
+      
       body.apm1Id.length && await ProgramApm1.addNewProgramApm1s(body.programId, body.apm1Id);
       body.apm2Id && body.apm2Id.length && await ProgramApm2.addNewProgramApm2s(body.programId, body.apm2Id);
       body.lifecycleStageId && body.lifecycleStageId.length && await ProgramLifecycle.addNewProgramLifecycles(body.programId, body.lifecycleStageId);
       body.industryId.length && await ProgramIndustry.addNewProgramIndustry(body.programId, body.industryId);
       body.segmentId.length && await ProgramSegment.addNewProgramSegment(body.programId, body.segmentId);
       body.personaId.length && await ProgramPersona.addNewProgramPersona(body.programId, body.personaId);
-
+      
       return program;
     } catch (err) {
       console.error('Error creating program', err);
@@ -256,6 +262,7 @@ class ProgramModel {
   static async updateProgram(id, body) {
     try{
       body.targetRegion = body.regionId;
+      body.year_quarter = Number(`${body.year}${body.quarter}`);
 
       await db.Program.update(body, {
         where: {
