@@ -271,6 +271,8 @@ class EditProgramModalComponent extends Component {
     if (input) {
       if(inputs.includes(input) && !data) {
         errors = {...errors, [input]: "This field is required"};
+      } else if(input === "year" && data.length > 0 && data.length !== 4) {
+        errors = {...errors, year: "This field must contain 4 character"};
       } else {
         delete errors[input];
       }
@@ -278,13 +280,16 @@ class EditProgramModalComponent extends Component {
       inputs.forEach((input) => {
         if(typeof this.state.program[input] === "number" && this.state.program[input] >= 0) {
           delete errors[input];
-        } else if(this.state.program[input] && this.state.program[input].length > 0) {
+        } else if(this.state.program[input] && input !== "year"  && this.state.program[input].length > 0) {
           delete errors[input];
+        } else if(this.state.program["year"].length === 4) {
+          delete errors["year"];
         } else {
-          if(this.state.program["year"].length !== 4) {
-            errors = {...errors, year: "This field is required"};
+          if(this.state.program["year"].length !== 4 && this.state.program["year"].length > 0) {
+            errors = {...errors, [input]: "This field is required", year: "This field must contain 4 character"};
+          } else {
+            errors = {...errors, [input]: "This field is required"};
           }
-          errors = {...errors, [input]: "This field is required"};
         }
       })
     }
