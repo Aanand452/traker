@@ -28,14 +28,14 @@ module.exports = function (app, config, passport) {
             'Accept': 'application/json',
             'Content-Type': 'application/json',
           },
-  
+
           body: JSON.stringify({
             username: req.user.email,
             password: process.env.AUTH_KEY
           })
         });
         const response = await request.json();
-        
+
         if(response.result.userId) {
           res.cookie('userid', JSON.stringify(response.result.userId));
           res.cookie('userName', JSON.stringify(response.result.name));
@@ -126,10 +126,12 @@ module.exports = function (app, config, passport) {
     res.send({
       tablaeu: process.env.TABLAEU || '/',
       api: process.env.API || 'http://localhost:3000',
-      activitiesDate: process.env.ACTIVITIES_DATE
+      activitiesDate: process.env.ACTIVITIES_DATE,
+      programsFYstartDate: process.env.PROGRAMS_FY_START_DATE,
+      programsFYendDate: process.env.PROGRAMS_FY_END_DATE,
     });
   });
-  
+
   const authMiddlewares = [];
   if(process.env.SSO === 'true') {
     authMiddlewares.push(isAuthenticated, isUserAllowed);

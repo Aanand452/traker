@@ -1,11 +1,13 @@
 import React, { Component } from 'react';
 import { withRouter } from 'react-router-dom';
+import moment from 'moment';
 import {
   IconSettings,
   ToastContainer,
   Toast,
   Input,
   Combobox,
+  Datepicker,
   Button,
   Textarea,
   Panel,
@@ -28,13 +30,15 @@ class CreateProgramPage extends Component {
     industries: [],
     segments: [],
     personas: [],
+    quarter: [{id:"1", label:"Q1"}, {id:"2", label:"Q2"}, {id:"3", label:"Q3"}, {id:"4", label:"Q4"}],
     program: {
       selectedApm1s: [],
       selectedApm2s: [],
       selectedLifecycleStages: [],
       selectedIndustries: [],
       selectedSegments: [],
-      selectedPersonas: []
+      selectedPersonas: [],
+      year: ""
     },
     error: {},
     toast: {
@@ -224,12 +228,16 @@ class CreateProgramPage extends Component {
       "selectedApm1s",
       "selectedIndustries",
       "selectedSegments",
-      "selectedPersonas"
+      "selectedPersonas",
+      "year",
+      "quarter"
     ];
 
     if (input) {
       if(inputs.includes(input) && !data) {
         errors = {...errors, [input]: "This field is required"};
+      } else if(input === "year" && data.length > 0 && data.length !== 4) {
+        errors = {...errors, year: "This field must contain 4 character"};
       } else {
         delete errors[input];
       }
@@ -237,10 +245,16 @@ class CreateProgramPage extends Component {
       inputs.forEach((input) => {
         if(typeof this.state.program[input] === "number" && this.state.program[input] >= 0) {
           delete errors[input];
-        } else if(this.state.program[input] && this.state.program[input].length > 0) {
+        } else if(this.state.program[input] && input !== "year"  && this.state.program[input].length > 0) {
           delete errors[input];
+        } else if(this.state.program["year"].length === 4) {
+          delete errors["year"];
         } else {
-          errors = {...errors, [input]: "This field is required"};
+          if(this.state.program["year"].length !== 4 && this.state.program["year"].length > 0) {
+            errors = {...errors, [input]: "This field is required", year: "This field must contain 4 character"};
+          } else {
+            errors = {...errors, [input]: "This field is required"};
+          }
         }
       })
     }
@@ -252,6 +266,12 @@ class CreateProgramPage extends Component {
   };
 
   handleChange = (value, data) => {
+    
+    if(value === "year" && isNaN(data)) {
+      this.setState({year: ""});
+      return;
+    }
+
     const newRow = {...this.state.program, [value]: data};
 
     this.validations(value, data);
@@ -277,6 +297,8 @@ class CreateProgramPage extends Component {
         budget: Number(this.state.program.budget),
         metrics: Number(this.state.program.metrics),
         customerMessage: this.state.program.customerMessage,
+        quarter: Number(this.state.program.quarter[0].id),
+        year: Number(this.state.program.year),
         regionId: this.state.program.regionId[0].region_id,
         apm1Id,
         industryId,
@@ -565,6 +587,29 @@ class CreateProgramPage extends Component {
                   placeholder="Enter kpi's"
                   value={this.state.program.kpi || ''}
                   onChange={(event, data) => this.handleChange("kpi", event.target.value)}
+                />
+              </div>
+              <div className="slds-m-bottom_large slds-col slds-size_1-of-4 slds-form-element">
+                <Input
+                  required
+                  placeholder="Enter fiscal year"
+                  label="Fiscal year"
+                  onChange={(event, data) => this.handleChange("year", data.value)}
+                  errorText={this.state.error.year}
+                  value={this.state.program.year}
+                  maxLength="4"
+                />
+              </div>
+              <div className="slds-m-bottom_large slds-col slds-size_1-of-4 slds-form-element">
+                <Combobox
+                  required
+                  events={{onSelect: (event, data) => data.selection.length && this.handleChange("quarter", data.selection)}}
+                  labels={{label: 'Quarter'}}
+                  options={this.state.quarter}
+                  selection={this.state.program.quarter}
+                  value="quarter"
+                  variant="readonly"
+                  errorText={this.state.error.quarter}
                 />
               </div>
               <div className="slds-col slds-size_1-of-1">

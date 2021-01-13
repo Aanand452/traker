@@ -17,6 +17,8 @@ class EditProgramPage extends Component {
     },
     programs: [],
     selectedProgram: '',
+    programsFYstartDate: '',
+    programsFYendDate: '',
   }
 
   componentDidMount() {
@@ -30,10 +32,24 @@ class EditProgramPage extends Component {
     }
   }
 
+  async getConfig(){
+    try{
+      const request = await fetch('/config');
+      const data = await request.json();
+      request.status === 200 && this.setState({
+        programsFYstartDate: data.programsFYstartDate,
+        programsFYendDate: data.programsFYendDate
+      });
+
+    } catch(e) {
+      console.error('ERROR: cannot get the url config: ', e);
+    }
+  }
+
   setupAndFetch = async () => {
     if(window.location.hostname === 'localhost') this.API_URL =  "http://localhost:3000/api/v1";
     else this.API_URL = await getAPIUrl();
-
+    await this.getConfig();
     this.getPrograms();
   }
 
@@ -41,15 +57,21 @@ class EditProgramPage extends Component {
     this.setState({showLoader: true});
     const user = localStorage.getItem('userId');
 
+    const { programsFYstartDate, programsFYendDate } = this.state;
+
     try {
       let token = getCookie('token').replaceAll('"','');
       const config = {
-        method: 'GET',
+        method: 'POST',
         headers: {
           'Accept': 'application/json',
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`
-        }
+        },
+        body: JSON.stringify({
+          programsStartDate: programsFYstartDate,
+          programsEndDate: programsFYendDate,
+        })
       }
       const response = await fetch(`${this.API_URL}/programs/${user}`, config);
       if(response.status === 200) {
