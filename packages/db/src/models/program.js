@@ -25,7 +25,7 @@ class ProgramModel {
     }
   }
 
-  static async getAllProgramsFullByUser(id) {
+  static async getAllProgramsFullByUser(id, programsStartDate, programsEndDate) {
     try{
       let programStartDate = null;
       let programEndDate = null;
@@ -75,6 +75,9 @@ class ProgramModel {
         let persona = await ProgramPersona.getProgramPersonas(el.programId);
         persona = persona.map(per => ({id: per.personaId, label: per.name}));
 
+        let year = el.year_quarter.toString().slice(0,4);
+        let quarter = el.year_quarter.toString().slice(4,5);
+
         return {
           programId: el.programId,
           name: el.name,
@@ -90,7 +93,9 @@ class ProgramModel {
           segment,
           persona,
           customerMessage: el.customerMessage,
-          otherKpis: el.otherKpis
+          otherKpis: el.otherKpis,
+          year,
+          quarter
         }
       }));
 
@@ -241,6 +246,7 @@ class ProgramModel {
       if(!body.programId) throw new Error("It was imposible to create a program due to an id error");
 
       body.targetRegion = body.regionId;
+      body.year_quarter = Number(`${body.year}${body.quarter}`);
 
       const program = await db.Program.create(body);
 
@@ -282,6 +288,7 @@ class ProgramModel {
   static async updateProgram(id, body) {
     try{
       body.targetRegion = body.regionId;
+      body.year_quarter = Number(`${body.year}${body.quarter}`);
 
       await db.Program.update(body, {
         where: {
