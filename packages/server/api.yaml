@@ -190,7 +190,7 @@ paths:
               - $ref: '#/definitions/Error'
 
   /programs/{userId}:
-    get:
+    post:
       x-swagger-router-controller: program
       operationId: "getProgramsFull"
       summary: Returns the list of programs.
@@ -203,6 +203,11 @@ paths:
           description: ID of user to fetch programs
           required: true
           type: string
+        - name: body
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/FullProgramsBody'
       produces:
         - application/json
       responses:
@@ -220,7 +225,7 @@ paths:
               - $ref: '#/definitions/Error'
 
   /programs/region/{regionId}:
-    get:
+    post:
       x-swagger-router-controller: program
       operationId: "getProgramsByRegionId"
       summary: Returns the list of programs.
@@ -233,6 +238,11 @@ paths:
           description: ID of region to fetch programs
           required: true
           type: string
+        - name: body
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/FullProgramsBody'
       produces:
         - application/json
       responses:
@@ -950,6 +960,14 @@ definitions:
       userId:
         type: string
 
+  FullProgramsBody:
+    description: Body used for retrieve full list of programs.
+    type: object
+    properties:
+      programsStartDate:
+        type: string
+      programsEndDate:
+        type: string
   ProgramBody:
     description: Body used for creating a new program.
     type: object
@@ -992,6 +1010,12 @@ definitions:
           type: string
       otherKpis:
         type: string
+      year:
+        type: number
+      quarter:
+        type: number
+      year_quarter:
+        type: number
 
   ProgramListResponse:
     description: A list of programs.

@@ -6,6 +6,8 @@ import ProgramLifecycle from './programLifecycle'
 import ProgramIndustry from './programIndustry';
 import ProgramSegment from './programSegment';
 import ProgramPersona from './programPersona';
+import { Op } from "sequelize";
+import moment from "moment";
 
 class ProgramModel {
   static async getAllPrograms() {
@@ -23,12 +25,29 @@ class ProgramModel {
     }
   }
 
-  static async getAllProgramsFullByUser(id) {
+  static async getAllProgramsFullByUser(id, programsStartDate, programsEndDate) {
     try{
+      let programStartDate = null;
+      let programEndDate = null;
+      if (!programsStartDate || !programsEndDate) {
+        const year = moment().year();
+        programStartDate = Number(`${year - 1}4`);
+        programEndDate = Number(`${year}4`);
+      } else {
+        const regex = /[a-zA-Z]/g;
+        programStartDate = programsStartDate.replace(regex, '');
+        programEndDate = programsEndDate.replace(regex, '');
+      }
+
       let program = await db.Program.findAll({
         order: [
           ['name', 'ASC'],
         ],
+        where: {
+            year_quarter: {
+              [Op.between]: [programStartDate, programEndDate]
+            }
+        },
         raw : true
       });
 
@@ -56,6 +75,9 @@ class ProgramModel {
         let persona = await ProgramPersona.getProgramPersonas(el.programId);
         persona = persona.map(per => ({id: per.personaId, label: per.name}));
 
+        let year = el.year_quarter.toString().slice(0,4);
+        let quarter = el.year_quarter.toString().slice(4,5);
+
         return {
           programId: el.programId,
           name: el.name,
@@ -71,7 +93,9 @@ class ProgramModel {
           segment,
           persona,
           customerMessage: el.customerMessage,
-          otherKpis: el.otherKpis
+          otherKpis: el.otherKpis,
+          year,
+          quarter
         }
       }));
 
@@ -98,11 +122,25 @@ class ProgramModel {
     }
   };
 
-  static async getProgramsByRegionId(id) {
+  static async getProgramsByRegionId(id, programsStartDate, programsEndDate) {
     try{
+      let programStartDate = null;
+      let programEndDate = null;
+      if (!programsStartDate || !programsEndDate) {
+        const year = moment().year();
+        programStartDate = Number(`${year - 1}4`);
+        programEndDate = Number(`${year}4`);
+      } else {
+        const regex = /[a-zA-Z]/g;
+        programStartDate = programsStartDate.replace(regex, '');
+        programEndDate = programsEndDate.replace(regex, '');
+      }
       let programs = await db.Program.findAll({
         where: {
-          target_region: id
+          target_region: id,
+          year_quarter: {
+            [Op.between]: [programStartDate, programEndDate]
+          }
         },
         order: [
           ['name', 'ASC'],
@@ -208,6 +246,7 @@ class ProgramModel {
       if(!body.programId) throw new Error("It was imposible to create a program due to an id error");
 
       body.targetRegion = body.regionId;
+      body.year_quarter = Number(`${body.year}${body.quarter}`);
 
       const program = await db.Program.create(body);
 
@@ -249,6 +288,7 @@ class ProgramModel {
   static async updateProgram(id, body) {
     try{
       body.targetRegion = body.regionId;
+      body.year_quarter = Number(`${body.year}${body.quarter}`);
 
       await db.Program.update(body, {
         where: {
@@ -279,7 +319,25 @@ class ProgramModel {
     }
   }
 
-   static async logChanges(id, user, previous, program, method) {
+  static async etlUpdateFYQ(id) {
+    try {
+      const program = await db.Program.findByPk(id, {
+        raw : true
+      });
+
+      program.year_quarter = 20204
+
+      await db.Program.update(program, {
+        where: {
+          program_id: id
+        }
+      });
+    } catch {
+      console.log('Error updating programs FYQ');
+    }
+  }
+
+  static async logChanges(id, user, previous, program, method) {
     try {
       const keys = [
         'name',
