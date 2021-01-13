@@ -17,6 +17,7 @@ import {
   PageHeaderControl,
   ToastContainer,
   Toast,
+  Tooltip
 } from "@salesforce/design-system-react";
 
 import { getCookie } from '../../utils/cookie';
@@ -55,13 +56,22 @@ const DropDownCellAsset = ({ children, ...props }) => {
   if (props.item[items]) {
     const assets = props.item[items].split(', ');
     if (assets.length > 1) {
-      const options = assets.map((asset) => ({ label: 'view asset', value: asset }));
+      const options = assets.map((asset, i) => ({ label: `Asset ${i + 1}`, value: asset, tooltipContent: asset }));
       return (
         <DataTableRowActions
           options={options}
           menuPosition="overflowBoundaryElement"
           dropdown={
             <Dropdown
+              width="small"
+              tooltipMenuItem={
+                <Tooltip
+                  id="base"
+                  align="top right"
+                  variant="learnMore"
+                  dialogClassName="dialog-classname"
+                />
+              }
               onSelect={({ value }) => {
                 window.open(value, '_blank');
               }}

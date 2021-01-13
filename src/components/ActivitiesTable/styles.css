@@ -15,5 +15,7 @@
 }
 
 .dialog-classname {
-  max-width: 80vw;
+  max-width: 50vw;
+  white-space: break-spaces;
+  line-height: 1.5;
 }
