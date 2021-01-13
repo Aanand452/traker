@@ -247,6 +247,7 @@ class ProgramModel {
 
       body.targetRegion = body.regionId;
       body.year_quarter = Number(`${body.year}${body.quarter}`);
+
       const program = await db.Program.create(body);
 
       body.apm1Id.length && await ProgramApm1.addNewProgramApm1s(body.programId, body.apm1Id);
@@ -318,7 +319,25 @@ class ProgramModel {
     }
   }
 
-   static async logChanges(id, user, previous, program, method) {
+  static async etlUpdateFYQ(id) {
+    try {
+      const program = await db.Program.findByPk(id, {
+        raw : true
+      });
+
+      program.year_quarter = 20204
+
+      await db.Program.update(program, {
+        where: {
+          program_id: id
+        }
+      });
+    } catch {
+      console.log('Error updating programs FYQ');
+    }
+  }
+
+  static async logChanges(id, user, previous, program, method) {
     try {
       const keys = [
         'name',
