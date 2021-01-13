@@ -14,7 +14,8 @@
     "import-activities": "babel-node --presets @babel/env ./seeders/etl/upload-activity.js",
     "import-users": "babel-node --presets @babel/env ./seeders/etl/upload-user.js",
     "check-activities": "babel-node --presets @babel/env ./seeders/etl/check-activities.js",
-    "import-minor-tables": "babel-node --presets @babel/env ./seeders/etl/upload-minor-tables.js"
+    "import-minor-tables": "babel-node --presets @babel/env ./seeders/etl/upload-minor-tables.js",
+    "update-programs-FYQ": "babel-node --presets @babel/env ./seeders/etl/update-programs-FYQ.js"
   },
   "dependencies": {
     "@babel/preset-env": "^7.11.5",
