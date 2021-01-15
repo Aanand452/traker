@@ -310,20 +310,11 @@ class Table extends Component {
               this.handleResetHistoric();
             } else {
               this.setState({
-                isHistoric: true
+                isHistoric: true,
+                historicModalOpen: true
               });
             }
           }}
-        />
-        <Button
-          assistiveText={{ icon: 'Refresh'}}
-          iconCategory="utility"
-          iconName="refresh"
-          iconVariant="border-filled"
-          variant="icon"
-          title="Reset table"
-          disabled={!this.state.isHistoric}
-          onClick={this.handleResetHistoric}
         />
         <Button
           assistiveText={{ icon: 'Search'}}
