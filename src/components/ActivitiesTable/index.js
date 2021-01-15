@@ -68,6 +68,7 @@ const DropDownCellAsset = ({ children, ...props }) => {
               width="small"
               tooltipMenuItem={
                 <Tooltip
+                  hoverOpenDelay={500}
                   id="base"
                   align="top right"
                   variant="learnMore"
