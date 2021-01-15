@@ -842,78 +842,102 @@ class Table extends Component {
           heading="View program"
         >
         <section className="slds-p-around_large">
+          <div className="slds-m-bottom_small">
             <div className="slds-text-title">
             Program owner:
             </div>
             <div className="slds-text-heading_small">
               {this.state.viewItem.owner || ' - '}
             </div>
+          </div>
+          <div className="slds-m-bottom_small">
             <div className="slds-text-title">
             Program name:
             </div>
             <div className="slds-text-heading_small">
               {this.state.viewItem.name || ' - '}
             </div>
+          </div>
+          <div className="slds-m-bottom_small">
             <div className="slds-text-title">
             Budget:
             </div>
             <div className="slds-text-heading_small">
               ${Number(this.state.viewItem.budget).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}) || ' - '}
             </div>
+          </div>
+          <div className="slds-m-bottom_small">
             <div className="slds-text-title">
             MP target:
             </div>
             <div className="slds-text-heading_small">
               ${Number(this.state.viewItem.metrics).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}) || ' - '}
             </div>
+          </div>
+          <div className="slds-m-bottom_small">
             <div className="slds-text-title">
             Target region:
             </div>
             <div className="slds-text-heading_small">
               {this.state.viewItem.targetRegion || ' - '}
             </div>
+          </div>
+          <div className="slds-m-bottom_small">
             <div className="slds-text-title">
             Lifecycle stage:
             </div>
             <div className="slds-text-heading_small">
               {this.state.viewItem.lifecycleStage && this.state.viewItem.lifecycleStage.length ? this.state.viewItem.lifecycleStage.map((val) => val.label).join(', ') : ' - '}
             </div>
+          </div>
+          <div className="slds-m-bottom_small">
             <div className="slds-text-title">
             APM 1:
             </div>
             <div className="slds-text-heading_small">
               {this.state.viewItem.lifecycleStage && this.state.viewItem.lifecycleStage.length ? this.state.viewItem.apm1.map((val) => val.label).join(', ') : ' - '}
             </div>
+          </div>
+          <div className="slds-m-bottom_small">
             <div className="slds-text-title">
             APM 2:
             </div>
             <div className="slds-text-heading_small">
               {this.state.viewItem.lifecycleStage && this.state.viewItem.lifecycleStage.length ? this.state.viewItem.apm2.map((val) => val.label).join(', ') : ' - '}
             </div>
+          </div>
+          <div className="slds-m-bottom_small">
             <div className="slds-text-title">
             Persona:
             </div>
             <div className="slds-text-heading_small">
               {this.state.viewItem.lifecycleStage && this.state.viewItem.lifecycleStage.length ? this.state.viewItem.persona.map((val) => val.label).join(', ') : ' - '}
             </div>
+          </div>
+          <div className="slds-m-bottom_small">
             <div className="slds-text-title">
             Segment:
             </div>
             <div className="slds-text-heading_small">
               {this.state.viewItem.lifecycleStage && this.state.viewItem.lifecycleStage.length ? this.state.viewItem.segment.map((val) => val.label).join(', ') : ' - '}
             </div>
+          </div>
+          <div className="slds-m-bottom_small">
             <div className="slds-text-title">
             Other KPIS:
             </div>
             <div className="slds-text-heading_small">
               {this.state.viewItem.otherKpis || ' - '}
             </div>
+          </div>
+          <div className="slds-m-bottom_small">
             <div className="slds-text-title">
             Customer message:
             </div>
             <div className="slds-text-heading_small">
               {this.state.viewItem.customerMessage || ' - '}
             </div>
+          </div>
         </section>
         </Modal>
       </Container>
