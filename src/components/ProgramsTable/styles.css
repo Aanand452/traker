@@ -13,3 +13,9 @@
 .slds-table_bordered tbody td {
   border-bottom: 1px solid #DDDBDA;
 }
+
+.program-modal-overflow {
+  max-height: 400px;
+  overflow: auto;
+  word-break: break-all;
+}

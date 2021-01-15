@@ -53,7 +53,7 @@ class EditProgramPage extends Component {
     this.getPrograms();
   }
 
-  getPrograms = async () => {
+  getPrograms = async (startDate, endDate) => {
     this.setState({showLoader: true});
     const user = localStorage.getItem('userId');
 
@@ -69,8 +69,8 @@ class EditProgramPage extends Component {
           'Authorization': `Bearer ${token}`
         },
         body: JSON.stringify({
-          programsStartDate: programsFYstartDate,
-          programsEndDate: programsFYendDate,
+          programsStartDate: startDate ? startDate : programsFYstartDate,
+          programsEndDate:  endDate ? endDate :  programsFYendDate,
         })
       }
       const response = await fetch(`${this.API_URL}/programs/${user}`, config);
@@ -162,6 +162,10 @@ class EditProgramPage extends Component {
     this.getPrograms();
   }
 
+  onGetHistoric = (startDate, endDate) => {
+    this.getPrograms(startDate, endDate);
+  }
+
   render() {
     return (
       <Container>
@@ -178,7 +182,12 @@ class EditProgramPage extends Component {
               />
             </ToastContainer>
           )}
-          <ProgramsTable onEdit={this.onEdit} onDelete={this.onDelete} data={this.state.programs} />
+          <ProgramsTable
+            onEdit={this.onEdit}
+            onDelete={this.onDelete}
+            onGetHistoric={this.onGetHistoric}
+            data={this.state.programs}
+          />
         </IconSettings>
       </Container>
     );
