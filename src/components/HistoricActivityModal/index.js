@@ -45,7 +45,7 @@ class HistoricActivityModal extends Component {
     let errors = this.validate();
     if(Object.values(errors).some(el => el)) return;
 
-    this.props.getHistoricActivities(startDate, endDate);
+    this.props.getActivities(startDate, endDate);
     this.props.closeHistoricModal();
   }
 

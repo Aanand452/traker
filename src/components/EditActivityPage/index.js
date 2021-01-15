@@ -52,10 +52,10 @@ class EditActivityPage extends Component {
     }
   }
 
-  getActivities = async () => {
+  getActivities = async (startDate = this.state.activitiesDate, endDate) => {
     this.setState({showLoader: true});
     const user = localStorage.getItem('userId');
-    const body = { startDate: this.state.activitiesDate };
+    const body = { startDate, endDate };
     let token = getCookie('token').replaceAll('"','');
     const config = {
       method: 'POST',
@@ -169,7 +169,7 @@ class EditActivityPage extends Component {
     return (
       <Container>
         <IconSettings iconPath="/assets/icons">
-          <ActivitiesTable getHistoricActivities={this.getHistoricActivities} data={this.state.activities} onDelete={this.onDelete} reloadActivities={this.getActivities} />
+          <ActivitiesTable data={this.state.activities} onDelete={this.onDelete} reloadActivities={this.getActivities} />
           
           <ConfirmationDailog isOpen={this.state.showConfirmationDialog} onClose={this.closeConfirmationDialog} onConfirm={this.deleteActivity} />
           {this.state.showLoader && <Spinner size="small" variant="brand" assistiveText={{ label: "Loading..." }} />}

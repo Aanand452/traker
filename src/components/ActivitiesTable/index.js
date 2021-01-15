@@ -626,7 +626,7 @@ class Table extends Component {
 
         {this.state.historicModalIsOpen && (
           <HistoricModal
-            getHistoricActivities={this.props.getHistoricActivities}
+            getActivities={this.props.reloadActivities}
             closeHistoricModal={this.closeHistoricModal}
           />
         )}
