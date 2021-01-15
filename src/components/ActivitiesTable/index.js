@@ -24,6 +24,8 @@ import { getCookie } from '../../utils/cookie';
 import { getAPIUrl } from "../../config/config";
 import Modal from "../EditActivityModal";
 import CloneModal from "../CloneActivityModal";
+import HistoricModal from "../HistoricActivityModal";
+import ViewActivityModal from "../ViewActivityModal";
 import Pager from "../Pager";
 
 // ACTIONS
@@ -107,7 +109,10 @@ class Table extends Component {
     expandTable: true,
     columnWidth: {},
     tableExtraWidth: 0,
-    noRowHover: false
+    noRowHover: false,
+    isHistoric: false,
+    historicModalIsOpen: false,
+    detailModalIsOpen: false
   };
 
   table = React.createRef()
@@ -373,8 +378,51 @@ class Table extends Component {
     }
   }
 
+  closeHistoricModal = () => this.setState({historicModalIsOpen: false})
+  
+  closeDetailModal = () => this.setState({detailModalIsOpen: false})
+
+  resetHistoric = () => {
+    this.props.reloadActivities();
+    this.setState({isHistoric: !this.state.isHistoric});
+  }
+
+  historicBtn = () => {
+    this.setState({isHistoric: !this.state.isHistoric}, () => {
+      if(!this.state.isHistoric) {
+        this.props.reloadActivities();
+      }
+    })
+  }
+
   actions = () => (
     <PageHeaderControl>
+      <ButtonGroup id="button-group-page-header-actions-history">
+        <Button
+          iconCategory="utility"
+          label="Historic"
+          variant={this.state.isHistoric ? "brand" : "neutral"}
+          onClick={this.historicBtn}
+        />
+        <Button
+          assistiveText={{icon: "Refresh"}}
+          iconCategory="utility"
+          iconName="refresh"
+          iconVariant="border-filled"
+          title="Reset table"
+          onClick={this.resetHistoric}
+          disabled={!this.state.isHistoric}
+        />
+        <Button
+          assistiveText={{icon: "Search"}}
+          iconCategory="utility"
+          iconName="search"
+          iconVariant="border-filled"
+          title="Search activities in historic"
+          onClick={() => this.setState({historicModalIsOpen: !this.state.historicModalIsOpen})}
+          disabled={!this.state.isHistoric}
+        />
+      </ButtonGroup>
       <ButtonGroup id="button-group-page-header-actions">
         <Link to="/create-activity">
           <Button label="New" />
@@ -456,6 +504,10 @@ class Table extends Component {
       case 2:
         this.props.setItem(item);
         this.toggleOpen("cloneModalIsOPen");
+        break;
+      case 3:
+        this.props.setItem(item);
+        this.toggleOpen("detailModalIsOpen");
         break;
       default:
         break;
@@ -581,6 +633,18 @@ class Table extends Component {
             onToast={this.onToast}
             toggleOpen={this.toggleOpen}
             reloadActivities={this.props.reloadActivities}
+          />
+        )}
+
+        {this.state.historicModalIsOpen && (
+          <HistoricModal
+            getHistoricActivities={this.props.getHistoricActivities}
+            closeHistoricModal={this.closeHistoricModal}
+          />
+        )}
+        {this.state.detailModalIsOpen && (
+          <ViewActivityModal
+            closeDetailModal={this.closeDetailModal}
           />
         )}
         {this.state.editModalIsOPen && (
@@ -714,7 +778,13 @@ class Table extends Component {
           </DataTableColumn>
 
           <DataTableRowActions
-            options={[
+            options={this.state.isHistoric ? [
+              {
+                id: 3,
+                label: "View",
+                value: "4",
+              }
+            ] : [
               {
                 id: 0,
                 label: "Edit",

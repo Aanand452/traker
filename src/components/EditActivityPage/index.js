@@ -79,6 +79,33 @@ class EditActivityPage extends Component {
     this.setState({showLoader: false});  
   }
 
+  getHistoricActivities = async (startDate, endDate ) => {
+    this.setState({showLoader: true});
+    const user = localStorage.getItem('userId');
+    const body = { startDate, endDate };
+    let token = getCookie('token').replaceAll('"','');
+    const config = {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      },
+      body: JSON.stringify(body)
+    };
+
+    try {
+      const request = await fetch(`${this.API_URL}/activities/${user}`, config);
+      const response = await request.json();
+
+      this.setState({activities: response.result.map(item => ({...item, id: item.activityId}))});
+    } catch (err) {
+      console.error(err);
+    }
+
+    this.setState({showLoader: false});  
+  }
+
   onDelete = (activity) => {
     this.setState({
       showConfirmationDialog: true,
@@ -142,7 +169,7 @@ class EditActivityPage extends Component {
     return (
       <Container>
         <IconSettings iconPath="/assets/icons">
-          <ActivitiesTable data={this.state.activities} onDelete={this.onDelete} reloadActivities={this.getActivities} />
+          <ActivitiesTable getHistoricActivities={this.getHistoricActivities} data={this.state.activities} onDelete={this.onDelete} reloadActivities={this.getActivities} />
           
           <ConfirmationDailog isOpen={this.state.showConfirmationDialog} onClose={this.closeConfirmationDialog} onConfirm={this.deleteActivity} />
           {this.state.showLoader && <Spinner size="small" variant="brand" assistiveText={{ label: "Loading..." }} />}
