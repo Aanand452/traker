@@ -382,15 +382,12 @@ class Table extends Component {
   
   closeDetailModal = () => this.setState({detailModalIsOpen: false})
 
-  resetHistoric = () => {
-    this.props.reloadActivities();
-    this.setState({isHistoric: !this.state.isHistoric});
-  }
-
   historicBtn = () => {
     this.setState({isHistoric: !this.state.isHistoric}, () => {
       if(!this.state.isHistoric) {
         this.props.reloadActivities();
+      } else {
+        this.setState({historicModalIsOpen: true})
       }
     })
   }
@@ -403,15 +400,6 @@ class Table extends Component {
           label="Historic"
           variant={this.state.isHistoric ? "brand" : "neutral"}
           onClick={this.historicBtn}
-        />
-        <Button
-          assistiveText={{icon: "Refresh"}}
-          iconCategory="utility"
-          iconName="refresh"
-          iconVariant="border-filled"
-          title="Reset table"
-          onClick={this.resetHistoric}
-          disabled={!this.state.isHistoric}
         />
         <Button
           assistiveText={{icon: "Search"}}
