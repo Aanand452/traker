@@ -908,7 +908,9 @@ definitions:
     description: Body used for get the activities based in a date filter
     type: object
     properties:
-      date:
+      startDate:
+        type: string
+      endDate:
         type: string
 
   DeleteActivity:
