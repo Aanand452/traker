@@ -6,17 +6,36 @@ import moment from 'moment';
 import { Op } from 'sequelize';
 
 class ActivityModel {
-  static async getAllActivitiesByUser(id, date) {
+  static async getAllActivitiesByUser(id, startDate, endDate) {
     try{
-      const activities = await db.Activity.findAll({
-        include: [db.User, db.Format, db.Region, db.Program],
-        where: {
-          startDate : {[Op.gte]: date ? moment(date, 'DD/MM/YYYY') : moment().subtract(90, 'days')}
-        },
-        order: [
-          ['title', 'ASC'],
-        ]
-      });
+      let activities;
+
+      if(endDate) {
+        activities = await db.Activity.findAll({
+          include: [db.User, db.Format, db.Region, db.Program],
+          where: {
+            startDate: {
+              [Op.between]: [
+                moment(startDate, 'DD/MM/YYYY'),
+                moment(endDate, 'DD/MM/YYYY'),
+              ]
+            }
+          },
+          order: [
+            ['title', 'ASC'],
+          ]
+        });  
+      } else {
+        activities = await db.Activity.findAll({
+          include: [db.User, db.Format, db.Region, db.Program],
+          where: {
+            startDate : {[Op.gte]: startDate ? moment(startDate, 'DD/MM/YYYY') : moment().subtract(90, 'days')}
+          },
+          order: [
+            ['title', 'ASC'],
+          ]
+        });  
+      }
 
       const minActivities = activities.map(activity => {
         return ({
