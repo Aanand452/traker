@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import moment from 'moment';
 import {
   IconSettings,
   Modal,
@@ -60,11 +61,11 @@ class ViewActivityModal extends Component {
             </div>
             <div className="slds-m-bottom_small">
               <div className="slds-text-title">Start date</div>
-              <div className="slds-text-heading_small">{this.props.item.startDate ? this.props.item.startDate :"-"}</div>
+              <div className="slds-text-heading_small">{this.props.item.startDate ? moment(this.props.item.startDate).utc().format('DD/MM/YYYY') :"-"}</div>
             </div>
             <div className="slds-m-bottom_small">
               <div className="slds-text-title">End date</div>
-              <div className="slds-text-heading_small">{this.props.item.endDate ? this.props.item.endDate : "-"}</div>
+              <div className="slds-text-heading_small">{this.props.item.endDate ? moment(this.props.item.endDate).utc().format('DD/MM/YYYY') : "-"}</div>
             </div>
             <div className="slds-m-bottom_small">
               <div className="slds-text-title">{this.props.item.asset.length > 1 ? "Assets" : "Asset"}</div>
@@ -72,7 +73,6 @@ class ViewActivityModal extends Component {
                 !this.props.item.asset ? "-" : (this.props.item.asset.length > 1
                   ? this.props.item.asset.split(',').map(el => <div key={el} className="slds-text-heading_small slds-m-bottom_x-small">{el}</div>)
                   : <div className="slds-text-heading_small">{this.props.item.asset}</div> )
-
               }
             </div>
           </section>

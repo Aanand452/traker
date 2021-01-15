@@ -55,7 +55,7 @@ class EditActivityPage extends Component {
   getActivities = async () => {
     this.setState({showLoader: true});
     const user = localStorage.getItem('userId');
-    const body = { date: this.state.activitiesDate };
+    const body = { startDate: this.state.activitiesDate };
     let token = getCookie('token').replaceAll('"','');
     const config = {
       method: 'POST',
