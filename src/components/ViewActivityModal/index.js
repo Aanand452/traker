@@ -68,7 +68,7 @@ class ViewActivityModal extends Component {
               <div className="slds-text-heading_small">{this.props.item.endDate ? moment(this.props.item.endDate).utc().format('DD/MM/YYYY') : "-"}</div>
             </div>
             <div className="slds-m-bottom_small">
-              <div className="slds-text-title">{this.props.item.asset.length > 1 ? "Assets" : "Asset"}</div>
+              <div className="slds-text-title">Assets</div>
               {
                 !this.props.item.asset ? "-" : (this.props.item.asset.length > 1
                   ? this.props.item.asset.split(',').map(el => <div key={el} className="slds-text-heading_small slds-m-bottom_x-small">{el}</div>)
