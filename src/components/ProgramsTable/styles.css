@@ -17,5 +17,4 @@
 .program-modal-overflow {
   max-height: 400px;
   overflow: auto;
-  word-break: break-all;
 }
