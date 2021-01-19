@@ -17,12 +17,15 @@ import {
   PageHeaderControl,
   ToastContainer,
   Toast,
+  Tooltip
 } from "@salesforce/design-system-react";
 
 import { getCookie } from '../../utils/cookie';
 import { getAPIUrl } from "../../config/config";
 import Modal from "../EditActivityModal";
 import CloneModal from "../CloneActivityModal";
+import HistoricModal from "../HistoricActivityModal";
+import ViewActivityModal from "../ViewActivityModal";
 import Pager from "../Pager";
 
 // ACTIONS
@@ -55,13 +58,23 @@ const DropDownCellAsset = ({ children, ...props }) => {
   if (props.item[items]) {
     const assets = props.item[items].split(', ');
     if (assets.length > 1) {
-      const options = assets.map((asset) => ({ label: 'view asset', value: asset }));
+      const options = assets.map((asset, i) => ({ label: `Asset ${i + 1}`, value: asset, tooltipContent: asset }));
       return (
         <DataTableRowActions
           options={options}
           menuPosition="overflowBoundaryElement"
           dropdown={
             <Dropdown
+              width="small"
+              tooltipMenuItem={
+                <Tooltip
+                  hoverOpenDelay={500}
+                  id="base"
+                  align="top right"
+                  variant="learnMore"
+                  dialogClassName="dialog-classname"
+                />
+              }
               onSelect={({ value }) => {
                 window.open(value, '_blank');
               }}
@@ -97,7 +110,10 @@ class Table extends Component {
     expandTable: true,
     columnWidth: {},
     tableExtraWidth: 0,
-    noRowHover: false
+    noRowHover: false,
+    isHistoric: false,
+    historicModalIsOpen: false,
+    detailModalIsOpen: false
   };
 
   table = React.createRef()
@@ -300,8 +316,9 @@ class Table extends Component {
       let response = await fetch(`${this.API_URL}/program`, config);
       if (response.status === 200) {
         let { result } = await response.json();
+        let programs = result.map(el => ({...el, id: el.program_id}))
         this.setState({
-          programs: [{ label: "All" }, ...result],
+          programs: [{ label: "All", id: "all" }, ...programs],
         });
       } else throw new Error(response);
     } catch (err) {
@@ -323,8 +340,9 @@ class Table extends Component {
       let response = await fetch(`${this.API_URL}/region`, config);
       if (response.status === 200) {
         let { result } = await response.json();
+        let regions = result.map(el => ({...el, id: el.region_id}));
         this.setState({
-          regions: [{ label: "All" }, ...result],
+          regions: [{ label: "All", id: "all" }, ...regions],
         });
       } else {
         throw new Error(response);
@@ -349,8 +367,9 @@ class Table extends Component {
       if (response.status === 200) {
         let { result } = await response.json();
         result = result.map((item) => ({ label: item.name, ...item }));
+        let formats = result.map(el => ({...el, id: el.format_id}))
         this.setState({
-          formats: [{ label: "All" }, ...result],
+          formats: [{ label: "All", id: "all" }, ...formats],
         });
       } else {
         throw new Error(response);
@@ -360,8 +379,39 @@ class Table extends Component {
     }
   }
 
+  closeHistoricModal = () => this.setState({historicModalIsOpen: false})
+  
+  closeDetailModal = () => this.setState({detailModalIsOpen: false})
+
+  historicBtn = () => {
+    this.setState({isHistoric: !this.state.isHistoric}, () => {
+      if(!this.state.isHistoric) {
+        this.props.reloadActivities();
+      } else {
+        this.setState({historicModalIsOpen: true})
+      }
+    })
+  }
+
   actions = () => (
     <PageHeaderControl>
+      <ButtonGroup id="button-group-page-header-actions-history">
+        <Button
+          iconCategory="utility"
+          label="Historic"
+          variant={this.state.isHistoric ? "brand" : "neutral"}
+          onClick={this.historicBtn}
+        />
+        <Button
+          assistiveText={{icon: "Search"}}
+          iconCategory="utility"
+          iconName="search"
+          iconVariant="border-filled"
+          title="Search activities in historic"
+          onClick={() => this.setState({historicModalIsOpen: !this.state.historicModalIsOpen})}
+          disabled={!this.state.isHistoric}
+        />
+      </ButtonGroup>
       <ButtonGroup id="button-group-page-header-actions">
         <Link to="/create-activity">
           <Button label="New" />
@@ -444,6 +494,10 @@ class Table extends Component {
         this.props.setItem(item);
         this.toggleOpen("cloneModalIsOPen");
         break;
+      case 3:
+        this.props.setItem(item);
+        this.toggleOpen("detailModalIsOpen");
+        break;
       default:
         break;
     }
@@ -474,7 +528,7 @@ class Table extends Component {
     this.setState({
       data: this.props.data,
       sortProperty: "",
-      sortDirection: "",
+      sortDirection: null,
       isPanelOpen: false,
       filters: {},
       currentPage: 1,
@@ -570,6 +624,18 @@ class Table extends Component {
             reloadActivities={this.props.reloadActivities}
           />
         )}
+
+        {this.state.historicModalIsOpen && (
+          <HistoricModal
+            getActivities={this.props.reloadActivities}
+            closeHistoricModal={this.closeHistoricModal}
+          />
+        )}
+        {this.state.detailModalIsOpen && (
+          <ViewActivityModal
+            closeDetailModal={this.closeDetailModal}
+          />
+        )}
         {this.state.editModalIsOPen && (
           <Modal
             data={this.props.dataTable.item}
@@ -635,37 +701,37 @@ class Table extends Component {
           }
         >
           <DataTableColumn
-            width={this.state.columnWidth['Owner']}
+            width={`${this.state.columnWidth['Owner']}px`}
             label="Owner"
             property="userId"
           />
           <DataTableColumn
-            width={this.state.columnWidth['Program']}
+            width={`${this.state.columnWidth['Program']}px`}
             label="Program"
             property="programId"
           />
           <DataTableColumn
-            width={this.state.columnWidth['Campaign ID']}
+            width={`${this.state.columnWidth['Campaign ID']}px`}
             label="Campaign ID"
             property="campaignId"
           />
           <DataTableColumn
-            width={this.state.columnWidth['Title']}
+            width={`${this.state.columnWidth['Title']}px`}
             label="Title"
             property="title"
           />
           <DataTableColumn
-            width={this.state.columnWidth['Format']}
+            width={`${this.state.columnWidth['Format']}px`}
             label="Format"
             property="formatId"
           />
           <DataTableColumn
-            width={this.state.columnWidth['Abstract']}
+            width={`${this.state.columnWidth['Abstract']}px`}
             label="Abstract"
             property="abstract"
           />
           <DataTableColumn
-            width={this.state.columnWidth['Region']}
+            width={`${this.state.columnWidth['Region']}px`}
             sortDirection={this.state.sortDirection || "desc"}
             sortable
             isSorted={this.state.sortProperty === "regionId"}
@@ -673,7 +739,7 @@ class Table extends Component {
             property="regionId"
           />
           <DataTableColumn
-            width={this.state.columnWidth['Start date']}
+            width={`${this.state.columnWidth['Start date']}px`}
             isSorted={this.state.sortProperty === "startDate"}
             label="Start date"
             property="startDate"
@@ -683,7 +749,7 @@ class Table extends Component {
             <DateCell />
           </DataTableColumn>
           <DataTableColumn
-            width={this.state.columnWidth['End date']}
+            width={`${this.state.columnWidth['End date']}px`}
             isSorted={this.state.sortProperty === "endDate"}
             label="End date"
             property="endDate"
@@ -693,7 +759,7 @@ class Table extends Component {
             <DateCell />
           </DataTableColumn>
           <DataTableColumn
-            width={this.state.columnWidth['Assets']}
+            width={`${this.state.columnWidth['Assets']}px`}
             label="Assets"
             property="asset"
           >
@@ -701,7 +767,13 @@ class Table extends Component {
           </DataTableColumn>
 
           <DataTableRowActions
-            options={[
+            options={this.state.isHistoric ? [
+              {
+                id: 3,
+                label: "View",
+                value: "4",
+              }
+            ] : [
               {
                 id: 0,
                 label: "Edit",

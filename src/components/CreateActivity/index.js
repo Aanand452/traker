@@ -50,11 +50,27 @@ class CreateActivity extends Component {
       heading: 'Something went wrong',
       duration: 5000,
       active: false
-    }
+    },
+    programsFYstartDate: '',
+    programsFYendDate: '',
   }
 
   componentDidMount() {
     this.setupAndFetch();
+  }
+
+  async getConfig(){
+    try{
+      const request = await fetch('/config');
+      const data = await request.json();
+      request.status === 200 && this.setState({
+        programsFYstartDate: data.programsFYstartDate,
+        programsFYendDate: data.programsFYendDate
+      });
+
+    } catch(e) {
+      console.error('ERROR: cannot get the url config: ', e);
+    }
   }
 
   getUser = () => {
@@ -63,8 +79,12 @@ class CreateActivity extends Component {
   }
 
   setupAndFetch = async () => {
-    if(window.location.hostname === 'localhost') this.API_URL =  "http://localhost:3000/api/v1";
-    else this.API_URL = await getAPIUrl();
+    if(window.location.hostname === 'localhost') {
+      this.API_URL =  "http://localhost:3000/api/v1";
+    } else {
+      this.API_URL = await getAPIUrl();
+    }
+    await this.getConfig();
 
     this.getUser();
     this.checkRegion();
@@ -102,14 +122,19 @@ class CreateActivity extends Component {
   async checkProgramByRegion(id) {
     try {
       let token = getCookie('token').replaceAll('"','');
+      const { programsFYstartDate, programsFYendDate } = this.state;
       const config = {
-        method: 'GET',
+        method: 'POST',
         headers: {
           'Accept': 'application/json',
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`
-        }
-      }
+        },
+        body: JSON.stringify({
+          programsStartDate: programsFYstartDate,
+          programsEndDate: programsFYendDate,
+        })
+      };
       let response = await fetch(`${this.API_URL}/programs/region/${id}`, config);
       if(response.status === 200) {
         let { result } = await response.json();
@@ -245,7 +270,6 @@ class CreateActivity extends Component {
 
   validateSubmit = (e) => {
     e.preventDefault();
-    const errors = this.validations();
     let { loggedUser } = this.state;
     let {
       abstract,
@@ -259,7 +283,24 @@ class CreateActivity extends Component {
       customerMarketing,
     } = this.state.row;
 
-    const asset = this.state.assets.map((asset) => asset.label).join(', ');
+    let asset = this.state.assets.map((asset) => asset.label).join(', ');
+
+    if(this.state.row.asset) {
+      if (this.state.assets.some(val => val.title.toLowerCase() === this.state.row.asset.toLowerCase())) {
+        return this.setState((state) => ({
+          error: {
+            ...state.error,
+            asset: 'Repeated URL',
+          },
+        }));
+      }
+      let assetArr = asset.split(', ');
+      asset = [...assetArr, this.state.row.asset].join(', ');
+    }
+
+    if(asset.startsWith(',')) {
+      asset = asset.slice(1).trim();
+    }
 
     let row = {
       userId: loggedUser,
@@ -274,6 +315,8 @@ class CreateActivity extends Component {
       campaignId,
       customerMarketing
     }
+
+    const errors = this.validations();
 
     if (Object.keys(errors).length === 0) {
       this.onSubmit(row);
@@ -321,7 +364,7 @@ class CreateActivity extends Component {
   }
 
   addAsset = (asset) => {
-    if (this.state.assets.some(val => val.title === asset)) {
+    if (this.state.assets.some(val => val.title.toLowerCase() === asset.toLowerCase())) {
       return this.setState((state) => ({
         error: {
           ...state.error,

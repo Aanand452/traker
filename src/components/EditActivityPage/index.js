@@ -52,10 +52,10 @@ class EditActivityPage extends Component {
     }
   }
 
-  getActivities = async () => {
+  getActivities = async (startDate = this.state.activitiesDate, endDate) => {
     this.setState({showLoader: true});
     const user = localStorage.getItem('userId');
-    const body = { date: this.state.activitiesDate };
+    const body = { startDate, endDate };
     let token = getCookie('token').replaceAll('"','');
     const config = {
       method: 'POST',
@@ -97,6 +97,7 @@ class EditActivityPage extends Component {
     });
     
     let token = getCookie('token').replaceAll('"','');
+    let userId = getCookie('userid').replaceAll('"','');
     const config = {
       method: 'DELETE',
       headers: {
@@ -104,7 +105,10 @@ class EditActivityPage extends Component {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${token}`
       },
-      body: JSON.stringify({activityId: this.state.selectedActivity})
+      body: JSON.stringify({
+        activityId: this.state.selectedActivity,
+        userId
+      })
     }
 
     try {

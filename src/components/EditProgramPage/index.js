@@ -17,6 +17,8 @@ class EditProgramPage extends Component {
     },
     programs: [],
     selectedProgram: '',
+    programsFYstartDate: '',
+    programsFYendDate: '',
   }
 
   componentDidMount() {
@@ -30,26 +32,46 @@ class EditProgramPage extends Component {
     }
   }
 
+  async getConfig(){
+    try{
+      const request = await fetch('/config');
+      const data = await request.json();
+      request.status === 200 && this.setState({
+        programsFYstartDate: data.programsFYstartDate,
+        programsFYendDate: data.programsFYendDate
+      });
+
+    } catch(e) {
+      console.error('ERROR: cannot get the url config: ', e);
+    }
+  }
+
   setupAndFetch = async () => {
     if(window.location.hostname === 'localhost') this.API_URL =  "http://localhost:3000/api/v1";
     else this.API_URL = await getAPIUrl();
-    
+    await this.getConfig();
     this.getPrograms();
   }
 
-  getPrograms = async () => {
+  getPrograms = async (startDate, endDate) => {
     this.setState({showLoader: true});
     const user = localStorage.getItem('userId');
+
+    const { programsFYstartDate, programsFYendDate } = this.state;
 
     try {
       let token = getCookie('token').replaceAll('"','');
       const config = {
-        method: 'GET',
+        method: 'POST',
         headers: {
           'Accept': 'application/json',
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`
-        }
+        },
+        body: JSON.stringify({
+          programsStartDate: startDate ? startDate : programsFYstartDate,
+          programsEndDate:  endDate ? endDate :  programsFYendDate,
+        })
       }
       const response = await fetch(`${this.API_URL}/programs/${user}`, config);
       if(response.status === 200) {
@@ -68,7 +90,7 @@ class EditProgramPage extends Component {
       });
     }
 
-    this.setState({showLoader: false});  
+    this.setState({showLoader: false});
   }
 
   onDelete = program => {
@@ -88,14 +110,18 @@ class EditProgramPage extends Component {
       showLoader: true,
     });
 
-    let token = getCookie('token').replaceAll('"','');
+    const token = getCookie('token').replaceAll('"','');
+    const userId = getCookie('userid').replaceAll('"','');
     const config = {
       method: 'DELETE',
       headers: {
         'Accept': 'application/json',
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`
-      }
+        'Authorization': `Bearer ${token}`,
+      },
+      body: JSON.stringify({
+        userId,
+      })
     }
 
     try {
@@ -136,6 +162,10 @@ class EditProgramPage extends Component {
     this.getPrograms();
   }
 
+  onGetHistoric = (startDate, endDate) => {
+    this.getPrograms(startDate, endDate);
+  }
+
   render() {
     return (
       <Container>
@@ -152,7 +182,12 @@ class EditProgramPage extends Component {
               />
             </ToastContainer>
           )}
-          <ProgramsTable onEdit={this.onEdit} onDelete={this.onDelete} data={this.state.programs} />
+          <ProgramsTable
+            onEdit={this.onEdit}
+            onDelete={this.onDelete}
+            onGetHistoric={this.onGetHistoric}
+            data={this.state.programs}
+          />
         </IconSettings>
       </Container>
     );

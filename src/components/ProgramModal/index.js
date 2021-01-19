@@ -28,8 +28,9 @@ class EditProgramModalComponent extends Component {
     industries: [],
     segments: [],
     personas: [],
+    quarter: [{id:"1", label:"Q1"}, {id:"2", label:"Q2"}, {id:"3", label:"Q3"}, {id:"4", label:"Q4"}],
     program: {
-      
+      year: ""
     },
     error: {},
     toast: {
@@ -46,7 +47,7 @@ class EditProgramModalComponent extends Component {
   setupAndFetch = async () => {
     if(window.location.hostname === 'localhost') this.API_URL =  "http://localhost:3000/api/v1";
     else this.API_URL = await getAPIUrl();
-    
+
     this.setProgramInState();
     this.getRegions();
     this.getLifecycles();
@@ -58,8 +59,8 @@ class EditProgramModalComponent extends Component {
   }
 
   setProgramInState = () => {
-    let { budget, customerMessage, metrics, name, parentCampaignId, owner, otherKpis } = this.props.program;
-    this.setState({ program: { budget, customerMessage, metrics, name, parentCampaignId, owner, kpi: otherKpis } })
+    let { budget, customerMessage, metrics, name, parentCampaignId, owner, otherKpis, year, quarter } = this.props.program;
+    this.setState({ program: { budget, customerMessage, metrics, name, parentCampaignId, owner, kpi: otherKpis, year, quarter: [{id: quarter, label: `Q${quarter}`}] } })
   }
 
   showError = err => {
@@ -87,10 +88,12 @@ class EditProgramModalComponent extends Component {
       const response = await fetch(`${this.API_URL}/region`, config);
       const { result } = await response.json();
 
-      let regionId = result.filter(el => el.label === this.props.program.targetRegion);
+      let regions = result.map(el => ({...el, id: el.region_id}))
+
+      let regionId = regions.filter(el => el.label === this.props.program.targetRegion);
       let program = { ...this.state.program, regionId };
 
-      if(response.status === 200) this.setState({ regions: result, program });
+      if(response.status === 200) this.setState({ regions, program });
       else throw new Error(response);
     } catch (err) {
       this.showError(err);
@@ -237,7 +240,7 @@ class EditProgramModalComponent extends Component {
       const response = await fetch(`${this.API_URL}/persona`, config);
       const { result } = await response.json();
       const personas = result.map(item => ({id: item.personaId, label: item.name}));
-      
+
       let personaId = this.props.program.persona;
       let program = { ...this.state.program, personaId };
 
@@ -260,12 +263,16 @@ class EditProgramModalComponent extends Component {
       "apm1Id",
       "industryId",
       "segmentId",
-      "personaId"
+      "personaId",
+      "year",
+      "quarter"
     ];
 
     if (input) {
       if(inputs.includes(input) && !data) {
         errors = {...errors, [input]: "This field is required"};
+      } else if(input === "year" && data.length > 0 && data.length !== 4) {
+        errors = {...errors, year: "This field must contain 4 character"};
       } else {
         delete errors[input];
       }
@@ -273,21 +280,31 @@ class EditProgramModalComponent extends Component {
       inputs.forEach((input) => {
         if(typeof this.state.program[input] === "number" && this.state.program[input] >= 0) {
           delete errors[input];
-        } else if(this.state.program[input] && this.state.program[input].length > 0) {
+        } else if(this.state.program[input] && input !== "year"  && this.state.program[input].length > 0) {
           delete errors[input];
+        } else if(this.state.program["year"].length === 4) {
+          delete errors["year"];
         } else {
-          errors = {...errors, [input]: "This field is required"};
+          if(this.state.program["year"].length !== 4 && this.state.program["year"].length > 0) {
+            errors = {...errors, [input]: "This field is required", year: "This field must contain 4 character"};
+          } else {
+            errors = {...errors, [input]: "This field is required"};
+          }
         }
       })
     }
 
     this.setState({error: errors});
     if(Object.keys(errors).length > 0) return false;
-    
+
     return true;
   };
 
   handleChange = (value, data) => {
+    if(value === "year" && isNaN(data)) {
+      this.setState({year: ""});
+      return;
+    }
     let program = {...this.state.program, [value]: data};
     this.validations(value, data);
     this.setState({ program });
@@ -306,11 +323,15 @@ class EditProgramModalComponent extends Component {
 
     try {
       let token = getCookie('token').replaceAll('"','');
+      const userId = getCookie('userid').replaceAll('"','');
       let program = {
+        userId,
         name: this.state.program.name,
         owner: this.state.program.owner,
         budget: Number(this.state.program.budget),
         metrics: Number(this.state.program.metrics),
+        quarter: Number(this.state.program.quarter[0].id),
+        year: Number(this.state.program.year),
         regionId: this.state.program.regionId[0].region_id,
         personaId,
         segmentId,
@@ -321,7 +342,7 @@ class EditProgramModalComponent extends Component {
       if(this.state.program.apm2Id.length) program.apm2Id = this.state.program.apm2Id.map(el => el.id);
       if(this.state.program.lifecycleStageId.length) program.lifecycleStageId = this.state.program.lifecycleStageId.map(el => el.id);
       if(this.state.program.kpi) program.otherKpis = this.state.program.kpi;
-      
+
       const config = {
         method: 'PUT',
         headers: {
@@ -341,7 +362,7 @@ class EditProgramModalComponent extends Component {
     }
   }
 
-	render() {     
+	render() {
 		return (
       <IconSettings iconPath="/assets/icons">
         {this.state.toast.active && (
@@ -357,8 +378,8 @@ class EditProgramModalComponent extends Component {
         <Modal
           isOpen={true}
           footer={[
-            <Button label="Cancel" onClick={() => this.props.toggleOpen(false)} />,
-            <Button type="submit" label="Save" variant="brand" onClick={() => this.validations() && this.toggleConfirmBox()} />,
+            <Button key="cancelBtn" label="Cancel" onClick={() => this.props.toggleOpen(false)} />,
+            <Button key="submitBtn" type="submit" label="Save" variant="brand" onClick={() => this.validations() && this.toggleConfirmBox()} />,
           ]}
           onRequestClose={() => this.props.toggleOpen(false)}
           heading={this.props.title}
@@ -592,6 +613,31 @@ class EditProgramModalComponent extends Component {
                 value={this.state.program.kpi || ''}
                 onChange={(event, data) => this.handleChange("kpi", event.target.value)}
               />
+            </div>
+            <div className="slds-grid slds-gutters">
+              <div className="slds-m-bottom_large slds-col slds-size_1-of-2 slds-form-element">
+                <Input
+                  required
+                  placeholder="Enter fiscal year"
+                  label="Fiscal year"
+                  onChange={(event, data) => this.handleChange("year", data.value)}
+                  errorText={this.state.error.year}
+                  value={this.state.program.year}
+                  maxLength="4"
+                />
+              </div>
+              <div className="slds-m-bottom_large slds-col slds-size_1-of-2 slds-form-element">
+                <Combobox
+                  required
+                  events={{onSelect: (event, data) => data.selection.length && this.handleChange("quarter", data.selection)}}
+                  labels={{label: 'Quarter'}}
+                  options={this.state.quarter}
+                  selection={this.state.program.quarter}
+                  value="quarter"
+                  variant="readonly"
+                  errorText={this.state.error.quarter}
+                />
+              </div>
             </div>
           </section>
         </Modal>
