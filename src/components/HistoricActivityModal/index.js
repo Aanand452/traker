@@ -13,8 +13,6 @@ import './styles.css'
 class HistoricActivityModal extends Component {
 
   state = {
-    startDate: '',
-    endDate: '',
     errors: {}
   }
 
@@ -25,14 +23,14 @@ class HistoricActivityModal extends Component {
       delete errors[name];
     }
 
-    this.setState({ [name]: value, errors });
+    this.props.handleHistoricDate(name, value);
   }
 
   validate = () => {
     let inputs = ["endDate", "startDate"];
     let errors = {}
     inputs.forEach(input => {
-      if(!this.state[input]) {
+      if(!this.props.historicDate[input]) {
         errors = {...errors, [input]: true}
       }
     });
@@ -41,7 +39,7 @@ class HistoricActivityModal extends Component {
   }
 
   submit = () => {
-    let { startDate, endDate } = this.state;
+    let { startDate, endDate } = this.props.historicDate;
     let errors = this.validate();
     if(Object.values(errors).some(el => el)) return;
 
@@ -51,7 +49,7 @@ class HistoricActivityModal extends Component {
 
 	render() {
 
-    let { startDate, endDate } = this.state;
+    let { startDate, endDate } = this.props.historicDate;
     
 		return (
       <IconSettings iconPath="/assets/icons">

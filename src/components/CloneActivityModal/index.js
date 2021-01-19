@@ -337,9 +337,14 @@ class CloneActivityModalComponent extends Component {
 
       let response = await fetch(`${this.API_URL}/activity`, config);
       if(response.status === 200) {
+        let { startDate, endDate } = this.props.historicDate;
         this.props.toggleOpen("cloneModalIsOPen");
         this.props.onToast(true, "Activity was created successfully", "success");
-        this.props.reloadActivities();
+        if(this.props.isHistoric && startDate !== "" && endDate !== "") {
+          this.props.reloadActivities(startDate, endDate);
+        } else {
+          this.props.reloadActivities();
+        }
       } else throw new Error(response);
     } catch (err) {
       console.error(err);
