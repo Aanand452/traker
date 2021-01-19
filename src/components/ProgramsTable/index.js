@@ -12,12 +12,15 @@ import {
   IconSettings,
   PageHeader,
   PageHeaderControl,
+  Modal,
+  Input,
+  Combobox,
 } from '@salesforce/design-system-react';
 
 import Panel from '../Panel';
 import { Container } from './styles';
 import Pager from '../Pager';
-import Modal from '../ProgramModal';
+import EditProgramModal from '../ProgramModal';
 import "./styles.css";
 
 const CurrencyCell = ({ children, ...props }) => {
@@ -98,7 +101,17 @@ class Table extends Component {
     expandTable: true,
     columnWidth: {},
     tableExtraWidth: 0,
-    noRowHover: false
+    noRowHover: false,
+    isHistoric: false,
+    historicModalOpen: false,
+    viewProgramModalOpen: false,
+    historicSearch: {
+      startYear: '',
+      endYear: '',
+    },
+    error: {},
+    quarter: [{id:"1", label:"Q1"}, {id:"2", label:"Q2"}, {id:"3", label:"Q3"}, {id:"4", label:"Q4"}],
+    viewItem: {}
   };
 
   table = React.createRef();
@@ -287,6 +300,33 @@ class Table extends Component {
 
   actions = () => (
     <PageHeaderControl>
+      <ButtonGroup id="button-group-page-header-actions-history">
+        <Button
+          iconCategory="utility"
+          label="Historic"
+          variant={this.state.isHistoric ? 'brand': 'neutral'}
+          onClick={() => {
+            if (this.state.isHistoric) {
+              this.handleResetHistoric();
+            } else {
+              this.setState({
+                isHistoric: true,
+                historicModalOpen: true
+              });
+            }
+          }}
+        />
+        <Button
+          assistiveText={{ icon: 'Search'}}
+          iconCategory="utility"
+          iconName="search"
+          iconVariant="border-filled"
+          variant="icon"
+          title="Search programs in historic"
+          onClick={() => { this.setState({ historicModalOpen: !this.state.historicModalOpen })}}
+          disabled={!this.state.isHistoric}
+        />
+      </ButtonGroup>
       <ButtonGroup id="button-group-page-header-actions">
         <Link to="/create-program">
           <Button label="New" />
@@ -402,6 +442,10 @@ class Table extends Component {
     this.setState({ editModalIsOPen: bool });
   };
 
+  toggleHistoricModal = () => {
+    this.setState({ historicModalOpen: !this.state.historicModalOpen });
+  };
+
   handleRowAction = (item, { id }) => {
     switch(id) {
       case 0:
@@ -416,17 +460,127 @@ class Table extends Component {
       case 1:
         this.props.onDelete(item);
         break;
+      case 2:
+        this.setState({ viewItem: item });
+        this.toggleViewProgramModal();
+        break;
       default:
         break;
     }
   };
 
+  validations = (input, data) => {
+    const {
+      error,
+      historicSearch
+    } = this.state;
+    let errors = {...error};
+    const inputs = [
+      "startYear",
+      "startQuarter",
+      "endYear",
+      "endQuarter"
+    ];
+
+    if (input) {
+      if (inputs.includes(input) && !data) {
+        errors = {...errors, [input]: "This field is required"};
+      } else if (input === "startYear" && data.length > 0 && data.length !== 4) {
+        errors = {...errors, startYear: "This field must contain 4 character"};
+      } else if (input === "endYear" && data.length > 0 && data.length !== 4) {
+        errors = {...errors, endYear: "This field must contain 4 character"};
+      } else {
+        delete errors[input];
+      }
+    } else {
+      inputs.forEach((inpt) => {
+        if (
+          inpt === "startYear" &&
+          historicSearch.startYear &&
+          historicSearch.startYear.length !== 4
+        ) {
+          errors = {...errors,  startYear: "This field must contain 4 character"};
+        } else if (
+          inpt === "endYear" &&
+          historicSearch.endYear &&
+          historicSearch.endYear.length !== 4
+        ) {
+          errors = {...errors,  endYear: "This field must contain 4 character"};
+        } else if (
+          !historicSearch[inpt]
+        ) {
+          errors = {...errors,  [inpt]: "This field is required"};
+        } else {
+          delete errors[inpt];
+        }
+      });
+    }
+
+    this.setState({ error: errors });
+    if(Object.keys(errors).length > 0) return false;
+
+    return true;
+  };
+
+  handleChange = (key, value) => {
+    this.setState({
+      historicSearch: {
+        ...this.state.historicSearch,
+        [key]: value
+      }
+    });
+    this.validations(key, value);
+  };
+
+  handleSearch = () => {
+    const {
+      historicSearch: {
+        startYear,
+        endYear,
+        startQuarter,
+        endQuarter,
+      }
+    } = this.state;
+    if (this.validations()) {
+      this.toggleHistoricModal();
+      const startDate = `FY${startYear}${startQuarter[0].label}`;
+      const endDate = `FY${endYear}${endQuarter[0].label}`;
+      this.props.onGetHistoric(startDate, endDate);
+    }
+  }
+
+  handleResetHistoric = () => {
+    this.setState({
+      historicSearch: {
+        startYear: '',
+        endYear: '',
+      },
+      isHistoric: false
+    });
+    this.props.onGetHistoric();
+  }
+
+  toggleViewProgramModal = () => {
+    this.setState({ viewProgramModalOpen: !this.state.viewProgramModalOpen });
+  }
 
   render() {
     return (
       <Container>
         <IconSettings iconPath="/assets/icons">
-          {this.state.editModalIsOPen && <Modal onSearch={this.onSearch} search={this.state.search} onEdit={this.props.onEdit} program={this.state.selectedprogram} toggleOpen={this.toggleOpen} title='Edit program' ariaHideApp={false} />}
+          {
+            this.state.editModalIsOPen && (
+              <EditProgramModal
+                onSearch={this.onSearch}
+                search={this.state.search}
+                onEdit={this.props.onEdit}
+                program={this.state.selectedprogram}
+                toggleOpen={this.toggleOpen}
+                title='Edit program'
+                ariaHideApp={false}
+              />
+            )
+          }
           <PageHeader
             onRenderActions={this.actions}
             icon={
@@ -566,7 +720,16 @@ class Table extends Component {
               width={`${this.state.columnWidth['Other KPI\'s']}px`}
             />
             <DataTableRowActions
-              options={[
+              options={
+                this.state.isHistoric
+                ? [
+                  {
+                    id: 2,
+                    label: 'View',
+                    value: '3',
+                  },
+                ]
+                : [
                 {
                   id: 0,
                   label: 'Edit',
@@ -580,7 +743,7 @@ class Table extends Component {
               ]}
               menuPosition="overflowBoundaryElement"
               onAction={this.handleRowAction}
-              dropdown={<Dropdown length="7" />}
+              dropdown={<Dropdown length="7"/>}
             />
           </DataTable>
           <Pager
@@ -590,6 +753,193 @@ class Table extends Component {
             currentPage={this.state.currentPage}
           />
         </IconSettings>
+        <Modal
+          isOpen={this.state.historicModalOpen}
+          footer={[
+            <Button
+              label="Cancel"
+              onClick={this.toggleHistoricModal}
+            />,
+            <Button
+              label="Search"
+              variant="brand"
+              onClick={this.handleSearch}
+              disabled={
+                !this.state.historicSearch.startYear ||
+                !this.state.historicSearch.endYear ||
+                !this.state.historicSearch.startQuarter ||
+                !this.state.historicSearch.endQuarter
+              }
+            />,
+          ]}
+          onRequestClose={this.toggleHistoricModal}
+          heading="Search programs"
+        >
+          <div className="slds-p-around_large">
+            <div className="slds-grid slds-gutters">
+              <div className="slds-m-bottom_large slds-col slds-size_1-of-2 slds-form-element">
+                <Input
+                  required
+                  placeholder="Enter fiscal year"
+                  label="Start fiscal year"
+                  onChange={(event, data) => this.handleChange("startYear", data.value)}
+                  errorText={this.state.error.startYear}
+                  value={this.state.historicSearch.startYear}
+                  maxLength="4"
+                />
+              </div>
+              <div className="slds-m-bottom_large slds-col slds-size_1-of-2 slds-form-element">
+                <Combobox
+                  required
+                  events={{onSelect: (event, data) => data.selection.length && this.handleChange("startQuarter", data.selection)}}
+                  labels={{label: 'Start quarter'}}
+                  options={this.state.quarter}
+                  selection={this.state.historicSearch.startQuarter}
+                  value="quarter"
+                  variant="readonly"
+                  errorText={this.state.error.startQuarter}
+                />
+              </div>
+            </div>
+            <div className="slds-grid slds-gutters">
+              <div className="slds-m-bottom_large slds-col slds-size_1-of-2 slds-form-element">
+                <Input
+                  required
+                  placeholder="Enter fiscal year"
+                  label="End fiscal year"
+                  onChange={(event, data) => this.handleChange("endYear", data.value)}
+                  errorText={this.state.error.endYear}
+                  value={this.state.historicSearch.endYear}
+                  maxLength="4"
+                />
+              </div>
+              <div className="slds-m-bottom_large slds-col slds-size_1-of-2 slds-form-element">
+                <Combobox
+                  required
+                  events={{onSelect: (event, data) => data.selection.length && this.handleChange("endQuarter", data.selection)}}
+                  labels={{label: 'End quarter'}}
+                  options={this.state.quarter}
+                  selection={this.state.historicSearch.endQuarter}
+                  value="quarter"
+                  variant="readonly"
+                  errorText={this.state.error.endQuarter}
+                />
+              </div>
+            </div>
+          </div>
+        </Modal>
+        <Modal
+          isOpen={this.state.viewProgramModalOpen}
+          contentClassName="program-modal-overflow"
+          footer={[
+            <Button
+              label="Close"
+              variant="brand"
+              onClick={this.toggleViewProgramModal}
+            />,
+          ]}
+          onRequestClose={this.toggleViewProgramModal}
+          heading="View program"
+        >
+        <section className="slds-p-around_large">
+          <div className="slds-m-bottom_small">
+            <div className="slds-text-title">
+            Program owner:
+            </div>
+            <div className="slds-text-heading_small">
+              {this.state.viewItem.owner || ' - '}
+            </div>
+          </div>
+          <div className="slds-m-bottom_small">
+            <div className="slds-text-title">
+            Program name:
+            </div>
+            <div className="slds-text-heading_small">
+              {this.state.viewItem.name || ' - '}
+            </div>
+          </div>
+          <div className="slds-m-bottom_small">
+            <div className="slds-text-title">
+            Budget:
+            </div>
+            <div className="slds-text-heading_small">
+              ${Number(this.state.viewItem.budget).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}) || ' - '}
+            </div>
+          </div>
+          <div className="slds-m-bottom_small">
+            <div className="slds-text-title">
+            MP target:
+            </div>
+            <div className="slds-text-heading_small">
+              ${Number(this.state.viewItem.metrics).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}) || ' - '}
+            </div>
+          </div>
+          <div className="slds-m-bottom_small">
+            <div className="slds-text-title">
+            Target region:
+            </div>
+            <div className="slds-text-heading_small">
+              {this.state.viewItem.targetRegion || ' - '}
+            </div>
+          </div>
+          <div className="slds-m-bottom_small">
+            <div className="slds-text-title">
+            Lifecycle stage:
+            </div>
+            <div className="slds-text-heading_small">
+              {this.state.viewItem.lifecycleStage && this.state.viewItem.lifecycleStage.length ? this.state.viewItem.lifecycleStage.map((val) => val.label).join(', ') : ' - '}
+            </div>
+          </div>
+          <div className="slds-m-bottom_small">
+            <div className="slds-text-title">
+            APM 1:
+            </div>
+            <div className="slds-text-heading_small">
+              {this.state.viewItem.lifecycleStage && this.state.viewItem.lifecycleStage.length ? this.state.viewItem.apm1.map((val) => val.label).join(', ') : ' - '}
+            </div>
+          </div>
+          <div className="slds-m-bottom_small">
+            <div className="slds-text-title">
+            APM 2:
+            </div>
+            <div className="slds-text-heading_small">
+              {this.state.viewItem.lifecycleStage && this.state.viewItem.lifecycleStage.length ? this.state.viewItem.apm2.map((val) => val.label).join(', ') : ' - '}
+            </div>
+          </div>
+          <div className="slds-m-bottom_small">
+            <div className="slds-text-title">
+            Persona:
+            </div>
+            <div className="slds-text-heading_small">
+              {this.state.viewItem.lifecycleStage && this.state.viewItem.lifecycleStage.length ? this.state.viewItem.persona.map((val) => val.label).join(', ') : ' - '}
+            </div>
+          </div>
+          <div className="slds-m-bottom_small">
+            <div className="slds-text-title">
+            Segment:
+            </div>
+            <div className="slds-text-heading_small">
+              {this.state.viewItem.lifecycleStage && this.state.viewItem.lifecycleStage.length ? this.state.viewItem.segment.map((val) => val.label).join(', ') : ' - '}
+            </div>
+          </div>
+          <div className="slds-m-bottom_small">
+            <div className="slds-text-title">
+            Other KPIS:
+            </div>
+            <div className="slds-text-heading_small">
+              {this.state.viewItem.otherKpis || ' - '}
+            </div>
+          </div>
+          <div className="slds-m-bottom_small">
+            <div className="slds-text-title">
+            Customer message:
+            </div>
+            <div className="slds-text-heading_small">
+              {this.state.viewItem.customerMessage || ' - '}
+            </div>
+          </div>
+        </section>
+        </Modal>
       </Container>
     );
   }
