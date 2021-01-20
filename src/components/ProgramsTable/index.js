@@ -514,6 +514,14 @@ class Table extends Component {
           delete errors[inpt];
         }
       });
+      if (!Object.keys(errors).length) {
+        const startFY = Number(`${historicSearch.startYear}${historicSearch.startQuarter[0].id}`);
+        const endFY = Number(`${historicSearch.endYear}${historicSearch.endQuarter[0].id}`);
+
+        if (startFY > endFY) {
+          errors = {...errors,  endYear: "End year and end quarter must be greater than start year ans start quarter"};
+        }
+      }
     }
 
     this.setState({ error: errors });
@@ -863,7 +871,11 @@ class Table extends Component {
             Budget:
             </div>
             <div className="slds-text-heading_small">
-              ${Number(this.state.viewItem.budget).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}) || ' - '}
+              {
+                this.state.viewItem.budget !== null
+                  ? `$${Number(this.state.viewItem.budget).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}`
+                  : ' - '
+              }
             </div>
           </div>
           <div className="slds-m-bottom_small">
@@ -871,7 +883,11 @@ class Table extends Component {
             MP target:
             </div>
             <div className="slds-text-heading_small">
-              ${Number(this.state.viewItem.metrics).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}) || ' - '}
+              {
+                this.state.viewItem.budget !== null
+                  ? `$${Number(this.state.viewItem.metrics).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}`
+                  : ' - '
+              }
             </div>
           </div>
           <div className="slds-m-bottom_small">
@@ -895,7 +911,7 @@ class Table extends Component {
             APM 1:
             </div>
             <div className="slds-text-heading_small">
-              {this.state.viewItem.lifecycleStage && this.state.viewItem.lifecycleStage.length ? this.state.viewItem.apm1.map((val) => val.label).join(', ') : ' - '}
+              {this.state.viewItem.apm1 && this.state.viewItem.apm1.length ? this.state.viewItem.apm1.map((val) => val.label).join(', ') : ' - '}
             </div>
           </div>
           <div className="slds-m-bottom_small">
@@ -903,7 +919,7 @@ class Table extends Component {
             APM 2:
             </div>
             <div className="slds-text-heading_small">
-              {this.state.viewItem.lifecycleStage && this.state.viewItem.lifecycleStage.length ? this.state.viewItem.apm2.map((val) => val.label).join(', ') : ' - '}
+              {this.state.viewItem.apm2 && this.state.viewItem.apm2.length ? this.state.viewItem.apm2.map((val) => val.label).join(', ') : ' - '}
             </div>
           </div>
           <div className="slds-m-bottom_small">
@@ -911,7 +927,15 @@ class Table extends Component {
             Persona:
             </div>
             <div className="slds-text-heading_small">
-              {this.state.viewItem.lifecycleStage && this.state.viewItem.lifecycleStage.length ? this.state.viewItem.persona.map((val) => val.label).join(', ') : ' - '}
+              {this.state.viewItem.persona && this.state.viewItem.persona.length ? this.state.viewItem.persona.map((val) => val.label).join(', ') : ' - '}
+            </div>
+          </div>
+          <div className="slds-m-bottom_small">
+            <div className="slds-text-title">
+            Industry:
+            </div>
+            <div className="slds-text-heading_small">
+              {this.state.viewItem.industry && this.state.viewItem.industry.length ? this.state.viewItem.industry.map((val) => val.label).join(', ') : ' - '}
             </div>
           </div>
           <div className="slds-m-bottom_small">
@@ -919,7 +943,7 @@ class Table extends Component {
             Segment:
             </div>
             <div className="slds-text-heading_small">
-              {this.state.viewItem.lifecycleStage && this.state.viewItem.lifecycleStage.length ? this.state.viewItem.segment.map((val) => val.label).join(', ') : ' - '}
+              {this.state.viewItem.segment && this.state.viewItem.segment.length ? this.state.viewItem.segment.map((val) => val.label).join(', ') : ' - '}
             </div>
           </div>
           <div className="slds-m-bottom_small">
