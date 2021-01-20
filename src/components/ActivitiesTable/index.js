@@ -113,7 +113,8 @@ class Table extends Component {
     noRowHover: false,
     isHistoric: false,
     historicModalIsOpen: false,
-    detailModalIsOpen: false
+    detailModalIsOpen: false,
+    historicDate: {}
   };
 
   table = React.createRef()
@@ -383,9 +384,12 @@ class Table extends Component {
   
   closeDetailModal = () => this.setState({detailModalIsOpen: false})
 
+  handleHistoricDate = (name, value) => this.setState({ historicDate: { ...this.state.historicDate, [name]: value } })
+
   historicBtn = () => {
     this.setState({isHistoric: !this.state.isHistoric}, () => {
       if(!this.state.isHistoric) {
+        this.setState({historicDate: {}})
         this.props.reloadActivities();
       } else {
         this.setState({historicModalIsOpen: true})
@@ -622,6 +626,8 @@ class Table extends Component {
             onToast={this.onToast}
             toggleOpen={this.toggleOpen}
             reloadActivities={this.props.reloadActivities}
+            historicDate={this.state.historicDate}
+            isHistoric={this.state.isHistoric}
           />
         )}
 
@@ -629,6 +635,8 @@ class Table extends Component {
           <HistoricModal
             getActivities={this.props.reloadActivities}
             closeHistoricModal={this.closeHistoricModal}
+            handleHistoricDate={this.handleHistoricDate}
+            historicDate={this.state.historicDate}
           />
         )}
         {this.state.detailModalIsOpen && (
@@ -772,6 +780,11 @@ class Table extends Component {
                 id: 3,
                 label: "View",
                 value: "4",
+              },
+              {
+                id: 2,
+                label: "Clone",
+                value: "3",
               }
             ] : [
               {

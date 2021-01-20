@@ -13,8 +13,6 @@ import './styles.css'
 class HistoricActivityModal extends Component {
 
   state = {
-    startDate: '',
-    endDate: '',
     errors: {}
   }
 
@@ -25,14 +23,24 @@ class HistoricActivityModal extends Component {
       delete errors[name];
     }
 
-    this.setState({ [name]: value, errors });
+    this.props.handleHistoricDate(name, value);
+  }
+
+  checkEndDate = date => {
+    const endDate = moment(this.props.historicDate.endDate ,'DD/MM/YYYY');
+    return endDate.isBefore(date.date)
+  }
+
+  checkStartDate = date => {
+    const starDate = moment(this.props.historicDate.startDate,'DD/MM/YYYY');
+    return starDate.isAfter(date.date)
   }
 
   validate = () => {
     let inputs = ["endDate", "startDate"];
     let errors = {}
     inputs.forEach(input => {
-      if(!this.state[input]) {
+      if(!this.props.historicDate[input]) {
         errors = {...errors, [input]: true}
       }
     });
@@ -41,7 +49,7 @@ class HistoricActivityModal extends Component {
   }
 
   submit = () => {
-    let { startDate, endDate } = this.state;
+    let { startDate, endDate } = this.props.historicDate;
     let errors = this.validate();
     if(Object.values(errors).some(el => el)) return;
 
@@ -51,7 +59,7 @@ class HistoricActivityModal extends Component {
 
 	render() {
 
-    let { startDate, endDate } = this.state;
+    let { startDate, endDate } = this.props.historicDate;
     
 		return (
       <IconSettings iconPath="/assets/icons">
@@ -88,7 +96,8 @@ class HistoricActivityModal extends Component {
                   onChange={(event, data) => this.handleChange("startDate", data.formattedDate)}
                   formatter={(date) => date ? moment(date).format('DD/MM/YYYY') : ''}
                   parser={(dateString) => moment(dateString, 'DD/MM/YYYY').toDate()}
-                  formattedValue={this.state.startDate}
+                  formattedValue={this.props.historicDate.startDate}
+                  dateDisabled={this.props.historicDate.endDate ? this.checkEndDate.bind(this) : undefined}
                 />
                 {this.state.errors.startDate && <div className="slds-form-element__help">This field is required</div>}
               </div>
@@ -100,7 +109,8 @@ class HistoricActivityModal extends Component {
                   onChange={(event, data) => this.handleChange("endDate", data.formattedDate)}
                   formatter={(date) => date ? moment(date).format('DD/MM/YYYY') : ''}
                   parser={(dateString) => moment(dateString, 'DD/MM/YYYY').toDate()}
-                  formattedValue={this.state.endDate}
+                  formattedValue={this.props.historicDate.endDate}
+                  dateDisabled={this.props.historicDate.startDate ? this.checkStartDate.bind(this) : undefined}
                 />
                 {this.state.errors.endDate && <div className="slds-form-element__help">This field is required</div>}
               </div>
