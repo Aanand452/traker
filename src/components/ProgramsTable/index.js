@@ -18,7 +18,7 @@ import {
 } from '@salesforce/design-system-react';
 
 import Panel from '../Panel';
-import { Container } from './styles';
+import { Container, FiscalYearErrorContainer } from './styles';
 import Pager from '../Pager';
 import EditProgramModal from '../ProgramModal';
 import "./styles.css";
@@ -490,6 +490,10 @@ class Table extends Component {
       } else if (input === "endYear" && data.length > 0 && data.length !== 4) {
         errors = {...errors, endYear: "This field must contain 4 character"};
       } else {
+        if (errors.endYear && errors.endQuarter) {
+          delete errors.endYear;
+          delete errors.endQuarter;
+        }
         delete errors[input];
       }
     } else {
@@ -519,7 +523,11 @@ class Table extends Component {
         const endFY = Number(`${historicSearch.endYear}${historicSearch.endQuarter[0].id}`);
 
         if (startFY > endFY) {
-          errors = {...errors,  endYear: "End year and end quarter must be greater than start year ans start quarter"};
+          errors = {
+            ...errors,
+            endYear: true,
+            endQuarter: true,
+          };
         }
       }
     }
@@ -531,6 +539,10 @@ class Table extends Component {
   };
 
   handleChange = (key, value) => {
+    if((key === "endYear" || key === "startYear") && isNaN(value)) {
+      return;
+    }
+
     this.setState({
       historicSearch: {
         ...this.state.historicSearch,
@@ -834,6 +846,9 @@ class Table extends Component {
                 />
               </div>
             </div>
+              {this.state.error && this.state.error.endQuarter && this.state.error.endYear && (
+                <FiscalYearErrorContainer className="slds-m-bottom_large">End fiscal year-quarter set must be greater than start fiscal year set</FiscalYearErrorContainer>
+              )}
           </div>
         </Modal>
         <Modal
