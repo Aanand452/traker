@@ -128,7 +128,16 @@ Run the scripts given in the directory `./packages/db/seed/dummy` , these are re
   whole API documentation is given in this link [http://localhost:3000/docs/](http://localhost:3000/docs/) 
 
 
-## Login into the app
+## Setting up login for the app
+
+The app currently uses a SSO system to perform the login locally and in other envs (testing - stable), if you are just setting up the a new environment locally please follow the next steps. This can apply also for stable env but the SSO endpoint will change to the Salesforce's aloha org.
+
+### Testing login via salesforce org
+
+The testing org used for this project is allocated in https://mgonzalez-dev-ed.lightning.force.com/ a developer org, please refer to miller.gonzalez@globant.com to get access to it. A new ORG can be setup also for it please refer to https://www.youtube.com/watch?v=9Ov4Y6M5PLE and modify the .env vars in the frontend progrject (salesforce-reporter-app) https://drive.google.com/drive/folders/1F_NionUQOqNvJaW_K5vzvTM6mZPoW-7g?usp=sharing to match with the new org 
+  
+  
+### local  
 
   Before run the project you need to create a .env file at the root of the project inside this file, add the `AUTH_KEY` variable, when there is a request to the login endpoint `/login` API will check if this env var match with the password sent through the body request.
 
