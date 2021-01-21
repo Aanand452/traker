@@ -95,9 +95,11 @@ yarn workspace @sara/db db:migrate
 
 ##  Running db migrations over HEROKU env
 
-Heroku will be used as a cloud service to host this web app, for that, we created 2 environments: one for testing and one for stable. When a change is performed in the database schema a migration might be required to implement these changes over this environments database. To perform these changes please run the nexts commands
+Heroku will be used as a cloud service to host this web app, for that, we created 2 environments: one for testing and one for stable. When a change is performed in the database schema a migration might be required to implement these changes over this environments databases. To perform these changes please run the nexts commands
 
-make sure you are a colaborator in the heroku app
+make sure you are a colaborator in the heroku app and have the remotes setup [https://devcenter.heroku.com/articles/git#creating-a-heroku-remote](see on heroku) and then run the commands below 
+
+Do login via Heroku CLI
 
 ```
 heroku login
@@ -106,8 +108,15 @@ heroku login
 to perform a new migration run this command over you local terminal
 
 ```
-heroku run yarn workspace @sara/db db:migrate
+heroku run bash
 ```
+
+once you get connected you will be able to run any command over the heroku server, to perform a new migration run
+
+```
+yarn workspace @sara/db db:migrate
+```
+
 
 ## Seegin dummy data
 
