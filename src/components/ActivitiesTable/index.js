@@ -380,7 +380,7 @@ class Table extends Component {
     }
   }
 
-  closeHistoricModal = () => this.setState({historicModalIsOpen: false})
+  closeHistoricModal = () => this.setState({historicModalIsOpen: false, historicDate: {}})
   
   closeDetailModal = () => this.setState({detailModalIsOpen: false})
 
@@ -637,6 +637,7 @@ class Table extends Component {
             closeHistoricModal={this.closeHistoricModal}
             handleHistoricDate={this.handleHistoricDate}
             historicDate={this.state.historicDate}
+            resetHistoricDate={() => this.setState({ historicDate: {} })}
           />
         )}
         {this.state.detailModalIsOpen && (
