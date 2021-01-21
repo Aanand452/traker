@@ -36,7 +36,7 @@ docker-compose down
 
 ## BD setup
 
-create an .env file  inside @sara/db workspace direct `cd packages/db` and inside of this file add this enviroment variable, this will be used only for the DB startup and run migrations.
+Restart the docker container and then create an .env file  inside @sara/db workspace on `cd packages/db` folder, in this file add this enviroment variable (this will be used only for the DB startup and run migrations).
 
 ```
 DB_HOST=localhost
