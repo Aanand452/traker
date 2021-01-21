@@ -42,17 +42,13 @@ Restart the docker container and then create an .env file  inside @sara/db works
 DB_HOST=localhost
 ```
 
-inside @sara/db workspace  run db creation command, this will bring up the DB insisde of the db local container.
-
-```
-yarn db:init
-```
-
-run db migration command, this will bring up all the tables required to run te project
+run the initial db migration command using this command
   
 ```
-db:migrate
+yarn workspace @sara/db db:migrate
 ```
+
+A success message like this should appear once the initial migration was done.
 
 ## Modifing the DB model locally
 
@@ -61,7 +57,7 @@ Sometimes is required modify the DB model, for this follow the documentation giv
 create new migration
 
 ```
-db:new-migration {migration name here}
+yarn workspace @sara/db db:new-migration {migration name here}
 ``` 
 
 this will generate a new file inside of `./packages/db/migrations` that will look like this 
@@ -89,6 +85,12 @@ module.exports = {
   }
 };
 
+```
+
+to excecute the new  migration just use the command 
+
+```
+yarn workspace @sara/db db:migrate
 ```
 
 ##  Running db migrations over HEROKU env
