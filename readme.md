@@ -36,23 +36,19 @@ docker-compose down
 
 ## BD setup
 
-create an .env file  inside @sara/db workspace direct `cd packages/db` and inside of this file add this enviroment variable, this will be used only for the DB startup and run migrations.
+Restart the docker container and then create an .env file  inside @sara/db workspace on `cd packages/db` folder, in this file add this enviroment variable (this will be used only for the DB startup and run migrations).
 
 ```
 DB_HOST=localhost
 ```
 
-inside @sara/db workspace  run db creation command, this will bring up the DB insisde of the db local container.
-
-```
-yarn db:init
-```
-
-run db migration command, this will bring up all the tables required to run te project
+run the initial db migration command using this command
   
 ```
-db:migrate
+yarn workspace @sara/db db:migrate
 ```
+
+A success message like this should appear once the initial migration was done.
 
 ## Modifing the DB model locally
 
@@ -61,7 +57,7 @@ Sometimes is required modify the DB model, for this follow the documentation giv
 create new migration
 
 ```
-db:new-migration {migration name here}
+yarn workspace @sara/db db:new-migration {migration name here}
 ``` 
 
 this will generate a new file inside of `./packages/db/migrations` that will look like this 
@@ -91,11 +87,19 @@ module.exports = {
 
 ```
 
+to excecute the new  migration just use the command 
+
+```
+yarn workspace @sara/db db:migrate
+```
+
 ##  Running db migrations over HEROKU env
 
-Heroku will be used as a cloud service to host this web app, for that, we created 2 environments: one for testing and one for stable. When a change is performed in the database schema a migration might be required to implement these changes over this environments database. To perform these changes please run the nexts commands
+Heroku will be used as a cloud service to host this web app, for that, we created 2 environments: one for testing and one for stable. When a change is performed in the database schema a migration might be required to implement these changes over this environments databases. To perform these changes please run the nexts commands
 
-make sure you are a colaborator in the heroku app
+make sure you are a colaborator in the heroku app and have the remotes setup [https://devcenter.heroku.com/articles/git#creating-a-heroku-remote](see on heroku) and then run the commands below 
+
+Do login via Heroku CLI
 
 ```
 heroku login
@@ -104,8 +108,15 @@ heroku login
 to perform a new migration run this command over you local terminal
 
 ```
-heroku run yarn workspace @sara/db db:migrate
+heroku run bash
 ```
+
+once you get connected you will be able to run any command over the heroku server, to perform a new migration run
+
+```
+yarn workspace @sara/db db:migrate
+```
+
 
 ## Seegin dummy data
 
@@ -116,3 +127,31 @@ Run the scripts given in the directory `./packages/db/seed/dummy` , these are re
 
   whole API documentation is given in this link [http://localhost:3000/docs/](http://localhost:3000/docs/) 
 
+
+## Setting up login for the app
+
+The app currently uses a SSO system to perform the login locally and in other envs (testing - stable), if you are just setting up the a new environment locally please follow the next steps. This can apply also for stable env but the SSO endpoint will change to the Salesforce's aloha org.
+
+### Testing login via salesforce org
+
+The testing org used for this project is allocated in https://mgonzalez-dev-ed.lightning.force.com/ a developer org, please refer to miller.gonzalez@globant.com to get access to it. 
+
+A new ORG can be setup also for it please refer to https://www.youtube.com/watch?v=9Ov4Y6M5PLE and modify the .env vars in the frontend project (salesforce-reporter-app) https://drive.google.com/drive/folders/1F_NionUQOqNvJaW_K5vzvTM6mZPoW-7g?usp=sharing to match with the new org 
+  
+  
+### Setup login local  
+
+  Before run the project you need to create a .env file at the root of the project inside this file, add the `AUTH_KEY` variable, when there is a request to the login endpoint `/login` API will check if this env var match with the password sent through the body request.
+  
+  
+  ```
+DB_HOST=localhost
+AUTH_KEY=some value than match with the AUTH_KEY on frontend app
+  ```
+
+  In the frontend app, we also have to create the same env var, and the value of these two has to be the same.
+  There are two ways to login into the app, for more information refer to the frontend's app readme https://drive.google.com/drive/folders/1F_NionUQOqNvJaW_K5vzvTM6mZPoW-7g?usp=sharing
+
+  One of those need the setup and configuration of a salesforce org, to know more about it, read the official documentation on the next link [https://help.salesforce.com/articleView?id=setup_overview.htm&type=5](https://help.salesforce.com/articleView?id=setup_overview.htm&type=5)
+
+  Remind that Heroku has its way to set the env vars and applies to test and production environments.
