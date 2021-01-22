@@ -146,7 +146,7 @@ A new ORG can be setup also for it please refer to https://www.youtube.com/watch
   
   ```
 DB_HOST=localhost
-AUTH_KEY=millertaker
+AUTH_KEY=some value than match with the AUTH_KEY on frontend app
   ```
 
   In the frontend app, we also have to create the same env var, and the value of these two has to be the same.
