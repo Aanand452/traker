@@ -139,9 +139,15 @@ The testing org used for this project is allocated in https://mgonzalez-dev-ed.l
 A new ORG can be setup also for it please refer to https://www.youtube.com/watch?v=9Ov4Y6M5PLE and modify the .env vars in the frontend project (salesforce-reporter-app) https://drive.google.com/drive/folders/1F_NionUQOqNvJaW_K5vzvTM6mZPoW-7g?usp=sharing to match with the new org 
   
   
-### local  
+### Setup login local  
 
   Before run the project you need to create a .env file at the root of the project inside this file, add the `AUTH_KEY` variable, when there is a request to the login endpoint `/login` API will check if this env var match with the password sent through the body request.
+  
+  
+  ```
+DB_HOST=localhost
+AUTH_KEY=millertaker
+  ```
 
   In the frontend app, we also have to create the same env var, and the value of these two has to be the same.
   There are two ways to login into the app, for more information refer to the frontend's app readme https://drive.google.com/drive/folders/1F_NionUQOqNvJaW_K5vzvTM6mZPoW-7g?usp=sharing
