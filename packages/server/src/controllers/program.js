@@ -16,6 +16,21 @@ const getPrograms = async (req, res) => {
   }
 }
 
+const getProgramsFiltered = async (req, res) => {
+  try {
+    const { programsStartDate, programsEndDate } = req.body;
+    const programs = await ProgramModel.getAllProgramsFiltered(programsStartDate, programsEndDate);
+    if(!programs) {
+      ApiUtils.reposeWithhSuccess(res, null, httpStatus.NOT_FOUND);
+    } else {
+      if(programs === 'error') ApiUtils.responseWithError(res, httpStatus.INTERNAL_SERVER_ERROR);
+      else ApiUtils.reposeWithhSuccess(res, programs, httpStatus.OK);
+    }
+  } catch (err) {
+    ApiUtils.responseWithError(res, httpStatus.INTERNAL_SERVER_ERROR, err.toString());
+  }
+}
+
 const getProgramsFull = async (req, res) => {
   try {
     const userId = req.swagger.params.userId.value;
@@ -125,6 +140,7 @@ const updateProgram = async (req, res) => {
 
 export {
   getPrograms,
+  getProgramsFiltered,
   getProgramsFull,
   getProgramsByRegionId,
   getProgramById,
