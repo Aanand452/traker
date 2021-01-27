@@ -403,6 +403,16 @@ class EditActivityModalComponent extends Component {
     }));
   }
 
+  checkEndDate = (date) => {
+    const endDate = moment(this.state.endDate,'DD/MM/YYYY');
+    return endDate.isBefore(date.date)
+  }
+
+  checkStartDate = (date) => {
+    const starDate = moment(this.state.startDate,'DD/MM/YYYY');
+    return starDate.isAfter(date.date)
+  }
+
 	render() {
 		return (
       <IconSettings iconPath="/assets/icons">
@@ -558,6 +568,7 @@ class EditActivityModalComponent extends Component {
                 parser={(dateString) => moment(dateString, 'DD/MM/YYYY').toDate()}
                 formattedValue={this.parseDate(this.state.startDate)}
                 autocomplete="off"
+                dateDisabled={this.state.endDate ? this.checkEndDate.bind(this) : undefined}
               />
               {this.state.errors.startDate && <div class="slds-form-element__help">This field is required</div>}
             </div>
@@ -583,6 +594,7 @@ class EditActivityModalComponent extends Component {
                 parser={(dateString) => moment(dateString, 'DD/MM/YYYY').toDate()}
                 formattedValue={this.parseDate(this.state.endDate)}
                 autocomplete="off"
+                dateDisabled={this.state.startDate ? this.checkStartDate.bind(this) : undefined}
               />
               {this.state.errors.endDate && <div class="slds-form-element__help">This field is required</div>}
             </div>

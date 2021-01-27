@@ -64,6 +64,16 @@ class Step2 extends Component {
     }
   }
 
+  checkEndDate = (date) => {
+    const endDate = moment(this.props.row.endDate,'DD/MM/YYYY');
+    return endDate.isBefore(date.date)
+  }
+
+  checkStartDate = (date) => {
+    const starDate = moment(this.props.row.startDate,'DD/MM/YYYY');
+    return starDate.isAfter(date.date)
+  }
+
   render() {
     return (
       <Fragment>
@@ -132,6 +142,7 @@ class Step2 extends Component {
             formatter={(date) => date ? moment(date).format('DD/MM/YYYY') : ''}
             parser={(dateString) => moment(dateString, 'DD/MM/YYYY').toDate()}
             formattedValue={this.props.row.startDate}
+            dateDisabled={this.props.row.endDate ? this.checkEndDate.bind(this) : undefined}
           />
           {this.props.error.startDate && <div className="slds-form-element__help">{this.props.error.startDate}</div>}
         </div>
@@ -145,6 +156,7 @@ class Step2 extends Component {
             formatter={(date) => date ? moment(date).format('DD/MM/YYYY') : ''}
             parser={(dateString) => moment(dateString, 'DD/MM/YYYY').toDate()}
             formattedValue={this.props.row.endDate}
+            dateDisabled={this.props.row.startDate ? this.checkStartDate.bind(this) : undefined}
           />
           {this.props.error.endDate && <div className="slds-form-element__help">{this.props.error.endDate}</div>}
         </div>
