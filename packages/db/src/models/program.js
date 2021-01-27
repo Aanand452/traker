@@ -25,6 +25,37 @@ class ProgramModel {
     }
   }
 
+  static async getAllProgramsFiltered(programsStartDate, programsEndDate) {
+    try{
+      let programStartDate = null;
+      let programEndDate = null;
+      if (!programsStartDate || !programsEndDate) {
+        const year = moment().year();
+        programStartDate = Number(`${year - 1}4`);
+        programEndDate = Number(`${year}4`);
+      } else {
+        const regex = /[a-zA-Z]/g;
+        programStartDate = programsStartDate.replace(regex, '');
+        programEndDate = programsEndDate.replace(regex, '');
+      }
+      const program = await db.Program.findAll({
+        attributes: ['program_id', ['name', 'label']],
+        order: [
+          ['name', 'ASC'],
+        ],
+        where: {
+            year_quarter: {
+              [Op.between]: [programStartDate, programEndDate]
+            }
+        },
+      });
+
+      return program;
+    } catch (err) {
+      console.error('Error getting program list', err);
+    }
+  }
+
   static async getAllProgramsFullByUser(id, programsStartDate, programsEndDate) {
     try{
       let programStartDate = null;

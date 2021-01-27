@@ -189,6 +189,38 @@ paths:
               - $ref: '#/definitions/ResponseStatus'
               - $ref: '#/definitions/Error'
 
+  /programs:
+    post:
+      x-swagger-router-controller: program
+      operationId: "getProgramsFiltered"
+      summary: Returns the list of programs.
+      description: This will be used to populate the insert and update dropdowns
+      security:
+        - Bearer: []
+      x-security-scopes:
+        - admin
+        - user
+      produces:
+        - application/json
+      parameters:
+        - name: body
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/FullProgramsBody'
+      responses:
+        200:
+          description: Success
+          schema:
+            allOf:
+              - $ref: '#/definitions/ResponseStatus'
+              - $ref: '#/definitions/ProgramListResponse'
+        default:
+          description: Invalid request.
+          schema:
+            allOf:
+              - $ref: '#/definitions/ResponseStatus'
+              - $ref: '#/definitions/Error'
   /programs/{userId}:
     post:
       x-swagger-router-controller: program
