@@ -144,7 +144,7 @@ class Step2 extends Component {
             formatter={(date) => date ? moment(date).format('DD/MM/YYYY') : ''}
             parser={(dateString) => moment(dateString, 'DD/MM/YYYY').toDate()}
             formattedValue={this.props.row.startDate}
-            dateDisabled={this.props.row.endDate ? this.checkEndDate : undefined}
+            dateDisabled={this.checkEndDate}
           />
           {this.props.error.startDate && <div className="slds-form-element__help">{this.props.error.startDate}</div>}
         </div>
@@ -158,7 +158,7 @@ class Step2 extends Component {
             formatter={(date) => date ? moment(date).format('DD/MM/YYYY') : ''}
             parser={(dateString) => moment(dateString, 'DD/MM/YYYY').toDate()}
             formattedValue={this.props.row.endDate}
-            dateDisabled={this.props.row.startDate ? this.checkStartDate : undefined}
+            dateDisabled={this.checkStartDate}
           />
           {this.props.error.endDate && <div className="slds-form-element__help">{this.props.error.endDate}</div>}
         </div>
