@@ -36,7 +36,7 @@ class EditActivityPage extends Component {
   setupAndFetch = async () => {
     if(window.location.hostname === 'localhost') this.API_URL =  "http://localhost:3000/api/v1";
     else this.API_URL = await getAPIUrl();
-    
+
     await this.getConfig();
     this.getActivities();
   }
@@ -76,7 +76,7 @@ class EditActivityPage extends Component {
       console.error(err);
     }
 
-    this.setState({showLoader: false});  
+    this.setState({showLoader: false});
   }
 
   onDelete = (activity) => {
@@ -95,7 +95,7 @@ class EditActivityPage extends Component {
       showConfirmationDialog: false,
       showLoader: true,
     });
-    
+
     let token = getCookie('token').replaceAll('"','');
     let userId = getCookie('userid').replaceAll('"','');
     const config = {
@@ -117,7 +117,7 @@ class EditActivityPage extends Component {
       await this.getActivities();
 
       this.setState({
-        showToast: true, 
+        showToast: true,
         toast: {
           message: "An activity was deleted successfuly",
           type: "success"
@@ -127,7 +127,7 @@ class EditActivityPage extends Component {
       console.error(err);
 
       this.setState({
-        showToast: true, 
+        showToast: true,
         toast: {
           message: "Something went wrong, please try again in a few seconds",
           type: "error"
@@ -143,7 +143,7 @@ class EditActivityPage extends Component {
       <Container>
         <IconSettings iconPath="/assets/icons">
           <ActivitiesTable data={this.state.activities} onDelete={this.onDelete} reloadActivities={this.getActivities} />
-          
+
           <ConfirmationDailog isOpen={this.state.showConfirmationDialog} onClose={this.closeConfirmationDialog} onConfirm={this.deleteActivity} />
           {this.state.showLoader && <Spinner size="small" variant="brand" assistiveText={{ label: "Loading..." }} />}
           {this.state.showToast && (

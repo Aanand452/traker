@@ -114,7 +114,9 @@ class Table extends Component {
     isHistoric: false,
     historicModalIsOpen: false,
     detailModalIsOpen: false,
-    historicDate: {}
+    historicDate: {},
+    programsFYstartDate: '',
+    programsFYendDate: '',
   };
 
   table = React.createRef()
@@ -165,7 +167,7 @@ class Table extends Component {
   resizableTable(table) {
     let row = table.getElementsByTagName('tr')[0];
     let cols = row.children;
-    
+
     table.style.overflow = 'hidden';
 
     this.setState({
@@ -298,23 +300,44 @@ class Table extends Component {
       this.API_URL = "http://localhost:3000/api/v1";
     else this.API_URL = await getAPIUrl();
 
+    await this.getConfig();
+
     this.checkProgram();
     this.checkRegion();
     this.checkFormat();
   };
 
+  async getConfig(){
+    try{
+      const request = await fetch('/config');
+      const data = await request.json();
+      request.status === 200 && this.setState({
+        programsFYstartDate: data.programsFYstartDate,
+        programsFYendDate: data.programsFYendDate
+        });
+
+    } catch(e) {
+      console.error('ERROR: cannot get the url config: ', e);
+    }
+  }
+
   async checkProgram() {
+    const { programsFYstartDate, programsFYendDate } = this.state;
     try {
       let token = getCookie('token').replaceAll('"','');
       const config = {
-        method: 'GET',
+        method: 'POST',
         headers: {
           'Accept': 'application/json',
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`
-        }
+        },
+        body: JSON.stringify({
+          programsStartDate: programsFYstartDate,
+          programsEndDate:  programsFYendDate,
+        })
       }
-      let response = await fetch(`${this.API_URL}/program`, config);
+      let response = await fetch(`${this.API_URL}/programs`, config);
       if (response.status === 200) {
         let { result } = await response.json();
         let programs = result.map(el => ({...el, id: el.program_id}))
@@ -381,7 +404,7 @@ class Table extends Component {
   }
 
   closeHistoricModal = () => this.setState({historicModalIsOpen: false, historicDate: {}})
-  
+
   closeDetailModal = () => this.setState({detailModalIsOpen: false})
 
   handleHistoricDate = (name, value) => this.setState({ historicDate: { ...this.state.historicDate, [name]: value } })

@@ -120,7 +120,7 @@ class HistoricActivityModal extends Component {
                   formatter={(date) => date ? moment(date).format('DD/MM/YYYY') : ''}
                   parser={(dateString) => moment(dateString, 'DD/MM/YYYY').toDate()}
                   formattedValue={startDate}
-                  dateDisabled={endDate ? this.checkEndDate.bind(this) : undefined}
+                  dateDisabled={this.checkEndDate}
                 />
                 {this.state.errors.startDate && <div className="slds-form-element__help">This field is required</div>}
               </div>
@@ -133,7 +133,7 @@ class HistoricActivityModal extends Component {
                   formatter={(date) => date ? moment(date).format('DD/MM/YYYY') : ''}
                   parser={(dateString) => moment(dateString, 'DD/MM/YYYY').toDate()}
                   formattedValue={endDate}
-                  dateDisabled={startDate ? this.checkStartDate.bind(this) : undefined}
+                  dateDisabled={this.checkStartDate}
                 />
                 {this.state.errors.endDate && <div className="slds-form-element__help">This field is required</div>}
               </div>
