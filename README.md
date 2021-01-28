@@ -27,15 +27,27 @@ Basic react+redux project.
 ```
 * For more check create-react-app [Folder Structure](#folder-structure)
 
-### How to run for localhost testing
+### How to run for localhost for react development
+
+This must be used only for react development, in this way the webapp will not use the SSO authentication and instead will use a dummy login given by the user table in DB (user-password)
+
 1. Install [nodejs LTS](https://nodejs.org/en/download/)
 2. Install [yarn](https://yarnpkg.com)
 3. run ```yarn start```
 
+
+### How to test as testing env locally
+
+This must be used for to test whole app with SSO authentication
+
+
+```
+yarn && yarn server
+```
+
 ---------
 This project was bootstrapped with [Create React App](https://github.com/facebookincubator/create-react-app).
 You can find some information on how to perform common tasks. [here](https://github.com/facebookincubator/create-react-app/blob/master/packages/react-scripts/template/README.md).
-
 ---------
 
 ## External Libraries used

@@ -18,7 +18,7 @@ import {
 } from '@salesforce/design-system-react';
 
 import Panel from '../Panel';
-import { Container } from './styles';
+import { Container, FiscalYearErrorContainer } from './styles';
 import Pager from '../Pager';
 import EditProgramModal from '../ProgramModal';
 import "./styles.css";
@@ -490,6 +490,10 @@ class Table extends Component {
       } else if (input === "endYear" && data.length > 0 && data.length !== 4) {
         errors = {...errors, endYear: "This field must contain 4 character"};
       } else {
+        if (errors.endYear && errors.endQuarter) {
+          delete errors.endYear;
+          delete errors.endQuarter;
+        }
         delete errors[input];
       }
     } else {
@@ -514,6 +518,18 @@ class Table extends Component {
           delete errors[inpt];
         }
       });
+      if (!Object.keys(errors).length) {
+        const startFY = Number(`${historicSearch.startYear}${historicSearch.startQuarter[0].id}`);
+        const endFY = Number(`${historicSearch.endYear}${historicSearch.endQuarter[0].id}`);
+
+        if (startFY > endFY) {
+          errors = {
+            ...errors,
+            endYear: true,
+            endQuarter: true,
+          };
+        }
+      }
     }
 
     this.setState({ error: errors });
@@ -523,6 +539,10 @@ class Table extends Component {
   };
 
   handleChange = (key, value) => {
+    if((key === "endYear" || key === "startYear") && isNaN(value)) {
+      return;
+    }
+
     this.setState({
       historicSearch: {
         ...this.state.historicSearch,
@@ -826,6 +846,9 @@ class Table extends Component {
                 />
               </div>
             </div>
+              {this.state.error && this.state.error.endQuarter && this.state.error.endYear && (
+                <FiscalYearErrorContainer className="slds-m-bottom_large">End fiscal year-quarter set must be greater than start fiscal year set</FiscalYearErrorContainer>
+              )}
           </div>
         </Modal>
         <Modal
@@ -863,7 +886,11 @@ class Table extends Component {
             Budget:
             </div>
             <div className="slds-text-heading_small">
-              ${Number(this.state.viewItem.budget).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}) || ' - '}
+              {
+                this.state.viewItem.budget !== null
+                  ? `$${Number(this.state.viewItem.budget).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}`
+                  : ' - '
+              }
             </div>
           </div>
           <div className="slds-m-bottom_small">
@@ -871,7 +898,11 @@ class Table extends Component {
             MP target:
             </div>
             <div className="slds-text-heading_small">
-              ${Number(this.state.viewItem.metrics).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}) || ' - '}
+              {
+                this.state.viewItem.budget !== null
+                  ? `$${Number(this.state.viewItem.metrics).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}`
+                  : ' - '
+              }
             </div>
           </div>
           <div className="slds-m-bottom_small">
@@ -895,7 +926,7 @@ class Table extends Component {
             APM 1:
             </div>
             <div className="slds-text-heading_small">
-              {this.state.viewItem.lifecycleStage && this.state.viewItem.lifecycleStage.length ? this.state.viewItem.apm1.map((val) => val.label).join(', ') : ' - '}
+              {this.state.viewItem.apm1 && this.state.viewItem.apm1.length ? this.state.viewItem.apm1.map((val) => val.label).join(', ') : ' - '}
             </div>
           </div>
           <div className="slds-m-bottom_small">
@@ -903,7 +934,7 @@ class Table extends Component {
             APM 2:
             </div>
             <div className="slds-text-heading_small">
-              {this.state.viewItem.lifecycleStage && this.state.viewItem.lifecycleStage.length ? this.state.viewItem.apm2.map((val) => val.label).join(', ') : ' - '}
+              {this.state.viewItem.apm2 && this.state.viewItem.apm2.length ? this.state.viewItem.apm2.map((val) => val.label).join(', ') : ' - '}
             </div>
           </div>
           <div className="slds-m-bottom_small">
@@ -911,7 +942,15 @@ class Table extends Component {
             Persona:
             </div>
             <div className="slds-text-heading_small">
-              {this.state.viewItem.lifecycleStage && this.state.viewItem.lifecycleStage.length ? this.state.viewItem.persona.map((val) => val.label).join(', ') : ' - '}
+              {this.state.viewItem.persona && this.state.viewItem.persona.length ? this.state.viewItem.persona.map((val) => val.label).join(', ') : ' - '}
+            </div>
+          </div>
+          <div className="slds-m-bottom_small">
+            <div className="slds-text-title">
+            Industry:
+            </div>
+            <div className="slds-text-heading_small">
+              {this.state.viewItem.industry && this.state.viewItem.industry.length ? this.state.viewItem.industry.map((val) => val.label).join(', ') : ' - '}
             </div>
           </div>
           <div className="slds-m-bottom_small">
@@ -919,7 +958,7 @@ class Table extends Component {
             Segment:
             </div>
             <div className="slds-text-heading_small">
-              {this.state.viewItem.lifecycleStage && this.state.viewItem.lifecycleStage.length ? this.state.viewItem.segment.map((val) => val.label).join(', ') : ' - '}
+              {this.state.viewItem.segment && this.state.viewItem.segment.length ? this.state.viewItem.segment.map((val) => val.label).join(', ') : ' - '}
             </div>
           </div>
           <div className="slds-m-bottom_small">
