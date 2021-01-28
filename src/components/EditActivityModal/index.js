@@ -43,7 +43,9 @@ class EditActivityModalComponent extends Component {
     assets: [],
     campaignId: this.props.data.campaignId,
     customerMarketing: this.props.data.customerMarketing,
-    errors: {}
+    errors: {},
+    programsFYstartDate: '',
+    programsFYendDate: '',
   }
 
   constructor(props){
@@ -60,7 +62,23 @@ class EditActivityModalComponent extends Component {
     if(window.location.hostname === 'localhost') this.API_URL =  "http://localhost:3000/api/v1";
     else this.API_URL = await getAPIUrl();
 
+    await this.getConfig();
+
     this.initDropdowns();
+  }
+
+  async getConfig(){
+    try{
+      const request = await fetch('/config');
+      const data = await request.json();
+      request.status === 200 && this.setState({
+        programsFYstartDate: data.programsFYstartDate,
+        programsFYendDate: data.programsFYendDate
+        });
+
+    } catch(e) {
+      console.error('ERROR: cannot get the url config: ', e);
+    }
   }
 
   initDropdowns = async () => {
@@ -113,18 +131,23 @@ class EditActivityModalComponent extends Component {
 
   checkProgram = async () => {
     this.setState({ isProgramLoading: true });
+    const { programsFYstartDate, programsFYendDate } = this.state;
     return new Promise(async (resolve, reject) => {
       try {
         let token = getCookie('token').replaceAll('"','');
         const config = {
-          method: 'GET',
+          method: 'POST',
           headers: {
             'Accept': 'application/json',
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${token}`
-          }
+          },
+          body: JSON.stringify({
+            programsStartDate: programsFYstartDate,
+            programsEndDate:  programsFYendDate,
+          })
         }
-        let response = await fetch(`${this.API_URL}/program`, config);
+        let response = await fetch(`${this.API_URL}/programs`, config);
         let { result } = await response.json()
 
         //salesforce datepicker requires id key
@@ -403,6 +426,18 @@ class EditActivityModalComponent extends Component {
     }));
   }
 
+  checkEndDate = (date) => {
+    const endDate = moment(this.state.endDate,'DD/MM/YYYY');
+    if(!date) return;
+    return endDate.isBefore(date.date)
+  }
+
+  checkStartDate = (date) => {
+    const starDate = moment(this.state.startDate,'DD/MM/YYYY');
+    if(!date) return;
+    return starDate.isAfter(date.date)
+  }
+
 	render() {
 		return (
       <IconSettings iconPath="/assets/icons">
@@ -558,6 +593,7 @@ class EditActivityModalComponent extends Component {
                 parser={(dateString) => moment(dateString, 'DD/MM/YYYY').toDate()}
                 formattedValue={this.parseDate(this.state.startDate)}
                 autocomplete="off"
+                dateDisabled={this.checkEndDate}
               />
               {this.state.errors.startDate && <div class="slds-form-element__help">This field is required</div>}
             </div>
@@ -583,6 +619,7 @@ class EditActivityModalComponent extends Component {
                 parser={(dateString) => moment(dateString, 'DD/MM/YYYY').toDate()}
                 formattedValue={this.parseDate(this.state.endDate)}
                 autocomplete="off"
+                dateDisabled={this.checkStartDate}
               />
               {this.state.errors.endDate && <div class="slds-form-element__help">This field is required</div>}
             </div>
