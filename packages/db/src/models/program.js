@@ -39,7 +39,7 @@ class ProgramModel {
         programEndDate = programsEndDate.replace(regex, '');
       }
       const program = await db.Program.findAll({
-        attributes: ['program_id', ['name', 'label']],
+        attributes: ['program_id', ['name', 'label'], 'target_region'],
         order: [
           ['name', 'ASC'],
         ],
