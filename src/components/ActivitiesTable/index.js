@@ -12,6 +12,7 @@ import {
   DataTableCell,
   DataTableRowActions,
   Dropdown,
+  Combobox,
   Icon,
   PageHeader,
   PageHeaderControl,
@@ -343,6 +344,7 @@ class Table extends Component {
         let programs = result.map(el => ({...el, id: el.program_id}))
         this.setState({
           programs: [{ label: "All", id: "all" }, ...programs],
+          filteredPrograms: [{ label: "All", id: "all" }, ...programs],
         });
       } else throw new Error(response);
     } catch (err) {
@@ -577,6 +579,20 @@ class Table extends Component {
   };
 
   handleChange = (name, value) => {
+    if(name === "regionId" && value !== ""){
+      if(value[0].id!=='all'){
+        this.setState({
+          filteredPrograms : [{ label: "All", id: "all" }, ...this.state.programs.filter(function(program){
+            return program.target_region===value[0].id
+          })]
+        })
+      }else{
+        this.setState({
+          filteredPrograms: this.state.programs
+        })
+      }
+      
+    }
     if(name === "startDate" && value !== "") {
       this.setState({
         errors: {...this.state.errors, startDate: false, repeated: false}
@@ -697,7 +713,7 @@ class Table extends Component {
         {this.state.isPanelOpen && (
           <FilterPanel
             regions={this.state.regions}
-            programs={this.state.programs}
+            programs={this.state.filteredPrograms}
             formats={this.state.formats}
             onFilter={this.onFilter}
             filters={this.state.filters}
@@ -834,7 +850,7 @@ class Table extends Component {
         </DataTable>
         <Pager
           data={this.state.data}
-          itemsPerPage={20}
+          itemsPerPage={100}
           setDisplayedItems={this.handlePagination}
           currentPage={this.state.currentPage}
         />

@@ -77,6 +77,9 @@ class FilterPanel extends Component {
             onSelect: (event, data) =>
               data.selection.length &&
               this.props.handleChange("programId", data.selection),
+            oninput: (event, data) =>
+              data.selection.length &&
+              this.props.handleChange("programId", data.selection),
           }}
           labels={{ label: "Program" }}
           name="program"
