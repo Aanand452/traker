@@ -34,6 +34,11 @@ import { selectItem, setItem } from "../../actions/DataTable";
 import { Container } from "./styles";
 
 import FilterPanel from "../FilterPanel";
+import jsPDF from "jspdf";
+import "jspdf-autotable";
+import exportFromJSON from 'export-from-json'
+
+
 
 const DateCell = ({ children, ...props }) => {
   return <DataTableCell title={children} {...props}>
@@ -113,6 +118,7 @@ class Table extends Component {
     tableExtraWidth: 0,
     noRowHover: false,
     isHistoric: false,
+    showExportMenu: false,
     historicModalIsOpen: false,
     detailModalIsOpen: false,
     historicDate: {},
@@ -422,9 +428,98 @@ class Table extends Component {
     })
   }
 
+  exportOptions = [
+    {id:1, value:'PDF', label:'Pdf'}, {id:2, value:'CSV', label:'Csv'}, {id: 3, value:'XLS', label:'Xls'}
+  ]
+
+  exportBtn = (value) => {
+    switch(value.id) {
+      case 1:
+        this.exportPdf();
+        break;
+      case 2:
+        this.exportCSV('csv');
+        break;
+      case 3:
+        this.exportCSV('xls');
+        break;
+    }
+  }
+
+  exportCSV = (type) => {
+    const exportData = {
+      data: this.state.displayedData,
+      fileName: 'activities',
+      exportType: type
+    }
+    exportFromJSON(exportData)
+  }
+
+  exportPdf = () => {
+    const exportHeaders = [[
+      "Owner", 
+      "Program", 
+      "Campaign ID", 
+      "Title", 
+      "Format", 
+      "Abstract", 
+      "Region", 
+      "Start Data", 
+      "End Date"]];
+  
+    const exportData = this.state.displayedData.map(elt=> [
+      elt.userId, 
+      elt.programId, 
+      elt.campaignId, 
+      elt.title, 
+      elt.formatId, 
+      elt.abstract, 
+      elt.regionId, 
+      elt.startDate.replace('T00:00:00.000Z',''), 
+      elt.endDate.replace('T00:00:00.000Z','')]);
+  
+    console.log(exportData)
+    const unit = "pt";
+    const size = "A4";
+    const orientation = "portrait";
+
+    const marginLeft = 40;
+    const doc = new jsPDF(orientation, unit, size);
+
+    doc.setFontSize(15);
+
+    const title = "Activities";
+
+    let content = {
+      startY: 40,
+      head: exportHeaders,
+      body: exportData,
+      styles:{
+        halign: 'center',
+        fontSize: 8
+      }
+    };
+    doc.text(title, marginLeft, marginLeft - 5, {
+      styles: { fontSize: 5 },
+    });
+    // doc.text(title, marginLeft, 40);
+    doc.autoTable(content);
+    doc.save("activities.pdf")
+  }
+
+
   actions = () => (
     <PageHeaderControl>
       <ButtonGroup id="button-group-page-header-actions-history">
+        <Dropdown 
+          assistiveText={{ icon: 'XML' }}
+					iconCategory="doctype"
+					iconName="xml"
+					iconVariant="border-filled"
+          onSelect={this.exportBtn} 
+          value={this.exportOptions[0]} 
+          options={this.exportOptions}
+        />
         <Button
           iconCategory="utility"
           label="Historic"
