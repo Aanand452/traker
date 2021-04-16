@@ -1,0 +1,21 @@
+.border {
+    transition: 0.05s ease;
+  }
+  
+  .border:hover {
+    background-color: #dddbda8c;
+  }
+  
+  .padding_bottom {
+    padding-bottom: 150px;
+  }
+  
+  .slds-table_bordered tbody td {
+    border-bottom: 1px solid #DDDBDA;
+  }
+  
+  .dialog-classname {
+    max-width: 50vw;
+    white-space: break-spaces;
+    line-height: 1.5;
+  }

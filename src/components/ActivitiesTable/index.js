@@ -3,6 +3,9 @@ import { withRouter, Link } from "react-router-dom";
 import { connect } from "react-redux";
 import moment from "moment";
 import "./styles.css";
+import { Calendar, momentLocalizer  } from 'react-big-calendar' 
+
+
 
 import {
   Button,
@@ -31,7 +34,7 @@ import Pager from "../Pager";
 
 // ACTIONS
 import { selectItem, setItem } from "../../actions/DataTable";
-import { Container } from "./styles";
+import { Container, CalendarContainer} from "./styles";
 
 import FilterPanel from "../FilterPanel";
 
@@ -89,7 +92,16 @@ const DropDownCellAsset = ({ children, ...props }) => {
 }
 
 DropDownCellAsset.displayName = DataTableCell.displayName;
-
+moment.locale('en-GB');
+const localizer = momentLocalizer(moment)
+const myEvents = [
+  {
+      'title': 'My event',
+      'allDay': false,
+      'start': new Date(), // 10.00 AM
+      'end': new Date(), // 2.00 PM 
+  }
+]
 class Table extends Component {
   state = {
     sortProperty: "",
@@ -113,6 +125,7 @@ class Table extends Component {
     tableExtraWidth: 0,
     noRowHover: false,
     isHistoric: false,
+    isCalanderView: false,
     historicModalIsOpen: false,
     detailModalIsOpen: false,
     historicDate: {},
@@ -124,7 +137,7 @@ class Table extends Component {
 
   componentDidMount() {
     this.setupAndFetch();
-    this.resizableTable(this.table.current.scrollerRef.children[0]);
+    {this.state.isCalanderView ? this.resizableTable(this.table.current.scrollerRef.children[0]) : null}
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -421,10 +434,21 @@ class Table extends Component {
       }
     })
   }
+  calendarViewBtn = () =>{
+    this.setState({isCalanderView: !this.state.isCalanderView})
+  }
 
   actions = () => (
     <PageHeaderControl>
       <ButtonGroup id="button-group-page-header-actions-history">
+        <Button
+          iconCategory="utility"
+          assistiveText={{icon: "Search"}}
+          iconName={"contract_alt"}
+          iconVariant="border-filled"
+          variant="icon"
+          onClick={this.calendarViewBtn}
+        />
         <Button
           iconCategory="utility"
           label="Historic"
@@ -721,7 +745,7 @@ class Table extends Component {
             errors={this.state.errors}
           />
         )}
-        <DataTable
+        { this.state.isCalanderView ? <DataTable
           assistiveText={{
             actionsHeader: "actions",
             columnSort: "sort this column",
@@ -847,7 +871,13 @@ class Table extends Component {
             onAction={this.handleRowAction}
             dropdown={<Dropdown length="7" />}
           />
-        </DataTable>
+        </DataTable> : <CalendarContainer>
+                <Calendar localizer={localizer}
+                    events={myEvents}
+                    step={60}
+                    startAccessor="start"
+                    endAccessor="end"
+                    /></CalendarContainer>}
         <Pager
           data={this.state.data}
           itemsPerPage={100}
