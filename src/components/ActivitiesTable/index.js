@@ -478,7 +478,6 @@ class Table extends Component {
       elt.startDate.replace('T00:00:00.000Z',''), 
       elt.endDate.replace('T00:00:00.000Z','')]);
   
-    console.log(exportData)
     const unit = "pt";
     const size = "A4";
     const orientation = "portrait";
@@ -497,6 +496,17 @@ class Table extends Component {
       styles:{
         halign: 'center',
         fontSize: 8
+      },
+      columnStyles:{
+        0:{cellWidth: 50},
+        1:{cellWidth: 50},
+        2:{cellWidth: 50},
+        3:{cellWidth: 100},
+        4:{cellWidth: 40},
+        5:{cellWidth: 60},
+        6:{cellWidth: 100},
+        7:{cellWidth: 30},
+        8:{cellWidth: 30},
       }
     };
     doc.text(title, marginLeft, marginLeft - 5, {
