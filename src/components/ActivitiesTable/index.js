@@ -494,17 +494,16 @@ class Table extends Component {
       head: exportHeaders,
       body: exportData,
       styles:{
-        halign: 'center',
         fontSize: 8
       },
       columnStyles:{
-        0:{cellWidth: 50},
+        0:{cellWidth: 40},
         1:{cellWidth: 50},
         2:{cellWidth: 50},
-        3:{cellWidth: 100},
+        3:{cellWidth: 120},
         4:{cellWidth: 40},
-        5:{cellWidth: 60},
-        6:{cellWidth: 100},
+        5:{cellWidth: 130},
+        6:{cellWidth: 40},
         7:{cellWidth: 30},
         8:{cellWidth: 30},
       }
