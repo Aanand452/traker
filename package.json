@@ -41,7 +41,7 @@
     "jade": "1.11.0",
     "jest": "20.0.4",
     "jsonwebtoken": "^8.5.1",
-    "jspdf": "^2.0.0",
+    "jspdf": "^2.1.1",
     "jspdf-autotable": "^3.5.14",
     "lodash": "^4.17.4",
     "moment": "^2.27.0",
