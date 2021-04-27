@@ -1,4 +1,4 @@
-import React, { Component, Fragment } from "react";
+import React, { Component, Fragment, useState } from "react";
 import { withRouter, Link } from "react-router-dom";
 import { connect } from "react-redux";
 import moment from "moment";
@@ -11,19 +11,25 @@ import {
   DataTableColumn,
   DataTableCell,
   DataTableRowActions,
+  DatePicker,
   Dropdown,
-  Combobox,
+  Card,
   Icon,
   PageHeader,
   PageHeaderControl,
   ToastContainer,
   Toast,
-  Tooltip
+  Tooltip,
+  DropdownTrigger,
+  Modal,
+  CardFilter,
+  Combobox,
+  comboboxFilterAndLimit
 } from "@salesforce/design-system-react";
 
 import { getCookie } from '../../utils/cookie';
 import { getAPIUrl } from "../../config/config";
-import Modal from "../EditActivityModal";
+// import Modal from "../EditActivityModal";
 import CloneModal from "../CloneActivityModal";
 import HistoricModal from "../HistoricActivityModal";
 import ViewActivityModal from "../ViewActivityModal";
@@ -38,7 +44,79 @@ import jsPDF from "jspdf";
 import "jspdf-autotable";
 import exportFromJSON from 'export-from-json'
 
+import { DateRangePicker } from 'react-date-range';
+import 'react-date-range/dist/styles.css'; 
+import 'react-date-range/dist/theme/default.css'; 
+import { addDays } from 'date-fns';
 
+
+const accounts = [{
+  id: '1',
+  label: 'Acme',
+  subTitle: 'Account • San Francisco',
+  type: 'account',
+},
+{
+  id: '2',
+  label: 'Salesforce.com, Inc.',
+  subTitle: 'Account • San Francisco',
+  type: 'account',
+},
+{
+  id: '3',
+  label: "Paddy's Pub",
+  subTitle: 'Account • Boston, MA',
+  type: 'account',
+},
+{
+  id: '4',
+  label: 'Tyrell Corp',
+  subTitle: 'Account • San Francisco, CA',
+  type: 'account',
+},
+{
+  id: '5',
+  label: 'Paper St. Soap Company',
+  subTitle: 'Account • Beloit, WI',
+  type: 'account',
+},
+{
+  id: '6',
+  label: 'Nakatomi Investments',
+  subTitle: 'Account • Chicago, IL',
+  type: 'account',
+},
+{ id: '7', label: 'Acme Landscaping', type: 'account' },
+{
+  id: '8',
+  label: 'Acme Construction',
+  subTitle: 'Account • Grand Marais, MN',
+  type: 'account',
+},
+];
+const entities = [
+	{
+		id: '0',
+		label: 'Suggested for you',
+		type: 'separator',
+	},
+	{
+		id: '1',
+		label: 'All',
+	},
+	{
+		id: '2',
+		label: 'Accounts',
+	},
+	{
+		id: '3',
+		label: 'Analytics',
+	},
+	{
+		id: '4',
+		label: 'Approvals',
+	},
+];
 
 const DateCell = ({ children, ...props }) => {
   return <DataTableCell title={children} {...props}>
@@ -124,6 +202,9 @@ class Table extends Component {
     historicDate: {},
     programsFYstartDate: '',
     programsFYendDate: '',
+    startDate:'',
+    endDate:'',
+    isFiltering: false,
   };
 
   table = React.createRef()
@@ -423,7 +504,7 @@ class Table extends Component {
         this.setState({historicDate: {}})
         this.props.reloadActivities();
       } else {
-        this.setState({historicModalIsOpen: true})
+        // this.setState({historicModalIsOpen: true})
       }
     })
   }
@@ -516,19 +597,26 @@ class Table extends Component {
     doc.save("activities.pdf")
   }
 
-
   actions = () => (
     <PageHeaderControl>
-      <ButtonGroup id="button-group-page-header-actions-history">
+      <ButtonGroup id="button-group-page-header-actions">
         <Dropdown 
-          assistiveText={{ icon: 'XML' }}
-					iconCategory="doctype"
-					iconName="xml"
-					iconVariant="border-filled"
           onSelect={this.exportBtn} 
-          value={this.exportOptions[0]} 
+          width="xx-small"
           options={this.exportOptions}
-        />
+        >
+        <DropdownTrigger>
+          <Button 
+            // assistiveText={{ icon: 'XML' }}
+            iconCategory="doctype"
+            iconName="xml"
+            iconPosition="right"
+            label="Export"
+          />
+          </DropdownTrigger>
+        </Dropdown>
+        </ButtonGroup>
+      <ButtonGroup id="button-group-page-header-actions-history">
         <Button
           iconCategory="utility"
           label="Historic"
@@ -760,7 +848,29 @@ class Table extends Component {
     });
   };
 
+  onChangeDate = (dates) => {
+    const [start, end] = dates
+    this.setState({startDate:start})
+    this.setState({endDate:end})
+  }
+  handleFilterChange = () => {}
+
+  entityCombobox = () => (
+    <Combobox 
+    assistiveText={{ label: 'Filter Search by:' }}
+    variant="readonly"
+    events={{}}
+    value={accounts}
+    selection={{id:1, label:"One"}}
+    options={comboboxFilterAndLimit({
+      inputValue:[{id:1, label:"One"}, {id:1, label:"Two"}, {id:1, label:"Three"}],
+      options:[{id:1, label:"One"}, {id:1, label:"Two"}, {id:1, label:"Three"}],
+      selection:[{id:1, label:"One"}, {id:1, label:"Two"}, {id:1, label:"Three"}]
+    })}
+    />)
+
   render() {
+    const isEmpty = this.state.data.length === 0;
     return (
       <Container>
         {this.state.cloneModalIsOPen && (
@@ -788,15 +898,15 @@ class Table extends Component {
             closeDetailModal={this.closeDetailModal}
           />
         )}
-        {this.state.editModalIsOPen && (
+        {/* {this.state.editModalIsOPen && (
           <Modal
             data={this.props.dataTable.item}
             onToast={this.onToast}
             toggleOpen={this.toggleOpen}
             reloadActivities={this.props.reloadActivities}
           />
-        )}
-        <PageHeader
+        )} */}
+        {/* <PageHeader
           onRenderActions={this.actions}
           icon={
             <Icon
@@ -813,7 +923,7 @@ class Table extends Component {
           title={<h1>Activities</h1>}
           truncate
           variant="object-home"
-        />
+        /> */}
         {this.state.isPanelOpen && (
           <FilterPanel
             regions={this.state.regions}
@@ -825,7 +935,101 @@ class Table extends Component {
             errors={this.state.errors}
           />
         )}
-        <DataTable
+        {
+          
+            <Modal
+              isOpen={this.state.isHistoric}
+              size="medium"
+              onRequestClose={() => this.setState({isHistoric:false})}
+              ><DateRangePicker 
+            onChange={this.onChangeDate}
+            showSelectionPreview={true}
+            moveRangeOnFirstSelection={false}
+            months={2}
+            ranges={[{startDate:new Date(), key: 'selection', endDate:addDays(new Date(), 7)}]}
+            direction="horizontal"
+          /></Modal>
+          
+        }
+        {<Modal 
+            isOpen={this.state.OpenFilters}
+            size="small"
+            onRequestClose={() => this.setState({OpenFilters:false})}
+            footer={[
+							<Button label="Cancel" onClick={this.toggleOpen} />,
+							<Button label="Save" variant="brand" onClick={this.toggleOpen} />,
+						]}
+            heading="Add Filters"
+          ><section className="slds-p-around_large">
+           <Combobox 
+            multiple
+            variant="inline-listbox"
+            labels={{
+              label: 'Search Programs',
+              placeholder: 'Add Program',
+            }}
+            entityCombobox={this.entityCombobox()}
+            events={{}}
+            options={comboboxFilterAndLimit({
+              inputValue:[{id:1, label:"One"}, {id:1, label:"Two"}, {id:1, label:"Three"}],
+              options:[{id:1, label:"One"}, {id:1, label:"Two"}, {id:1, label:"Three"}],
+              selection:[{id:1, label:"One"}, {id:1, label:"Two"}, {id:1, label:"Three"}]
+            })}
+          />
+          <Combobox labels={{
+              label: 'Search Format',
+              placeholder: 'Add Format',
+            }}/></section>
+          </Modal>}
+        <Card 
+          heading="Activities"
+          filter={
+            (!isEmpty || this.state.isFiltering) && (
+              <CardFilter onChange={this.handleFilterChange} />
+            )
+          }
+          headerActions={(<ButtonGroup id="button-group-page-header-actions">
+          <Button
+            assistiveText={{ icon: "Filters" }}
+            iconCategory="utility"
+            iconName="filterList"
+            iconVariant="border-filled"
+            variant="icon"
+            title="Filter"
+            onClick={() => {this.setState({OpenFilters:true})}}/>
+          <Button 
+          label="History"
+          onClick={this.historicBtn}
+          />
+          <Dropdown 
+            onSelect={this.exportBtn} 
+            width="xx-small"
+            options={this.exportOptions}
+          >
+          <DropdownTrigger>
+            <Button 
+              // assistiveText={{ icon: 'XML' }}
+              iconCategory="doctype"
+              iconName="xml"
+              iconPosition="right"
+              label="Export"
+            />
+          </DropdownTrigger>
+        </Dropdown>
+          <Link to="/create-activity">
+            <Tooltip content="Add New Activity" align="bottom right">
+            <Button>
+              <Icon  assistiveText={{ icon: 'New' }} category="utility" name="new" size="x-small"/>
+            </Button></Tooltip>
+          </Link>
+        </ButtonGroup>)}
+          icon={<Icon
+            assistiveText={{ label: "User" }}
+            category="standard"
+            name="lead"
+          />}
+          
+        ><DataTable
           assistiveText={{
             actionsHeader: "actions",
             columnSort: "sort this column",
@@ -951,7 +1155,7 @@ class Table extends Component {
             onAction={this.handleRowAction}
             dropdown={<Dropdown length="7" />}
           />
-        </DataTable>
+        </DataTable></Card>
         <Pager
           data={this.state.data}
           itemsPerPage={100}
