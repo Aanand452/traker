@@ -429,7 +429,7 @@ class Table extends Component {
   }
 
   exportOptions = [
-    {id:1, value:'PDF', label:'Pdf'}, {id:2, value:'CSV', label:'Csv'}, {id: 3, value:'XLS', label:'Xls'}
+    {id:1, value:'PDF', label:'PDF'}, {id:2, value:'CSV', label:'CSV'}, {id: 3, value:'XLS', label:'XLS'}
   ]
 
   exportBtn = (value) => {
