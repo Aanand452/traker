@@ -3,7 +3,6 @@ import { withRouter, Link } from "react-router-dom";
 import { connect } from "react-redux";
 import moment from "moment";
 import "./styles.css";
-import { Calendar, momentLocalizer  } from 'react-big-calendar' 
 
 
 
@@ -15,7 +14,7 @@ import {
   DataTableCell,
   DataTableRowActions,
   Dropdown,
-  Combobox,
+  Popover,
   Icon,
   PageHeader,
   PageHeaderControl,
@@ -31,10 +30,12 @@ import CloneModal from "../CloneActivityModal";
 import HistoricModal from "../HistoricActivityModal";
 import ViewActivityModal from "../ViewActivityModal";
 import Pager from "../Pager";
+import ActivityCalendar from "../ActivityCalendar"
 
 // ACTIONS
 import { selectItem, setItem } from "../../actions/DataTable";
-import { Container, CalendarContainer} from "./styles";
+import { Container} from "./styles";
+
 
 import FilterPanel from "../FilterPanel";
 
@@ -58,7 +59,6 @@ CustomDataTableCell.displayName = DataTableCell.displayName;
 
 const DropDownCellAsset = ({ children, ...props }) => {
   let items = props.property;
-
   if (props.item[items]) {
     const assets = props.item[items].split(', ');
     if (assets.length > 1) {
@@ -93,7 +93,6 @@ const DropDownCellAsset = ({ children, ...props }) => {
 
 DropDownCellAsset.displayName = DataTableCell.displayName;
 moment.locale('en-GB');
-const localizer = momentLocalizer(moment)
 const myEvents = [
   {
       'title': 'My event',
@@ -126,6 +125,7 @@ class Table extends Component {
     noRowHover: false,
     isHistoric: false,
     isCalanderView: false,
+    popoverOpen: false,
     historicModalIsOpen: false,
     detailModalIsOpen: false,
     historicDate: {},
@@ -437,18 +437,39 @@ class Table extends Component {
   calendarViewBtn = () =>{
     this.setState({isCalanderView: !this.state.isCalanderView})
   }
+  calendarOnHover = () => {
+    console.log(this.state.popoverOpen)
+    this.setState({popoverOpen: true})
+  }
+  calendarOnLeave = () => {
+    console.log(this.state.popoverOpen)
+    this.setState({popoverOpen: false})
+  }
+  togglePopover() {
+    this.setState({
+      popoverOpen: !this.state.popoverOpen,
+    })
+  }
 
   actions = () => (
     <PageHeaderControl>
       <ButtonGroup id="button-group-page-header-actions-history">
-        <Button
-          iconCategory="utility"
-          assistiveText={{icon: "Search"}}
-          iconName={"contract_alt"}
-          iconVariant="border-filled"
-          variant="icon"
+        <Tooltip
+          content={this.state.isCalanderView ? "Open Calendar View" : "Open List View"}
+        >
+          <Button
           onClick={this.calendarViewBtn}
-        />
+          >
+            <Icon 
+              assistiveText={{ label: 'Event' }}
+              category="utility"
+              name={this.state.isCalanderView ? "event" : "list"}
+              size="x-small"
+            />
+          </Button>
+        </Tooltip>
+        
+        
         <Button
           iconCategory="utility"
           label="Historic"
@@ -871,13 +892,10 @@ class Table extends Component {
             onAction={this.handleRowAction}
             dropdown={<Dropdown length="7" />}
           />
-        </DataTable> : <CalendarContainer>
-                <Calendar localizer={localizer}
-                    events={myEvents}
-                    step={60}
-                    startAccessor="start"
-                    endAccessor="end"
-                    /></CalendarContainer>}
+        </DataTable> :
+                <ActivityCalendar 
+                  events={myEvents}
+                  activities={this.state.data}/>}
         <Pager
           data={this.state.data}
           itemsPerPage={100}

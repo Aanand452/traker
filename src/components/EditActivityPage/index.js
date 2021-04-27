@@ -4,7 +4,6 @@ import { withRouter } from 'react-router-dom';
 
 import { Container } from './styles';
 import ActivitiesTable from '../ActivitiesTable';
-import ActivityCalendar from '../ActivityCalendar';
 import { getAPIUrl } from '../../config/config';
 import ConfirmationDailog from '../Prompt';
 import { getCookie } from '../../utils/cookie';

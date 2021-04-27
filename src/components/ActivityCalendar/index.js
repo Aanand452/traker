@@ -1,53 +1,218 @@
 import "./styles.css";
-import React, { Component, Fragment } from "react";
+import React, { Component,} from "react";
 import { withRouter } from 'react-router-dom';
 import { Calendar, momentLocalizer  } from 'react-big-calendar' 
 import moment from 'moment';
-import { Container, CalendarContainer } from './styles';
+import {ModalTableContainer, CalendarContainer } from './styles';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
-import container from "@salesforce/design-system-react/lib/components/alert/container";
-
+import { Modal, Card, CardFilter, Icon, CardEmpty, Button, DataTable, DataTableColumn, DataTableRowActions, Dropdown} from "@salesforce/design-system-react";
 moment.locale('en-GB');
 const localizer = momentLocalizer(moment)
-
-const myEvents = [
-    {
-        'title': 'My event',
-        'allDay': false,
-        'start': new Date(), // 10.00 AM
-        'end': new Date(), // 2.00 PM 
-    }
+const columns =[
+    <DataTableColumn 
+        key="userId"
+        label="Owner"
+        property="userId"
+    />,
+    <DataTableColumn 
+        key="title"
+        label="Title"
+        property="title"
+    />,
+    <DataTableColumn 
+        key="abstract"
+        label="Abstract"
+        property="abstract"
+    />,
+    <DataTableColumn 
+        key="formatId"
+        label="Format"
+        property="formatId"
+    />,
+    <DataTableColumn 
+        key="programId"
+        label="Program"
+        property="programId"
+    />,
+    <DataTableColumn 
+        key="regionId"
+        label="Region"
+        property="regionId"
+    />
 ]
 class ActivityCalendar extends Component {
-
-    constructor(props) {
+    constructor(props){
         super(props)
         this.state = {
-            cal_events: [],
+            currentDate: new Date(),
+            currentView: 'month',
+            displayedDateRage: {},
+            data: [],
+            displayedData : [],
+            events: [],
+            eventsOnModal:[],
+            toast:{
+                show:false
+            }
         }
     }
-        //We will populate this function later
-    componentDidMount() {
-        //We will populate this function later
+    
+    computeDisplayedDateRange = () => {
+        const {currentDate, currentView} = this.state;
+        let start = moment(currentDate).startOf(currentView);
+        let end = moment(currentDate).endOf(currentView);
+      if(currentView === 'month') {
+          start = start.startOf('week');
+          end = end.endOf('week');
+      }
+      let startDate = new Date(start.toString())
+      let endDate = new Date(end.toString())
+      console.log(this.state.data)
+      
+      this.state.displayedData = this.state.data.filter(a => {
+          var date = new Date(a.startDate)
+          return (date >= startDate && date <= endDate)
+      });
+      const finalEvents = []
+      this.state.displayedData.forEach(e => {
+          console.log(e.title)
+        finalEvents.push({title:e.title, start:new Date(e.startDate), end:new Date(e.startDate), allDay:false, resource:{data:e}})
+      })
+      this.state.events = finalEvents
+      console.log(this.state.events)
+      this.setState({displayedDateRage:{start:start.toString(), end:end.toString()}})
+    }
+    onNavigate = async (date) => {
+        await this.setState({currentDate:date});
+      this.computeDisplayedDateRange();
+    }
+    onView = async (view) => {
+        await this.setState({currentView:view});
+      this.computeDisplayedDateRange();
+    }
+
+    componentDidUpdate(prevProps, prevState){
+        if (this.props.activities !== prevProps.activities) {
+            console.log('Inside update')
+            this.state.data = this.props.activities
+            this.computeDisplayedDateRange();
+        }
+    }
+    handleSelectDay = (slotinfo) => {
+        var modalEvents = this.state.events.filter(a => {
+            var date = new Date(a.start)
+            return (date.getDay()+'-'+date.getMonth()+'-'+date.getFullYear() === slotinfo.start.getDay()+'-'+slotinfo.start.getMonth()+'-'+slotinfo.start.getFullYear())
+        });
+        var modalActivities = modalEvents.map(event => {
+            return event.resource.data})
+        this.setState({eventsOnModal:modalActivities})
+
+        this.setState({toast:{show:true}})
+    }
+    hideModal = () => {
+        this.setState({toast:{show:false}})
+    }
+    getModalEvents = (date) =>{
+        return 
+    }
+    handleDrillDown = (slotinfo) => {
+        var modalEvents = this.state.events.filter(a => {
+            var date = new Date(a.start)
+            return (date.getDay()+'-'+date.getMonth()+'-'+date.getFullYear() === slotinfo.getDay()+'-'+slotinfo.getMonth()+'-'+slotinfo.getFullYear())
+        });
+        var modalActivities = modalEvents.map(event => {
+            return event.resource.data})
+        this.setState({eventsOnModal:modalActivities})
+
+        this.setState({toast:{show:true}})
+    }
+    handleRowClicked = (row, e) => {
+        console.log('thisois i aosidjf')        
+    }
+    handleFilterChange = (event) => {
+        console.log(event.target.value)
+    }
+    handleRowAction = (item, { id }) => {
+        console.log('actino')
     }
 
     render() {
+        const isEmpty = this.state.eventsOnModal.length === 0;
         return (
-            <Container>
-                <CalendarContainer>
-                <Calendar localizer={localizer}
-                    events={myEvents}
-                    step={60}
-                    startAccessor="start"
-                    endAccessor="end"
-                    /></CalendarContainer>
-                    {/* <div style={{ height: 700 }}>
-                    </div> */}
-                
-                
-            </Container>
-            
-            
+
+            <CalendarContainer>
+                {
+                    <Modal
+                        isOpen={this.state.toast.show}
+                        labels={{heading:["This is called", "this is also called"]}}
+                        onRequestClose={this.hideModal}
+                        size="large">
+                        <Card
+                            filter={
+                                (!isEmpty || this.state.isFiltering) && (
+                                    <CardFilter onChange={this.handleFilterChange} />
+                                )
+                            }
+                            heading="Releated Items"
+                            icon={<Icon category="standard" name="document" size="small" />}
+                            empty={
+                                isEmpty ? (
+                                    <CardEmpty heading="No Related Items">
+                                        <Button label="Add Item" onClick={this.handleAddItem} />
+                                    </CardEmpty>
+                                ) : null
+                            }
+                        >
+                            <ModalTableContainer>
+                                <DataTable
+                                    items={this.state.eventsOnModal}
+                                    selectable={false}
+                                    onClick={this.handleRowClicked}
+                                    showCheckboxes={false}
+                                    onCellClick={this.handleRowClicked}
+                                >
+                                {columns}
+                                <DataTableRowActions
+                                    options={[
+                                    {
+                                        id: 0,
+                                        label: "Edit",
+                                        value: "1",
+                                    },
+                                    {
+                                        id: 1,
+                                        label: "Delete",
+                                        value: "2",
+                                    },
+                                    {
+                                        id: 2,
+                                        label: "Clone",
+                                        value: "3",
+                                    },
+                                    ]}
+                                    menuPosition="overflowBoundaryElement"
+                                    onAction={this.handleRowAction}
+                                    dropdown={<Dropdown length="7" />}
+                                />
+                                </DataTable>
+                            </ModalTableContainer>
+
+                        </Card>
+                    </Modal>}
+            <Calendar localizer={localizer}
+                events={this.state.events}
+                views={['month','week','day']}
+                defaultDate={this.state.currentDate}
+                startAccessor="start"
+                endAccessor="end"
+                step={60}
+                onNavigate={this.onNavigate}
+                onView={this.onView}
+                onSelectEvent={event => alert(event)}
+                onSelectSlot={this.handleSelectDay}
+                onDrillDown={this.handleDrillDown}
+                selectable
+            /></CalendarContainer>
         );
     }
 
