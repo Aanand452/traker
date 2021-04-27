@@ -6,6 +6,9 @@ import moment from 'moment';
 import {ModalTableContainer, CalendarContainer } from './styles';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 import { Modal, Card, CardFilter, Icon, CardEmpty, Button, DataTable, DataTableColumn, DataTableRowActions, Dropdown} from "@salesforce/design-system-react";
+import EditModal from "../EditActivityModal";
+import CloneModal from "../CloneActivityModal";
+
 moment.locale('en-GB');
 const localizer = momentLocalizer(moment)
 const columns =[
@@ -51,12 +54,20 @@ class ActivityCalendar extends Component {
             displayedData : [],
             events: [],
             eventsOnModal:[],
+            editItem:{},
+            cloneModalIsOPen:false,
+            editModalIsOPen:false,
             toast:{
                 show:false
             }
         }
     }
-    
+    componentDidMount() {
+        console.log('Inside update')
+        this.state.data = this.props.activities
+        this.computeDisplayedDateRange();
+        console.log(this.state.data)
+    }
     computeDisplayedDateRange = () => {
         const {currentDate, currentView} = this.state;
         let start = moment(currentDate).startOf(currentView);
@@ -93,7 +104,6 @@ class ActivityCalendar extends Component {
 
     componentDidUpdate(prevProps, prevState){
         if (this.props.activities !== prevProps.activities) {
-            console.log('Inside update')
             this.state.data = this.props.activities
             this.computeDisplayedDateRange();
         }
@@ -126,6 +136,23 @@ class ActivityCalendar extends Component {
 
         this.setState({toast:{show:true}})
     }
+    handleSelectEvent = (event) =>{
+        console.log(event.resource.data)
+        var modalActivities = event.resource.data
+        this.setState({eventsOnModal:[modalActivities]})
+
+        this.setState({toast:{show:true}})
+    }
+
+    toggleOpen = state => {
+        console.log(state)
+        this.setState({ [state]: !this.state[state] });
+    };
+
+    onToast = (show, message, variant) => {
+        this.setState({ toast: { show, message, variant } });
+    };
+
     handleRowClicked = (row, e) => {
         console.log('thisois i aosidjf')        
     }
@@ -134,6 +161,26 @@ class ActivityCalendar extends Component {
     }
     handleRowAction = (item, { id }) => {
         console.log('actino')
+        switch (id) {
+            case 0:
+            //   this.props.setItem(item);
+              this.setState({editItem:item})
+              this.toggleOpen("editModalIsOPen")
+              break;
+            case 1:
+              this.props.onDelete(item);
+              break;
+            case 2:
+              this.setState({editItem:item})
+              this.toggleOpen("cloneModalIsOPen");
+              break;
+            case 3:
+              this.setState({editItem:item})
+              this.toggleOpen("detailModalIsOpen");
+              break;
+            default:
+              break;
+          }
     }
 
     render() {
@@ -141,6 +188,21 @@ class ActivityCalendar extends Component {
         return (
 
             <CalendarContainer>
+                {this.state.cloneModalIsOPen && (
+                    <CloneModal
+                        data={this.state.editItem}
+                        onToast={this.onToast}
+                        toggleOpen={this.toggleOpen}
+                    />
+                    )}
+                    {this.state.editModalIsOPen && (
+                        <EditModal
+                            data={this.state.editItem}
+                            onToast={this.onToast}
+                            toggleOpen={this.toggleOpen}
+                            reloadActivities={this.state.editItem}
+                        />
+                        )}
                 {
                     <Modal
                         isOpen={this.state.toast.show}
@@ -208,7 +270,7 @@ class ActivityCalendar extends Component {
                 step={60}
                 onNavigate={this.onNavigate}
                 onView={this.onView}
-                onSelectEvent={event => alert(event)}
+                onSelectEvent={this.handleSelectEvent}
                 onSelectSlot={this.handleSelectDay}
                 onDrillDown={this.handleDrillDown}
                 selectable

@@ -124,7 +124,7 @@ class Table extends Component {
     tableExtraWidth: 0,
     noRowHover: false,
     isHistoric: false,
-    isCalanderView: false,
+    isCalanderView: true,
     popoverOpen: false,
     historicModalIsOpen: false,
     detailModalIsOpen: false,
@@ -137,7 +137,7 @@ class Table extends Component {
 
   componentDidMount() {
     this.setupAndFetch();
-    {this.state.isCalanderView ? this.resizableTable(this.table.current.scrollerRef.children[0]) : null}
+    {!this.state.isCalanderView && this.resizableTable(this.table.current.scrollerRef.children[0])}
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -766,7 +766,7 @@ class Table extends Component {
             errors={this.state.errors}
           />
         )}
-        { this.state.isCalanderView ? <DataTable
+        { !this.state.isCalanderView && <DataTable
           assistiveText={{
             actionsHeader: "actions",
             columnSort: "sort this column",
@@ -892,10 +892,9 @@ class Table extends Component {
             onAction={this.handleRowAction}
             dropdown={<Dropdown length="7" />}
           />
-        </DataTable> :
-                <ActivityCalendar 
-                  events={myEvents}
-                  activities={this.state.data}/>}
+        </DataTable>}{this.state.isCalanderView &&
+                (<ActivityCalendar 
+                  activities={this.state.data}/>)}
         <Pager
           data={this.state.data}
           itemsPerPage={100}
