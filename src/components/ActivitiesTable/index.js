@@ -998,12 +998,12 @@ class Table extends Component {
         </DataTable>}{this.state.isCalanderView &&
                 (<ActivityCalendar 
                   activities={this.state.data}/>)}
-        <Pager
+        {this.state.isCalanderView && (<Pager
           data={this.state.data}
           itemsPerPage={100}
           setDisplayedItems={this.handlePagination}
           currentPage={this.state.currentPage}
-        />
+        />)}
         {this.state.toast.show && (
           <ToastContainer>
             <Toast
