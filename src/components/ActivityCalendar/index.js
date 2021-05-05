@@ -263,7 +263,7 @@ class ActivityCalendar extends Component {
                     </Modal>}
             <Calendar localizer={localizer}
                 events={this.state.events}
-                views={['month','week','day']}
+                views={['month']}
                 defaultDate={this.state.currentDate}
                 startAccessor="start"
                 endAccessor="end"
