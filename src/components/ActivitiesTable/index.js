@@ -4,6 +4,8 @@ import { connect } from "react-redux";
 import moment from "moment";
 import "./styles.css";
 
+
+
 import {
   Button,
   ButtonGroup,
@@ -14,6 +16,7 @@ import {
   DatePicker,
   Dropdown,
   Card,
+  Popover,
   Icon,
   PageHeader,
   PageHeaderControl,
@@ -34,10 +37,12 @@ import CloneModal from "../CloneActivityModal";
 import HistoricModal from "../HistoricActivityModal";
 import ViewActivityModal from "../ViewActivityModal";
 import Pager from "../Pager";
+import ActivityCalendar from "../ActivityCalendar"
 
 // ACTIONS
 import { selectItem, setItem } from "../../actions/DataTable";
-import { Container } from "./styles";
+import { Container} from "./styles";
+
 
 import FilterPanel from "../FilterPanel";
 import jsPDF from "jspdf";
@@ -138,7 +143,6 @@ CustomDataTableCell.displayName = DataTableCell.displayName;
 
 const DropDownCellAsset = ({ children, ...props }) => {
   let items = props.property;
-
   if (props.item[items]) {
     const assets = props.item[items].split(', ');
     if (assets.length > 1) {
@@ -172,7 +176,15 @@ const DropDownCellAsset = ({ children, ...props }) => {
 }
 
 DropDownCellAsset.displayName = DataTableCell.displayName;
-
+moment.locale('en-GB');
+const myEvents = [
+  {
+      'title': 'My event',
+      'allDay': false,
+      'start': new Date(), // 10.00 AM
+      'end': new Date(), // 2.00 PM 
+  }
+]
 class Table extends Component {
   state = {
     sortProperty: "",
@@ -197,6 +209,8 @@ class Table extends Component {
     noRowHover: false,
     isHistoric: false,
     showExportMenu: false,
+    isCalanderView: true,
+    popoverOpen: false,
     historicModalIsOpen: false,
     detailModalIsOpen: false,
     historicDate: {},
@@ -211,7 +225,7 @@ class Table extends Component {
 
   componentDidMount() {
     this.setupAndFetch();
-    this.resizableTable(this.table.current.scrollerRef.children[0]);
+    {!this.state.isCalanderView && this.resizableTable(this.table.current.scrollerRef.children[0])}
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -508,6 +522,22 @@ class Table extends Component {
       }
     })
   }
+  calendarViewBtn = () =>{
+    this.setState({isCalanderView: !this.state.isCalanderView})
+  }
+  calendarOnHover = () => {
+    console.log(this.state.popoverOpen)
+    this.setState({popoverOpen: true})
+  }
+  calendarOnLeave = () => {
+    console.log(this.state.popoverOpen)
+    this.setState({popoverOpen: false})
+  }
+  togglePopover() {
+    this.setState({
+      popoverOpen: !this.state.popoverOpen,
+    })
+  }
 
   exportOptions = [
     {id:1, value:'PDF', label:'PDF'}, {id:2, value:'CSV', label:'CSV'}, {id: 3, value:'XLS', label:'XLS'}
@@ -617,6 +647,22 @@ class Table extends Component {
         </Dropdown>
         </ButtonGroup>
       <ButtonGroup id="button-group-page-header-actions-history">
+        <Tooltip
+          content={this.state.isCalanderView ? "Open Calendar View" : "Open List View"}
+        >
+          <Button
+          onClick={this.calendarViewBtn}
+          >
+            <Icon 
+              assistiveText={{ label: 'Event' }}
+              category="utility"
+              name={this.state.isCalanderView ? "event" : "list"}
+              size="x-small"
+            />
+          </Button>
+        </Tooltip>
+        
+        
         <Button
           iconCategory="utility"
           label="Historic"
@@ -981,7 +1027,7 @@ class Table extends Component {
               placeholder: 'Add Format',
             }}/></section>
           </Modal>}
-        <Card 
+        { !this.state.isCalanderView && <Card 
           heading="Activities"
           filter={
             (!isEmpty || this.state.isFiltering) && (
@@ -1029,7 +1075,8 @@ class Table extends Component {
             name="lead"
           />}
           
-        ><DataTable
+        >
+        <DataTable
           assistiveText={{
             actionsHeader: "actions",
             columnSort: "sort this column",
@@ -1155,13 +1202,16 @@ class Table extends Component {
             onAction={this.handleRowAction}
             dropdown={<Dropdown length="7" />}
           />
-        </DataTable></Card>
+        </DataTable>
         <Pager
           data={this.state.data}
           itemsPerPage={100}
           setDisplayedItems={this.handlePagination}
           currentPage={this.state.currentPage}
         />
+        </Card>}{this.state.isCalanderView &&
+                (<ActivityCalendar 
+                  activities={this.state.data}/>)}
         {this.state.toast.show && (
           <ToastContainer>
             <Toast
