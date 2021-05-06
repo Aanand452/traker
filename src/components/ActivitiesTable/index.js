@@ -27,7 +27,7 @@ import {
   Modal,
   CardFilter,
   Combobox,
-  comboboxFilterAndLimit
+  comboboxFilterAndLimit,
 } from "@salesforce/design-system-react";
 
 import { getCookie } from '../../utils/cookie';
@@ -52,76 +52,7 @@ import exportFromJSON from 'export-from-json'
 import { DateRangePicker } from 'react-date-range';
 import 'react-date-range/dist/styles.css'; 
 import 'react-date-range/dist/theme/default.css'; 
-import { addDays } from 'date-fns';
-
-
-const accounts = [{
-  id: '1',
-  label: 'Acme',
-  subTitle: 'Account • San Francisco',
-  type: 'account',
-},
-{
-  id: '2',
-  label: 'Salesforce.com, Inc.',
-  subTitle: 'Account • San Francisco',
-  type: 'account',
-},
-{
-  id: '3',
-  label: "Paddy's Pub",
-  subTitle: 'Account • Boston, MA',
-  type: 'account',
-},
-{
-  id: '4',
-  label: 'Tyrell Corp',
-  subTitle: 'Account • San Francisco, CA',
-  type: 'account',
-},
-{
-  id: '5',
-  label: 'Paper St. Soap Company',
-  subTitle: 'Account • Beloit, WI',
-  type: 'account',
-},
-{
-  id: '6',
-  label: 'Nakatomi Investments',
-  subTitle: 'Account • Chicago, IL',
-  type: 'account',
-},
-{ id: '7', label: 'Acme Landscaping', type: 'account' },
-{
-  id: '8',
-  label: 'Acme Construction',
-  subTitle: 'Account • Grand Marais, MN',
-  type: 'account',
-},
-];
-const entities = [
-	{
-		id: '0',
-		label: 'Suggested for you',
-		type: 'separator',
-	},
-	{
-		id: '1',
-		label: 'All',
-	},
-	{
-		id: '2',
-		label: 'Accounts',
-	},
-	{
-		id: '3',
-		label: 'Analytics',
-	},
-	{
-		id: '4',
-		label: 'Approvals',
-	},
-];
+import { addDays, format } from 'date-fns';
 
 const DateCell = ({ children, ...props }) => {
   return <DataTableCell title={children} {...props}>
@@ -219,6 +150,10 @@ class Table extends Component {
     startDate:'',
     endDate:'',
     isFiltering: false,
+    formatsSelected :[],
+    formatInputValue:'',
+    programSelected:[],
+    programInputValue:'',
   };
 
   table = React.createRef()
@@ -494,10 +429,11 @@ class Table extends Component {
       if (response.status === 200) {
         let { result } = await response.json();
         result = result.map((item) => ({ label: item.name, ...item }));
-        let formats = result.map(el => ({...el, id: el.format_id}))
+        let formats = result.map(el => ({...el, id: el.format_id, icon:(<Icon assistiveText={{ label: 'Account' }} category="standard" name="campaign"/>)}))
         this.setState({
-          formats: [{ label: "All", id: "all" }, ...formats],
+          formats: formats,
         });
+        console.log(formats)
       } else {
         throw new Error(response);
       }
@@ -515,7 +451,7 @@ class Table extends Component {
   historicBtn = () => {
     this.setState({isHistoric: !this.state.isHistoric}, () => {
       if(!this.state.isHistoric) {
-        this.setState({historicDate: {}})
+        this.setState({historicDate: {}, startDate:new Date(), key: 'selection', endDate:addDays(new Date(), 7) })
         this.props.reloadActivities();
       } else {
         // this.setState({historicModalIsOpen: true})
@@ -526,11 +462,9 @@ class Table extends Component {
     this.setState({isCalanderView: !this.state.isCalanderView})
   }
   calendarOnHover = () => {
-    console.log(this.state.popoverOpen)
     this.setState({popoverOpen: true})
   }
   calendarOnLeave = () => {
-    console.log(this.state.popoverOpen)
     this.setState({popoverOpen: false})
   }
   togglePopover() {
@@ -895,25 +829,47 @@ class Table extends Component {
   };
 
   onChangeDate = (dates) => {
-    const [start, end] = dates
-    this.setState({startDate:start})
-    this.setState({endDate:end})
+    console.log(dates.selection)
+    // const [start, key, end] = dates.selection
+    // console.log(start, end)
+    this.setState({startDate:dates.selection.startDate, endDate:dates.selection.endDate})
+    // this.setState({})
   }
-  handleFilterChange = () => {}
+  handleFilterChange = (event) => {
+    const filteredUserItems = this.state.data.filter((item) =>
+			RegExp(event.target.value, 'i').test(item.userId)
+		);
+    const filteredCampIDItems = this.state.data.filter((item) =>
+			RegExp(event.target.value, 'i').test(item.campaignId)
+		);
+    const filteredTitleItems = this.state.data.filter((item) =>
+			RegExp(event.target.value, 'i').test(item.title)
+		);
+    const filteredProgramItems = this.state.data.filter((item) =>
+			RegExp(event.target.value, 'i').test(item.programId)
+		);
+    const filteredItems = [...new Set([...filteredUserItems, ...filteredCampIDItems, ...filteredTitleItems, ...filteredProgramItems])]
+
+    this.setState({displayedData:filteredItems})
+  }
 
   entityCombobox = () => (
     <Combobox 
     assistiveText={{ label: 'Filter Search by:' }}
     variant="readonly"
     events={{}}
-    value={accounts}
+    // value={accounts}
     selection={{id:1, label:"One"}}
     options={comboboxFilterAndLimit({
-      inputValue:[{id:1, label:"One"}, {id:1, label:"Two"}, {id:1, label:"Three"}],
+      // inputValue:[{id:1, label:"One"}, {id:1, label:"Two"}, {id:1, label:"Three"}],
       options:[{id:1, label:"One"}, {id:1, label:"Two"}, {id:1, label:"Three"}],
       selection:[{id:1, label:"One"}, {id:1, label:"Two"}, {id:1, label:"Three"}]
     })}
     />)
+
+  formatsWithIcon = (formats) => {return formats.map((elem) => ({
+    ...elem,  ...{icon:(<Icon assistiveText={{ label: 'Account' }} category="standard"/>)}
+  }))}
 
   render() {
     const isEmpty = this.state.data.length === 0;
@@ -981,9 +937,9 @@ class Table extends Component {
             errors={this.state.errors}
           />
         )}
-        {
+        {!this.state.isCalanderView && 
           
-            <Modal
+            (<Modal
               isOpen={this.state.isHistoric}
               size="medium"
               onRequestClose={() => this.setState({isHistoric:false})}
@@ -992,14 +948,14 @@ class Table extends Component {
             showSelectionPreview={true}
             moveRangeOnFirstSelection={false}
             months={2}
-            ranges={[{startDate:new Date(), key: 'selection', endDate:addDays(new Date(), 7)}]}
+            ranges={[{startDate:this.state.startDate, key: 'selection', endDate:this.state.endDate}]}
             direction="horizontal"
-          /></Modal>
+          /></Modal>)
           
         }
         {<Modal 
             isOpen={this.state.OpenFilters}
-            size="small"
+            size="medium"
             onRequestClose={() => this.setState({OpenFilters:false})}
             footer={[
 							<Button label="Cancel" onClick={this.toggleOpen} />,
@@ -1016,18 +972,61 @@ class Table extends Component {
             }}
             entityCombobox={this.entityCombobox()}
             events={{}}
+            // selection={[{id:1, label:"One"}]}
             options={comboboxFilterAndLimit({
-              inputValue:[{id:1, label:"One"}, {id:1, label:"Two"}, {id:1, label:"Three"}],
-              options:[{id:1, label:"One"}, {id:1, label:"Two"}, {id:1, label:"Three"}],
-              selection:[{id:1, label:"One"}, {id:1, label:"Two"}, {id:1, label:"Three"}]
+              // inputValue:[{id:1, label:"One"}, {id:2, label:"Two"}, {id:3, label:"Three"}],
+              options:[{id:1, label:"One"}, {id:2, label:"Two"}, {id:3, label:"Three"}],
+              selection:[{id:1, label:"One"}]
             })}
           />
-          <Combobox labels={{
+          {this.state.OpenFilters && (<Combobox 
+            multiple
+            labels={{
               label: 'Search Format',
               placeholder: 'Add Format',
-            }}/></section>
+            }}
+            events={{
+              onChange:(event, {value}) => {
+                this.setState({formatInputValue:value})
+              },
+              onRequestRemoveSelectedOption: (event, data) => {
+                this.setState({
+                  formatInputValue:'',
+                  formatsSelected:data.selection
+                })
+              },
+              onSubmit: (event, { value }) => {
+                this.setState({
+                  formatInputValue:'',
+                  formatsSelected:[
+                    ...this.state.formatsSelected,
+                    {
+                      label:value,
+                      icon:(<Icon assistiveText={{ label: 'Account' }} category="standard" name="campaign" />)
+                    }
+                  ]
+                })
+              },
+              onSelect: (event, data) => {
+                this.setState({
+                  inputValue: '',
+                  formatsSelected:data.selection
+                })
+              }
+            }}
+            menuPosition="relative"
+            selection={this.state.formatsSelected}
+            // value={'one'}
+            menuItemVisibleLength={5}
+            options={comboboxFilterAndLimit({
+              inputValue:this.state.formatInputValue,
+              limit: 50,
+              options:this.state.formats,
+              selection:this.state.formatsSelected,
+             })}
+              />)}</section>
           </Modal>}
-        { !this.state.isCalanderView && <Card 
+        <Card 
           heading="Activities"
           filter={
             (!isEmpty || this.state.isFiltering) && (
@@ -1035,6 +1034,20 @@ class Table extends Component {
             )
           }
           headerActions={(<ButtonGroup id="button-group-page-header-actions">
+            <Tooltip
+          content={!this.state.isCalanderView ? "Open Calendar View" : "Open List View"}
+        >
+          <Button
+          onClick={this.calendarViewBtn}
+          >
+            <Icon 
+              assistiveText={{ label: 'Event' }}
+              category="utility"
+              name={!this.state.isCalanderView ? "event" : "list"}
+              size="x-small"
+            />
+          </Button>
+        </Tooltip>
           <Button
             assistiveText={{ icon: "Filters" }}
             iconCategory="utility"
@@ -1042,11 +1055,12 @@ class Table extends Component {
             iconVariant="border-filled"
             variant="icon"
             title="Filter"
-            onClick={() => {this.setState({OpenFilters:true})}}/>
-          <Button 
+            onClick={() => {
+              this.setState({OpenFilters:true})}}/>
+          {!this.state.isCalanderView && (<Button 
           label="History"
           onClick={this.historicBtn}
-          />
+          />)}
           <Dropdown 
             onSelect={this.exportBtn} 
             width="xx-small"
@@ -1076,7 +1090,7 @@ class Table extends Component {
           />}
           
         >
-        <DataTable
+        { !this.state.isCalanderView && (<DataTable
           assistiveText={{
             actionsHeader: "actions",
             columnSort: "sort this column",
@@ -1202,16 +1216,17 @@ class Table extends Component {
             onAction={this.handleRowAction}
             dropdown={<Dropdown length="7" />}
           />
-        </DataTable>
-        <Pager
+        </DataTable>)}
+        {this.state.isCalanderView &&
+                (<ActivityCalendar 
+                  activities={this.state.data}/>)}
+        {!this.state.isCalanderView && (<Pager
           data={this.state.data}
           itemsPerPage={100}
           setDisplayedItems={this.handlePagination}
           currentPage={this.state.currentPage}
-        />
-        </Card>}{this.state.isCalanderView &&
-                (<ActivityCalendar 
-                  activities={this.state.data}/>)}
+        />)}
+                  </Card>
         {this.state.toast.show && (
           <ToastContainer>
             <Toast

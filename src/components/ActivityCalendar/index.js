@@ -63,10 +63,8 @@ class ActivityCalendar extends Component {
         }
     }
     componentDidMount() {
-        console.log('Inside update')
         this.state.data = this.props.activities
         this.computeDisplayedDateRange();
-        console.log(this.state.data)
     }
     computeDisplayedDateRange = () => {
         const {currentDate, currentView} = this.state;
@@ -78,7 +76,6 @@ class ActivityCalendar extends Component {
       }
       let startDate = new Date(start.toString())
       let endDate = new Date(end.toString())
-      console.log(this.state.data)
       
       this.state.displayedData = this.state.data.filter(a => {
           var date = new Date(a.startDate)
@@ -86,11 +83,9 @@ class ActivityCalendar extends Component {
       });
       const finalEvents = []
       this.state.displayedData.forEach(e => {
-          console.log(e.title)
         finalEvents.push({title:e.title, start:new Date(e.startDate), end:new Date(e.startDate), allDay:false, resource:{data:e}})
       })
       this.state.events = finalEvents
-      console.log(this.state.events)
       this.setState({displayedDateRage:{start:start.toString(), end:end.toString()}})
     }
     onNavigate = async (date) => {
@@ -137,7 +132,6 @@ class ActivityCalendar extends Component {
         this.setState({toast:{show:true}})
     }
     handleSelectEvent = (event) =>{
-        console.log(event.resource.data)
         var modalActivities = event.resource.data
         this.setState({eventsOnModal:[modalActivities]})
 
@@ -145,7 +139,6 @@ class ActivityCalendar extends Component {
     }
 
     toggleOpen = state => {
-        console.log(state)
         this.setState({ [state]: !this.state[state] });
     };
 
@@ -154,13 +147,25 @@ class ActivityCalendar extends Component {
     };
 
     handleRowClicked = (row, e) => {
-        console.log('thisois i aosidjf')        
     }
     handleFilterChange = (event) => {
-        console.log(event.target.value)
+        // const filteredUserItems = this.state.eventsOnModal.filter((item) =>
+        //         RegExp(event.target.value, 'i').test(item.userId)
+        //     );
+        // const filteredCampIDItems = this.state.eventsOnModal.filter((item) =>
+        //         RegExp(event.target.value, 'i').test(item.campaignId)
+        //     );
+        // const filteredTitleItems = this.state.eventsOnModal.filter((item) =>
+        //         RegExp(event.target.value, 'i').test(item.title)
+        //     );
+        // const filteredProgramItems = this.state.eventsOnModal.filter((item) =>
+        //         RegExp(event.target.value, 'i').test(item.programId)
+        //     );
+        // const filteredItems = [...new Set([...filteredUserItems, ...filteredCampIDItems, ...filteredTitleItems, ...filteredProgramItems])]
+    
+        // this.setState({eventsOnModal:filteredItems})
     }
     handleRowAction = (item, { id }) => {
-        console.log('actino')
         switch (id) {
             case 0:
             //   this.props.setItem(item);
@@ -224,7 +229,7 @@ class ActivityCalendar extends Component {
                                     </CardEmpty>
                                 ) : null
                             }
-                        >
+                        ><section className="slds-p-around_large">
                             <ModalTableContainer>
                                 <DataTable
                                     items={this.state.eventsOnModal}
@@ -257,7 +262,7 @@ class ActivityCalendar extends Component {
                                     dropdown={<Dropdown length="7" />}
                                 />
                                 </DataTable>
-                            </ModalTableContainer>
+                            </ModalTableContainer></section>
 
                         </Card>
                     </Modal>}
