@@ -836,22 +836,18 @@ class Table extends Component {
     // this.setState({})
   }
   handleFilterChange = (event) => {
-    const filteredUserItems = this.state.data.filter((item) =>{
-      if (RegExp(event.target.value, 'i').test(item.userId)){
+    const name = event.target.name
+    console.log(name)
+    if(name)
+    {const filteredUserItems = this.state.data.filter((item) =>{
+      if (RegExp(event.target.value, 'i').test(item.userId) ||
+      RegExp(event.target.value, 'i').test(item.campaignId) ||
+      RegExp(event.target.value, 'i').test(item.title) ||
+      RegExp(event.target.value, 'i').test(item.programId)){
         return true
       }
-      if(RegExp(event.target.value, 'i').test(item.campaignId)){
-        return true
-      }
-      if(RegExp(event.target.value, 'i').test(item.title)){
-        return true
-      }
-      if(RegExp(event.target.value, 'i').test(item.programId)){
-        return true
-      }
-			
     });
-    this.setState({displayedData:filteredUserItems})
+    this.setState({displayedData:filteredUserItems})}
   }
 
   entityCombobox = () => (
