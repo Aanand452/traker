@@ -16,31 +16,37 @@ const columns =[
         key="userId"
         label="Owner"
         property="userId"
+        width="8em"
     />,
     <DataTableColumn 
         key="title"
         label="Title"
         property="title"
+        width="6em"
     />,
     <DataTableColumn 
         key="abstract"
         label="Abstract"
         property="abstract"
+        width="16em"
     />,
     <DataTableColumn 
         key="formatId"
         label="Format"
         property="formatId"
+        width="16em"
     />,
     <DataTableColumn 
         key="programId"
         label="Program"
         property="programId"
+        width="8em"
     />,
     <DataTableColumn 
         key="regionId"
         label="Region"
         property="regionId"
+        width="4em"
     />
 ]
 class ActivityCalendar extends Component {
