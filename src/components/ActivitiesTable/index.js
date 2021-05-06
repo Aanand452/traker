@@ -13,10 +13,10 @@ import {
   DataTableColumn,
   DataTableCell,
   DataTableRowActions,
-  DatePicker,
+  InputIcon,
   Dropdown,
   Card,
-  Popover,
+  Input,
   Icon,
   PageHeader,
   PageHeaderControl,
@@ -342,6 +342,7 @@ class Table extends Component {
     this.checkProgram();
     this.checkRegion();
     this.checkFormat();
+    this.setState({historicDate: {}, startDate:new Date(), key: 'selection', endDate:addDays(new Date(), 7) })
   };
 
   async getConfig(){
@@ -433,7 +434,6 @@ class Table extends Component {
         this.setState({
           formats: formats,
         });
-        console.log(formats)
       } else {
         throw new Error(response);
       }
@@ -829,16 +829,11 @@ class Table extends Component {
   };
 
   onChangeDate = (dates) => {
-    console.log(dates.selection)
-    // const [start, key, end] = dates.selection
-    // console.log(start, end)
     this.setState({startDate:dates.selection.startDate, endDate:dates.selection.endDate})
-    // this.setState({})
   }
   handleFilterChange = (event) => {
-    const name = event.target.name
-    console.log(name)
-    if(name)
+    this.setState({isFiltering:true})
+    if(event.target.value.length > 3)
     {const filteredUserItems = this.state.data.filter((item) =>{
       if (RegExp(event.target.value, 'i').test(item.userId) ||
       RegExp(event.target.value, 'i').test(item.campaignId) ||
@@ -848,6 +843,7 @@ class Table extends Component {
       }
     });
     this.setState({displayedData:filteredUserItems})}
+    this.setState({isFiltering:false})
   }
 
   entityCombobox = () => (
@@ -934,9 +930,9 @@ class Table extends Component {
             errors={this.state.errors}
           />
         )}
-        {!this.state.isCalanderView && 
+        {
           
-            (<Modal
+            <Modal
               isOpen={this.state.isHistoric}
               size="medium"
               onRequestClose={() => this.setState({isHistoric:false})}
@@ -947,7 +943,7 @@ class Table extends Component {
             months={2}
             ranges={[{startDate:this.state.startDate, key: 'selection', endDate:this.state.endDate}]}
             direction="horizontal"
-          /></Modal>)
+          /></Modal>
           
         }
         {<Modal 
@@ -1027,7 +1023,23 @@ class Table extends Component {
           heading="Activities"
           filter={!this.state.isCalanderView && 
             (!isEmpty || this.state.isFiltering) && (
-              <CardFilter onChange={this.handleFilterChange} />
+              <Input 
+                type="search"
+                iconLeft={
+                  <InputIcon
+                    assistiveText={{
+                      icon: 'Search',
+                    }}
+                    name="search"
+                    category="utility"
+                  />
+                }
+                hasSpinner={this.state.isFiltering}
+                placeholder="Search"
+                onChange={this.handleFilterChange}
+							/>
+							
+              // <CardFilter onChange={this.handleFilterChange} />
             )
           }
           headerActions={(<ButtonGroup id="button-group-page-header-actions">
@@ -1054,10 +1066,10 @@ class Table extends Component {
             title="Filter"
             onClick={() => {
               this.setState({OpenFilters:true})}}/>
-          {!this.state.isCalanderView && (<Button 
-          label="History"
+          {!this.state.isCalanderView && (<Tooltip content="Select Date Range for Filter" align="bottom right"><Button 
+          label={this.state.startDate.toLocaleDateString()+" To "+this.state.endDate.toLocaleDateString()}
           onClick={this.historicBtn}
-          />)}
+          /></Tooltip>)}
           <Dropdown 
             onSelect={this.exportBtn} 
             width="xx-small"

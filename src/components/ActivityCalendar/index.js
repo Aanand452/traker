@@ -1,11 +1,11 @@
 import "./styles.css";
 import React, { Component,} from "react";
-import { withRouter } from 'react-router-dom';
+import { withRouter, Link } from 'react-router-dom';
 import { Calendar, momentLocalizer  } from 'react-big-calendar' 
 import moment from 'moment';
 import {ModalTableContainer, CalendarContainer } from './styles';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
-import { Modal, Card, CardFilter, Icon, CardEmpty, Button, DataTable, DataTableColumn, DataTableRowActions, Dropdown} from "@salesforce/design-system-react";
+import { Modal, Card, CardFilter, Icon, CardEmpty, Button, DataTable, DataTableColumn, DataTableRowActions, Tooltip, Dropdown} from "@salesforce/design-system-react";
 import EditModal from "../EditActivityModal";
 import CloneModal from "../CloneActivityModal";
 
@@ -226,6 +226,14 @@ class ActivityCalendar extends Component {
                                     <CardFilter onChange={this.handleFilterChange} />
                                 )
                             }
+                            headerActions={(
+                            <Link to="/create-activity">
+                                <Tooltip content="Add New Activity" align="bottom right">
+                                <Button>
+                                <Icon  assistiveText={{ icon: 'New' }} category="utility" name="new" size="x-small"/>
+                                </Button></Tooltip>
+                            </Link>)}
+
                             heading="Releated Items"
                             icon={<Icon category="standard" name="document" size="small" />}
                             empty={
