@@ -243,6 +243,7 @@ class ActivityCalendar extends Component {
                                     onClick={this.handleRowClicked}
                                     showCheckboxes={false}
                                     onCellClick={this.handleRowClicked}
+                                    fixedLayout
                                 >
                                 {columns}
                                 <DataTableRowActions
