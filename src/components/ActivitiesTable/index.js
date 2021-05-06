@@ -836,21 +836,22 @@ class Table extends Component {
     // this.setState({})
   }
   handleFilterChange = (event) => {
-    const filteredUserItems = this.state.data.filter((item) =>
-			RegExp(event.target.value, 'i').test(item.userId)
-		);
-    const filteredCampIDItems = this.state.data.filter((item) =>
-			RegExp(event.target.value, 'i').test(item.campaignId)
-		);
-    const filteredTitleItems = this.state.data.filter((item) =>
-			RegExp(event.target.value, 'i').test(item.title)
-		);
-    const filteredProgramItems = this.state.data.filter((item) =>
-			RegExp(event.target.value, 'i').test(item.programId)
-		);
-    const filteredItems = [...new Set([...filteredUserItems, ...filteredCampIDItems, ...filteredTitleItems, ...filteredProgramItems])]
-
-    this.setState({displayedData:filteredItems})
+    const filteredUserItems = this.state.data.filter((item) =>{
+      if (RegExp(event.target.value, 'i').test(item.userId)){
+        return true
+      }
+      if(RegExp(event.target.value, 'i').test(item.campaignId)){
+        return true
+      }
+      if(RegExp(event.target.value, 'i').test(item.title)){
+        return true
+      }
+      if(RegExp(event.target.value, 'i').test(item.programId)){
+        return true
+      }
+			
+    });
+    this.setState({displayedData:filteredUserItems})
   }
 
   entityCombobox = () => (
@@ -1028,7 +1029,7 @@ class Table extends Component {
           </Modal>}
         <Card 
           heading="Activities"
-          filter={
+          filter={!this.state.isCalanderView && 
             (!isEmpty || this.state.isFiltering) && (
               <CardFilter onChange={this.handleFilterChange} />
             )
