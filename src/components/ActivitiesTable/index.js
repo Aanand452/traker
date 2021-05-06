@@ -452,7 +452,7 @@ class Table extends Component {
     this.setState({isHistoric: !this.state.isHistoric}, () => {
       if(!this.state.isHistoric) {
         this.setState({historicDate: {}, startDate:new Date(), key: 'selection', endDate:addDays(new Date(), 7) })
-        this.props.reloadActivities();
+        // this.props.reloadActivities();
       } else {
         // this.setState({historicModalIsOpen: true})
       }
