@@ -154,6 +154,8 @@ class Table extends Component {
     formatInputValue:'',
     programSelected:[],
     programInputValue:'',
+    regionsSelected:[],
+    regionsInputValue:'',
   };
 
   table = React.createRef()
@@ -378,10 +380,10 @@ class Table extends Component {
       let response = await fetch(`${this.API_URL}/programs`, config);
       if (response.status === 200) {
         let { result } = await response.json();
-        let programs = result.map(el => ({...el, id: el.program_id}))
+        let programs = result.map(el => ({...el, id: el.program_id, icon:(<Icon assistiveText={{ label: 'Account' }} category="standard" name="campaign"/>)}))
         this.setState({
-          programs: [{ label: "All", id: "all" }, ...programs],
-          filteredPrograms: [{ label: "All", id: "all" }, ...programs],
+          programs: [{ label: "All", id: "all", icon:(<Icon assistiveText={{ label: 'Account' }} category="standard" name="campaign"/>)}, ...programs],
+          filteredPrograms: [{ label: "All", id: "all", icon:(<Icon assistiveText={{ label: 'Account' }} category="standard" name="campaign"/>)}, ...programs],
         });
       } else throw new Error(response);
     } catch (err) {
@@ -403,10 +405,13 @@ class Table extends Component {
       let response = await fetch(`${this.API_URL}/region`, config);
       if (response.status === 200) {
         let { result } = await response.json();
-        let regions = result.map(el => ({...el, id: el.region_id}));
+        let regions = result.map(el => ({...el, id: el.region_id, icon:(<Icon assistiveText={{ label: 'Account' }} category="standard" name="campaign"/>)}));
         this.setState({
-          regions: [{ label: "All", id: "all" }, ...regions],
+          regions: [{ label: "All", id: "all", icon:(<Icon assistiveText={{ label: 'Account' }} category="standard" name="campaign"/>)}, ...regions],
         });
+        this.setState({
+          regionsSelected:[this.state.regions[0]]
+        })
       } else {
         throw new Error(response);
       }
@@ -674,6 +679,17 @@ class Table extends Component {
   toggleOpen = state => {
     this.setState({ [state]: !this.state[state] });
   };
+  clearFilter = () => {
+    this.setState({
+      formatsSelected :[],
+      formatInputValue:'',
+      programSelected:[],
+      programInputValue:'',
+      regionsSelected:[this.state.regions[0]],
+      regionsInputValue:'',
+      OpenFilters:false,
+    })
+  }
 
   editData = (row) => {
     let items = [...this.props.dataTable.items];
@@ -749,6 +765,29 @@ class Table extends Component {
       return true;
     });
   };
+
+  getFilteredPrograms = (region) =>{
+    if(region){
+      if(region[0].id!=='all'){
+        console.log(region[0].id)
+        const filteredPrograms = this.state.programs.filter(function(program){
+          return program.target_region===region[0].id
+        })
+        this.setState({
+          filteredPrograms : filteredPrograms
+        })
+      }else{
+        this.setState({
+          filteredPrograms: this.state.programs
+        })
+      }
+      
+    }
+  }
+
+  getFilteredData = () => {
+    
+  }
 
   handleChange = (name, value) => {
     if(name === "regionId" && value !== ""){
@@ -846,19 +885,51 @@ class Table extends Component {
     this.setState({isFiltering:false})
   }
 
-  entityCombobox = () => (
+  entityCombobox = () => (<div className="slds-form-element slds-m-bottom_large">
     <Combobox 
     assistiveText={{ label: 'Filter Search by:' }}
+    events={{
+      onChange:(event, {value}) => {
+        this.setState({regionsInputValue:value})
+      },
+      onRequestRemoveSelectedOption: (event, data) => {
+        this.setState({
+          regionsInputValue:'',
+          regionsSelected:data.selection
+        })
+      },
+      onSubmit: (event, { value }) => {
+        this.setState({
+          regionsInputValue:'',
+          regionsSelected:[
+            ...this.state.regionsSelected,
+            {
+              label:value,
+              icon:(<Icon assistiveText={{ label: 'Account' }} category="standard" name="campaign" />)
+            }
+          ]
+        })
+      },
+      onSelect: (event, data) => {
+        this.setState({
+          inputValue: '',
+          regionsSelected:data.selection
+        })
+        this.getFilteredPrograms(data.selection)
+      }
+    }}
+    menuMaxWidth="10px"
+    inheritWidthOf="menu"
+    menuItemVisibleLength={5}
     variant="readonly"
-    events={{}}
-    // value={accounts}
-    selection={{id:1, label:"One"}}
+    value={this.state.regionsInputValue}
+    selection={this.state.regionsSelected}
     options={comboboxFilterAndLimit({
-      // inputValue:[{id:1, label:"One"}, {id:1, label:"Two"}, {id:1, label:"Three"}],
-      options:[{id:1, label:"One"}, {id:1, label:"Two"}, {id:1, label:"Three"}],
-      selection:[{id:1, label:"One"}, {id:1, label:"Two"}, {id:1, label:"Three"}]
+      inputValue:this.state.regionsInputValue,
+      options:this.state.regions,
+      selection:this.state.regionsSelected,
     })}
-    />)
+    /></div>)
 
   formatsWithIcon = (formats) => {return formats.map((elem) => ({
     ...elem,  ...{icon:(<Icon assistiveText={{ label: 'Account' }} category="standard"/>)}
@@ -951,28 +1022,58 @@ class Table extends Component {
             size="medium"
             onRequestClose={() => this.setState({OpenFilters:false})}
             footer={[
-							<Button label="Cancel" onClick={this.toggleOpen} />,
+							<Button label="Cancel" onClick={this.clearFilter} />,
 							<Button label="Save" variant="brand" onClick={this.toggleOpen} />,
 						]}
             heading="Add Filters"
           ><section className="slds-p-around_large">
-           <Combobox 
+            <div className="slds-form-element slds-m-bottom_large">
+           {this.state.OpenFilters && (<div className="slds-form-element slds-m-bottom_large"><Combobox 
             multiple
-            variant="inline-listbox"
             labels={{
               label: 'Search Programs',
               placeholder: 'Add Program',
             }}
             entityCombobox={this.entityCombobox()}
-            events={{}}
-            // selection={[{id:1, label:"One"}]}
+            events={{
+              onChange:(event, {value}) => {
+                this.setState({programInputValue:value})
+              },
+              onRequestRemoveSelectedOption: (event, data) => {
+                this.setState({
+                  programInputValue:'',
+                  programSelected:data.selection
+                })
+              },
+              onSubmit: (event, { value }) => {
+                this.setState({
+                  programInputValue:'',
+                  programSelected:[
+                    ...this.state.programSelected,
+                    {
+                      label:value,
+                      icon:(<Icon assistiveText={{ label: 'Account' }} category="standard" name="campaign" />)
+                    }
+                  ]
+                })
+              },
+              onSelect: (event, data) => {
+                this.setState({
+                  inputValue: '',
+                  programSelected:data.selection
+                })
+              }
+            }}
+            selection={this.state.programSelected}
+            menuItemVisibleLength={5}
             options={comboboxFilterAndLimit({
-              // inputValue:[{id:1, label:"One"}, {id:2, label:"Two"}, {id:3, label:"Three"}],
-              options:[{id:1, label:"One"}, {id:2, label:"Two"}, {id:3, label:"Three"}],
-              selection:[{id:1, label:"One"}]
+              inputValue:this.state.programInputValue,
+              limit: 50,
+              options:this.state.filteredPrograms,
+              selection:this.state.programSelected,
             })}
-          />
-          {this.state.OpenFilters && (<Combobox 
+          /></div>)}
+          {this.state.OpenFilters && (<div className="slds-form-element slds-m-bottom_large"><Combobox 
             multiple
             labels={{
               label: 'Search Format',
@@ -1007,7 +1108,7 @@ class Table extends Component {
                 })
               }
             }}
-            menuPosition="relative"
+            // menuPosition="relative"
             selection={this.state.formatsSelected}
             // value={'one'}
             menuItemVisibleLength={5}
@@ -1017,7 +1118,7 @@ class Table extends Component {
               options:this.state.formats,
               selection:this.state.formatsSelected,
              })}
-              />)}</section>
+              /></div>)}</div></section>
           </Modal>}
         <Card 
           heading="Activities"
@@ -1057,6 +1158,7 @@ class Table extends Component {
             />
           </Button>
         </Tooltip>
+        <Tooltip content="Add Filter" align="bottom right">
           <Button
             assistiveText={{ icon: "Filters" }}
             iconCategory="utility"
@@ -1065,7 +1167,7 @@ class Table extends Component {
             variant="icon"
             title="Filter"
             onClick={() => {
-              this.setState({OpenFilters:true})}}/>
+              this.setState({OpenFilters:true})}}/></Tooltip>
           {!this.state.isCalanderView && (<Tooltip content="Select Date Range for Filter" align="bottom right"><Button 
           label={this.state.startDate.toLocaleDateString()+" To "+this.state.endDate.toLocaleDateString()}
           onClick={this.historicBtn}
@@ -1078,9 +1180,9 @@ class Table extends Component {
           <DropdownTrigger>
             <Button 
               // assistiveText={{ icon: 'XML' }}
-              iconCategory="doctype"
-              iconName="xml"
-              iconPosition="right"
+              iconCategory="utility"
+              iconName="download"
+              iconPosition="left"
               label="Export"
             />
           </DropdownTrigger>
