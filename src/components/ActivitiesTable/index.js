@@ -132,9 +132,11 @@ class Table extends Component {
     cloneModalIsOPen: false,
     isDeletePromptOpen: false,
     displayedData: [],
+    searchResult:[],
     filters: {},
     errors: {},
     currentPage: 1,
+    pageLimit:2,
     expandTable: true,
     columnWidth: {},
     tableExtraWidth: 0,
@@ -902,7 +904,7 @@ class Table extends Component {
   }
   handleFilterChange = (event) => {
     this.setState({isFiltering:true})
-    if(event.target.value.length>3)
+    if(event.target.value.length>0)
     {const filteredUserItems = this.state.data.filter((item) =>{
       
       if (RegExp(event.target.value, 'i').test(item.userId) ||
@@ -911,11 +913,14 @@ class Table extends Component {
       RegExp(event.target.value, 'i').test(item.programId)){
         return true
       }
-    });
-    this.setState({displayedData:filteredUserItems,isFiltering:false})}
-    else{
-      this.setState({displayedData:this.state.data,isFiltering:false})
+      });
+      this.setState({searchResult:filteredUserItems})
     }
+    else if(event.target.value.length===0){
+      this.handlePagination(this.state.data.slice(0, this.state.pageLimit), this.state.currentPage)
+      this.setState({isFiltering:false})
+    }
+    
   }
 
   entityCombobox = () => (<div className="slds-form-element slds-m-bottom_large">
@@ -1158,7 +1163,7 @@ class Table extends Component {
           filter={!this.state.isCalanderView && 
             (!isEmpty || this.state.isFiltering) && (
               <Input 
-                iconRight={
+                iconLeft={
                   <InputIcon
                     assistiveText={{
                       icon: 'Search',
@@ -1364,8 +1369,8 @@ class Table extends Component {
                 (<ActivityCalendar 
                   activities={this.state.CalendarDisplayedData}/>)}
         {!this.state.isCalanderView && (<Pager
-          data={this.state.data}
-          itemsPerPage={100}
+          data={!this.state.isFiltering ? this.state.data: this.state.searchResult}
+          itemsPerPage={this.state.pageLimit}
           setDisplayedItems={this.handlePagination}
           currentPage={this.state.currentPage}
         />)}
