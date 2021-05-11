@@ -901,7 +901,10 @@ class Table extends Component {
     this.setState({startDate:dates.selection.startDate, endDate:dates.selection.endDate})
   }
   handleFilterChange = (event) => {
-    const filteredUserItems = this.state.data.filter((item) =>{
+    this.setState({isFiltering:true})
+    if(event.target.value.length>3)
+    {const filteredUserItems = this.state.data.filter((item) =>{
+      
       if (RegExp(event.target.value, 'i').test(item.userId) ||
       RegExp(event.target.value, 'i').test(item.campaignId) ||
       RegExp(event.target.value, 'i').test(item.title) ||
@@ -909,7 +912,10 @@ class Table extends Component {
         return true
       }
     });
-    this.setState({displayedData:filteredUserItems})
+    this.setState({displayedData:filteredUserItems,isFiltering:false})}
+    else{
+      this.setState({displayedData:this.state.data,isFiltering:false})
+    }
   }
 
   entityCombobox = () => (<div className="slds-form-element slds-m-bottom_large">
@@ -1152,7 +1158,7 @@ class Table extends Component {
           filter={!this.state.isCalanderView && 
             (!isEmpty || this.state.isFiltering) && (
               <Input 
-                iconLeft={
+                iconRight={
                   <InputIcon
                     assistiveText={{
                       icon: 'Search',
@@ -1161,6 +1167,7 @@ class Table extends Component {
                     category="utility"
                   />
                 }
+                hasSpinner={this.state.isFiltering}
                 placeholder="Search"
                 onInput={this.handleFilterChange}
 							/>
