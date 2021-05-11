@@ -132,11 +132,10 @@ class Table extends Component {
     cloneModalIsOPen: false,
     isDeletePromptOpen: false,
     displayedData: [],
-    searchResult:[],
     filters: {},
     errors: {},
     currentPage: 1,
-    pageLimit:2,
+    pageLimit:100,
     expandTable: true,
     columnWidth: {},
     tableExtraWidth: 0,
@@ -159,7 +158,6 @@ class Table extends Component {
     programInputValue:'',
     regionsSelected:[],
     regionsInputValue:'',
-    CalendarDisplayedData: [],
   };
 
   table = React.createRef()
@@ -176,10 +174,6 @@ class Table extends Component {
           this.onSort({property: this.state.sortProperty, sortDirection: this.state.sortDirection})
         }
       });
-      this.setState({CalendarDisplayedData:this.props.data }, () => {
-        if(this.state.sortProperty && this.state.sortDirection) {
-          this.onSort({property: this.state.sortProperty, sortDirection: this.state.sortDirection})
-        }})
       this.onFilter();
     }
   }
@@ -689,6 +683,7 @@ class Table extends Component {
   };
   clearFilter = () => {
     this.setState({
+      data:this.props.data,
       formatsSelected :[],
       formatInputValue:'',
       programSelected:[],
@@ -805,7 +800,7 @@ class Table extends Component {
     const formatsSelected = this.state.formatsSelected.map(function (key) {
       return key.label
     } )
-    const arr = this.state.data
+    const arr = this.props.data
     const filteredData = arr.filter((row) => {
       for (const property of slectedRegioins) {
         if (property !== 'All' && row.regionId.toLowerCase() !== property.toLowerCase()) return false;
@@ -818,7 +813,7 @@ class Table extends Component {
       }
       return true;
     });
-    this.setState({displayedData:filteredData, CalendarDisplayedData:filteredData, OpenFilters:false})
+    this.setState({data:filteredData, OpenFilters:false})
   }
 
   handleChange = (name, value) => {
@@ -914,11 +909,16 @@ class Table extends Component {
         return true
       }
       });
-      this.setState({searchResult:filteredUserItems})
+      this.setState({data:filteredUserItems})
     }
     else if(event.target.value.length===0){
-      this.handlePagination(this.state.data.slice(0, this.state.pageLimit), this.state.currentPage)
-      this.setState({isFiltering:false})
+      if(this.state.formatsSelected.length > 0 || this.state.programSelected.length > 0 || this.state.regionsSelected.length > 0){
+        this.getFilteredData()
+        this.setState({isFiltering:false})
+      }else{
+        this.setState({data: this.props.data, isFiltering:false})
+        this.handlePagination(this.state.data.slice(0, this.state.pageLimit), this.state.currentPage)
+      }
     }
     
   }
@@ -1367,9 +1367,9 @@ class Table extends Component {
         </DataTable>)}
         {this.state.isCalanderView &&
                 (<ActivityCalendar 
-                  activities={this.state.CalendarDisplayedData}/>)}
+                  activities={this.state.data}/>)}
         {!this.state.isCalanderView && (<Pager
-          data={!this.state.isFiltering ? this.state.data: this.state.searchResult}
+          data={this.state.data}
           itemsPerPage={this.state.pageLimit}
           setDisplayedItems={this.handlePagination}
           currentPage={this.state.currentPage}
