@@ -901,7 +901,6 @@ class Table extends Component {
     this.setState({startDate:dates.selection.startDate, endDate:dates.selection.endDate})
   }
   handleFilterChange = (event) => {
-    this.setState({isFiltering:true})
     const filteredUserItems = this.state.data.filter((item) =>{
       if (RegExp(event.target.value, 'i').test(item.userId) ||
       RegExp(event.target.value, 'i').test(item.campaignId) ||
@@ -910,7 +909,7 @@ class Table extends Component {
         return true
       }
     });
-    this.setState({displayedData:filteredUserItems,isFiltering:true})
+    this.setState({displayedData:filteredUserItems})
   }
 
   entityCombobox = () => (<div className="slds-form-element slds-m-bottom_large">
@@ -1162,9 +1161,8 @@ class Table extends Component {
                     category="utility"
                   />
                 }
-                hasSpinner={this.state.isFiltering}
                 placeholder="Search"
-                onChange={this.handleFilterChange}
+                onInput={this.handleFilterChange}
 							/>
 							
               // <CardFilter onChange={this.handleFilterChange} />
