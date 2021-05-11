@@ -53,6 +53,7 @@ import { DateRangePicker } from 'react-date-range';
 import 'react-date-range/dist/styles.css'; 
 import 'react-date-range/dist/theme/default.css'; 
 import { addDays, format } from 'date-fns';
+import { Row } from "jspdf-autotable";
 
 const DateCell = ({ children, ...props }) => {
   return <DataTableCell title={children} {...props}>
@@ -901,8 +902,7 @@ class Table extends Component {
   }
   handleFilterChange = (event) => {
     this.setState({isFiltering:true})
-    if(event.target.value.length > 3)
-    {const filteredUserItems = this.state.data.filter((item) =>{
+    const filteredUserItems = this.state.data.filter((item) =>{
       if (RegExp(event.target.value, 'i').test(item.userId) ||
       RegExp(event.target.value, 'i').test(item.campaignId) ||
       RegExp(event.target.value, 'i').test(item.title) ||
@@ -910,8 +910,7 @@ class Table extends Component {
         return true
       }
     });
-    this.setState({displayedData:filteredUserItems})}
-    this.setState({isFiltering:false})
+    this.setState({displayedData:filteredUserItems,isFiltering:true})
   }
 
   entityCombobox = () => (<div className="slds-form-element slds-m-bottom_large">
@@ -1154,7 +1153,6 @@ class Table extends Component {
           filter={!this.state.isCalanderView && 
             (!isEmpty || this.state.isFiltering) && (
               <Input 
-                type="search"
                 iconLeft={
                   <InputIcon
                     assistiveText={{
