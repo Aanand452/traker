@@ -156,6 +156,7 @@ class Table extends Component {
     programInputValue:'',
     regionsSelected:[],
     regionsInputValue:'',
+    CalendarDisplayedData: [],
   };
 
   table = React.createRef()
@@ -172,6 +173,10 @@ class Table extends Component {
           this.onSort({property: this.state.sortProperty, sortDirection: this.state.sortDirection})
         }
       });
+      this.setState({CalendarDisplayedData:this.props.data }, () => {
+        if(this.state.sortProperty && this.state.sortDirection) {
+          this.onSort({property: this.state.sortProperty, sortDirection: this.state.sortDirection})
+        }})
       this.onFilter();
     }
   }
@@ -769,7 +774,6 @@ class Table extends Component {
   getFilteredPrograms = (region) =>{
     if(region){
       if(region[0].id!=='all'){
-        console.log(region[0].id)
         const filteredPrograms = this.state.programs.filter(function(program){
           return program.target_region===region[0].id
         })
@@ -786,7 +790,32 @@ class Table extends Component {
   }
 
   getFilteredData = () => {
-    
+
+    const filterItems = this.state.formatsSelected.concat(this.state.programSelected).concat(this.state.regionsSelected)
+
+    const slectedRegioins = this.state.regionsSelected.map(function (key) {
+      return key.label
+    } )
+    const programSelected = this.state.programSelected.map(function (key) {
+      return key.label
+    } )
+    const formatsSelected = this.state.formatsSelected.map(function (key) {
+      return key.label
+    } )
+    const arr = this.state.data
+    const filteredData = arr.filter((row) => {
+      for (const property of slectedRegioins) {
+        if (property !== 'All' && row.regionId.toLowerCase() !== property.toLowerCase()) return false;
+      }
+      for (const property of programSelected) {
+        if (property.length > 0 && row.programId.toLowerCase() !== property.toLowerCase()) return false;
+      }
+      for (const property of formatsSelected) {
+        if (property.length > 0 && row.formatId.toLowerCase() !== property.toLowerCase()) return false;
+      }
+      return true;
+    });
+    this.setState({displayedData:filteredData, CalendarDisplayedData:filteredData, OpenFilters:false})
   }
 
   handleChange = (name, value) => {
@@ -990,7 +1019,7 @@ class Table extends Component {
           truncate
           variant="object-home"
         /> */}
-        {this.state.isPanelOpen && (
+        {/* {this.state.isPanelOpen && (
           <FilterPanel
             regions={this.state.regions}
             programs={this.state.filteredPrograms}
@@ -1000,7 +1029,7 @@ class Table extends Component {
             handleChange={this.handleChange}
             errors={this.state.errors}
           />
-        )}
+        )} */}
         {
           
             <Modal
@@ -1023,7 +1052,7 @@ class Table extends Component {
             onRequestClose={() => this.setState({OpenFilters:false})}
             footer={[
 							<Button label="Cancel" onClick={this.clearFilter} />,
-							<Button label="Save" variant="brand" onClick={this.toggleOpen} />,
+							<Button label="Save" variant="brand" onClick={this.getFilteredData} />,
 						]}
             heading="Add Filters"
           ><section className="slds-p-around_large">
@@ -1330,7 +1359,7 @@ class Table extends Component {
         </DataTable>)}
         {this.state.isCalanderView &&
                 (<ActivityCalendar 
-                  activities={this.state.data}/>)}
+                  activities={this.state.CalendarDisplayedData}/>)}
         {!this.state.isCalanderView && (<Pager
           data={this.state.data}
           itemsPerPage={100}

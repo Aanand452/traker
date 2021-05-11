@@ -69,7 +69,6 @@ class NavBar extends Component{
 
   fileUpload = (e) => {
     this.setState({progress:{active: true}});
-    console.log(e.target.files)
     let number = 0
     let interval = setInterval(() => {
       this.setState({progress:{active: true, percentage: number}});
