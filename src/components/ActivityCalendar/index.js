@@ -9,7 +9,12 @@ import { Modal, Card, CardFilter, Icon, CardEmpty, Button, DataTable, DataTableC
 import EditModal from "../EditActivityModal";
 import CloneModal from "../CloneActivityModal";
 
-moment.locale('en-GB');
+moment.locale('en-GB',{
+    week: {
+        dow: 1,
+        // doy: 1,
+    },
+});
 const localizer = momentLocalizer(moment)
 const columns =[
     <DataTableColumn 
