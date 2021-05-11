@@ -54,6 +54,7 @@ import 'react-date-range/dist/styles.css';
 import 'react-date-range/dist/theme/default.css'; 
 import { addDays, format } from 'date-fns';
 import { Row } from "jspdf-autotable";
+import { property } from "lodash";
 
 const DateCell = ({ children, ...props }) => {
   return <DataTableCell title={children} {...props}>
@@ -802,15 +803,9 @@ class Table extends Component {
     } )
     const arr = this.props.data
     const filteredData = arr.filter((row) => {
-      for (const property of slectedRegioins) {
-        if (property !== 'All' && row.regionId.toLowerCase() !== property.toLowerCase()) return false;
-      }
-      for (const property of programSelected) {
-        if (property.length > 0 && row.programId.toLowerCase() !== property.toLowerCase()) return false;
-      }
-      for (const property of formatsSelected) {
-        if (property.length > 0 && row.formatId.toLowerCase() !== property.toLowerCase()) return false;
-      }
+      if (!slectedRegioins.includes('All') && !slectedRegioins.includes(row.regionId)) return false;
+      if (programSelected.length > 0 && !programSelected.includes('All') && !programSelected.includes(row.programId)) return false;
+      if(formatsSelected.length > 0 && !formatsSelected.includes(row.formatId)) return false;
       return true;
     });
     this.setState({data:filteredData, OpenFilters:false})
