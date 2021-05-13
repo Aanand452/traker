@@ -175,7 +175,7 @@ class Table extends Component {
           this.onSort({property: this.state.sortProperty, sortDirection: this.state.sortDirection})
         }
       });
-      this.onFilter();
+      this.getFilteredData();
     }
   }
 
@@ -442,6 +442,14 @@ class Table extends Component {
         this.setState({
           formats: formats,
         });
+        let defaultFormatNames = ['3rdParty-Virtual Event', 'Exec Engagement', 'Executive Visit', 'F2F Event', 'Webinar', 'Webinar - 3rd Party', 'Virtual Event', 'SIC', 'Launch']
+        let defaultFormats = formats.filter(format => {
+          if(!defaultFormatNames.includes(format.label)) return false;
+          return true;
+        })
+        this.setState({
+          formatsSelected:defaultFormats
+        })
       } else {
         throw new Error(response);
       }
@@ -790,8 +798,6 @@ class Table extends Component {
 
   getFilteredData = () => {
 
-    const filterItems = this.state.formatsSelected.concat(this.state.programSelected).concat(this.state.regionsSelected)
-
     const slectedRegioins = this.state.regionsSelected.map(function (key) {
       return key.label
     } )
@@ -1055,7 +1061,7 @@ class Table extends Component {
             size="medium"
             onRequestClose={() => this.setState({OpenFilters:false})}
             footer={[
-							<Button label="Cancel" onClick={this.clearFilter} />,
+							<Button label="Clear" onClick={this.clearFilter} />,
 							<Button label="Save" variant="brand" onClick={this.getFilteredData} />,
 						]}
             heading="Add Filters"

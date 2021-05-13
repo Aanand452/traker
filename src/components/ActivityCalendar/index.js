@@ -9,6 +9,7 @@ import { Modal, Card, CardFilter, Icon, CardEmpty, Button, DataTable, DataTableC
 import EditModal from "../EditActivityModal";
 import CloneModal from "../CloneActivityModal";
 
+
 moment.locale('en-GB',{
     week: {
         dow: 1,
@@ -99,9 +100,9 @@ class ActivityCalendar extends Component {
       this.state.events = finalEvents
       this.setState({displayedDateRage:{start:start.toString(), end:end.toString()}})
     }
-    onNavigate = async (date) => {
+    onNavigate = async (date, view, action) => {
         await this.setState({currentDate:date});
-      this.computeDisplayedDateRange();
+        this.computeDisplayedDateRange();
     }
     onView = async (view) => {
         await this.setState({currentView:view});
@@ -199,6 +200,37 @@ class ActivityCalendar extends Component {
           }
     }
 
+    getEventColor = (format) => {
+        switch(format){
+            case '3rdParty-Virtual Event': return '02d4308c'
+            case 'Webinar': return 'e081048c'
+            case 'Exec Engagement': return 'c9c5068c'
+            case 'Executive Visit': return '058eb88c'
+            case 'F2F Event': return '0520b88c'
+            case 'Webinar - 3rd Party': return '4405b88c'
+            case 'Virtual Event': return 'a905b88c'
+            case 'SIC': return 'b805148c'
+            case 'Launch': return '5983598c'
+            default : return '04f7398c'
+        }
+    }
+    eventStyleGetter = (event, start, end, isSelected) => {
+        console.log(event);
+        
+        var backgroundColor = '#' + this.getEventColor(event.resource.data.formatId);
+        var style = {
+            backgroundColor: backgroundColor,
+            borderRadius: '0px',
+            opacity: 1,
+            color: 'black',
+            border: '0px',
+            display: 'block'
+        };
+        return {
+            style: style
+        };
+    }
+
     render() {
         const isEmpty = this.state.eventsOnModal.length === 0;
         return (
@@ -288,7 +320,7 @@ class ActivityCalendar extends Component {
                     </Modal>}
             <Calendar localizer={localizer}
                 events={this.state.events}
-                views={['month']}
+                views={['month','week']}
                 defaultDate={this.state.currentDate}
                 startAccessor="start"
                 endAccessor="end"
@@ -298,6 +330,7 @@ class ActivityCalendar extends Component {
                 onSelectEvent={this.handleSelectEvent}
                 onSelectSlot={this.handleSelectDay}
                 onDrillDown={this.handleDrillDown}
+                eventPropGetter={(this.eventStyleGetter)}
                 selectable
             /></CalendarContainer>
         );
