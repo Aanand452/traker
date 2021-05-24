@@ -979,11 +979,11 @@ class Table extends Component {
   }
 
   setDisplayedData = (startDate, endDate) => {
-    const newData = this.state.data.filter(a => {
+    const newData = this.props.data.filter(a => {
       var date = new Date(a.startDate)
       return (date >= startDate && date <= endDate)
     });    
-    this.handlePagination(newData, this.state.currentPage)
+    this.setState({data:newData})
   }
 
   handleFilterChange = (event) => {

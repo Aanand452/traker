@@ -44,7 +44,7 @@ const columns =[
     />,
     <DataTableColumn
         key="Assets"
-        width="6em"
+        width="14em"
         label="Assets"
         property="asset"
     />
