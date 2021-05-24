@@ -8,6 +8,8 @@ import 'react-big-calendar/lib/css/react-big-calendar.css';
 import { Modal, Card, CardFilter, Icon, CardEmpty, Button, DataTable, DataTableColumn, DataTableRowActions, Tooltip, Dropdown} from "@salesforce/design-system-react";
 import EditModal from "../EditActivityModal";
 import CloneModal from "../CloneActivityModal";
+import ViewActivityModal from "../ViewActivityModal";
+
 
 
 moment.locale('en-GB',{
@@ -63,6 +65,7 @@ class ActivityCalendar extends Component {
             editItem:{},
             cloneModalIsOPen:false,
             editModalIsOPen:false,
+            detailModalIsOpen:false,
             toast:{
                 show:false
             }
@@ -147,6 +150,7 @@ class ActivityCalendar extends Component {
     toggleOpen = state => {
         this.setState({ [state]: !this.state[state] });
     };
+    closeDetailModal = () => this.setState({detailModalIsOpen: false})
 
     onToast = (show, message, variant) => {
         this.setState({ toast: { show, message, variant } });
@@ -208,9 +212,7 @@ class ActivityCalendar extends Component {
             default : return '04f7398c'
         }
     }
-    eventStyleGetter = (event, start, end, isSelected) => {
-        console.log(event);
-        
+    eventStyleGetter = (event, start, end, isSelected) => {        
         var backgroundColor = '#' + this.getEventColor(event.resource.data.formatId);
         var style = {
             backgroundColor: backgroundColor,
@@ -245,7 +247,13 @@ class ActivityCalendar extends Component {
                             reloadActivities={this.state.editItem}
                         />
                         )}
-                {
+                    {this.state.detailModalIsOpen && (
+                        <ViewActivityModal
+                        item={this.state.editItem}
+                        closeDetailModal={this.closeDetailModal}
+                    />
+                    )}
+                    {
                     <Modal
                         isOpen={this.state.toast.show}
                         labels={{heading:["This is called", "this is also called"]}}
@@ -287,6 +295,11 @@ class ActivityCalendar extends Component {
                                 {columns}
                                 <DataTableRowActions
                                     options={[
+                                    {
+                                        id: 3,
+                                        label: "View",
+                                        value: "4",
+                                    },
                                     {
                                         id: 0,
                                         label: "Edit",
