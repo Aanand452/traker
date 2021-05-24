@@ -34,7 +34,7 @@ const columns =[
         key="formatId"
         label="Format"
         property="formatId"
-        width="16em"
+        width="6em"
     />,
     <DataTableColumn 
         key="regionId"
