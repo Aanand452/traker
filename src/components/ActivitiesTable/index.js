@@ -1,4 +1,4 @@
-import React, { Component, Fragment, useState } from "react";
+import React, { Component, Fragment } from "react";
 import { withRouter, Link } from "react-router-dom";
 import { connect } from "react-redux";
 import moment from "moment";
@@ -18,16 +18,15 @@ import {
   Card,
   Input,
   Icon,
-  PageHeader,
   PageHeaderControl,
   ToastContainer,
   Toast,
   Tooltip,
   DropdownTrigger,
   Modal,
-  CardFilter,
   Combobox,
   comboboxFilterAndLimit,
+  ExpandableSection,
 } from "@salesforce/design-system-react";
 
 import { getCookie } from '../../utils/cookie';
@@ -132,6 +131,7 @@ class Table extends Component {
     editModalIsOPen: false,
     cloneModalIsOPen: false,
     isDeletePromptOpen: false,
+    isExpandableSectionOpen: false,
     displayedData: [],
     filters: {},
     errors: {},
@@ -159,6 +159,12 @@ class Table extends Component {
     programInputValue:'',
     regionsSelected:[],
     regionsInputValue:'',
+    industrySelected: [],
+    industryInputValue: '',
+    segmentSelected: [],
+    segmentInputValue: '',
+    apm1Selected: [],
+    apmInputValue: '',
   };
 
   table = React.createRef()
@@ -347,6 +353,9 @@ class Table extends Component {
     this.checkProgram();
     this.checkRegion();
     this.checkFormat();
+    this.getIndustry();
+    this.getSegment();
+    this.getAPM1();
     this.setState({historicDate: {}, startDate:new Date(), key: 'selection', endDate:addDays(new Date(), 7) })
   };
 
@@ -393,6 +402,72 @@ class Table extends Component {
       console.error(err);
     }
   }
+  getIndustry = async () => {
+    try {
+      let token = getCookie('token').replaceAll('"','');
+      const config = {
+        method: 'GET',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        }
+      }
+      const request = await fetch(`${this.API_URL}/industry`, config);
+      const response = await request.json();
+      const industry = response.result.map(item => ({id: item.industryId, label: item.name}));
+
+      if(response.info.code === 200) this.setState({ industries : industry });
+      else throw new Error(response.info.status);
+    } catch (err) {
+      this.showError(err);
+    }
+  };
+
+  getSegment = async () => {
+    try {
+      let token = getCookie('token').replaceAll('"','');
+      const config = {
+        method: 'GET',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        }
+      }
+      const request = await fetch(`${this.API_URL}/segment`, config);
+      const response = await request.json();
+      const segment = response.result.map(item => ({id: item.segmentId, label: item.name}));
+
+      if(response.info.code === 200) this.setState({ segments: segment });
+      else throw new Error(response.info.status);
+    } catch (err) {
+      this.showError(err);
+    }
+  };
+  getAPM1 = async () => {
+    try {
+      let token = getCookie('token').replaceAll('"','');
+      const config = {
+        method: 'GET',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        }
+      }
+      const request = await fetch(`${this.API_URL}/apm1`, config);
+      const response = await request.json();
+      const apm1 = response.result.map(item => ({id: item.apm1Id, label: item.name}));
+
+
+      if(response.info.code === 200) this.setState({ apm1s: apm1 });
+      else throw new Error(response.info.status);
+    } catch (err) {
+      this.showError(err);
+    }
+  };
+
 
   async checkRegion() {
     try {
@@ -476,6 +551,7 @@ class Table extends Component {
   }
   calendarViewBtn = () =>{
     this.setState({isCalanderView: !this.state.isCalanderView})
+    this.setDisplayedData(this.state.startDate, this.state.endDate)
   }
   calendarOnHover = () => {
     this.setState({popoverOpen: true})
@@ -896,8 +972,20 @@ class Table extends Component {
   };
 
   onChangeDate = (dates) => {
-    this.setState({startDate:dates.selection.startDate, endDate:dates.selection.endDate})
+    const startDate = dates.selection.startDate
+    const endDate = dates.selection.endDate
+    this.setState({startDate:startDate, endDate:endDate})
+    this.setDisplayedData(startDate, endDate)
   }
+
+  setDisplayedData = (startDate, endDate) => {
+    const newData = this.state.data.filter(a => {
+      var date = new Date(a.startDate)
+      return (date >= startDate && date <= endDate)
+    });    
+    this.handlePagination(newData, this.state.currentPage)
+  }
+
   handleFilterChange = (event) => {
     this.setState({isFiltering:true})
     if(event.target.value.length>0)
@@ -1067,7 +1155,154 @@ class Table extends Component {
             heading="Add Filters"
           ><section className="slds-p-around_large">
             <div className="slds-form-element slds-m-bottom_large">
-           {this.state.OpenFilters && (<div className="slds-form-element slds-m-bottom_large"><Combobox 
+           {this.state.OpenFilters && (<div className="slds-form-element slds-m-bottom_large">
+            <ExpandableSection
+              title="Add Program Filter"
+              isOpen={this.state.isExpandableSectionOpen}
+              onToggleOpen={(event, data) => {this.setState({ isExpandableSectionOpen: !this.state.isExpandableSectionOpen })}}
+            >
+              <div class="expandableRow">
+                <div class="expandableColumn">
+                <Combobox 
+                    multiple
+                    labels={{
+                      label: 'Search Industry',
+                      placeholder: 'Add Industry',
+                    }}
+                    events={{
+                      onChange:(event, {value}) => {
+                        this.setState({industryInputValue:value})
+                      },
+                      onRequestRemoveSelectedOption: (event, data) => {
+                        this.setState({
+                          industryInputValue:'',
+                          industrySelected:data.selection
+                        })
+                      },
+                      onSubmit: (event, { value }) => {
+                        this.setState({
+                          industryInputValue:'',
+                          industrySelected:[
+                            ...this.state.industrySelected,
+                            {
+                              label:value,
+                              icon:(<Icon assistiveText={{ label: 'Account' }} category="standard" name="campaign" />)
+                            }
+                          ]
+                        })
+                      },
+                      onSelect: (event, data) => {
+                        this.setState({
+                          inputValue: '',
+                          industrySelected:data.selection
+                        })
+                      }
+                    }}
+                    selection={this.state.industrySelected}
+                    menuItemVisibleLength={5}
+                    options={comboboxFilterAndLimit({
+                      inputValue:this.state.industryInputValue,
+                      limit: 50,
+                      options:this.state.industries,
+                      selection:this.state.industrySelected,
+                    })}
+                  />
+                </div>
+                <div class="expandableColumn">
+                <Combobox 
+                      multiple
+                      labels={{
+                        label: 'Search APM',
+                        placeholder: 'Add APM',
+                      }}
+                      events={{
+                        onChange:(event, {value}) => {
+                          this.setState({apmInputValue:value})
+                        },
+                        onRequestRemoveSelectedOption: (event, data) => {
+                          this.setState({
+                            apmInputValue:'',
+                            apm1Selected:data.selection
+                          })
+                        },
+                        onSubmit: (event, { value }) => {
+                          this.setState({
+                            apmInputValue:'',
+                            apm1Selected:[
+                              ...this.state.apm1Selected,
+                              {
+                                label:value,
+                                icon:(<Icon assistiveText={{ label: 'Account' }} category="standard" name="campaign" />)
+                              }
+                            ]
+                          })
+                        },
+                        onSelect: (event, data) => {
+                          this.setState({
+                            apmInputValue: '',
+                            apm1Selected:data.selection
+                          })
+                        }
+                      }}
+                      selection={this.state.apm1Selected}
+                      menuItemVisibleLength={5}
+                      options={comboboxFilterAndLimit({
+                        inputValue:this.state.apmInputValue,
+                        limit: 50,
+                        options:this.state.apm1s,
+                        selection:this.state.apm1Selected,
+                      })}
+                    />
+                </div>
+                <div class="expandableColumn">
+                <Combobox 
+                      multiple
+                      labels={{
+                        label: 'Search Segment',
+                        placeholder: 'Add Segment',
+                      }}
+                      events={{
+                        onChange:(event, {value}) => {
+                          this.setState({segmentInputValue:value})
+                        },
+                        onRequestRemoveSelectedOption: (event, data) => {
+                          this.setState({
+                            segmentInputValue:'',
+                            segmentSelected:data.selection
+                          })
+                        },
+                        onSubmit: (event, { value }) => {
+                          this.setState({
+                            segmentInputValue:'',
+                            segmentSelected:[
+                              ...this.state.segmentSelected,
+                              {
+                                label:value,
+                                icon:(<Icon assistiveText={{ label: 'Account' }} category="standard" name="campaign" />)
+                              }
+                            ]
+                          })
+                        },
+                        onSelect: (event, data) => {
+                          this.setState({
+                            inputValue: '',
+                            segmentSelected:data.selection
+                          })
+                        }
+                      }}
+                      selection={this.state.segmentSelected}
+                      menuItemVisibleLength={5}
+                      options={comboboxFilterAndLimit({
+                        inputValue:this.state.segmentInputValue,
+                        limit: 50,
+                        options:this.state.segments,
+                        selection:this.state.segmentSelected,
+                      })}
+                    />
+                </div>
+              </div>    
+            </ExpandableSection>
+             <Combobox 
             multiple
             labels={{
               label: 'Search Programs',
@@ -1333,18 +1568,12 @@ class Table extends Component {
           </DataTableColumn>
 
           <DataTableRowActions
-            options={this.state.isHistoric ? [
+            options={[
               {
                 id: 3,
                 label: "View",
                 value: "4",
               },
-              {
-                id: 2,
-                label: "Clone",
-                value: "3",
-              }
-            ] : [
               {
                 id: 0,
                 label: "Edit",
@@ -1368,7 +1597,7 @@ class Table extends Component {
         </DataTable>)}
         {this.state.isCalanderView &&
                 (<ActivityCalendar 
-                  activities={this.state.data}/>)}
+                  activities={this.props.data}/>)}
         {!this.state.isCalanderView && (<Pager
           data={this.state.data}
           itemsPerPage={this.state.pageLimit}

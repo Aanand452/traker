@@ -3,6 +3,8 @@ import { withRouter } from 'react-router-dom';
 import moment from 'moment';
 import {
   Combobox,
+  comboboxFilterAndLimit,
+  Icon,
   Input,
   Datepicker,
   Button,
@@ -25,7 +27,9 @@ class Step2 extends Component {
       variant: 'error',
       heading: 'Something went wrong',
       duration: 5000,
-      active: false
+      active: false,
+      selection: [],
+      inputValue: '',
     }
   };
 
@@ -36,7 +40,7 @@ class Step2 extends Component {
   setupAndFetch = async () => {
     if(window.location.hostname === 'localhost') this.API_URL =  "http://localhost:3000/api/v1";
     else this.API_URL = await getAPIUrl();
-
+    // this.setState({selection: this.assetType[1]})
     this.getFormats();
   }
 
@@ -75,6 +79,28 @@ class Step2 extends Component {
     if(!date) return;
     return starDate.isAfter(date.date)
   }
+
+  assetType = [
+    {id:'1', label:'Home Page', subTitle: 'Home Page', type: 'topic', icon: (
+			<Icon
+				assistiveText={{ label: 'Asset' }}
+				category="utility"
+				name='topic'
+			/>
+		),}, {id:'2', label:'Registration Form', subTitle: 'Registration Form', type: 'topic', icon: (
+			<Icon
+				assistiveText={{ label: 'Asset' }}
+				category="utility"
+				name='topic'
+			/>
+		),}, {id: '3', label:'Login Page', subTitle: 'Login Page', type: 'topic', icon: (
+			<Icon
+				assistiveText={{ label: 'Asset' }}
+				category="utility"
+				name='topic'
+			/>
+		),}
+  ]
 
   render() {
     return (
@@ -162,7 +188,62 @@ class Step2 extends Component {
           />
           {this.props.error.endDate && <div className="slds-form-element__help">{this.props.error.endDate}</div>}
         </div>
-        <div className="slds-m-bottom_large slds-col slds-size_1-of-2">
+        <div className={`slds-col slds-size_1-of-4 slds-form-element`}>
+          <Combobox
+            events={{
+              onChange: (event, { value }) => {
+                this.setState({ inputValue: value });
+              },
+              onRequestRemoveSelectedOption: (event, data) => {
+                this.setState({
+                  inputValue: '',
+                  selection: data.selection,
+                });
+              },
+              onSubmit: (event, { value }) => {
+                this.setState({
+                  inputValue: '',
+                  selection: [
+                    ...this.state.selection,
+                    {
+                      label: value,
+                      icon: (
+                        <Icon
+                          assistiveText={{ label: 'Account' }}
+                          category="utility"
+                          name="topic"
+                        />
+                      ),
+                    },
+                  ],
+                });
+              },
+              onSelect: (event, data) => {
+                this.setState({
+                  inputValue: '',
+                  selection: data.selection,
+                });
+              },
+            }}
+            labels={{
+              label: 'Select Asset Type',
+              placeholder: 'Asset Type',
+            }}
+            options={comboboxFilterAndLimit({
+              inputValue: this.state.inputValue,
+              options: this.assetType,
+              selection: [],
+            })}
+            menuItemVisibleLength={5}
+            selection={this.state.selection}
+            value={
+              this.state.selection
+                ? ''
+                : this.state.inputValue
+            }
+            variant="inline-listbox"
+          /></div>
+          <div className={`slds-col slds-size_1-of-4 slds-form-element`}>
           <Input
             iconRight={
               <InputIconStyled

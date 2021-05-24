@@ -19,3 +19,14 @@
   white-space: break-spaces;
   line-height: 1.5;
 }
+
+.expandableRow {
+  content: "";
+  display: table;
+  clear: both;
+}
+
+.expandableColumn {
+  float: left;
+  width: 33.33%;
+}
