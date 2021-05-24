@@ -9,6 +9,9 @@ import { Modal, Card, CardFilter, Icon, CardEmpty, Button, DataTable, DataTableC
 import EditModal from "../EditActivityModal";
 import CloneModal from "../CloneActivityModal";
 import ViewActivityModal from "../ViewActivityModal";
+import {setItem } from "../../actions/DataTable";
+import { connect } from "react-redux";
+
 
 
 
@@ -190,7 +193,9 @@ class ActivityCalendar extends Component {
               this.toggleOpen("cloneModalIsOPen");
               break;
             case 3:
-              this.setState({editItem:item})
+              const fullItem = this.state.data.filter(obj => {if (obj.id===item.id) return true;})[0]
+              this.props.setItem(fullItem);
+              this.setState({toast:{show:false}})
               this.toggleOpen("detailModalIsOpen");
               break;
             default:
@@ -249,9 +254,9 @@ class ActivityCalendar extends Component {
                         )}
                     {this.state.detailModalIsOpen && (
                         <ViewActivityModal
-                        item={this.state.editItem}
-                        closeDetailModal={this.closeDetailModal}
-                    />
+                            // data={console.log(this.state.editItem)}
+                            closeDetailModal={this.closeDetailModal}
+                        />
                     )}
                     {
                     <Modal
@@ -345,4 +350,8 @@ class ActivityCalendar extends Component {
 
 }
 
-export default withRouter(ActivityCalendar);
+let mapState = ({ dataTable }) => ({
+    dataTable,
+  });
+
+export default withRouter(connect(mapState, { setItem })(ActivityCalendar));
