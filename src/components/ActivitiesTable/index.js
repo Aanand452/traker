@@ -133,6 +133,7 @@ class Table extends Component {
     isDeletePromptOpen: false,
     isExpandableSectionOpen: false,
     displayedData: [],
+    calendarViewData:[],
     filters: {},
     errors: {},
     currentPage: 1,
@@ -769,6 +770,7 @@ class Table extends Component {
   clearFilter = () => {
     this.setState({
       data:this.props.data,
+      calendarViewData:this.props.data,
       formatsSelected :[],
       formatInputValue:'',
       programSelected:[],
@@ -890,7 +892,7 @@ class Table extends Component {
       if(formatsSelected.length > 0 && !formatsSelected.includes(row.formatId)) return false;
       return true;
     });
-    this.setState({data:filteredData, OpenFilters:false})
+    this.setState({data:filteredData, calendarViewData:filteredData, OpenFilters:false})
   }
 
   handleChange = (name, value) => {
@@ -1597,7 +1599,7 @@ class Table extends Component {
         </DataTable>)}
         {this.state.isCalanderView &&
                 (<ActivityCalendar 
-                  activities={this.props.data}/>)}
+                  activities={this.state.calendarViewData}/>)}
         {!this.state.isCalanderView && (<Pager
           data={this.state.data}
           itemsPerPage={this.state.pageLimit}
