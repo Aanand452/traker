@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { withRouter } from 'react-router-dom';
 import moment from 'moment';
 import {
   IconSettings,
@@ -8,14 +9,66 @@ import {
 } from '@salesforce/design-system-react';
 
 import './styles.css';
+import CloneModal from "../CloneActivityModal";
+import EditModal from "../EditActivityModal";
+import {setItem } from "../../actions/DataTable";
+
 
 
 class ViewActivityModal extends Component {
 
+  constructor(props){
+    super(props)
+    this.state = {
+        data: [],
+        editItem:{},
+        cloneModalIsOPen:false,
+        editModalIsOPen:false,
+        detailModalIsOpen:false,
+        toast:{
+            show:false
+        }
+    }
+  }
+
+  editData = () => {
+    this.setState({editItem:this.props.item})
+    this.toggleOpen("editModalIsOPen");
+  }
+  cloneData = () => {
+    this.setState({editItem:this.props.item})
+    this.toggleOpen("cloneModalIsOPen");
+  }
+  deleteData = () => {
+    this.props.onDelete(this.props.item);
+  }
+  onToast = (show, message, variant) => {
+    this.setState({ toast: { show, message, variant } });
+  };
+  toggleOpen = state => {
+    this.setState({ [state]: !this.state[state] });
+  };
 	render() {
     
 		return (
+
       <IconSettings iconPath="/assets/icons">
+        {this.state.cloneModalIsOPen && (
+          <CloneModal
+            data={this.state.editItem}
+            onToast={this.onToast}
+            toggleOpen={this.toggleOpen}
+          />
+        )}
+        {this.state.editModalIsOPen && (
+          <EditModal
+            data={this.state.editItem}
+            onToast={this.onToast}
+            toggleOpen={this.toggleOpen}
+            reloadActivities={this.props.reloadActivities}
+          />
+        )}
+        
         <Modal
           contentClassName="activity-modal-overflow"
           isOpen={true}
@@ -29,6 +82,11 @@ class ViewActivityModal extends Component {
           onRequestClose={this.props.closeDetailModal}
           heading="Activity detail"
           ariaHideApp={false}
+          footer={[
+            <Button label="Delete" variant="destructive" onClick={this.deleteData} />,
+            <Button label="Clone" onClick={this.cloneData} />,
+            <Button label="Edit" variant="brand" onClick={this.editData} />,
+          ]}
         >
           <section className="slds-p-around_large">
             <div className="slds-m-bottom_small">
@@ -86,4 +144,4 @@ let mapState = ({ dataTable }) => ({
   item: dataTable.item,
 });
 
-export default connect(mapState)(ViewActivityModal);
+export default withRouter(connect(mapState, { setItem })(ViewActivityModal));

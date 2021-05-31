@@ -144,10 +144,9 @@ class ActivityCalendar extends Component {
         this.setState({toast:{show:true}})
     }
     handleSelectEvent = (event) =>{
+        this.toggleOpen("detailModalIsOpen");
         var modalActivities = event.resource.data
-        this.setState({eventsOnModal:[modalActivities]})
-
-        this.setState({toast:{show:true}})
+        this.props.setItem(modalActivities);
     }
 
     toggleOpen = state => {
@@ -249,7 +248,7 @@ class ActivityCalendar extends Component {
                             data={this.state.editItem}
                             onToast={this.onToast}
                             toggleOpen={this.toggleOpen}
-                            reloadActivities={this.state.editItem}
+                            reloadActivities={this.props.reloadActivities}
                         />
                         )}
                     {this.state.detailModalIsOpen && (

@@ -765,6 +765,7 @@ class Table extends Component {
   );
 
   toggleOpen = state => {
+    console.log(state)
     this.setState({ [state]: !this.state[state] });
   };
   clearFilter = () => {
@@ -1093,14 +1094,14 @@ class Table extends Component {
             closeDetailModal={this.closeDetailModal}
           />
         )}
-        {/* {this.state.editModalIsOPen && (
+        {this.state.editModalIsOPen && (
           <Modal
             data={this.props.dataTable.item}
             onToast={this.onToast}
             toggleOpen={this.toggleOpen}
             reloadActivities={this.props.reloadActivities}
           />
-        )} */}
+        )}
         {/* <PageHeader
           onRenderActions={this.actions}
           icon={
