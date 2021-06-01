@@ -113,6 +113,7 @@ class ActivityCalendar extends Component {
         if (this.props.activities !== prevProps.activities) {
             this.state.data = this.props.activities
             this.computeDisplayedDateRange();
+            
         }
     }
     handleSelectDay = (slotinfo) => {
@@ -241,6 +242,9 @@ class ActivityCalendar extends Component {
                         data={this.state.editItem}
                         onToast={this.onToast}
                         toggleOpen={this.toggleOpen}
+                        reloadActivities={this.props.reloadActivities}
+                        historicDate={this.props.historicDate}
+                        isHistoric={this.props.isHistoric}
                     />
                     )}
                     {this.state.editModalIsOPen && (
@@ -253,7 +257,8 @@ class ActivityCalendar extends Component {
                         )}
                     {this.state.detailModalIsOpen && (
                         <ViewActivityModal
-                            // data={console.log(this.state.editItem)}
+                            onDelete={this.props.onDelete}
+                            reloadActivities={this.props.reloadActivities}
                             closeDetailModal={this.closeDetailModal}
                         />
                     )}

@@ -23,7 +23,7 @@
   .rbc-day-bg.rbc-today {
     border-bottom: 2.5px solid #293541;
     border-top: 2.5px solid #293541;
-    border-left: 2.5px solid #293541;    
+    border-left: 3px solid #293541;    
     border-right: 2.5px solid #293541;
     /* background: #b1e4f5 !important;  fallback for old browsers */
     /* background: -webkit-linear-gradient(to right, rgb(80, 143, 226), rgb(108, 205, 238)) !important;  /* Chrome 10-25, Safari 5.1-6 

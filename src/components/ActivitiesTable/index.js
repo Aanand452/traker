@@ -27,11 +27,13 @@ import {
   Combobox,
   comboboxFilterAndLimit,
   ExpandableSection,
+  Popover,
+  Checkbox,
 } from "@salesforce/design-system-react";
 
 import { getCookie } from '../../utils/cookie';
 import { getAPIUrl } from "../../config/config";
-// import Modal from "../EditActivityModal";
+import EditModal from "../EditActivityModal";
 import CloneModal from "../CloneActivityModal";
 import HistoricModal from "../HistoricActivityModal";
 import ViewActivityModal from "../ViewActivityModal";
@@ -54,6 +56,8 @@ import 'react-date-range/dist/theme/default.css';
 import { addDays, format } from 'date-fns';
 import { Row } from "jspdf-autotable";
 import { property } from "lodash";
+import FormatFilterPanel from "../FormatFilter";
+
 
 const DateCell = ({ children, ...props }) => {
   return <DataTableCell title={children} {...props}>
@@ -155,17 +159,24 @@ class Table extends Component {
     endDate:'',
     isFiltering: false,
     formatsSelected :[],
+    defaultFormats: [],
     formatInputValue:'',
+    isFormatFilterOpen:false,
     programSelected:[],
     programInputValue:'',
+    isProgramFilterOpen:false,
     regionsSelected:[],
     regionsInputValue:'',
     industrySelected: [],
     industryInputValue: '',
+    isIndustryFilterOpen:false,
     segmentSelected: [],
     segmentInputValue: '',
+    isSegmentFilterOpen:false,
     apm1Selected: [],
     apmInputValue: '',
+    isApmFilterOpen:false,
+    OpenFilters:false,
   };
 
   table = React.createRef()
@@ -499,6 +510,21 @@ class Table extends Component {
     }
   }
 
+  getEventColor = (format) => {
+    switch(format){
+        case '3rdParty-Virtual Event': return '02d4308c'
+        case 'Webinar': return 'e081048c'
+        case 'Exec Engagement': return 'c9c5068c'
+        case 'Executive Visit': return '058eb88c'
+        case 'F2F Event': return '0520b88c'
+        case 'Webinar - 3rd Party': return '4405b88c'
+        case 'Virtual Event': return 'a905b88c'
+        case 'SIC': return 'b805148c'
+        case 'Launch': return '5983598c'
+        default : return '04f7398c'
+    }
+}
+
   async checkFormat() {
     try {
       let token = getCookie('token').replaceAll('"','');
@@ -514,7 +540,7 @@ class Table extends Component {
       if (response.status === 200) {
         let { result } = await response.json();
         result = result.map((item) => ({ label: item.name, ...item }));
-        let formats = result.map(el => ({...el, id: el.format_id, icon:(<Icon assistiveText={{ label: 'Account' }} category="standard" name="campaign"/>)}))
+        let formats = result.map(el => ({...el, id: el.format_id, icon:(<Icon assistiveText={{ label: 'Account' }} category="standard" name="campaign" style={{background:'#'+this.getEventColor(el.label)}}/>)}))
         this.setState({
           formats: formats,
         });
@@ -524,7 +550,8 @@ class Table extends Component {
           return true;
         })
         this.setState({
-          formatsSelected:defaultFormats
+          formatsSelected:defaultFormats,
+          defaultFormats:defaultFormats
         })
       } else {
         throw new Error(response);
@@ -765,7 +792,6 @@ class Table extends Component {
   );
 
   toggleOpen = state => {
-    console.log(state)
     this.setState({ [state]: !this.state[state] });
   };
   clearFilter = () => {
@@ -873,6 +899,9 @@ class Table extends Component {
       }
       
     }
+  }
+  getFilteredProgramsByFilters = () => {
+
   }
 
   getFilteredData = () => {
@@ -1019,6 +1048,9 @@ class Table extends Component {
     <Combobox 
     assistiveText={{ label: 'Filter Search by:' }}
     events={{
+      onRequestClose: () => {
+        this.setState({isProgramFilterOpen:false})
+      },
       onChange:(event, {value}) => {
         this.setState({regionsInputValue:value})
       },
@@ -1065,6 +1097,11 @@ class Table extends Component {
     ...elem,  ...{icon:(<Icon assistiveText={{ label: 'Account' }} category="standard"/>)}
   }))}
 
+  modifyFilter = (formats) => {
+    this.state.formatsSelected = formats.selection
+    this.getFilteredData()
+  }
+
   render() {
     const isEmpty = this.state.data.length === 0;
     return (
@@ -1095,7 +1132,7 @@ class Table extends Component {
           />
         )}
         {this.state.editModalIsOPen && (
-          <Modal
+          <EditModal
             data={this.props.dataTable.item}
             onToast={this.onToast}
             toggleOpen={this.toggleOpen}
@@ -1120,17 +1157,7 @@ class Table extends Component {
           truncate
           variant="object-home"
         /> */}
-        {/* {this.state.isPanelOpen && (
-          <FilterPanel
-            regions={this.state.regions}
-            programs={this.state.filteredPrograms}
-            formats={this.state.formats}
-            onFilter={this.onFilter}
-            filters={this.state.filters}
-            handleChange={this.handleChange}
-            errors={this.state.errors}
-          />
-        )} */}
+        
         {
           
             <Modal
@@ -1152,6 +1179,7 @@ class Table extends Component {
             size="medium"
             onRequestClose={() => this.setState({OpenFilters:false})}
             footer={[
+              <Button label="Save As Default" variant="outline-brand" onClick={this.getFilteredData} />,
 							<Button label="Clear" onClick={this.clearFilter} />,
 							<Button label="Save" variant="brand" onClick={this.getFilteredData} />,
 						]}
@@ -1162,19 +1190,25 @@ class Table extends Component {
             <ExpandableSection
               title="Add Program Filter"
               isOpen={this.state.isExpandableSectionOpen}
-              onToggleOpen={(event, data) => {this.setState({ isExpandableSectionOpen: !this.state.isExpandableSectionOpen })}}
+              onToggleOpen={() => {this.setState({ isExpandableSectionOpen: !this.state.isExpandableSectionOpen })}}
             >
-              <div class="expandableRow">
-                <div class="expandableColumn">
+              <div className="expandableRow">
+                <div className="expandableColumn">
                 <Combobox 
                     multiple
                     labels={{
-                      label: 'Search Industry',
                       placeholder: 'Add Industry',
                     }}
+                    isOpen={this.state.isIndustryFilterOpen}
                     events={{
                       onChange:(event, {value}) => {
                         this.setState({industryInputValue:value})
+                      },
+                      onRequestClose: () => {
+                        this.setState({isIndustryFilterOpen:false})
+                      },
+                      onRequestOpen: () => {
+                        this.setState({isIndustryFilterOpen:true})
                       },
                       onRequestRemoveSelectedOption: (event, data) => {
                         this.setState({
@@ -1211,13 +1245,13 @@ class Table extends Component {
                     })}
                   />
                 </div>
-                <div class="expandableColumn">
+                <div className="expandableColumn">
                 <Combobox 
                       multiple
                       labels={{
-                        label: 'Search APM',
                         placeholder: 'Add APM',
                       }}
+                      isOpen={this.state.isApmFilterOpen}
                       events={{
                         onChange:(event, {value}) => {
                           this.setState({apmInputValue:value})
@@ -1240,6 +1274,12 @@ class Table extends Component {
                             ]
                           })
                         },
+                        onRequestClose: () => {
+                          this.setState({isApmFilterOpen:false})
+                        },
+                        onRequestOpen: () => {
+                          this.setState({isApmFilterOpen:true})
+                        },
                         onSelect: (event, data) => {
                           this.setState({
                             apmInputValue: '',
@@ -1257,16 +1297,22 @@ class Table extends Component {
                       })}
                     />
                 </div>
-                <div class="expandableColumn">
+                <div className="expandableColumn">
                 <Combobox 
                       multiple
                       labels={{
-                        label: 'Search Segment',
                         placeholder: 'Add Segment',
                       }}
+                      isOpen={this.state.isSegmentFilterOpen}
                       events={{
                         onChange:(event, {value}) => {
                           this.setState({segmentInputValue:value})
+                        },
+                        onRequestClose: () => {
+                          this.setState({isSegmentFilterOpen:false})
+                        },
+                        onRequestOpen: () => {
+                          this.setState({isSegmentFilterOpen:true})
                         },
                         onRequestRemoveSelectedOption: (event, data) => {
                           this.setState({
@@ -1303,60 +1349,77 @@ class Table extends Component {
                       })}
                     />
                 </div>
+                <div className="expandableColumn">
+                  <Button label="Filter Programs" variant="outline-brand" onClick={this.getFilteredProgramsByFilters}/>
+                </div>
               </div>    
             </ExpandableSection>
              <Combobox 
-            multiple
-            labels={{
-              label: 'Search Programs',
-              placeholder: 'Add Program',
-            }}
-            entityCombobox={this.entityCombobox()}
-            events={{
-              onChange:(event, {value}) => {
-                this.setState({programInputValue:value})
-              },
-              onRequestRemoveSelectedOption: (event, data) => {
-                this.setState({
-                  programInputValue:'',
-                  programSelected:data.selection
-                })
-              },
-              onSubmit: (event, { value }) => {
-                this.setState({
-                  programInputValue:'',
-                  programSelected:[
-                    ...this.state.programSelected,
-                    {
-                      label:value,
-                      icon:(<Icon assistiveText={{ label: 'Account' }} category="standard" name="campaign" />)
-                    }
-                  ]
-                })
-              },
-              onSelect: (event, data) => {
-                this.setState({
-                  inputValue: '',
-                  programSelected:data.selection
-                })
-              }
-            }}
-            selection={this.state.programSelected}
-            menuItemVisibleLength={5}
-            options={comboboxFilterAndLimit({
-              inputValue:this.state.programInputValue,
-              limit: 50,
-              options:this.state.filteredPrograms,
-              selection:this.state.programSelected,
-            })}
-          /></div>)}
+              multiple
+              isOpen={this.state.isProgramFilterOpen}
+              labels={{
+                label: 'Search Programs',
+                placeholder: 'Add Program',
+              }}
+              entityCombobox={this.entityCombobox()}
+              events={{
+                onChange:(event, {value}) => {
+                  this.setState({programInputValue:value})
+                },
+                onRequestClose: () => {
+                  this.setState({isProgramFilterOpen:false})
+                },
+                onRequestOpen: () => {
+                  this.setState({isProgramFilterOpen:true})
+                },
+                onRequestRemoveSelectedOption: (event, data) => {
+                  this.setState({
+                    programInputValue:'',
+                    programSelected:data.selection
+                  })
+                },
+                onSubmit: (event, { value }) => {
+                  this.setState({
+                    programInputValue:'',
+                    programSelected:[
+                      ...this.state.programSelected,
+                      {
+                        label:value,
+                        icon:(<Icon assistiveText={{ label: 'Account' }} category="standard" name="campaign" />)
+                      }
+                    ]
+                  })
+                },
+                onSelect: (event, data) => {
+                  this.setState({
+                    inputValue: '',
+                    programSelected:data.selection
+                  })
+                }
+              }}
+              selection={this.state.programSelected}
+              menuItemVisibleLength={5}
+              options={comboboxFilterAndLimit({
+                inputValue:this.state.programInputValue,
+                limit: 50,
+                options:this.state.filteredPrograms,
+                selection:this.state.programSelected,
+              })}
+            /></div>)}
           {this.state.OpenFilters && (<div className="slds-form-element slds-m-bottom_large"><Combobox 
             multiple
             labels={{
               label: 'Search Format',
               placeholder: 'Add Format',
             }}
+            isOpen={this.state.isFormatFilterOpen}
             events={{
+              onRequestClose: () => {
+                this.setState({isFormatFilterOpen:false})
+              },
+              onRequestOpen: () => {
+                this.setState({isFormatFilterOpen:true})
+              },
               onChange:(event, {value}) => {
                 this.setState({formatInputValue:value})
               },
@@ -1420,6 +1483,11 @@ class Table extends Component {
             )
           }
           headerActions={(<ButtonGroup id="button-group-page-header-actions">
+              {this.state.isCalanderView && <FormatFilterPanel
+                formats={this.state.formats}
+                defaultFormats={this.state.defaultFormats}
+                modifyFilter={this.modifyFilter}
+              />}
             <Tooltip
           content={!this.state.isCalanderView ? "Open Calendar View" : "Open List View"}
         >
@@ -1600,7 +1668,11 @@ class Table extends Component {
         </DataTable>)}
         {this.state.isCalanderView &&
                 (<ActivityCalendar 
-                  activities={this.state.calendarViewData}/>)}
+                  activities={this.state.calendarViewData} 
+                  onDelete={this.props.onDelete} 
+                  reloadActivities={this.props.reloadActivities}
+                  historicDate={this.state.historicDate}
+                  isHistoric={this.state.isHistoric}/>)}
         {!this.state.isCalanderView && (<Pager
           data={this.state.data}
           itemsPerPage={this.state.pageLimit}

@@ -125,6 +125,7 @@ class CloneActivityModalComponent extends Component {
   }
 
   checkProgram = async () => {
+    console.log(this.props.historicDate)
     this.setState({ isProgramLoading: true });
     const { programsFYstartDate, programsFYendDate } = this.state;
     return new Promise(async (resolve, reject) => {

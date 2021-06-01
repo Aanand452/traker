@@ -20,11 +20,11 @@ class ViewActivityModal extends Component {
   constructor(props){
     super(props)
     this.state = {
-        data: [],
         editItem:{},
         cloneModalIsOPen:false,
         editModalIsOPen:false,
         detailModalIsOpen:false,
+        deleteModalIsOpen:false,
         toast:{
             show:false
         }
@@ -40,6 +40,7 @@ class ViewActivityModal extends Component {
     this.toggleOpen("cloneModalIsOPen");
   }
   deleteData = () => {
+    this.setState({deleteModalIsOpen:true})
     this.props.onDelete(this.props.item);
   }
   onToast = (show, message, variant) => {
@@ -71,7 +72,7 @@ class ViewActivityModal extends Component {
         
         <Modal
           contentClassName="activity-modal-overflow"
-          isOpen={true}
+          isOpen={this.props.closeDetailModal && !this.state.deleteModalIsOpen}
           footer={[
             <Button
               label="Close"
@@ -89,9 +90,21 @@ class ViewActivityModal extends Component {
           ]}
         >
           <section className="slds-p-around_large">
+          <div className="slds-m-bottom_small">
+              <div className="slds-text-title">Title</div>
+              <div className="slds-text-heading_small">{this.props.item.title ? this.props.item.title : "-"}</div>
+            </div>
             <div className="slds-m-bottom_small">
-              <div className="slds-text-title">Owner</div>
-              <div className="slds-text-heading_small">{this.props.item.userId ? this.props.item.userId : "-"}</div>
+              <div className="slds-text-title">Abstract</div>
+              <div className="slds-text-heading_small">{this.props.item.abstract ? this.props.item.abstract : "-"}</div>
+            </div>
+            <div className="slds-m-bottom_small">
+              <div className="slds-text-title">Format</div>
+              <div className="slds-text-heading_small">{this.props.item.formatId ? this.props.item.formatId : "-"}</div>
+            </div>
+            <div className="slds-m-bottom_small">
+              <div className="slds-text-title">Start date</div>
+              <div className="slds-text-heading_small">{this.props.item.startDate ? moment(this.props.item.startDate).utc().format('DD/MM/YYYY') :"-"}</div>
             </div>
             <div className="slds-m-bottom_small">
               <div className="slds-text-title">Program</div>
@@ -102,24 +115,8 @@ class ViewActivityModal extends Component {
               <div className="slds-text-heading_small">{this.props.item.campaignId ? this.props.item.campaignId : "-"}</div>
             </div>
             <div className="slds-m-bottom_small">
-              <div className="slds-text-title">Title</div>
-              <div className="slds-text-heading_small">{this.props.item.title ? this.props.item.title : "-"}</div>
-            </div>
-            <div className="slds-m-bottom_small">
-              <div className="slds-text-title">Format</div>
-              <div className="slds-text-heading_small">{this.props.item.formatId ? this.props.item.formatId : "-"}</div>
-            </div>
-            <div className="slds-m-bottom_small">
-              <div className="slds-text-title">Abstract</div>
-              <div className="slds-text-heading_small">{this.props.item.abstract ? this.props.item.abstract : "-"}</div>
-            </div>
-            <div className="slds-m-bottom_small">
               <div className="slds-text-title">Region</div>
               <div className="slds-text-heading_small">{this.props.item.regionId ? this.props.item.regionId : "-"}</div>
-            </div>
-            <div className="slds-m-bottom_small">
-              <div className="slds-text-title">Start date</div>
-              <div className="slds-text-heading_small">{this.props.item.startDate ? moment(this.props.item.startDate).utc().format('DD/MM/YYYY') :"-"}</div>
             </div>
             <div className="slds-m-bottom_small">
               <div className="slds-text-title">End date</div>
@@ -132,6 +129,10 @@ class ViewActivityModal extends Component {
                   ? this.props.item.asset.split(',').map(el => <div key={el} className="slds-text-heading_small slds-m-bottom_x-small">{el}</div>)
                   : <div className="slds-text-heading_small">{this.props.item.asset}</div> )
               }
+            </div>
+            <div className="slds-m-bottom_small">
+              <div className="slds-text-title">Owner</div>
+              <div className="slds-text-heading_small">{this.props.item.userId ? this.props.item.userId : "-"}</div>
             </div>
           </section>
         </Modal>
