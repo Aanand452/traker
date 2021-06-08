@@ -27,8 +27,6 @@ import {
   Combobox,
   comboboxFilterAndLimit,
   ExpandableSection,
-  Popover,
-  Checkbox,
 } from "@salesforce/design-system-react";
 
 import { getCookie } from '../../utils/cookie';
@@ -45,7 +43,6 @@ import { selectItem, setItem } from "../../actions/DataTable";
 import { Container} from "./styles";
 
 
-import FilterPanel from "../FilterPanel";
 import jsPDF from "jspdf";
 import "jspdf-autotable";
 import exportFromJSON from 'export-from-json'
@@ -53,10 +50,8 @@ import exportFromJSON from 'export-from-json'
 import { DateRangePicker } from 'react-date-range';
 import 'react-date-range/dist/styles.css'; 
 import 'react-date-range/dist/theme/default.css'; 
-import { addDays, format } from 'date-fns';
-import { Row } from "jspdf-autotable";
-import { property } from "lodash";
-import FormatFilterPanel from "../FormatFilter";
+import { addDays } from 'date-fns';
+import CalendarViewHeadFilter from "../CalendarViewHeadFilter"
 
 
 const DateCell = ({ children, ...props }) => {
@@ -113,14 +108,6 @@ const DropDownCellAsset = ({ children, ...props }) => {
 
 DropDownCellAsset.displayName = DataTableCell.displayName;
 moment.locale('en-GB');
-const myEvents = [
-  {
-      'title': 'My event',
-      'allDay': false,
-      'start': new Date(), // 10.00 AM
-      'end': new Date(), // 2.00 PM 
-  }
-]
 class Table extends Component {
   state = {
     sortProperty: "",
@@ -1098,7 +1085,7 @@ class Table extends Component {
   }))}
 
   modifyFilter = (formats) => {
-    this.state.formatsSelected = formats.selection
+    this.state.formatsSelected = formats
     this.getFilteredData()
   }
 
@@ -1179,9 +1166,9 @@ class Table extends Component {
             size="medium"
             onRequestClose={() => this.setState({OpenFilters:false})}
             footer={[
-              <Button label="Save As Default" variant="outline-brand" onClick={this.getFilteredData} />,
-							<Button label="Clear" onClick={this.clearFilter} />,
-							<Button label="Save" variant="brand" onClick={this.getFilteredData} />,
+              <Button key="Save As Default" label="Save As Default" variant="outline-brand" onClick={this.getFilteredData} />,
+							<Button key="Clear" label="Clear" onClick={this.clearFilter} />,
+							<Button key="Save" label="Save" variant="brand" onClick={this.getFilteredData} />,
 						]}
             heading="Add Filters"
           ><section className="slds-p-around_large">
@@ -1483,11 +1470,13 @@ class Table extends Component {
             )
           }
           headerActions={(<ButtonGroup id="button-group-page-header-actions">
-              {this.state.isCalanderView && <FormatFilterPanel
-                formats={this.state.formats}
+              {this.state.isCalanderView &&  
+
+              <CalendarViewHeadFilter 
                 defaultFormats={this.state.defaultFormats}
                 modifyFilter={this.modifyFilter}
-              />}
+              />
+              }&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
             <Tooltip
           content={!this.state.isCalanderView ? "Open Calendar View" : "Open List View"}
         >

@@ -1,13 +1,11 @@
 import React, { Component } from 'react';
 import { withRouter } from 'react-router-dom';
-import moment from 'moment';
 import {
   IconSettings,
   ToastContainer,
   Toast,
   Input,
   Combobox,
-  Datepicker,
   Button,
   Textarea,
   Panel,

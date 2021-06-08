@@ -1,35 +1,10 @@
 import React, { Component } from "react";
-import { PanelContainer } from "./styles";
-import moment from "moment";
 
 import {
   Combobox,
   comboboxFilterAndLimit,
   Icon,
 } from "@salesforce/design-system-react";
-
-const defaultFormatNames = [{id:'1', label:'3rdParty-Virtual Event',subTitle:'3rdParty-Virtual Event', type: 'account'},
-{id:'2', label:'Exec Engagement',subTitle:'Exec Engagement', type: 'account'}, 
-{id:'3', label:'Executive Visit',subTitle:'Executive Visit', type: 'account'}, 
-{id:'4', label:'F2F Event',subTitle:'F2F Event', type: 'account'}, 
-{id:'5', label:'Webinar',subTitle:'Webinar', type: 'account'}, 
-{id:'6', label:'Webinar - 3rd Party',subTitle:'Webinar - 3rd Party', type: 'account'}, 
-{id:'7', label:'Virtual Event',subTitle:'Virtual Event', type: 'account'}, 
-{id:'8', label:'SIC',subTitle:'SIC', type: 'account'}, 
-{id:'9', label:'Launch',subTitle:'Launch', type: 'account'}]
-
-const formatWithIcon = defaultFormatNames.map((elem) => ({
-	...elem,
-	...{
-		icon: (
-			<Icon
-				assistiveText={{ label: 'Account' }}
-				category="standard"
-				name={elem.type}
-			/>
-		),
-	},
-}));
 
 class FormatFilterPanel extends Component {
 
