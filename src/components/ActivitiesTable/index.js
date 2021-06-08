@@ -1471,12 +1471,12 @@ class Table extends Component {
           }
           headerActions={(<ButtonGroup id="button-group-page-header-actions">
               {this.state.isCalanderView &&  
-
+              <div>
               <CalendarViewHeadFilter 
                 defaultFormats={this.state.defaultFormats}
                 modifyFilter={this.modifyFilter}
               />
-              }&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div>}
             <Tooltip
           content={!this.state.isCalanderView ? "Open Calendar View" : "Open List View"}
         >
