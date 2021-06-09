@@ -527,7 +527,7 @@ class Table extends Component {
       if (response.status === 200) {
         let { result } = await response.json();
         result = result.map((item) => ({ label: item.name, ...item }));
-        let formats = result.map(el => ({...el, id: el.format_id, icon:(<Icon assistiveText={{ label: 'Account' }} category="standard" name="campaign" style={{background:'#'+this.getEventColor(el.label)}}/>)}))
+        let formats = result.map(el => ({...el, id: el.format_id, icon:(<Icon assistiveText={{ label: 'Task' }} category="standard" name="task2" style={{background:'#'+this.getEventColor(el.label)}}/>)}))
         this.setState({
           formats: formats,
         });
@@ -888,6 +888,20 @@ class Table extends Component {
     }
   }
   getFilteredProgramsByFilters = () => {
+
+    const selectedIndustries = this.state.industrySelected.map(function (key) {
+      return key.label
+    } )
+    const selectedApms = this.state.apm1Selected.map(function (key) {
+      return key.label
+    } )
+    const selectedSegments = this.state.segmentSelected.map(function (key) {
+      return key.label
+    } )
+    const programs = this.state.programs
+    // console.log(programs)
+    const filteredData = programs.filter((el) => {
+    })
 
   }
 
