@@ -55,7 +55,7 @@ class CalendarViewHeadFilter extends Component {
       }
   }
   addFormat = (format) => {
-    if(!this.state.selectedFormats.some((el)=> el.label.indexOf(format.label) > -1)){
+    if(!this.state.selectedFormats.some((el)=> el.id.indexOf(format.id) > -1)){
         this.state.selectedFormats=[format, ...this.state.selectedFormats]
     }
     this.props.modifyFilter(this.state.selectedFormats)
