@@ -91,8 +91,6 @@ class ActivityCalendar extends Component {
     //   let today = new Date()
       let startDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1)
       let endDate = new Date(currentDate.getFullYear(), currentDate.getMonth()+1, 0)
-      console.log(startDate)
-      console.log(endDate)
       this.state.displayedData = this.state.data.filter(a => {
           var date = new Date(a.startDate)
           return (date >= startDate && date <= endDate)
