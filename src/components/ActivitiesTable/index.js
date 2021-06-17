@@ -1102,7 +1102,7 @@ class Table extends Component {
   render() {
     const isEmpty = this.state.data.length === 0;
     return (
-      <Container>
+      <Container id="outer-container">
         {this.state.cloneModalIsOPen && (
           <CloneModal
             data={this.props.dataTable.item}
@@ -1677,7 +1677,7 @@ class Table extends Component {
                   handleMenu={this.openMenu}/>)}
         {!this.state.isCalanderView && (<Pager
           data={this.state.data}
-          itemsPerPage={this.state.pageLimit}
+          itemsPerPage={this.state.data.length >= this.state.pageLimit ? this.state.pageLimit : this.state.data.length - 1}
           setDisplayedItems={this.handlePagination}
           currentPage={this.state.currentPage}
         />)}
