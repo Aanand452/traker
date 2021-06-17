@@ -164,6 +164,7 @@ class Table extends Component {
     apmInputValue: '',
     isApmFilterOpen:false,
     OpenFilters:false,
+    openMenuBar:false,
   };
 
   table = React.createRef()
@@ -953,6 +954,10 @@ class Table extends Component {
     this.setState({ filters: { ...this.state.filters, [name]: value } });
   };
 
+  openMenu = () => {
+    this.setState({openMenuBar:!this.state.openMenuBar})
+  }
+
   onFilter = () => {
     let data = [...this.props.data];
     const { filters } = this.state;
@@ -1461,8 +1466,8 @@ class Table extends Component {
              })}
               /></div>)}</div></section>
           </Modal>}
-        <Card 
-          heading="Activities"
+        <Card
+          heading={<Icon></Icon>}
           filter={!this.state.isCalanderView && 
             (!isEmpty || this.state.isFiltering) && (
               <Input 
@@ -1541,11 +1546,12 @@ class Table extends Component {
             </Button></Tooltip>
           </Link>
         </ButtonGroup>)}
-          icon={<Icon
-            assistiveText={{ label: "User" }}
-            category="standard"
-            name="lead"
-          />}
+          icon={<Button onClick={this.openMenu} variant="icon"><Icon
+            assistiveText={{ label: "Menu" }}
+            category="utility"
+            name={this.state.openMenuBar ? "chevronleft" : "rows"}
+            size="medium"
+          /></Button>}
           
         >
         { !this.state.isCalanderView && (<DataTable
@@ -1675,7 +1681,9 @@ class Table extends Component {
                   onDelete={this.props.onDelete} 
                   reloadActivities={this.props.reloadActivities}
                   historicDate={this.state.historicDate}
-                  isHistoric={this.state.isHistoric}/>)}
+                  isHistoric={this.state.isHistoric}
+                  isMenuOpen={this.state.openMenuBar}
+                  handleMenu={this.openMenu}/>)}
         {!this.state.isCalanderView && (<Pager
           data={this.state.data}
           itemsPerPage={this.state.pageLimit}

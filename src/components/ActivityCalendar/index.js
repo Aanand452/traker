@@ -11,8 +11,8 @@ import CloneModal from "../CloneActivityModal";
 import ViewActivityModal from "../ViewActivityModal";
 import {setItem } from "../../actions/DataTable";
 import { connect } from "react-redux";
-
-
+import { push as Menu } from 'react-burger-menu'
+import { DateRange } from 'react-date-range';
 
 
 moment.locale('en-GB',{
@@ -234,11 +234,18 @@ class ActivityCalendar extends Component {
         };
     }
 
+    onChangeDate = (dates) => {
+        const startDate = dates.selection.startDate
+        const endDate = dates.selection.endDate
+        console.log(startDate, endDate)
+
+    }
+
     render() {
         const isEmpty = this.state.eventsOnModal.length === 0;
         return (
 
-            <CalendarContainer>
+            <div>
                 {this.state.cloneModalIsOPen && (
                     <CloneModal
                         data={this.state.editItem}
@@ -336,21 +343,45 @@ class ActivityCalendar extends Component {
 
                         </Card>
                     </Modal>}
-            <Calendar localizer={localizer}
-                events={this.state.events}
-                views={['month','week']}
-                defaultDate={this.state.currentDate}
-                startAccessor="start"
-                endAccessor="end"
-                step={60}
-                onNavigate={this.onNavigate}
-                onView={this.onView}
-                onSelectEvent={this.handleSelectEvent}
-                onSelectSlot={this.handleSelectDay}
-                onDrillDown={this.handleDrillDown}
-                eventPropGetter={(this.eventStyleGetter)}
-                selectable
-            /></CalendarContainer>
+                    <Menu pageWrapId={ "page-wrap" } outerContainerId={ "outer-container" } 
+                        disableAutoFocus
+                        isOpen={ this.props.isMenuOpen}
+                        width={ '23%' }>
+                        <div style={{
+							paddingLeft: '50px',
+                            paddingTop: '10px',
+                            paddingBottom: '30px',
+							display: 'inline-block',
+						}}
+						className="-m-horizontal--small">
+                        <Tooltip content="Add New Activity" align="bottom right">
+                                <Button iconCategory="utility"
+                                    iconName="new"
+                                    iconSize='large'
+                                    variant="brand"
+                                    iconPosition="left" label='Add new Activity'>
+                                </Button></Tooltip></div>
+                        <DateRange moveRangeOnFirstSelection={false}
+                        ranges={[{startDate:this.state.currentDate, endDate:null, key:'selection'}]}
+                        onChange={this.onChangeDate}/>
+                    </Menu>
+                    <main id="page-wrap"><CalendarContainer>
+                    <Calendar localizer={localizer}
+                        events={this.state.events}
+                        views={['month','week']}
+                        defaultDate={this.state.currentDate}
+                        startAccessor="start"
+                        endAccessor="end"
+                        step={60}
+                        onNavigate={this.onNavigate}
+                        onView={this.onView}
+                        onSelectEvent={this.handleSelectEvent}
+                        onSelectSlot={this.handleSelectDay}
+                        onDrillDown={this.handleDrillDown}
+                        eventPropGetter={(this.eventStyleGetter)}
+                        selectable
+                    /></CalendarContainer></main>
+            </div>
         );
     }
 

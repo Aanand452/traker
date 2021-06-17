@@ -9,5 +9,5 @@ export const PagerContainer = styled.div`
 
 export const Container = styled.div`
   width: 100%;
-  margin-top: 5.6rem;
+  padding-top: 5.6rem;
 `;

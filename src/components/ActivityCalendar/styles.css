@@ -1,24 +1,3 @@
-.border {
-    transition: 0.05s ease;
-  }
-  
-  .border:hover {
-    background-color: #dddbda8c;
-  }
-  
-  .padding_bottom {
-    padding-bottom: 150px;
-  }
-  
-  .slds-table_bordered tbody td {
-    border-bottom: 1px solid #DDDBDA;
-  }
-  
-  .dialog-classname {
-    max-width: 50vw;
-    white-space: break-spaces;
-    line-height: 1.5;
-  }
 
   .rbc-day-bg + .rbc-day-bg {
     border-left: 0.5px solid #DDD;
@@ -34,4 +13,23 @@
     background-color: #f5fafd;
   }
 
-  
+  .bm-menu {
+    background: #f5fafd;
+    font-size: 1.15em;
+    overflow: scroll
+  }
+
+  .bm-overlay {
+    background: rgba(0, 0, 0, 0.3);
+  }
+  .bm-burger-button {
+    position: fixed;
+    width: 36px;
+    height: 30px;
+    left: 36px;
+    top: 36px;
+  }
+  .bm-menu-wrap {
+    position: fixed;
+    height: 100%;
+  }
