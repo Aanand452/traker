@@ -24,34 +24,40 @@ moment.locale('en-GB',{
 const localizer = momentLocalizer(moment)
 const columns =[
     <DataTableColumn 
+        key="userId"
+        label="Owner"
+        property="userId"
+        width="8em"
+    />,
+    <DataTableColumn 
         key="title"
         label="Title"
         property="title"
-        width="16em"
+        width="6em"
     />,
     <DataTableColumn 
         key="abstract"
         label="Abstract"
         property="abstract"
-        width="20em"
+        width="16em"
     />,
     <DataTableColumn 
         key="formatId"
         label="Format"
         property="formatId"
-        width="6em"
+        width="16em"
+    />,
+    <DataTableColumn 
+        key="programId"
+        label="Program"
+        property="programId"
+        width="8em"
     />,
     <DataTableColumn 
         key="regionId"
         label="Region"
         property="regionId"
         width="4em"
-    />,
-    <DataTableColumn
-        key="Assets"
-        width="14em"
-        label="Assets"
-        property="asset"
     />
 ]
 class ActivityCalendar extends Component {

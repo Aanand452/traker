@@ -134,9 +134,9 @@ class Table extends Component {
     tableExtraWidth: 0,
     noRowHover: false,
     isHistoric: false,
-    showExportMenu: false,
     isCalanderView: true,
     popoverOpen: false,
+    showExportMenu: false,
     historicModalIsOpen: false,
     detailModalIsOpen: false,
     historicDate: {},
@@ -671,23 +671,6 @@ class Table extends Component {
 
   actions = () => (
     <PageHeaderControl>
-      <ButtonGroup id="button-group-page-header-actions">
-        <Dropdown 
-          onSelect={this.exportBtn} 
-          width="xx-small"
-          options={this.exportOptions}
-        >
-        <DropdownTrigger>
-          <Button 
-            // assistiveText={{ icon: 'XML' }}
-            iconCategory="doctype"
-            iconName="xml"
-            iconPosition="right"
-            label="Export"
-          />
-          </DropdownTrigger>
-        </Dropdown>
-        </ButtonGroup>
       <ButtonGroup id="button-group-page-header-actions-history">
         <Tooltip
           content={this.state.isCalanderView ? "Open Calendar View" : "Open List View"}
@@ -704,7 +687,15 @@ class Table extends Component {
           </Button>
         </Tooltip>
         
-        
+        <Dropdown 
+          assistiveText={{ icon: 'XML' }}
+					iconCategory="doctype"
+					iconName="xml"
+					iconVariant="border-filled"
+          onSelect={this.exportBtn} 
+          value={this.exportOptions[0]} 
+          options={this.exportOptions}
+        />
         <Button
           iconCategory="utility"
           label="Historic"
