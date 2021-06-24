@@ -138,7 +138,7 @@ class ActivityCalendar extends Component {
     handleDrillDown = (slotinfo) => {
         var modalEvents = this.state.events.filter(a => {
             var date = new Date(a.start)
-            return (date.getDay()+'-'+date.getMonth()+'-'+date.getFullYear() === slotinfo.getDay()+'-'+slotinfo.getMonth()+'-'+slotinfo.getFullYear())
+            return (moment(date).format("DD-MM-YYYY") === moment(slotinfo).format("DD-MM-YYYY"))
         });
         var modalActivities = modalEvents.map(event => {
             return event.resource.data})
