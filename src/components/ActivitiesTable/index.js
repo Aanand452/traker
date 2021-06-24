@@ -40,7 +40,7 @@ import ActivityCalendar from "../ActivityCalendar"
 
 // ACTIONS
 import { selectItem, setItem } from "../../actions/DataTable";
-import { Container} from "./styles";
+import { Container, MultiSelectContainer} from "./styles";
 
 
 import jsPDF from "jspdf";
@@ -52,7 +52,9 @@ import 'react-date-range/dist/styles.css';
 import 'react-date-range/dist/theme/default.css'; 
 import { addDays } from 'date-fns';
 import CalendarViewHeadFilter from "../CalendarViewHeadFilter"
-
+import { push as Menu } from 'react-burger-menu'
+import MultiSelect from '../MultiSelect'
+import { DateRange } from 'react-date-range';
 
 const DateCell = ({ children, ...props }) => {
   return <DataTableCell title={children} {...props}>
@@ -1545,6 +1547,41 @@ class Table extends Component {
           /></Button>}
           
         >
+        <Menu pageWrapId={ "page-wrap" } outerContainerId={ "outer-container" } 
+                      disableAutoFocus
+                      disableCloseOnEsc
+                      noOverlay
+                      isOpen={ this.state.openMenuBar}
+                      width={ '23%' }
+                      >
+                      <DateRange 
+                      editableDateInputs={true}
+                      moveRangeOnFirstSelection={false}
+                      ranges={[{startDate:new Date(), endDate:null, key:'selection'}]}
+                      onChange={this.onChangeDate}/>
+                      {this.state.openMenuBar && <MultiSelectContainer><MultiSelect 
+                        data={this.state.regions}
+                        inputValue={''}
+                        selectedData={[]}
+                        placeholder={'Regions'}
+                        label={'Add Region'}
+                      /></MultiSelectContainer>}
+                      {this.state.openMenuBar && <MultiSelectContainer><MultiSelect 
+                        data={this.state.programs}
+                        inputValue={''}
+                        selectedData={[]}
+                        placeholder={'Programs'}
+                        label={'Add Programs'}
+                      /></MultiSelectContainer>}
+                      {this.state.openMenuBar && <MultiSelectContainer style={{paddingBottom:'20px'}}><MultiSelect 
+                        data={this.state.formats}
+                        inputValue={''}
+                        selectedData={this.state.formatsSelected}
+                        placeholder={'Formats'}
+                        label={'Add Formats'}
+                      /></MultiSelectContainer>}
+                  </Menu>
+                  <main id="page-wrap">
         { !this.state.isCalanderView && (<DataTable
           assistiveText={{
             actionsHeader: "actions",
@@ -1680,7 +1717,7 @@ class Table extends Component {
           itemsPerPage={this.state.data.length >= this.state.pageLimit ? this.state.pageLimit : this.state.data.length - 1}
           setDisplayedItems={this.handlePagination}
           currentPage={this.state.currentPage}
-        />)}
+        />)}</main>
                   </Card>
         {this.state.toast.show && (
           <ToastContainer>

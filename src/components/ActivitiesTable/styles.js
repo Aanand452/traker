@@ -11,3 +11,11 @@ export const Container = styled.div`
   width: 100%;
   padding-top: 5.6rem;
 `;
+
+export const MultiSelectContainer = styled.div`
+padding-left: 10px;
+padding-top: 10px;
+padding-bottm: 3px;
+padding-right: 20px;
+display: inline-block;
+`;

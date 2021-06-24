@@ -5,20 +5,16 @@ import { Calendar, momentLocalizer  } from 'react-big-calendar'
 import moment from 'moment';
 import {ModalTableContainer, CalendarContainer } from './styles';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
-import { Modal, Card, CardFilter, Icon, CardEmpty, Button, DataTable, DataTableColumn, DataTableRowActions, Tooltip, Dropdown} from "@salesforce/design-system-react";
+import { Modal, Card, CardFilter, Icon, CardEmpty, Button, DataTable, DataTableColumn, DataTableRowActions, Tooltip, Dropdown, Datepicker} from "@salesforce/design-system-react";
 import EditModal from "../EditActivityModal";
 import CloneModal from "../CloneActivityModal";
 import ViewActivityModal from "../ViewActivityModal";
 import {setItem } from "../../actions/DataTable";
 import { connect } from "react-redux";
-import { push as Menu } from 'react-burger-menu'
-import { DateRange } from 'react-date-range';
-
 
 moment.locale('en-GB',{
     week: {
         dow: 1,
-        // doy: 1,
     },
 });
 const localizer = momentLocalizer(moment)
@@ -103,7 +99,7 @@ class ActivityCalendar extends Component {
       });
       const finalEvents = []
       this.state.displayedData.forEach(e => {
-        finalEvents.push({title:e.title, start:new Date(e.startDate), end:new Date(e.startDate), allDay:false, resource:{data:e}})
+        finalEvents.push({title:e.title, start:new Date(e.startDate), end:new Date(e.startDate), allDay:true, allDay:true, resource:{data:e}})
       })
       this.state.events = finalEvents
       this.setState({displayedDateRage:{start:start.toString(), end:end.toString()}})
@@ -127,13 +123,11 @@ class ActivityCalendar extends Component {
     handleSelectDay = (slotinfo) => {
         var modalEvents = this.state.events.filter(a => {
             var date = new Date(a.start)
-            return (date.getDay()+'-'+date.getMonth()+'-'+date.getFullYear() === slotinfo.start.getDay()+'-'+slotinfo.start.getMonth()+'-'+slotinfo.start.getFullYear())
+            return (moment(date).format("DD-MM-YYYY") === moment(slotinfo.start).format("DD-MM-YYYY"))
         });
         var modalActivities = modalEvents.map(event => {
             return event.resource.data})
-        this.setState({eventsOnModal:modalActivities})
-
-        this.setState({toast:{show:true}})
+        this.setState({eventsOnModal:modalActivities,toast:{show:true}})
     }
     hideModal = () => {
         this.setState({toast:{show:false}})
@@ -243,8 +237,6 @@ class ActivityCalendar extends Component {
     onChangeDate = (dates) => {
         const startDate = dates.selection.startDate
         const endDate = dates.selection.endDate
-        console.log(startDate, endDate)
-
     }
 
     render() {
@@ -349,29 +341,7 @@ class ActivityCalendar extends Component {
 
                         </Card>
                     </Modal>}
-                    <Menu pageWrapId={ "page-wrap" } outerContainerId={ "outer-container" } 
-                        disableAutoFocus
-                        isOpen={ this.props.isMenuOpen}
-                        width={ '23%' }>
-                        <div style={{
-							paddingLeft: '50px',
-                            paddingTop: '10px',
-                            paddingBottom: '30px',
-							display: 'inline-block',
-						}}
-						className="-m-horizontal--small">
-                        <Tooltip content="Add New Activity" align="bottom right">
-                                <Button iconCategory="utility"
-                                    iconName="new"
-                                    iconSize='large'
-                                    variant="brand"
-                                    iconPosition="left" label='Add new Activity'>
-                                </Button></Tooltip></div>
-                        <DateRange moveRangeOnFirstSelection={false}
-                        ranges={[{startDate:this.state.currentDate, endDate:null, key:'selection'}]}
-                        onChange={this.onChangeDate}/>
-                    </Menu>
-                    <main id="page-wrap"><CalendarContainer>
+                    <CalendarContainer>
                     <Calendar localizer={localizer}
                         events={this.state.events}
                         views={['month','week']}
@@ -386,7 +356,7 @@ class ActivityCalendar extends Component {
                         onDrillDown={this.handleDrillDown}
                         eventPropGetter={(this.eventStyleGetter)}
                         selectable
-                    /></CalendarContainer></main>
+                    /></CalendarContainer>
             </div>
         );
     }

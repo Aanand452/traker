@@ -33,3 +33,28 @@
 /* .slds-pill__remove {
   display: none !important;
 } */
+
+.bm-menu {
+  background: #f5fafd;
+  font-size: 0.9em;
+  overflow: auto;
+  height: 700px;
+}
+
+.bm-overlay {
+  background: rgba(0, 0, 0, 0.3);
+}
+.bm-burger-button {
+  position: fixed;
+  width: 36px;
+  height: 30px;
+  left: 36px;
+  top: 36px;
+  overflow: auto;
+}
+.bm-menu-wrap {
+  position: relative;
+  height: 700px !important;
+  overflow: auto;
+  padding-bottom: 30px;
+}

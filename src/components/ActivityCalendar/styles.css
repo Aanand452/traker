@@ -13,23 +13,4 @@
     background-color: #f5fafd;
   }
 
-  .bm-menu {
-    background: #f5fafd;
-    font-size: 1.15em;
-    overflow: scroll
-  }
-
-  .bm-overlay {
-    background: rgba(0, 0, 0, 0.3);
-  }
-  .bm-burger-button {
-    position: fixed;
-    width: 36px;
-    height: 30px;
-    left: 36px;
-    top: 36px;
-  }
-  .bm-menu-wrap {
-    position: fixed;
-    height: 100%;
-  }
+  
