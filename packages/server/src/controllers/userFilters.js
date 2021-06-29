@@ -17,9 +17,17 @@ const getUserFilterByUserId = async (req, res) => {
     if(id) var userFilters = await UserFilterModel.getUserFilterByUserId(id);
     ApiUtils.reposeWithhSuccess(res, userFilters, httpStatus.OK);
 }
+
+const updateUserFilter = async (req, res) => { 
+  var id = req.swagger.params.id.value;
+  const body = req.body;
+  if(id) var userFilters = await UserFilterModel.updateUserFilter(id, body);
+  ApiUtils.reposeWithhSuccess(res, userFilters, httpStatus.OK);
+}
   
 
 export {
   addNewUserFilter,
   getUserFilterByUserId,
+  updateUserFilter,
 }

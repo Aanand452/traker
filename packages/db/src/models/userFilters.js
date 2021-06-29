@@ -31,7 +31,34 @@ class UserFilterModel {
         }
     };
 
-}
+    static async updateUserFilter(id, body) {
+      try{
+        await db.UserFilter.update(body, {
+          where: {
+            user_filter_id: id
+          }
+        });
 
+        return await UserFilterModel.getUserFilterById(id)
+      } catch (err) {
+        console.error('Error updating the user filter', err);
+        return 'error';
+      }
+    }
+
+    static async getUserFilterById(id) {
+      try {
+        let userFiler = await db.UserFilter.findByPk(id, {
+          raw : true,
+        });
+        return userFiler
+      } catch (err) {
+        console.error('Error getting the user filter', err);
+        return 'error';
+      }
+    }
+
+
+}
 
 export default UserFilterModel;
