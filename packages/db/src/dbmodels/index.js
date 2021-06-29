@@ -18,6 +18,7 @@ import APM2 from './apm2';
 import Industry from './industry';
 import Segment from './segment';
 import Persona from './persona';
+import UserFilter from './userFilters'
 
 let db = {};
 
@@ -47,6 +48,7 @@ db.APM2 = APM2;
 db.Industry = Industry;
 db.Segment = Segment;
 db.Persona = Persona;
+db.UserFilter = UserFilter;
 
 /**
  *

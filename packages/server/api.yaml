@@ -188,6 +188,126 @@ paths:
             allOf:
               - $ref: '#/definitions/ResponseStatus'
               - $ref: '#/definitions/Error'
+  /user-filters:
+    post:
+      x-swagger-router-controller: userFilters
+      operationId: "addNewUserFilter"
+      summary: Create a new UserFilter
+      description: N/A
+      security:
+        - Bearer: []
+      parameters:
+      - name: body
+        in: body
+        required: true
+        schema:
+          $ref: '#/definitions/UserFiltersBody'
+      responses:
+        200:
+          description: Success
+          schema:
+            allOf:
+              - $ref: '#/definitions/ResponseStatus'
+        default:
+          description: Invalid request.
+          schema:
+            allOf:
+              - $ref: '#/definitions/ResponseStatus'
+              - $ref: '#/definitions/Error'
+
+  /user-filters/{id}:
+    put:
+      x-swagger-router-controller: userFilters
+      operationId: "updateUserFilter"
+      summary: Update a User Filter
+      security:
+        - Bearer: []
+      x-security-scopes:
+        - admin
+        - user
+      produces:
+        - application/json
+      parameters:
+        - in: path
+          name: id
+          description: ID of UserFileter to be updated
+          required: true
+          type: string
+        - in: body
+          name: body
+          schema:
+            $ref: '#/definitions/UserFiltersBody'
+      responses:
+        200:
+          description: Success
+          schema:
+            allOf:
+              - $ref: '#/definitions/ResponseStatus'
+        default:
+          description: Invalid request.
+          schema:
+            allOf:
+              - $ref: '#/definitions/ResponseStatus'
+              - $ref: '#/definitions/Error'
+    delete:
+      x-swagger-router-controller: userFilter
+      operationId: "deleteUserFilter"
+      summary: Delete a User Filter
+      security:
+        - Bearer: []
+      description: N/A
+      parameters:
+        - in: path
+          name: id
+          description: ID of User Filter to be deleted
+          required: true
+          type: string
+        - in: body
+          name: body
+          schema:
+            $ref: '#/definitions/ProgramBodyDelete'
+      responses:
+        200:
+          description: Success
+          schema:
+            allOf:
+              - $ref: '#/definitions/ResponseStatus'
+        default:
+          description: Invalid request.
+          schema:
+            allOf:
+              - $ref: '#/definitions/ResponseStatus'
+              - $ref: '#/definitions/Error'
+
+  /user-filter/{userId}:
+    get:
+      x-swagger-router-controller: userFilters
+      operationId: "getUserFilterByUserId"
+      summary: Returns the User Filter.
+      security:
+        - Bearer: []
+      description: This will be used to populate the activity table
+      parameters:
+        - in: path
+          name: userId
+          description: ID of user to fetch programs
+          required: true
+          type: string
+      produces:
+        - application/json
+      responses:
+        200:
+          description: Success
+          schema:
+            allOf:
+              - $ref: '#/definitions/ResponseStatus'
+              - $ref: '#/definitions/ProgramListResponse'
+        default:
+          description: Invalid request.
+          schema:
+            allOf:
+              - $ref: '#/definitions/ResponseStatus'
+              - $ref: '#/definitions/Error'
 
   /programs:
     post:
@@ -1050,6 +1170,25 @@ definitions:
         type: number
       year_quarter:
         type: number
+
+  UserFiltersBody:
+    description: A User Filter.
+    type: object
+    properties:
+      userId:
+        type: string
+      formats:
+        type: array
+        items:
+          type: string
+      regions:
+        type: array
+        items:
+          type: string
+      programs:
+        type: array
+        items:
+          type: string
 
   ProgramListResponse:
     description: A list of programs.
