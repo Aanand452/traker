@@ -168,6 +168,7 @@ class Table extends Component {
     OpenFilters:false,
     openMenuBar:false,
     userId: localStorage.getItem('userId'),
+    defaultUserFilter: {},
   };
 
   table = React.createRef()
@@ -424,7 +425,7 @@ class Table extends Component {
       if(response.info.code === 200) this.setState({ industries : industry });
       else throw new Error(response.info.status);
     } catch (err) {
-      this.showError(err);
+      console.error(err);
     }
   };
 
@@ -446,7 +447,7 @@ class Table extends Component {
       if(response.info.code === 200) this.setState({ segments: segment });
       else throw new Error(response.info.status);
     } catch (err) {
-      this.showError(err);
+      console.error(err);
     }
   };
   getAPM1 = async () => {
@@ -468,7 +469,7 @@ class Table extends Component {
       if(response.info.code === 200) this.setState({ apm1s: apm1 });
       else throw new Error(response.info.status);
     } catch (err) {
-      this.showError(err);
+      console.error(err);
     }
   };
 
@@ -900,7 +901,26 @@ class Table extends Component {
 
   }
 
+  updateFilters = () => {
+    const { formats_selected, programs_selected, regions_selected } = this.state.defaultUserFilter;
+    let selectedFormats = this.state.formats.filter((item) => {
+      if (formats_selected.length > 0 && !formats_selected.includes(item.id)) return false;
+      return true;
+    })
+    let programSelected = this.state.programs.filter((item) => {
+      if (programs_selected.length > 0 && !programs_selected.includes(item.id)) return false;
+      return true;
+    })
+    let slectedRegioins = this.state.regions.filter((item) => {
+      if (regions_selected.length > 0 && !regions_selected.includes(item.id)) return false;
+      return true;
+    })
+    this.setState({regionsSelected:slectedRegioins, programSelected: programSelected, formatsSelected:selectedFormats})
+  }
+
   getFilteredData = () => {
+    if (this.state.defaultUserFilter.length !== 0)
+      this.updateFilters()
 
     const slectedRegioins = this.state.regionsSelected.map(function (key) {
       return key.label
@@ -934,13 +954,12 @@ class Table extends Component {
       }
       const request = await fetch(`${this.API_URL}/user-filter/`+this.state.userId, config);
       const response = await request.json();
-      console.log(response)
-      // const industry = response.result.map(item => ({id: item.industryId, label: item.name}));
+      const defaultUserFilter = response.result.length > 0 ? response.result[0] : [];
 
-      // if(response.info.code === 200) this.setState({ industries : industry });
-      // else throw new Error(response.info.status);
+      if(response.info.code === 200) this.setState({ defaultUserFilter : defaultUserFilter });
+      else throw new Error(response.info.status);
     } catch (err) {
-      this.showError(err);
+      console.error(err);
     }
   };
 
@@ -959,7 +978,7 @@ class Table extends Component {
 
       let token = getCookie('token').replaceAll('"','');
       const config = {
-        method: 'POST',
+        method: this.state.defaultUserFilter.length !== 0 ?'PUT' : 'POST',
         headers: {
           'Accept': 'application/json',
           'Content-Type': 'application/json',
@@ -972,10 +991,20 @@ class Table extends Component {
           programs:programSelectedId,
         })
       }
-      let response = await fetch(`${this.API_URL}/user-filters`, config);
-      console.log(response)
+      let response = this.state.defaultUserFilter.length !== 0 ? await fetch(`${this.API_URL}/user-filters/${this.state.defaultUserFilter.user_filter_id}`, config) : await fetch(`${this.API_URL}/user-filters`, config);
+      if(response.info !== undefined && response.info.code === 200){
+        this.setState({  openMenuBar: false })
+        this.onToast(true, "User Defined Filter Saved", 'success');
+      }else if(response.status !== undefined && response.status ===200){
+        this.setState({  openMenuBar: false })
+        this.onToast(true, "User Defined Filter Saved", 'success');
+      }else {
+        this.setState({  openMenuBar: false })
+        this.onToast(true, "Something went wrong, please try again in a few seconds", 'error');
+      }
     } catch (err) {
-      this.showError(err);
+      console.error(err);
+      this.onToast(true, "Something went wrong, please try again", "error");
     }
   }
 

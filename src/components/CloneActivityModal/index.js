@@ -45,7 +45,6 @@ class CloneActivityModalComponent extends Component {
 
   constructor(props){
     super(props);
-    console.log(props)
     this.API_URL = 'http://localhost:3000/api/v1';
   }
 
