@@ -185,6 +185,11 @@ class Table extends Component {
           this.onSort({property: this.state.sortProperty, sortDirection: this.state.sortDirection})
         }
       });
+      if (this.state.defaultUserFilter.length !== 0 && 
+        this.state.defaultUserFilter.formats_selected.length +
+        this.state.defaultUserFilter.programs_selected.length + 
+        this.state.defaultUserFilter.regions_selected.length !== 0)
+        this.updateFilters()
       this.getFilteredData();
     }
   }
@@ -784,7 +789,7 @@ class Table extends Component {
       calendarViewData:this.props.data,
       formatsSelected :[],
       formatInputValue:'',
-      programSelected:[],
+      programSelected:[this.state.programs[0]],
       programInputValue:'',
       regionsSelected:[this.state.regions[0]],
       regionsInputValue:'',
@@ -904,23 +909,23 @@ class Table extends Component {
   updateFilters = () => {
     const { formats_selected, programs_selected, regions_selected } = this.state.defaultUserFilter;
     let selectedFormats = this.state.formats.filter((item) => {
-      if (formats_selected.length > 0 && !formats_selected.includes(item.id)) return false;
+      if (formats_selected.length >= 0 && !formats_selected.includes(item.id)) return false;
       return true;
     })
     let programSelected = this.state.programs.filter((item) => {
-      if (programs_selected.length > 0 && !programs_selected.includes(item.id)) return false;
+      if (programs_selected.length >= 0 && !programs_selected.includes(item.id)) return false;
       return true;
     })
     let slectedRegioins = this.state.regions.filter((item) => {
-      if (regions_selected.length > 0 && !regions_selected.includes(item.id)) return false;
+      if (regions_selected.length >= 0 && !regions_selected.includes(item.id)) return false;
       return true;
     })
-    this.setState({regionsSelected:slectedRegioins, programSelected: programSelected, formatsSelected:selectedFormats})
+    this.state.regionsSelected = slectedRegioins
+    this.state.programSelected = programSelected
+    this.state.formatsSelected = selectedFormats
   }
 
   getFilteredData = () => {
-    if (this.state.defaultUserFilter.length !== 0)
-      this.updateFilters()
 
     const slectedRegioins = this.state.regionsSelected.map(function (key) {
       return key.label
@@ -993,9 +998,11 @@ class Table extends Component {
       }
       let response = this.state.defaultUserFilter.length !== 0 ? await fetch(`${this.API_URL}/user-filters/${this.state.defaultUserFilter.user_filter_id}`, config) : await fetch(`${this.API_URL}/user-filters`, config);
       if(response.info !== undefined && response.info.code === 200){
+        this.getFilteredData()
         this.setState({  openMenuBar: false })
         this.onToast(true, "User Defined Filter Saved", 'success');
       }else if(response.status !== undefined && response.status ===200){
+        this.getFilteredData()
         this.setState({  openMenuBar: false })
         this.onToast(true, "User Defined Filter Saved", 'success');
       }else {
