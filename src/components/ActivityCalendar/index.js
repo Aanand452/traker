@@ -244,35 +244,20 @@ class ActivityCalendar extends Component {
         return (
 
             <div>
-                {this.state.cloneModalIsOPen && (
-                    <CloneModal
-                        data={this.state.editItem}
-                        onToast={this.onToast}
-                        toggleOpen={this.toggleOpen}
-                        reloadActivities={this.props.reloadActivities}
-                        historicDate={this.props.historicDate}
-                        isHistoric={this.props.isHistoric}
-                    />
-                    )}
-                    {this.state.editModalIsOPen && (
-                        <EditModal
-                            data={this.state.editItem}
-                            onToast={this.onToast}
-                            toggleOpen={this.toggleOpen}
-                            reloadActivities={this.props.reloadActivities}
-                        />
-                        )}
                     {this.state.detailModalIsOpen && (
                         <ViewActivityModal
                             onDelete={this.props.onDelete}
                             reloadActivities={this.props.reloadActivities}
+                            historicDate={this.props.historicDate}
+                            isHistoric={this.props.isHistoric}
                             closeDetailModal={this.closeDetailModal}
+                            onToast={this.props.onToast}
                         />
                     )}
                     {
                     <Modal
                         isOpen={this.state.toast.show}
-                        labels={{heading:["This is called", "this is also called"]}}
+                        // labels={{heading:["This is called", "this is also called"]}}
                         onRequestClose={this.hideModal}
                         size="large">
                         <Card

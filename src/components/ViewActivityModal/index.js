@@ -35,7 +35,7 @@ class ViewActivityModal extends Component {
     this.setState({editItem:this.props.item})
     this.toggleOpen("editModalIsOPen");
   }
-  cloneData = () => {
+  cloneData = () => {    
     this.setState({editItem:this.props.item})
     this.toggleOpen("cloneModalIsOPen");
   }
@@ -44,7 +44,7 @@ class ViewActivityModal extends Component {
     this.props.onDelete(this.props.item);
   }
   onToast = (show, message, variant) => {
-    this.setState({ toast: { show, message, variant } });
+    this.props.onToast(show, message, variant);
   };
   toggleOpen = state => {
     this.setState({ [state]: !this.state[state] });
@@ -59,6 +59,10 @@ class ViewActivityModal extends Component {
             data={this.state.editItem}
             onToast={this.onToast}
             toggleOpen={this.toggleOpen}
+            reloadActivities={this.props.reloadActivities}
+            historicDate={this.props.historicDate}
+            isHistoric={this.props.isHistoric}
+            closeDetailModal={this.props.closeDetailModal}
           />
         )}
         {this.state.editModalIsOPen && (
@@ -67,6 +71,7 @@ class ViewActivityModal extends Component {
             onToast={this.onToast}
             toggleOpen={this.toggleOpen}
             reloadActivities={this.props.reloadActivities}
+            closeDetailModal={this.props.closeDetailModal}
           />
         )}
         
@@ -85,8 +90,8 @@ class ViewActivityModal extends Component {
           ariaHideApp={false}
           footer={[
             <Button label="Delete" variant="destructive" onClick={this.deleteData} />,
-            <Button label="Clone" onClick={this.cloneData} />,
-            <Button label="Edit" variant="brand" onClick={this.editData} />,
+            <Button label="Clone" onClick={this.props.closeDetailModal, this.cloneData} />,
+            <Button label="Edit" variant="brand" onClick={this.props.closeDetailModal, this.editData} />,
           ]}
         >
           <section className="slds-p-around_large">

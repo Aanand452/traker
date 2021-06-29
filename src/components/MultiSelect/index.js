@@ -27,7 +27,7 @@ class MultiSelect extends Component {
             this.setState({data:this.props.data,
                 selectedData:this.props.selectedData, 
                 isOpen:this.props.isOpen, 
-                inputValue:this.props.inputValue})}    
+                inputValue:this.props.inputValue})}
     }
 
     render() {
@@ -42,6 +42,7 @@ class MultiSelect extends Component {
                 events={{
                 onRequestClose: () => {
                     this.setState({isOpen:false})
+                    this.props.setSelectedData(this.state.selectedData)
                 },
                 onRequestOpen: () => {
                     this.setState({isOpen:true})
@@ -54,6 +55,7 @@ class MultiSelect extends Component {
                     inputValue:'',
                     selectedData:data.selection
                     })
+                    this.props.setSelectedData(this.state.selectedData)
                 },
                 onSubmit: (event, { value }) => {
                     this.setState({

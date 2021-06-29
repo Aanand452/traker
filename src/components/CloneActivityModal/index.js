@@ -45,7 +45,7 @@ class CloneActivityModalComponent extends Component {
 
   constructor(props){
     super(props);
-
+    console.log(props)
     this.API_URL = 'http://localhost:3000/api/v1';
   }
 
@@ -360,9 +360,10 @@ class CloneActivityModalComponent extends Component {
 
       let response = await fetch(`${this.API_URL}/activity`, config);
       if(response.status === 200) {
-        let { startDate, endDate } = this.props.historicDate;
         this.props.toggleOpen("cloneModalIsOPen");
         this.props.onToast(true, "Activity was created successfully", "success");
+        this.props.closeDetailModal ? this.props.closeDetailModal() : ''
+        let { startDate, endDate } = this.props.historicDate ? this.props.historicDate : {};
         if(this.props.isHistoric && startDate !== "" && endDate !== "") {
           this.props.reloadActivities(startDate, endDate);
         } else {

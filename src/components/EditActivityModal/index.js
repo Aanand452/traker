@@ -382,6 +382,7 @@ class EditActivityModalComponent extends Component {
         });
         this.props.toggleOpen("editModalIsOPen")
         this.props.onToast(true, "Activity was edited successfully", "success");
+        this.props.closeDetailModal ? this.props.closeDetailModal() : ''
         this.props.reloadActivities();
       } else throw new Error(response);
     } catch (err) {

@@ -24,11 +24,13 @@
   content: "";
   display: table;
   border: #1311108c;
+  padding-bottom: 50px;
 }
 
 .expandableColumn {
   float: left;
-  width: 25%;
+  /* width: 15%; */
+  padding-left: 10px;
 }
 /* .slds-pill__remove {
   display: none !important;

@@ -167,6 +167,7 @@ class Table extends Component {
     isApmFilterOpen:false,
     OpenFilters:false,
     openMenuBar:false,
+    userId: localStorage.getItem('userId'),
   };
 
   table = React.createRef()
@@ -358,7 +359,8 @@ class Table extends Component {
     this.getIndustry();
     this.getSegment();
     this.getAPM1();
-    this.setState({historicDate: {}, startDate:new Date(), key: 'selection', endDate:addDays(new Date(), 7) })
+    this.getUserDefaultFilter();
+    this.setState({historicDate: { startDate:new Date(), key: 'selection', endDate:addDays(new Date(), 7)}, startDate:new Date(), key: 'selection', endDate:addDays(new Date(), 7) })
   };
 
   async getConfig(){
@@ -893,7 +895,6 @@ class Table extends Component {
       return key.label
     } )
     const programs = this.state.programs
-    // console.log(programs)
     const filteredData = programs.filter((el) => {
     })
 
@@ -918,6 +919,64 @@ class Table extends Component {
       return true;
     });
     this.setState({data:filteredData, calendarViewData:filteredData, OpenFilters:false})
+  }
+
+  getUserDefaultFilter = async () => {
+    try {
+      let token = getCookie('token').replaceAll('"','');
+      const config = {
+        method: 'GET',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        }
+      }
+      const request = await fetch(`${this.API_URL}/user-filter/`+this.state.userId, config);
+      const response = await request.json();
+      console.log(response)
+      // const industry = response.result.map(item => ({id: item.industryId, label: item.name}));
+
+      // if(response.info.code === 200) this.setState({ industries : industry });
+      // else throw new Error(response.info.status);
+    } catch (err) {
+      this.showError(err);
+    }
+  };
+
+  saveAsDefaultFilter = async e  => {
+    try {
+      const {regionsSelected, programSelected, formatsSelected} = this.state;
+      const slectedRegioinsId = regionsSelected.map(function (key) {
+        return key.id
+      } )
+      const programSelectedId = programSelected.map(function (key) {
+        return key.id
+      } )
+      const formatsSelectedId = formatsSelected.map(function (key) {
+        return key.id
+      } )
+
+      let token = getCookie('token').replaceAll('"','');
+      const config = {
+        method: 'POST',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({
+          userId: this.state.userId,
+          formats:  formatsSelectedId,
+          regions: slectedRegioinsId,
+          programs:programSelectedId,
+        })
+      }
+      let response = await fetch(`${this.API_URL}/user-filters`, config);
+      console.log(response)
+    } catch (err) {
+      this.showError(err);
+    }
   }
 
   handleChange = (name, value) => {
@@ -1173,7 +1232,7 @@ class Table extends Component {
           /></Modal>
           
         }
-        {<Modal 
+        {/* {<Modal 
             isOpen={this.state.OpenFilters}
             size="medium"
             onRequestClose={() => this.setState({OpenFilters:false})}
@@ -1458,7 +1517,7 @@ class Table extends Component {
               selection:this.state.formatsSelected,
              })}
               /></div>)}</div></section>
-          </Modal>}
+          </Modal>} */}
         <Card
           heading={<Icon></Icon>}
           filter={!this.state.isCalanderView && 
@@ -1503,7 +1562,7 @@ class Table extends Component {
             />
           </Button>
         </Tooltip>
-        <Tooltip content="Add Filter" align="bottom right">
+        {/* <Tooltip content="Add Filter" align="bottom right">
           <Button
             assistiveText={{ icon: "Filters" }}
             iconCategory="utility"
@@ -1516,7 +1575,7 @@ class Table extends Component {
           {!this.state.isCalanderView && (<Tooltip content="Select Date Range for Filter" align="bottom right"><Button 
           label={this.state.startDate.toLocaleDateString()+" To "+this.state.endDate.toLocaleDateString()}
           onClick={this.historicBtn}
-          /></Tooltip>)}
+          /></Tooltip>)} */}
           <Dropdown 
             onSelect={this.exportBtn} 
             width="xx-small"
@@ -1557,19 +1616,25 @@ class Table extends Component {
                       <DateRange 
                       editableDateInputs={true}
                       moveRangeOnFirstSelection={false}
-                      ranges={[{startDate:new Date(), endDate:null, key:'selection'}]}
-                      onChange={this.onChangeDate}/>
+                      onChange={this.onChangeDate}
+                      showSelectionPreview={true}
+                      moveRangeOnFirstSelection={false}
+                      months={1}
+                      ranges={[{startDate:this.state.startDate, key: 'selection', endDate:this.state.endDate}]}
+                      direction="horizontal"/>
                       {this.state.openMenuBar && <MultiSelectContainer><MultiSelect 
                         data={this.state.regions}
                         inputValue={''}
-                        selectedData={[]}
+                        selectedData={this.state.regionsSelected}
+                        setSelectedData={(selectedData) => this.setState({regionsSelected:selectedData})}
                         placeholder={'Regions'}
                         label={'Add Region'}
                       /></MultiSelectContainer>}
                       {this.state.openMenuBar && <MultiSelectContainer><MultiSelect 
                         data={this.state.programs}
                         inputValue={''}
-                        selectedData={[]}
+                        selectedData={this.state.programSelected}
+                        setSelectedData={(selectedData) => this.setState({programSelected:selectedData})}
                         placeholder={'Programs'}
                         label={'Add Programs'}
                       /></MultiSelectContainer>}
@@ -1577,9 +1642,17 @@ class Table extends Component {
                         data={this.state.formats}
                         inputValue={''}
                         selectedData={this.state.formatsSelected}
+                        setSelectedData={(selectedData) => this.setState({formatsSelected:selectedData})}
                         placeholder={'Formats'}
                         label={'Add Formats'}
                       /></MultiSelectContainer>}
+                      <div className="expandableRow">
+                        <div className="expandableColumn">
+                          <Button label="Save As Default" variant="outline-brand" onClick={this.saveAsDefaultFilter} /></div>
+                        <div className="expandableColumn">
+                          <Button label="Save" variant="brand" onClick={this.getFilteredData} /></div>
+                      </div>
+
                   </Menu>
                   <main id="page-wrap">
         { !this.state.isCalanderView && (<DataTable
@@ -1707,6 +1780,7 @@ class Table extends Component {
                 (<ActivityCalendar 
                   activities={this.state.calendarViewData} 
                   onDelete={this.props.onDelete} 
+                  onToast={this.onToast}
                   reloadActivities={this.props.reloadActivities}
                   historicDate={this.state.historicDate}
                   isHistoric={this.state.isHistoric}
