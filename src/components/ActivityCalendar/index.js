@@ -330,7 +330,7 @@ class ActivityCalendar extends Component {
                     <Calendar localizer={localizer}
                         events={this.state.events}
                         views={['month','week']}
-                        defaultDate={this.state.currentDate}
+                        defaultDate={this.props.currentDate}
                         startAccessor="start"
                         endAccessor="end"
                         step={60}

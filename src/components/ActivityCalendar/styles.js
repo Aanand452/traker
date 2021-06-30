@@ -5,6 +5,8 @@ export const PagerContainer = styled.div`
 	display: flex;
 	justify-content: center;
 	padding: 1rem 0;
+	overflow-y: hidden;
+	overflow: hidden
 `;
 
 export const Container = styled.div`
@@ -12,5 +14,5 @@ export const Container = styled.div`
   margin-top: 5.6rem;
 `;
 
-export const CalendarContainer = styled.div`height: 800px; width:100%; overflow: scroll; margin-left:auto; margin-right: auto;`;
+export const CalendarContainer = styled.div`height: 655px; width:100%; overflow: hidden`;
 export const ModalTableContainer = styled.div`overflow: 'auto'`

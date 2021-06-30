@@ -620,26 +620,20 @@ class Table extends Component {
 
   exportPdf = () => {
     const exportHeaders = [[
-      "Owner", 
       "Program", 
-      "Campaign ID", 
       "Title", 
       "Format", 
-      "Abstract", 
       "Region", 
       "Start Data", 
-      "End Date"]];
+      ]];
   
     const exportData = this.state.displayedData.map(elt=> [
-      elt.userId, 
       elt.programId, 
-      elt.campaignId, 
       elt.title, 
       elt.formatId, 
-      elt.abstract, 
       elt.regionId, 
       elt.startDate.replace('T00:00:00.000Z',''), 
-      elt.endDate.replace('T00:00:00.000Z','')]);
+      ]);
   
     const unit = "pt";
     const size = "A4";
@@ -660,15 +654,11 @@ class Table extends Component {
         fontSize: 8
       },
       columnStyles:{
-        0:{cellWidth: 40},
-        1:{cellWidth: 50},
-        2:{cellWidth: 50},
-        3:{cellWidth: 120},
-        4:{cellWidth: 40},
-        5:{cellWidth: 130},
-        6:{cellWidth: 40},
-        7:{cellWidth: 30},
-        8:{cellWidth: 30},
+        0:{cellWidth: 80},
+        1:{cellWidth: 250},
+        2:{cellWidth: 70},
+        3:{cellWidth: 70},
+        4:{cellWidth: 60},
       }
     };
     doc.text(title, marginLeft, marginLeft - 5, {
@@ -1820,8 +1810,7 @@ class Table extends Component {
                   reloadActivities={this.props.reloadActivities}
                   historicDate={this.state.historicDate}
                   isHistoric={this.state.isHistoric}
-                  isMenuOpen={this.state.openMenuBar}
-                  handleMenu={this.openMenu}/>)}
+                  currentDate={this.state.startDate}/>)}
         {!this.state.isCalanderView && (<Pager
           data={this.state.data}
           itemsPerPage={this.state.data.length >= this.state.pageLimit ? this.state.pageLimit : this.state.data.length - 1}

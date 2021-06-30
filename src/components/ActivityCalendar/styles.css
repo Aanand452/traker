@@ -13,4 +13,18 @@
     background-color: #f5fafd;
   }
 
+  .rbc-calendar {
+    width: 2010px !important; 
+  }
+
+  .rbc-toolbar {
+    margin-right: 580px !important; 
+  }
+
+  .rbc-time-content {
+    display: none !important; 
+  }
+  .rbc-time-view .rbc-allday-cell {
+    border-bottom: 5px solid #fbf9f9 !important; 
+  }
   
