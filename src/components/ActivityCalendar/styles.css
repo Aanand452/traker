@@ -27,4 +27,9 @@
   .rbc-time-view .rbc-allday-cell {
     border-bottom: 5px solid #fbf9f9 !important; 
   }
+
+  .rbc-off-range-bg {
+    background: white !important;
+    color: inherit !important;
+  }
   

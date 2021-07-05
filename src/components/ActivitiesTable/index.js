@@ -47,14 +47,13 @@ import jsPDF from "jspdf";
 import "jspdf-autotable";
 import exportFromJSON from 'export-from-json'
 
-import { DateRangePicker } from 'react-date-range';
+import { DateRange } from 'react-date-range';
 import 'react-date-range/dist/styles.css'; 
 import 'react-date-range/dist/theme/default.css'; 
 import { addDays } from 'date-fns';
 import CalendarViewHeadFilter from "../CalendarViewHeadFilter"
 import { push as Menu } from 'react-burger-menu'
 import MultiSelect from '../MultiSelect'
-import { DateRange } from 'react-date-range';
 
 const DateCell = ({ children, ...props }) => {
   return <DataTableCell title={children} {...props}>
@@ -1088,6 +1087,7 @@ class Table extends Component {
   };
 
   onChangeDate = (dates) => {
+    console.log(dates)
     const startDate = dates.selection.startDate
     const endDate = dates.selection.endDate
     this.setState({startDate:startDate, endDate:endDate})
@@ -1244,18 +1244,18 @@ class Table extends Component {
         
         {
           
-            <Modal
-              isOpen={this.state.isHistoric}
-              size="medium"
-              onRequestClose={() => this.setState({isHistoric:false})}
-              ><DateRangePicker 
-            onChange={this.onChangeDate}
-            showSelectionPreview={true}
-            moveRangeOnFirstSelection={false}
-            months={2}
-            ranges={[{startDate:this.state.startDate, key: 'selection', endDate:this.state.endDate}]}
-            direction="horizontal"
-          /></Modal>
+          //   <Modal
+          //     isOpen={this.state.isHistoric}
+          //     size="medium"
+          //     onRequestClose={() => this.setState({isHistoric:false})}
+          //     ><DateRangePicker 
+          //   onChange={this.onChangeDate}
+          //   showSelectionPreview={true}
+          //   moveRangeOnFirstSelection={false}
+          //   months={2}
+          //   ranges={[{startDate:this.state.startDate, key: 'selection', endDate:this.state.endDate}]}
+          //   direction="horizontal"
+          // /></Modal>
           
         }
         {/* {<Modal 
@@ -1567,13 +1567,13 @@ class Table extends Component {
             )
           }
           headerActions={(<ButtonGroup id="button-group-page-header-actions">
-              {this.state.isCalanderView &&  
+              {/* {this.state.isCalanderView &&  
               <div>
               <CalendarViewHeadFilter 
                 defaultFormats={this.state.defaultFormats}
                 modifyFilter={this.modifyFilter}
               />
-              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div>}
+              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div>} */}
             <Tooltip
           content={!this.state.isCalanderView ? "Open Calendar View" : "Open List View"}
         >
@@ -1628,7 +1628,7 @@ class Table extends Component {
             assistiveText={{ label: "Menu" }}
             category="utility"
             name={this.state.openMenuBar ? "chevronleft" : "rows"}
-            size="medium"
+            size="small"
           /></Button>}
           
         >
@@ -1641,13 +1641,14 @@ class Table extends Component {
                       >
                       <DateRange 
                       editableDateInputs={true}
-                      moveRangeOnFirstSelection={false}
+                      moveRangeOnFirstSelection={true}
+                      // retainEndDateOnFirstSelection={true}
+                      minDate={addDays(new Date(), -300)}
+                      maxDate={addDays(new Date(), 300)}
+                      direction="vertical"
                       onChange={this.onChangeDate}
-                      showSelectionPreview={true}
-                      moveRangeOnFirstSelection={false}
-                      months={1}
                       ranges={[{startDate:this.state.startDate, key: 'selection', endDate:this.state.endDate}]}
-                      direction="horizontal"/>
+                      />
                       {this.state.openMenuBar && <MultiSelectContainer><MultiSelect 
                         data={this.state.regions}
                         inputValue={''}

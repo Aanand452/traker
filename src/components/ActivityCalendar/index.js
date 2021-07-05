@@ -219,13 +219,41 @@ class ActivityCalendar extends Component {
             default : return '04f7398c'
         }
     }
-    eventStyleGetter = (event, start, end, isSelected) => {        
-        var backgroundColor = '#' + this.getEventColor(event.resource.data.formatId);
+
+    getOldEventColor = (format) => {
+        switch(format){
+            case '3rdParty-Virtual Event': return 'bafac88c'
+            case 'Webinar': return 'fadcb58c'
+            case 'Exec Engagement': return 'f8f7ba8c'
+            case 'Executive Visit': return 'bbe9f78c'
+            case 'F2F Event': return 'aeb9f78c'
+            case 'Webinar - 3rd Party': return 'c6acf88c'
+            case 'Virtual Event': return 'f0a2f78c'
+            case 'SIC': return 'f8a9b08c'
+            case 'Launch': return 'c9f8c98c'
+            default : return 'd0fad98c'
+        }
+    }
+    eventStyleGetter = (event, start, end, isSelected) => {  
+        var backgroundColor =  ''
+        var color = ''
+        if (moment(start, "DD-MM-YYYY").valueOf() > moment(new Date(), "DD-MM-YYYY").valueOf()) {
+            backgroundColor = '#' + this.getEventColor(event.resource.data.formatId);
+            color = 'black';}
+        else{
+            backgroundColor = '#' + this.getOldEventColor(event.resource.data.formatId)
+            color = 'gray'
+        }
+        if (moment(start).format("DD-MM-YYYY") === moment(new Date()).format("DD-MM-YYYY")){
+            backgroundColor = '#' + this.getEventColor(event.resource.data.formatId)
+            color='black'
+        }
+        
         var style = {
             backgroundColor: backgroundColor,
             borderRadius: '0px',
             opacity: 1,
-            color: 'black',
+            color: color,
             border: '0px',
             display: 'block'
         };
