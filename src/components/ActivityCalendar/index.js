@@ -73,7 +73,7 @@ class ActivityCalendar extends Component {
             detailModalIsOpen:false,
             toast:{
                 show:false
-            }
+            },
         }
     }
     componentDidMount() {
@@ -105,10 +105,12 @@ class ActivityCalendar extends Component {
       this.setState({displayedDateRage:{start:start.toString(), end:end.toString()}})
     }
     onNavigate = async (date, view, action) => {
+        console.log(date, view, action)
         await this.setState({currentDate:date});
         this.computeDisplayedDateRange();
     }
     onView = async (view) => {
+        console.log(view)
         await this.setState({currentView:view});
       this.computeDisplayedDateRange();
     }
@@ -117,7 +119,11 @@ class ActivityCalendar extends Component {
         if (this.props.activities !== prevProps.activities) {
             this.state.data = this.props.activities
             this.computeDisplayedDateRange();
-            
+        }
+        console.log(this.props.calendarView)
+        if (this.props.calendarView.date !== prevProps.calendarView.date){
+            const {date, view, action} = this.props.calendarView
+            this.onNavigate(date, view, action)
         }
     }
     handleSelectDay = (slotinfo) => {
@@ -263,6 +269,7 @@ class ActivityCalendar extends Component {
     }
 
     onChangeDate = (dates) => {
+        console.log(dates)
         const startDate = dates.selection.startDate
         const endDate = dates.selection.endDate
     }
@@ -358,7 +365,8 @@ class ActivityCalendar extends Component {
                     <Calendar localizer={localizer}
                         events={this.state.events}
                         views={['month','week']}
-                        defaultDate={this.props.currentDate}
+                        view={this.props.calendarView.view}
+                        date={this.state.currentDate}
                         startAccessor="start"
                         endAccessor="end"
                         step={60}

@@ -47,13 +47,16 @@ import jsPDF from "jspdf";
 import "jspdf-autotable";
 import exportFromJSON from 'export-from-json'
 
-import { DateRange } from 'react-date-range';
+import { DateRange, DateRangePicker } from 'react-date-range';
+import DatePicker from 'react-datepicker'
 import 'react-date-range/dist/styles.css'; 
 import 'react-date-range/dist/theme/default.css'; 
 import { addDays } from 'date-fns';
 import CalendarViewHeadFilter from "../CalendarViewHeadFilter"
 import { push as Menu } from 'react-burger-menu'
 import MultiSelect from '../MultiSelect'
+import "react-datepicker/dist/react-datepicker.css";
+
 
 const DateCell = ({ children, ...props }) => {
   return <DataTableCell title={children} {...props}>
@@ -168,6 +171,7 @@ class Table extends Component {
     openMenuBar:false,
     userId: localStorage.getItem('userId'),
     defaultUserFilter: {},
+    calendarView: {date: new Date(), view:'month', action:'Today'}
   };
 
   table = React.createRef()
@@ -1088,10 +1092,29 @@ class Table extends Component {
 
   onChangeDate = (dates) => {
     console.log(dates)
-    const startDate = dates.selection.startDate
-    const endDate = dates.selection.endDate
-    this.setState({startDate:startDate, endDate:endDate})
-    this.setDisplayedData(startDate, endDate)
+    const [start, end] = dates
+    this.setState({startDate:start, endDate:end, calendarView:{date:start, view:this.state.calendarView.view ,action: moment(start, "DD/MM/YYYY") > moment(new Date(), "DD/MM/YYYY") ? 'NEXT' : 'PREV'}})
+    this.setDisplayedData(start, end)
+  }
+
+  onClickToday = () => {
+    this.setState({startDate: new Date(), endDate:addDays(new Date(), 7), calendarView:{date:new Date(), view: this.state.calendarView.view, action: this.state.calendarView.action}})
+  }
+
+  previousMonth = () => {
+    var {date, view, action} = this.state.calendarView
+    this.changeView(date, view, 'PREV')
+  }
+
+  nextMonth = () => {
+    var {date, view, action} = this.state.calendarView
+    this.changeView(date, view, 'NEXT')
+  }
+
+  changeView = (date, view, action) => {
+    var days = view === 'month' ? 30 : 7
+    var sub = action === 'PREV' ? -1 : +1
+    this.setState({calendarView:{date:addDays(date, sub*days), view: view, action: action}})
   }
 
   setDisplayedData = (startDate, endDate) => {
@@ -1566,7 +1589,7 @@ class Table extends Component {
               // <CardFilter onChange={this.handleFilterChange} />
             )
           }
-          headerActions={(<ButtonGroup id="button-group-page-header-actions">
+          headerActions={(<div style={{paddingTop: '6px'}}><ButtonGroup id="button-group-page-header-actions" style={{paddingTop: '6px'}}>
               {/* {this.state.isCalanderView &&  
               <div>
               <CalendarViewHeadFilter 
@@ -1623,13 +1646,63 @@ class Table extends Component {
               <Icon  assistiveText={{ icon: 'New' }} category="utility" name="new" size="x-small"/>
             </Button></Tooltip>
           </Link>
-        </ButtonGroup>)}
-          icon={<Button onClick={this.openMenu} variant="icon"><Icon
-            assistiveText={{ label: "Menu" }}
-            category="utility"
-            name={this.state.openMenuBar ? "chevronleft" : "rows"}
-            size="small"
-          /></Button>}
+        </ButtonGroup></div>)}
+          icon={<div style={{display: 'table'}}>
+                  <div style={{float: 'left', paddingTop: '6px'}}>
+                    <Button onClick={this.openMenu} variant="icon"><Icon
+                      assistiveText={{ label: "Menu" }}
+                      category="utility"
+                      name={this.state.openMenuBar ? "chevronleft" : "rows"}
+                      size="small"
+                    /></Button>
+                  </div>
+                  {this.state.isCalanderView && <div style={{float: 'left'}}>
+                    <div style={{float: 'left', paddingLeft: '10px'}}> 
+                      <div style={{fontSize: '25px'}}>Calendar</div> 
+                    </div>
+                    <div style={{float: 'left', paddingTop: '6px', paddingLeft: '100px'}}> 
+                      <Button onClick={this.onClickToday}> Today </Button>
+                    </div>
+                    <div style={{float: 'left', paddingLeft: '20px', paddingTop: '12px',}}> 
+                      <Button 
+                        assistiveText={{ icon: 'Previous' }}
+                        onClick={this.previousMonth}
+                        iconCategory="utility"
+                        iconName="chevronleft"
+                        iconVariant="bare"
+                        variant="icon"
+                      />
+                    </div>
+                    <div style={{float: 'left', paddingLeft: '20px', paddingTop: '12px',}}>
+                      <Button 
+                        assistiveText={{ icon: 'Next' }}
+                        onClick={this.nextMonth}
+                        iconCategory="utility"
+                        iconName="chevronright"
+                        iconVariant="bare"
+                        variant="icon"
+                      />
+                    </div>
+                    <div style={{float: 'left', paddingLeft: '300px', paddingTop: '6px'}}> 
+                      <div style={{fontSize: '18px'}}>{new Date(this.state.calendarView.date).toLocaleString('default', { month: 'long' }).toString() }  {new Date(this.state.calendarView.date).getFullYear().toString()}</div> 
+                    </div>
+                    <div style={{float: 'left', paddingLeft: '300px', paddingTop: '6px',}}>
+                      <Dropdown
+                        align="right"
+                        iconCategory="utility"
+                        iconName="down"
+                        iconPosition="right"
+                        onSelect={(value)=> {this.setState({calendarView:{date:this.state.calendarView.date, view: value.value, action: this.state.calendarView.action}})}}
+                        width='xx-small'
+                        options={[{label:'Month', value: 'month'}, {label:'Week', value: 'week'}]}
+                        label={this.state.calendarView.view=='month'? 'Month' : 'Week'}
+                      />
+                    </div>
+                  
+                  </div>}
+
+                </div>
+              }
           
         >
         <Menu pageWrapId={ "page-wrap" } outerContainerId={ "outer-container" } 
@@ -1637,17 +1710,15 @@ class Table extends Component {
                       disableCloseOnEsc
                       noOverlay
                       isOpen={ this.state.openMenuBar}
-                      width={ '23%' }
+                      width={ '20%' }
                       >
-                      <DateRange 
-                      editableDateInputs={true}
-                      moveRangeOnFirstSelection={true}
-                      // retainEndDateOnFirstSelection={true}
-                      minDate={addDays(new Date(), -300)}
-                      maxDate={addDays(new Date(), 300)}
-                      direction="vertical"
-                      onChange={this.onChangeDate}
-                      ranges={[{startDate:this.state.startDate, key: 'selection', endDate:this.state.endDate}]}
+                      <DatePicker 
+                        selectsRange
+                        inline
+                        selected={this.state.startDate}
+                        onChange={this.onChangeDate}
+                        startDate={this.state.startDate}
+                        endDate={this.state.endDate}
                       />
                       {this.state.openMenuBar && <MultiSelectContainer><MultiSelect 
                         data={this.state.regions}
@@ -1805,13 +1876,13 @@ class Table extends Component {
         </DataTable>)}
         {this.state.isCalanderView &&
                 (<ActivityCalendar 
-                  activities={this.state.calendarViewData} 
+                  activities={this.props.data} 
                   onDelete={this.props.onDelete} 
                   onToast={this.onToast}
                   reloadActivities={this.props.reloadActivities}
                   historicDate={this.state.historicDate}
                   isHistoric={this.state.isHistoric}
-                  currentDate={this.state.startDate}/>)}
+                  calendarView={this.state.calendarView}/>)}
         {!this.state.isCalanderView && (<Pager
           data={this.state.data}
           itemsPerPage={this.state.data.length >= this.state.pageLimit ? this.state.pageLimit : this.state.data.length - 1}

@@ -32,4 +32,15 @@
     background: white !important;
     color: inherit !important;
   }
-  
+
+  .rbc-toolbar {
+    display: none !important; 
+  }
+  .rbc-header{
+   border-bottom: none !important;
+  }
+  .rbc-row-content {
+    overflow-y:auto !important;
+    height: 600px !important;
+    padding-bottom: 10px !important;
+  }
