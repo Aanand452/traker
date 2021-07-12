@@ -47,10 +47,7 @@ import jsPDF from "jspdf";
 import "jspdf-autotable";
 import exportFromJSON from 'export-from-json'
 
-import { DateRange, DateRangePicker } from 'react-date-range';
 import DatePicker from 'react-datepicker'
-import 'react-date-range/dist/styles.css'; 
-import 'react-date-range/dist/theme/default.css'; 
 import { addDays } from 'date-fns';
 import CalendarViewHeadFilter from "../CalendarViewHeadFilter"
 import { push as Menu } from 'react-burger-menu'
