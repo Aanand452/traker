@@ -1088,7 +1088,6 @@ class Table extends Component {
   };
 
   onChangeDate = (dates) => {
-    console.log(dates)
     const [start, end] = dates
     this.setState({startDate:start, endDate:end, calendarView:{date:start, view:this.state.calendarView.view ,action: moment(start, "DD/MM/YYYY") > moment(new Date(), "DD/MM/YYYY") ? 'NEXT' : 'PREV'}})
     this.setDisplayedData(start, end)

@@ -13,9 +13,9 @@
     background-color: #f5fafd;
   }
 
-  .rbc-calendar {
+  /* .rbc-calendar {
     width: 2010px !important; 
-  }
+  } */
 
   .rbc-toolbar {
     margin-right: 580px !important; 
@@ -43,4 +43,29 @@
     overflow-y:auto !important;
     height: 600px !important;
     padding-bottom: 10px !important;
+  }
+  .rbc-header + .rbc-header:nth-child(6) {
+    display: none !important; 
+  }
+  .rbc-header + .rbc-header:nth-child(7) {
+    display: none !important; 
+  }
+  .rbc-day-bg + .rbc-day-bg:nth-child(6) {
+    display: none !important; 
+  }
+  .rbc-day-bg + .rbc-day-bg:nth-child(7) {
+    display: none !important; 
+  }
+  .rbc-date-cell:nth-child(6)  {
+    display: none !important; 
+  }
+  .rbc-date-cell:nth-child(7)  {
+    display: none !important; 
+  }
+  .rbc-row-segment {
+    max-width: 20% !important; 
+    flex-basis: 20% !important; 
+  }
+  .rbc-ellipsis, .rbc-event-label, .rbc-row-segment .rbc-event-content, .rbc-show-more {
+    white-space: normal !important; 
   }
