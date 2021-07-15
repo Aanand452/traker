@@ -95,7 +95,9 @@ class ActivityCalendar extends Component {
       let endDate = new Date(currentDate.getFullYear(), currentDate.getMonth()+1, 0)
       this.state.displayedData = this.state.data.filter(a => {
           var date = new Date(a.startDate)
-          return (date >= startDate && date <= endDate)
+          if(date.getDay() !== 0 && date.getDay() !== 6){
+            return (date >= startDate && date <= endDate)
+          }
       });
       const finalEvents = []
       this.state.displayedData.forEach(e => {

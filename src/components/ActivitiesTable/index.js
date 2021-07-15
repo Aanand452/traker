@@ -1586,6 +1586,17 @@ class Table extends Component {
             )
           }
           headerActions={(<div style={{paddingTop: '6px'}}><ButtonGroup id="button-group-page-header-actions" style={{paddingTop: '6px'}}>
+            {this.state.isCalanderView && <div style={{float: 'left', paddingRight: '30px'}}>
+            <Dropdown
+              align="right"
+              iconCategory="utility"
+              iconName="down"
+              iconPosition="right"
+              onSelect={(value)=> {this.setState({calendarView:{date:this.state.calendarView.date, view: value.value, action: this.state.calendarView.action}})}}
+              width='xx-small'
+              options={[{label:'Month', value: 'month'}, {label:'Week', value: 'week'}]}
+              label={this.state.calendarView.view=='month'? 'Month' : 'Week'}
+            /></div>}
               {/* {this.state.isCalanderView &&  
               <div>
               <CalendarViewHeadFilter 
@@ -1594,8 +1605,8 @@ class Table extends Component {
               />
               &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div>} */}
             <Tooltip
-          content={!this.state.isCalanderView ? "Open Calendar View" : "Open List View"}
-        >
+            content={!this.state.isCalanderView ? "Open Calendar View" : "Open List View"}
+            >
           <Button
           onClick={this.calendarViewBtn}
           >
@@ -1681,20 +1692,7 @@ class Table extends Component {
                     </div>
                     <div style={{float: 'left', paddingLeft: '300px', paddingTop: '6px'}}> 
                       <div style={{fontSize: '18px'}}>{new Date(this.state.calendarView.date).toLocaleString('default', { month: 'long' }).toString() }  {new Date(this.state.calendarView.date).getFullYear().toString()}</div> 
-                    </div>
-                    <div style={{float: 'left', paddingLeft: '300px', paddingTop: '6px',}}>
-                      <Dropdown
-                        align="right"
-                        iconCategory="utility"
-                        iconName="down"
-                        iconPosition="right"
-                        onSelect={(value)=> {this.setState({calendarView:{date:this.state.calendarView.date, view: value.value, action: this.state.calendarView.action}})}}
-                        width='xx-small'
-                        options={[{label:'Month', value: 'month'}, {label:'Week', value: 'week'}]}
-                        label={this.state.calendarView.view=='month'? 'Month' : 'Week'}
-                      />
-                    </div>
-                  
+                    </div>                  
                   </div>}
 
                 </div>

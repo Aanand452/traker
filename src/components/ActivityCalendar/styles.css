@@ -66,6 +66,21 @@
     max-width: 20% !important; 
     flex-basis: 20% !important; 
   }
+  .rbc-row-segment:nth-child(6) {
+    display: none !important; 
+  }
+  .rbc-row-segment:nth-child(7) {
+    display: none !important; 
+  }
+  .rbc-date-cell:nth-child(6){
+    display: none !important; 
+  }
+  .rbc-date-cell:nth-child(6){
+    display: none !important; 
+  }
+  .slds-card {
+    border-style: none !important;
+  }
   .rbc-ellipsis, .rbc-event-label, .rbc-row-segment .rbc-event-content, .rbc-show-more {
     white-space: normal !important; 
   }
