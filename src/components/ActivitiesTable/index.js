@@ -26,7 +26,7 @@ import {
   Modal,
   Combobox,
   comboboxFilterAndLimit,
-  ExpandableSection,
+  Checkbox,
 } from "@salesforce/design-system-react";
 
 import { getCookie } from '../../utils/cookie';
@@ -916,7 +916,6 @@ class Table extends Component {
   }
 
   getFilteredData = () => {
-
     const slectedRegioins = this.state.regionsSelected.map(function (key) {
       return key.label
     } )
@@ -1114,7 +1113,7 @@ class Table extends Component {
   }
 
   setDisplayedData = (startDate, endDate) => {
-    const newData = this.props.data.filter(a => {
+    const newData = this.state.data.filter(a => {
       var date = new Date(a.startDate)
       return (date >= startDate && date <= endDate)
     });    
@@ -1203,6 +1202,28 @@ class Table extends Component {
   modifyFilter = (formats) => {
     this.state.formatsSelected = formats
     this.getFilteredData()
+  }
+
+  menuSetSelectedRegion = (selectedData) => {
+    this.setState({regionsSelected:selectedData})
+  }
+
+  menuSetSelectedProgram = (selectedData) => {
+    this.setState({programSelected:selectedData})
+  }
+
+  menuSetSelectedFormat = (selectedData) => {
+    this.setState({formatsSelected:selectedData})
+  }
+
+  setCalendarView = () => {
+    var {date, view, action} = this.state.calendarView
+    if (view === 'month'){
+      this.setState({calendarView:{date:date, view: 'week', action: action}})
+    }else{
+      this.setState({calendarView:{date:date, view: 'month', action: action}})
+
+    }
   }
 
   render() {
@@ -1585,8 +1606,21 @@ class Table extends Component {
               // <CardFilter onChange={this.handleFilterChange} />
             )
           }
-          headerActions={(<div style={{paddingTop: '6px'}}><ButtonGroup id="button-group-page-header-actions" style={{paddingTop: '6px'}}>
-            {this.state.isCalanderView && <div style={{float: 'left', paddingRight: '30px'}}>
+          headerActions={(<div style={{paddingTop: '6px'}}><ButtonGroup id="button-group-page-header-actions" >
+            {this.state.isCalanderView && <div style={{float: 'left', paddingRight: '40px'}}>
+              <div onClick={console.log('this is clicked')} style={{display: 'table', 
+              background: '#d8d5d5', 
+              borderRadius:'1rem', }}>
+                <div style={{float: 'left',}}>
+                  <Button onClick={this.setCalendarView} variant="base" style={{borderRadius:'1rem', paddingLeft:'10px', paddingRight:'10px',
+                  color: this.state.calendarView.view === 'month'? 'white': 'black',
+                  background: this.state.calendarView.view === 'month'? 'green' :'#d8d5d5'}}>Month</Button></div>
+                <div style={{float: 'left',}}> <Button onClick={this.setCalendarView} variant="base" style={{borderRadius:'1rem', paddingLeft:'10px', paddingRight:'10px',
+                  color:this.state.calendarView.view === 'week'? 'white': 'black',
+                  background: this.state.calendarView.view === 'week'? 'green' :'#d8d5d5'}}>Week</Button></div>
+              </div>
+            </div>}
+            {/* {this.state.isCalanderView && <div style={{float: 'left', paddingRight: '30px'}}>
             <Dropdown
               align="right"
               iconCategory="utility"
@@ -1596,7 +1630,7 @@ class Table extends Component {
               width='xx-small'
               options={[{label:'Month', value: 'month'}, {label:'Week', value: 'week'}]}
               label={this.state.calendarView.view=='month'? 'Month' : 'Week'}
-            /></div>}
+            /></div>} */}
               {/* {this.state.isCalanderView &&  
               <div>
               <CalendarViewHeadFilter 
@@ -1655,7 +1689,7 @@ class Table extends Component {
           </Link>
         </ButtonGroup></div>)}
           icon={<div style={{display: 'table'}}>
-                  <div style={{float: 'left', paddingTop: '6px'}}>
+                  <div style={{float: 'left',}}>
                     <Button onClick={this.openMenu} variant="icon"><Icon
                       assistiveText={{ label: "Menu" }}
                       category="utility"
@@ -1664,13 +1698,10 @@ class Table extends Component {
                     /></Button>
                   </div>
                   {this.state.isCalanderView && <div style={{float: 'left'}}>
-                    <div style={{float: 'left', paddingLeft: '10px'}}> 
-                      <div style={{fontSize: '25px'}}>Calendar</div> 
-                    </div>
-                    <div style={{float: 'left', paddingTop: '6px', paddingLeft: '100px'}}> 
+                    <div style={{float: 'left', paddingLeft: '100px'}}> 
                       <Button onClick={this.onClickToday}> Today </Button>
                     </div>
-                    <div style={{float: 'left', paddingLeft: '20px', paddingTop: '12px',}}> 
+                    <div style={{float: 'left', paddingLeft: '20px', paddingTop: '4px',}}> 
                       <Button 
                         assistiveText={{ icon: 'Previous' }}
                         onClick={this.previousMonth}
@@ -1680,7 +1711,7 @@ class Table extends Component {
                         variant="icon"
                       />
                     </div>
-                    <div style={{float: 'left', paddingLeft: '20px', paddingTop: '12px',}}>
+                    <div style={{float: 'left', paddingLeft: '20px', paddingTop: '4px',}}>
                       <Button 
                         assistiveText={{ icon: 'Next' }}
                         onClick={this.nextMonth}
@@ -1690,7 +1721,7 @@ class Table extends Component {
                         variant="icon"
                       />
                     </div>
-                    <div style={{float: 'left', paddingLeft: '300px', paddingTop: '6px'}}> 
+                    <div style={{float: 'left', paddingLeft: '300px',}}> 
                       <div style={{fontSize: '18px'}}>{new Date(this.state.calendarView.date).toLocaleString('default', { month: 'long' }).toString() }  {new Date(this.state.calendarView.date).getFullYear().toString()}</div> 
                     </div>                  
                   </div>}
@@ -1718,25 +1749,25 @@ class Table extends Component {
                         data={this.state.regions}
                         inputValue={''}
                         selectedData={this.state.regionsSelected}
-                        setSelectedData={(selectedData) => this.setState({regionsSelected:selectedData})}
+                        setSelectedData={this.menuSetSelectedRegion}
                         placeholder={'Regions'}
-                        label={'Add Region'}
+                        label={''}
                       /></MultiSelectContainer>}
                       {this.state.openMenuBar && <MultiSelectContainer><MultiSelect 
                         data={this.state.programs}
                         inputValue={''}
                         selectedData={this.state.programSelected}
-                        setSelectedData={(selectedData) => this.setState({programSelected:selectedData})}
+                        setSelectedData={this.menuSetSelectedProgram}
                         placeholder={'Programs'}
-                        label={'Add Programs'}
+                        label={''}
                       /></MultiSelectContainer>}
                       {this.state.openMenuBar && <MultiSelectContainer style={{paddingBottom:'20px'}}><MultiSelect 
                         data={this.state.formats}
                         inputValue={''}
                         selectedData={this.state.formatsSelected}
-                        setSelectedData={(selectedData) => this.setState({formatsSelected:selectedData})}
+                        setSelectedData={this.menuSetSelectedFormat}
                         placeholder={'Formats'}
-                        label={'Add Formats'}
+                        label={''}
                       /></MultiSelectContainer>}
                       <div className="expandableRow">
                         <div className="expandableColumn">
@@ -1870,7 +1901,7 @@ class Table extends Component {
         </DataTable>)}
         {this.state.isCalanderView &&
                 (<ActivityCalendar 
-                  activities={this.props.data} 
+                  activities={this.state.calendarViewData} 
                   onDelete={this.props.onDelete} 
                   onToast={this.onToast}
                   reloadActivities={this.props.reloadActivities}
