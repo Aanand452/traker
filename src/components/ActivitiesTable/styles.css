@@ -59,6 +59,7 @@
   height: 700px !important;
   overflow: auto;
   padding-bottom: 30px;
+  transition: all 0.4s ease 0s !important;
 }
 .bm-cross-button {
   display: none !important; 

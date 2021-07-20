@@ -359,7 +359,7 @@ class ActivityCalendar extends Component {
 
                         </Card>
                     </Modal>}
-                    <CalendarContainer style={{width: this.props.isMenuOpen ? '80%' : '100%',  transition: 'all 0.5s ease 0s'}}>
+                    <CalendarContainer style={{width: this.props.isMenuOpen ? '80%' : '100%',  transition: 'all 0.4s ease 0s'}}>
                     <Calendar localizer={localizer}
                         events={this.state.events}
                         views={['month','week']}
