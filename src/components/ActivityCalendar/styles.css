@@ -81,6 +81,6 @@
   .slds-card {
     border-style: none !important;
   }
-  .rbc-ellipsis, .rbc-event-label, .rbc-row-segment .rbc-event-content, .rbc-show-more {
+  /* .rbc-ellipsis, .rbc-event-label, .rbc-row-segment .rbc-event-content, .rbc-show-more {
     white-space: normal !important; 
-  }
+  } */

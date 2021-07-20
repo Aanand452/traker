@@ -1087,9 +1087,9 @@ class Table extends Component {
   };
 
   onChangeDate = (dates) => {
-    const [start, end] = dates
+    var [start, end] = dates
     this.setState({startDate:start, endDate:end, calendarView:{date:start, view:this.state.calendarView.view ,action: moment(start, "DD/MM/YYYY") > moment(new Date(), "DD/MM/YYYY") ? 'NEXT' : 'PREV'}})
-    this.setDisplayedData(start, end)
+    this.setDisplayedData(start, end ? end : start)
   }
 
   onClickToday = () => {
@@ -1113,8 +1113,10 @@ class Table extends Component {
   }
 
   setDisplayedData = (startDate, endDate) => {
-    const newData = this.state.data.filter(a => {
-      var date = new Date(a.startDate)
+    startDate = moment(startDate,"DD/MM/YYYY")
+    endDate = moment(endDate,"DD/MM/YYYY")
+    const newData = this.props.data.filter(a => {
+      var date = moment(new Date(a.startDate),"DD/MM/YYYY")
       return (date >= startDate && date <= endDate)
     });    
     this.setState({data:newData})
@@ -1608,7 +1610,7 @@ class Table extends Component {
           }
           headerActions={(<div style={{paddingTop: '6px'}}><ButtonGroup id="button-group-page-header-actions" >
             {this.state.isCalanderView && <div style={{float: 'left', paddingRight: '40px'}}>
-              <div onClick={console.log('this is clicked')} style={{display: 'table', 
+              <div style={{display: 'table', 
               background: '#d8d5d5', 
               borderRadius:'1rem', }}>
                 <div style={{float: 'left',}}>
@@ -1740,7 +1742,7 @@ class Table extends Component {
                       <DatePicker 
                         selectsRange
                         inline
-                        selected={this.state.startDate}
+                        // selected={this.state.startDate}
                         onChange={this.onChangeDate}
                         startDate={this.state.startDate}
                         endDate={this.state.endDate}
@@ -1907,6 +1909,7 @@ class Table extends Component {
                   reloadActivities={this.props.reloadActivities}
                   historicDate={this.state.historicDate}
                   isHistoric={this.state.isHistoric}
+                  isMenuOpen={this.state.openMenuBar}
                   calendarView={this.state.calendarView}/>)}
         {!this.state.isCalanderView && (<Pager
           data={this.state.data}
