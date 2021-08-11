@@ -23,9 +23,7 @@ class MultiSelect extends Component {
     }
       
     componentDidUpdate(prevProps, prevState){   
-        if (this.props.data !== prevProps.data) {
-            console.log('this is called')
-            console.log(this.props.selectedData)
+        if (this.props.selectedData !== prevProps.selectedData) {
             this.setState({data:this.props.data,
                 selectedData:this.props.selectedData, 
                 isOpen:this.props.isOpen, 
@@ -46,7 +44,7 @@ class MultiSelect extends Component {
                     this.setState({isOpen:false})
                     this.props.setSelectedData(this.state.selectedData)
                     if(this.state.selectedData.length > 1){
-                        this.setState({selectedData: this.state.selectedData.filter(x => {return x.id != 'all'})})
+                        this.setState({selectedData: this.state.selectedData.filter(x => {return x.id !== 'all'})})
                     }
                     if(this.state.selectedData.length === 0){
                         this.setState({selectedData: this.state.data.filter(x => {return x.id === 'all'})})
@@ -79,13 +77,15 @@ class MultiSelect extends Component {
                     })
                 },
                 onSelect: (event, data) => {
-                    if(data.selection.id === 'all'){
-                        this.setState({selectedData: this.state.data.filter(x => {return x.id === 'all'})})
+                    var all = this.state.data.find(x => x.id === 'all')
+                    console.log(data.selection.indexOf(all) > 0)
+                    if(data.selection.indexOf(all) > 0){
+                        this.setState({inputValue: '', selectedData: [all]})
+                    }else{
+                        console.log('inside else')
+                        this.setState({inputValue: '', selectedData:data.selection})
                     }
-                    this.setState({
-                    inputValue: '',
-                    selectedData:data.selection
-                    })
+                    console.log(this.state.selectedData)
                 }
                 }}
                 // menuPosition="relative"

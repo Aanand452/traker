@@ -410,7 +410,6 @@ class Table extends Component {
           programs: [{ label: "All", id: "all", icon:(<Icon assistiveText={{ label: 'Account' }} category="standard" name="campaign"/>)}, ...programs],
           filteredPrograms: [{ label: "All", id: "all", icon:(<Icon assistiveText={{ label: 'Account' }} category="standard" name="campaign"/>)}, ...programs],
         });
-        console.log(this.state.programs)
       } else throw new Error(response);
     } catch (err) {
       console.error(err);
@@ -781,7 +780,7 @@ class Table extends Component {
     this.setState({
       data:this.props.data,
       calendarViewData:this.props.data,
-      formatsSelected :[],
+      formatsSelected :[this.state.formats[0]],
       formatInputValue:'',
       programSelected:[this.state.programs[0]],
       programInputValue:'',
@@ -868,10 +867,7 @@ class Table extends Component {
 
   getFilteredPrograms = (region) =>{
     if(region){
-      console.log('this is called')
-      console.log(region)
-      if(region.length > 1 || region[0].id !== 'all'){
-        console.log('this is called')
+      if(region.length !== 0 && region[0].id !== 'all'){
         const filteredPrograms = this.state.programs.filter( x => this.state.regionsSelected.find( y => y.id === x.target_region
         ))
         this.setState({
@@ -937,7 +933,7 @@ class Table extends Component {
     const filteredData = arr.filter((row) => {
       if (!slectedRegioins.includes('All') && !slectedRegioins.includes(row.regionId)) return false;
       if (programSelected.length > 0 && !programSelected.includes('All') && !programSelected.includes(row.programId)) return false;
-      if(formatsSelected.length > 0 && !formatsSelected.includes(row.formatId)) return false;
+      if(formatsSelected.length > 0 && !formatsSelected.includes('All') && !formatsSelected.includes(row.formatId)) return false;
       return true;
     });
     this.setState({data:filteredData, calendarViewData:filteredData, OpenFilters:false})
@@ -1237,7 +1233,6 @@ class Table extends Component {
     this.setState({regionsSelected:selectedData})
     this.getFilteredPrograms(selectedData)
     this.getFilteredData()
-    console.log(this.state.filteredPrograms)
 
   }
 
@@ -1816,7 +1811,10 @@ class Table extends Component {
                       /></MultiSelectContainer>}
                       <div className="expandableRow">
                         <div className="expandableColumn">
+                          <Button label="Reset" variant="text-destructive" onClick={this.clearFilter} /></div>
+                        <div className="expandableColumn">
                           <Button label="Save As Default" variant="outline-brand" onClick={this.saveAsDefaultFilter} /></div>
+                        
                         {/* <div className="expandableColumn" style={{paddingTop: '5px', paddingLeft: '40%'}}>
                           <Button iconCategory="utility"
                             assistiveText={{ icon: 'Next' }}

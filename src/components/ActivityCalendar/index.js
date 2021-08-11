@@ -124,7 +124,6 @@ class ActivityCalendar extends Component {
         }
     }
     handleSelectDay = (slotinfo) => {
-        console.log('this is here')
         var modalEvents = this.state.events.filter(a => {
             var date = new Date(a.start)
             return (moment(date).format("DD-MM-YYYY") === moment(slotinfo.start).format("DD-MM-YYYY"))
