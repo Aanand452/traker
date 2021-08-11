@@ -428,6 +428,7 @@ class CloneActivityModalComponent extends Component {
       <IconSettings iconPath="/assets/icons">
         <Modal
           isOpen={true}
+          size='medium'
           footer={[
             <Button
               label="Cancel"
@@ -452,38 +453,45 @@ class CloneActivityModalComponent extends Component {
           ariaHideApp={false}
         >
           <section className="slds-p-around_large">
-            <div className="slds-form-element slds-m-bottom_large">
-              <Input
-                id="campaignId"
-                label="Campaign ID"
-                placeholder="Enter campaign id"
-                value={this.state.campaignId}
-                onChange={e => this.handleChange(e)}
-              />
-            </div>
-            <div className="slds-form-element slds-m-bottom_large">
-              <Combobox
-                id="programId"
-                required
-                events={{
-                  onSelect: (event, data) => {
-                    const selection =
-                      data.selection.length === 0
-                        ? this.state.programSelection
-                        : data.selection;
-                    this.setState({ programSelection: selection, errors: {programId: false} });
-                  },
-                }}
-                labels={{
-                  label: 'Program',
-                  placeholder: 'Enter program',
-                }}
-                menuPosition="relative"
-                options={this.state.program}
-                selection={this.state.programSelection}
-                variant="readonly"
-                errorText={this.state.errors.programId ? "This field is required" : ""}
-              />
+          <div style={{display: 'table', width: '100%'}}>
+              <div style={{float: 'left', width: '50%'}}>
+                <div className="slds-form-element slds-m-bottom_large">
+                  <Input
+                    id="campaignId"
+                    label="Campaign ID"
+                    placeholder="Enter campaign id"
+                    value={this.state.campaignId}
+                    onChange={e => this.handleChange(e)}
+                  />
+                </div>
+              </div>
+              <div style={{float: 'left', width: '50%'}}>
+
+                <div className="slds-form-element slds-m-bottom_large">
+                  <Combobox
+                    id="programId"
+                    required
+                    events={{
+                      onSelect: (event, data) => {
+                        const selection =
+                          data.selection.length === 0
+                            ? this.state.programSelection
+                            : data.selection;
+                        this.setState({ programSelection: selection, errors: {programId: false} });
+                      },
+                    }}
+                    labels={{
+                      label: 'Program',
+                      placeholder: 'Enter program',
+                    }}
+                    menuPosition="relative"
+                    options={this.state.program}
+                    selection={this.state.programSelection}
+                    variant="readonly"
+                    errorText={this.state.errors.programId ? "This field is required" : ""}
+                  />
+                </div>
+              </div>
             </div>
             <div className="slds-form-element slds-m-bottom_large">
               <Input
@@ -497,30 +505,6 @@ class CloneActivityModalComponent extends Component {
               />
             </div>
             <div className="slds-form-element slds-m-bottom_large">
-              <Combobox
-                required
-                id='formatId'
-                events={{
-                  onSelect: (event, data) => {
-                    const selection =
-                      data.selection.length === 0
-                        ? this.state.formatSelection
-                        : data.selection;
-                    this.setState({ formatSelection: selection, errors: {formatId: false} });
-                  }
-                }}
-                labels={{
-                  label: 'Format',
-                  placeholder: 'Enter format',
-                }}
-                menuPosition="relative"
-                options={this.state.format}
-                selection={this.state.formatSelection}
-                variant="readonly"
-                errorText={this.state.errors.formatId ? "This field is required" : ""}
-              />
-            </div>
-            <div className="slds-form-element slds-m-bottom_large">
               <Textarea
                 required
                 id="abstract"
@@ -531,82 +515,117 @@ class CloneActivityModalComponent extends Component {
                 onChange={e => this.handleChange(e)}
               />
             </div>
-            <div className="slds-form-element slds-m-bottom_large">
-              <Combobox
-                required
-                id='regionId'
-                events={{
-                  onSelect: (event, data) => {
-                    const selection =
-                      data.selection.length === 0
-                        ? this.state.regionSelection
-                        : data.selection;
-                    this.setState({ regionSelection: selection, errors: {regionId: false} });
-                  },
-                }}
-                labels={{
-                  label: 'Region',
-                  placeholder: 'Enter region',
-                }}
-                menuPosition="relative"
-                options={this.state.region}
-                selection={this.state.regionSelection}
-                variant="readonly"
-                errorText={this.state.errors.regionId ? "This field is required" : ""}
-              />
-            </div>
-            <div className={`slds-m-bottom_large slds-col slds-size_1-of-1 ${this.state.errors.startDate && "slds-has-error"}`}>
-              <Datepicker
-                required
-                id='startDate'
-                triggerClassName="slds-col slds-size_1-of-1"
-                labels={{label: 'Start date'}}
-                onChange={(event, data) => {
-                  this.handleStartDate(event, data);
-                  if (this.props.action) {
-                    const dataAsArray = Object.keys(data).map((key) => data[key]);
-                    this.props.action('onChange')(event, data, ...dataAsArray);
-                  }
-                }}
-                onCalendarFocus={(event, data) => {
-                  if (this.props.action) {
-                    const dataAsArray = Object.keys(data).map((key) => data[key]);
-                    this.props.action('onCalendarFocus')(event, data, ...dataAsArray);
-                  }
-                }}
-                formatter={(date) => date ? moment(date).format('DD/MM/YYYY') : ''}
-                parser={(dateString) => moment(dateString, 'DD/MM/YYYY').toDate()}
-                formattedValue={this.parseDate(this.state.startDate)}
-                autocomplete="off"
-                dateDisabled={this.checkEndDate}
-              />
-              {this.state.errors.startDate && <div class="slds-form-element__help">This field is required</div>}
-            </div>
-            <div className={`slds-m-bottom_large slds-col slds-size_1-of-1 ${this.state.errors.endDate && "slds-has-error"}`}>
-              <Datepicker
-                required
-                triggerClassName="slds-col slds-size_1-of-1"
-                labels={{label: 'End date',}}
-                onChange={(event, data) => {
-                  this.handleEndDate(event, data);
-                  if (this.props.action) {
-                    const dataAsArray = Object.keys(data).map((key) => data[key]);
-                    this.props.action('onChange')(event, data, ...dataAsArray);
-                  }
-                }}
-                onCalendarFocus={(event, data) => {
-                  if (this.props.action) {
-                    const dataAsArray = Object.keys(data).map((key) => data[key]);
-                    this.props.action('onCalendarFocus')(event, data, ...dataAsArray);
-                  }
-                }}
-                formatter={(date) => date ? moment(date).format('DD/MM/YYYY') : ''}
-                parser={(dateString) => moment(dateString, 'DD/MM/YYYY').toDate()}
-                formattedValue={this.parseDate(this.state.endDate)}
-                autocomplete="off"
-                dateDisabled={this.checkStartDate}
-              />
-              {this.state.errors.endDate && <div class="slds-form-element__help">This field is required</div>}
+            <div style={{display: 'table', width: '100%'}}>
+              <div style={{float: 'left', width: '25%'}}>
+                <div className="slds-form-element slds-m-bottom_large">
+                  <Combobox
+                    required
+                    id='formatId'
+                    events={{
+                      onSelect: (event, data) => {
+                        const selection =
+                          data.selection.length === 0
+                            ? this.state.formatSelection
+                            : data.selection;
+                        this.setState({ formatSelection: selection, errors: {formatId: false} });
+                      }
+                    }}
+                    labels={{
+                      label: 'Format',
+                      placeholder: 'Enter format',
+                    }}
+                    menuPosition="relative"
+                    options={this.state.format}
+                    selection={this.state.formatSelection}
+                    variant="readonly"
+                    errorText={this.state.errors.formatId ? "This field is required" : ""}
+                  />
+                </div>
+              </div>
+            
+              <div style={{float: 'left', width: '25%'}}>
+                <div className="slds-form-element slds-m-bottom_large">
+                  <Combobox
+                    required
+                    id='regionId'
+                    events={{
+                      onSelect: (event, data) => {
+                        const selection =
+                          data.selection.length === 0
+                            ? this.state.regionSelection
+                            : data.selection;
+                        this.setState({ regionSelection: selection, errors: {regionId: false} });
+                      },
+                    }}
+                    labels={{
+                      label: 'Region',
+                      placeholder: 'Enter region',
+                    }}
+                    menuPosition="relative"
+                    options={this.state.region}
+                    selection={this.state.regionSelection}
+                    variant="readonly"
+                    errorText={this.state.errors.regionId ? "This field is required" : ""}
+                  />
+                </div>
+              </div>
+              <div style={{float: 'left', width: '25%'}}>
+                <div className={`slds-m-bottom_large slds-col slds-size_1-of-1 ${this.state.errors.startDate && "slds-has-error"}`}>
+                  <Datepicker
+                    required
+                    id='startDate'
+                    triggerClassName="slds-col slds-size_1-of-1"
+                    labels={{label: 'Start date'}}
+                    onChange={(event, data) => {
+                      this.handleStartDate(event, data);
+                      if (this.props.action) {
+                        const dataAsArray = Object.keys(data).map((key) => data[key]);
+                        this.props.action('onChange')(event, data, ...dataAsArray);
+                      }
+                    }}
+                    onCalendarFocus={(event, data) => {
+                      if (this.props.action) {
+                        const dataAsArray = Object.keys(data).map((key) => data[key]);
+                        this.props.action('onCalendarFocus')(event, data, ...dataAsArray);
+                      }
+                    }}
+                    formatter={(date) => date ? moment(date).format('DD/MM/YYYY') : ''}
+                    parser={(dateString) => moment(dateString, 'DD/MM/YYYY').toDate()}
+                    formattedValue={this.parseDate(this.state.startDate)}
+                    autocomplete="off"
+                    dateDisabled={this.checkEndDate}
+                  />
+                  {this.state.errors.startDate && <div class="slds-form-element__help">This field is required</div>}
+                </div>
+              </div>
+              <div style={{float: 'left', width: '25%'}}>
+                <div className={`slds-m-bottom_large slds-col slds-size_1-of-1 ${this.state.errors.endDate && "slds-has-error"}`}>
+                  <Datepicker
+                    required
+                    triggerClassName="slds-col slds-size_1-of-1"
+                    labels={{label: 'End date',}}
+                    onChange={(event, data) => {
+                      this.handleEndDate(event, data);
+                      if (this.props.action) {
+                        const dataAsArray = Object.keys(data).map((key) => data[key]);
+                        this.props.action('onChange')(event, data, ...dataAsArray);
+                      }
+                    }}
+                    onCalendarFocus={(event, data) => {
+                      if (this.props.action) {
+                        const dataAsArray = Object.keys(data).map((key) => data[key]);
+                        this.props.action('onCalendarFocus')(event, data, ...dataAsArray);
+                      }
+                    }}
+                    formatter={(date) => date ? moment(date).format('DD/MM/YYYY') : ''}
+                    parser={(dateString) => moment(dateString, 'DD/MM/YYYY').toDate()}
+                    formattedValue={this.parseDate(this.state.endDate)}
+                    autocomplete="off"
+                    dateDisabled={this.checkStartDate}
+                  />
+                  {this.state.errors.endDate && <div class="slds-form-element__help">This field is required</div>}
+                </div>
+              </div>
             </div>
             <div className="slds-form-element slds-m-bottom_large">
               <Input

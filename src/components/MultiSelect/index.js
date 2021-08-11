@@ -23,7 +23,9 @@ class MultiSelect extends Component {
     }
       
     componentDidUpdate(prevProps, prevState){   
-        if (this.props.defaultFormats !== prevProps.defaultFormats) {
+        if (this.props.data !== prevProps.data) {
+            console.log('this is called')
+            console.log(this.props.selectedData)
             this.setState({data:this.props.data,
                 selectedData:this.props.selectedData, 
                 isOpen:this.props.isOpen, 
@@ -43,6 +45,13 @@ class MultiSelect extends Component {
                 onRequestClose: () => {
                     this.setState({isOpen:false})
                     this.props.setSelectedData(this.state.selectedData)
+                    if(this.state.selectedData.length > 1){
+                        this.setState({selectedData: this.state.selectedData.filter(x => {return x.id != 'all'})})
+                    }
+                    if(this.state.selectedData.length === 0){
+                        this.setState({selectedData: this.state.data.filter(x => {return x.id === 'all'})})
+                    }
+                    
                 },
                 onRequestOpen: () => {
                     this.setState({isOpen:true})
@@ -70,6 +79,9 @@ class MultiSelect extends Component {
                     })
                 },
                 onSelect: (event, data) => {
+                    if(data.selection.id === 'all'){
+                        this.setState({selectedData: this.state.data.filter(x => {return x.id === 'all'})})
+                    }
                     this.setState({
                     inputValue: '',
                     selectedData:data.selection
@@ -82,7 +94,7 @@ class MultiSelect extends Component {
                 menuItemVisibleLength={10}
                 options={comboboxFilterAndLimit({
                 inputValue:this.state.inputValue,
-                limit: 50,
+                limit: 250,
                 options:this.state.data,
                 selection:this.state.selectedData,
                 })}

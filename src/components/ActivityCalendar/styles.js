@@ -14,5 +14,5 @@ export const Container = styled.div`
   margin-top: 5.6rem;
 `;
 
-export const CalendarContainer = styled.div`height: 655px; width:100%; overflow: hidden`;
+export const CalendarContainer = styled.div`height: 800px; width:100%; overflow: hidden`;
 export const ModalTableContainer = styled.div`overflow: 'auto'`

@@ -39,11 +39,11 @@
   .rbc-header{
    border-bottom: none !important;
   }
-  .rbc-row-content {
+  /* .rbc-row-content {
     overflow-y:auto !important;
     height: 600px !important;
     padding-bottom: 10px !important;
-  }
+  } */
   .rbc-header + .rbc-header:nth-child(6) {
     display: none !important; 
   }
@@ -66,7 +66,7 @@
     max-width: 20% !important; 
     flex-basis: 20% !important; 
   }
-  .rbc-row-segment:nth-child(6) {
+ .rbc-row-segment:nth-child(6) {
     display: none !important; 
   }
   .rbc-row-segment:nth-child(7) {
@@ -81,6 +81,9 @@
   .slds-card {
     border-style: none !important;
   }
-  /* .rbc-ellipsis, .rbc-event-label, .rbc-row-segment .rbc-event-content, .rbc-show-more {
+  .rbc-ellipsis, .rbc-event-label, .rbc-row-segment .rbc-event-content, .rbc-show-more {
     white-space: normal !important; 
-  } */
+    line-height: 1.2em !important; 
+    height: 2.4em !important; 
+    overflow: hidden !important; 
+  }

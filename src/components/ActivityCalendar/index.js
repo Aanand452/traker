@@ -6,8 +6,6 @@ import moment from 'moment';
 import {ModalTableContainer, CalendarContainer } from './styles';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 import { Modal, Card, CardFilter, Icon, CardEmpty, Button, DataTable, DataTableColumn, DataTableRowActions, Tooltip, Dropdown, Datepicker} from "@salesforce/design-system-react";
-import EditModal from "../EditActivityModal";
-import CloneModal from "../CloneActivityModal";
 import ViewActivityModal from "../ViewActivityModal";
 import {setItem } from "../../actions/DataTable";
 import { connect } from "react-redux";
@@ -19,17 +17,17 @@ moment.locale('en-GB',{
 });
 const localizer = momentLocalizer(moment)
 const columns =[
-    <DataTableColumn 
-        key="userId"
-        label="Owner"
-        property="userId"
-        width="8em"
-    />,
+    // <DataTableColumn 
+    //     key="userId"
+    //     label="Owner"
+    //     property="userId"
+    //     width="8em"
+    // />,
     <DataTableColumn 
         key="title"
         label="Title"
         property="title"
-        width="6em"
+        width="16em"
     />,
     <DataTableColumn 
         key="abstract"
@@ -41,14 +39,14 @@ const columns =[
         key="formatId"
         label="Format"
         property="formatId"
-        width="16em"
+        width="6em"
     />,
-    <DataTableColumn 
-        key="programId"
-        label="Program"
-        property="programId"
-        width="8em"
-    />,
+    // <DataTableColumn 
+    //     key="programId"
+    //     label="Program"
+    //     property="programId"
+    //     width="8em"
+    // />,
     <DataTableColumn 
         key="regionId"
         label="Region"
@@ -88,11 +86,11 @@ class ActivityCalendar extends Component {
           start = start.startOf('week');
           end = end.endOf('week');
       }
-    //   let startDate = new Date(start.toString())
-    //   let endDate = new Date(end.toString())
+      let startDate = new Date(start.toString())
+      let endDate = new Date(end.toString())
     //   let today = new Date()
-      let startDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1)
-      let endDate = new Date(currentDate.getFullYear(), currentDate.getMonth()+1, 0)
+    //   let startDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1)
+    //   let endDate = new Date(currentDate.getFullYear(), currentDate.getMonth()+1, 0)
       this.state.displayedData = this.state.data.filter(a => {
           var date = new Date(a.startDate)
           if(date.getDay() !== 0 && date.getDay() !== 6){
@@ -126,6 +124,7 @@ class ActivityCalendar extends Component {
         }
     }
     handleSelectDay = (slotinfo) => {
+        console.log('this is here')
         var modalEvents = this.state.events.filter(a => {
             var date = new Date(a.start)
             return (moment(date).format("DD-MM-YYYY") === moment(slotinfo.start).format("DD-MM-YYYY"))
@@ -294,28 +293,28 @@ class ActivityCalendar extends Component {
                         onRequestClose={this.hideModal}
                         size="large">
                         <Card
-                            filter={
-                                (!isEmpty || this.state.isFiltering) && (
-                                    <CardFilter onChange={this.handleFilterChange} />
-                                )
-                            }
-                            headerActions={(
-                            <Link to="/create-activity">
-                                <Tooltip content="Add New Activity" align="bottom right">
-                                <Button>
-                                <Icon  assistiveText={{ icon: 'New' }} category="utility" name="new" size="x-small"/>
-                                </Button></Tooltip>
-                            </Link>)}
+                            // filter={
+                            //     (!isEmpty || this.state.isFiltering) && (
+                            //         <CardFilter onChange={this.handleFilterChange} />
+                            //     )
+                            // }
+                            // headerActions={(
+                            // <Link to="/create-activity">
+                            //     <Tooltip content="Add New Activity" align="bottom right">
+                            //     <Button>
+                            //     <Icon  assistiveText={{ icon: 'New' }} category="utility" name="new" size="x-small"/>
+                            //     </Button></Tooltip>
+                            // </Link>)}
 
-                            heading="Releated Items"
-                            icon={<Icon category="standard" name="document" size="small" />}
-                            empty={
-                                isEmpty ? (
-                                    <CardEmpty heading="No Related Items">
-                                        <Button label="Add Item" onClick={this.handleAddItem} />
-                                    </CardEmpty>
-                                ) : null
-                            }
+                            heading=""
+                            // // icon={<Icon category="standard" name="document" size="small" />}
+                            // empty={
+                            //     isEmpty ? (
+                            //         <CardEmpty heading="No Related Items">
+                            //             <Button label="Add Item" onClick={this.handleAddItem} />
+                            //         </CardEmpty>
+                            //     ) : null
+                            // }
                         ><section className="slds-p-around_large">
                             <ModalTableContainer>
                                 <DataTable

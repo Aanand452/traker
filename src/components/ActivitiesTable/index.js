@@ -26,7 +26,7 @@ import {
   Modal,
   Combobox,
   comboboxFilterAndLimit,
-  Checkbox,
+  //Checkbox,
 } from "@salesforce/design-system-react";
 
 import { getCookie } from '../../utils/cookie';
@@ -49,10 +49,11 @@ import exportFromJSON from 'export-from-json'
 
 import DatePicker from 'react-datepicker'
 import { addDays } from 'date-fns';
-import CalendarViewHeadFilter from "../CalendarViewHeadFilter"
+//import CalendarViewHeadFilter from "../CalendarViewHeadFilter"
 import { push as Menu } from 'react-burger-menu'
 import MultiSelect from '../MultiSelect'
 import "react-datepicker/dist/react-datepicker.css";
+import CreateActivity from "../CreateActivity";
 
 
 const DateCell = ({ children, ...props }) => {
@@ -168,7 +169,9 @@ class Table extends Component {
     openMenuBar:false,
     userId: localStorage.getItem('userId'),
     defaultUserFilter: {},
-    calendarView: {date: new Date(), view:'month', action:'Today'}
+    calendarView: {date: new Date(), view:'month', action:'Today'},
+    row:{},
+    openNew: false,
   };
 
   table = React.createRef()
@@ -407,6 +410,7 @@ class Table extends Component {
           programs: [{ label: "All", id: "all", icon:(<Icon assistiveText={{ label: 'Account' }} category="standard" name="campaign"/>)}, ...programs],
           filteredPrograms: [{ label: "All", id: "all", icon:(<Icon assistiveText={{ label: 'Account' }} category="standard" name="campaign"/>)}, ...programs],
         });
+        console.log(this.state.programs)
       } else throw new Error(response);
     } catch (err) {
       console.error(err);
@@ -540,7 +544,7 @@ class Table extends Component {
         result = result.map((item) => ({ label: item.name, ...item }));
         let formats = result.map(el => ({...el, id: el.format_id, icon:(<Icon assistiveText={{ label: 'Task' }} category="standard" name="task2" style={{background:'#'+this.getEventColor(el.label)}}/>)}))
         this.setState({
-          formats: formats,
+          formats: [{ label: "All", id: "all", icon:(<Icon assistiveText={{ label: 'Account' }} category="standard" name="campaign"/>)}, ...formats],
         });
         let defaultFormatNames = ['3rdParty-Virtual Event', 'Exec Engagement', 'Executive Visit', 'F2F Event', 'Webinar', 'Webinar - 3rd Party', 'Virtual Event', 'SIC', 'Launch']
         let defaultFormats = formats.filter(format => {
@@ -864,10 +868,12 @@ class Table extends Component {
 
   getFilteredPrograms = (region) =>{
     if(region){
-      if(region[0].id!=='all'){
-        const filteredPrograms = this.state.programs.filter(function(program){
-          return program.target_region===region[0].id
-        })
+      console.log('this is called')
+      console.log(region)
+      if(region.length > 1 || region[0].id !== 'all'){
+        console.log('this is called')
+        const filteredPrograms = this.state.programs.filter( x => this.state.regionsSelected.find( y => y.id === x.target_region
+        ))
         this.setState({
           filteredPrograms : filteredPrograms
         })
@@ -876,8 +882,10 @@ class Table extends Component {
           filteredPrograms: this.state.programs
         })
       }
-      
     }
+  }
+  getNewPrograms = () => {
+    return this.state.filteredPrograms
   }
   getFilteredProgramsByFilters = () => {
 
@@ -934,6 +942,25 @@ class Table extends Component {
     });
     this.setState({data:filteredData, calendarViewData:filteredData, OpenFilters:false})
   }
+
+  getFormData = data => {
+    this.setState({row: data});
+  };
+
+  onSubmit = () => {
+    this.setState({showLoader: true});
+
+    try {
+      this.props.history.push({
+        pathname: '/my-activities',
+        state: { newActivity: true }
+      });
+    } catch (error) {
+      this.setState({showToast: true});
+    }
+
+    this.setState({showLoader: false});
+  };
 
   getUserDefaultFilter = async () => {
     try {
@@ -1208,14 +1235,24 @@ class Table extends Component {
 
   menuSetSelectedRegion = (selectedData) => {
     this.setState({regionsSelected:selectedData})
+    this.getFilteredPrograms(selectedData)
+    this.getFilteredData()
+    console.log(this.state.filteredPrograms)
+
   }
 
   menuSetSelectedProgram = (selectedData) => {
     this.setState({programSelected:selectedData})
+    this.getFilteredData()
   }
 
   menuSetSelectedFormat = (selectedData) => {
     this.setState({formatsSelected:selectedData})
+    this.getFilteredData()
+  }
+
+  openNewActivity = () => {
+    this.setState({openNew: true})
   }
 
   setCalendarView = () => {
@@ -1265,6 +1302,12 @@ class Table extends Component {
             reloadActivities={this.props.reloadActivities}
           />
         )}
+        {<Modal isOpen={this.state.openNew} onRequestClose={() => this.setState({openNew:false})} size="medium"><div className="slds-p-around_large" >
+          <CreateActivity
+            getFormData = {this.getFormData}
+            handleSubmit={this.onSubmit}
+            abstract = {'"To help infuse our Salesforce community with joy and inspiration, today we launched our #FeelGoodFridays series across our social channels. 🙌The aim of this series is to share how our community is keeping spirits high with positive vibes every week. Our first #FeelGoodFriday story is about one of our education Trailblazers, A Team Tuition. No doubt, many of us can relate to Hayden’s story of being stereotyped at school as a particular type of learner. Well, Hayden has turned this on its head with his business A Team Tuition."'}
+          /></div></Modal>}
         {/* <PageHeader
           onRenderActions={this.actions}
           icon={
@@ -1616,10 +1659,10 @@ class Table extends Component {
                 <div style={{float: 'left',}}>
                   <Button onClick={this.setCalendarView} variant="base" style={{borderRadius:'1rem', paddingLeft:'10px', paddingRight:'10px',
                   color: this.state.calendarView.view === 'month'? 'white': 'black',
-                  background: this.state.calendarView.view === 'month'? 'green' :'#d8d5d5'}}>Month</Button></div>
+                  background: this.state.calendarView.view === 'month'? '#45a7f1' :'#d8d5d5'}}>Month</Button></div>
                 <div style={{float: 'left',}}> <Button onClick={this.setCalendarView} variant="base" style={{borderRadius:'1rem', paddingLeft:'10px', paddingRight:'10px',
                   color:this.state.calendarView.view === 'week'? 'white': 'black',
-                  background: this.state.calendarView.view === 'week'? 'green' :'#d8d5d5'}}>Week</Button></div>
+                  background: this.state.calendarView.view === 'week'? '#45a7f1' :'#d8d5d5'}}>Week</Button></div>
               </div>
             </div>}
             {/* {this.state.isCalanderView && <div style={{float: 'left', paddingRight: '30px'}}>
@@ -1683,12 +1726,12 @@ class Table extends Component {
             />
           </DropdownTrigger>
         </Dropdown>
-          <Link to="/create-activity">
-            <Tooltip content="Add New Activity" align="bottom right">
-            <Button>
-              <Icon  assistiveText={{ icon: 'New' }} category="utility" name="new" size="x-small"/>
-            </Button></Tooltip>
-          </Link>
+          <Link to="/create-activity"></Link>
+        <Tooltip content="Add New Activity" align="bottom right">
+        <Button onClick={this.openNewActivity}>
+          <Icon  assistiveText={{ icon: 'New' }} category="utility" name="new" size="x-small"/>
+        </Button></Tooltip>
+          
         </ButtonGroup></div>)}
           icon={<div style={{display: 'table'}}>
                   <div style={{float: 'left',}}>
@@ -1756,7 +1799,7 @@ class Table extends Component {
                         label={''}
                       /></MultiSelectContainer>}
                       {this.state.openMenuBar && <MultiSelectContainer><MultiSelect 
-                        data={this.state.programs}
+                        data={this.getNewPrograms()}
                         inputValue={''}
                         selectedData={this.state.programSelected}
                         setSelectedData={this.menuSetSelectedProgram}
@@ -1774,8 +1817,12 @@ class Table extends Component {
                       <div className="expandableRow">
                         <div className="expandableColumn">
                           <Button label="Save As Default" variant="outline-brand" onClick={this.saveAsDefaultFilter} /></div>
-                        <div className="expandableColumn">
-                          <Button label="Save" variant="brand" onClick={this.getFilteredData} /></div>
+                        {/* <div className="expandableColumn" style={{paddingTop: '5px', paddingLeft: '40%'}}>
+                          <Button iconCategory="utility"
+                            assistiveText={{ icon: 'Next' }}
+                            iconName="sync"
+                            iconVariant="bare"
+                            variant="icon" variant="bare" onClick={this.getFilteredData} /></div> */}
                       </div>
 
                   </Menu>
