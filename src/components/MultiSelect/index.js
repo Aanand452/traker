@@ -78,14 +78,11 @@ class MultiSelect extends Component {
                 },
                 onSelect: (event, data) => {
                     var all = this.state.data.find(x => x.id === 'all')
-                    console.log(data.selection.indexOf(all) > 0)
                     if(data.selection.indexOf(all) > 0){
                         this.setState({inputValue: '', selectedData: [all]})
                     }else{
-                        console.log('inside else')
                         this.setState({inputValue: '', selectedData:data.selection})
                     }
-                    console.log(this.state.selectedData)
                 }
                 }}
                 // menuPosition="relative"
