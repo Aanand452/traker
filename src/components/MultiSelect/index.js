@@ -23,7 +23,7 @@ class MultiSelect extends Component {
     }
       
     componentDidUpdate(prevProps, prevState){   
-        if (this.props.selectedData !== prevProps.selectedData) {
+        if (this.props.selectedData !== prevProps.selectedData || this.props.data !== prevProps.data) {
             this.setState({data:this.props.data,
                 selectedData:this.props.selectedData, 
                 isOpen:this.props.isOpen, 

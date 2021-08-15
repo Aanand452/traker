@@ -26,7 +26,7 @@ import {
   Modal,
   Combobox,
   comboboxFilterAndLimit,
-  //Checkbox,
+  Checkbox,
 } from "@salesforce/design-system-react";
 
 import { getCookie } from '../../utils/cookie';
@@ -867,18 +867,24 @@ class Table extends Component {
 
   getFilteredPrograms = (region) =>{
     if(region){
-      if(region.length !== 0 && region[0].id !== 'all'){
-        const filteredPrograms = this.state.programs.filter( x => this.state.regionsSelected.find( y => y.id === x.target_region
-        ))
-        this.setState({
-          filteredPrograms : filteredPrograms
-        })
-      }else{
+      try{
+        if(region.length > 1 || region[0].id !== 'all'){
+          const filteredPrograms = this.state.programs.filter( x => this.state.regionsSelected.find( y => y.id === x.target_region))
+          this.setState({
+            filteredPrograms : filteredPrograms
+          })
+        }else{
+          this.setState({
+            filteredPrograms: this.state.programs
+          })
+        }
+      }
+      catch(e){
         this.setState({
           filteredPrograms: this.state.programs
         })
       }
-    }
+  }
   }
   getNewPrograms = () => {
     return this.state.filteredPrograms
@@ -1238,12 +1244,12 @@ class Table extends Component {
 
   menuSetSelectedProgram = (selectedData) => {
     this.setState({programSelected:selectedData})
-    this.getFilteredData()
+    // this.getFilteredData()
   }
 
   menuSetSelectedFormat = (selectedData) => {
     this.setState({formatsSelected:selectedData})
-    this.getFilteredData()
+    // this.getFilteredData()
   }
 
   openNewActivity = () => {

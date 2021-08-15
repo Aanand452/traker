@@ -304,8 +304,8 @@ class ActivityCalendar extends Component {
                             //     <Icon  assistiveText={{ icon: 'New' }} category="utility" name="new" size="x-small"/>
                             //     </Button></Tooltip>
                             // </Link>)}
-
-                            heading=""
+                            hasNoHeader
+                            // heading=""
                             // // icon={<Icon category="standard" name="document" size="small" />}
                             // empty={
                             //     isEmpty ? (
