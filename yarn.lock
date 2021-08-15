@@ -922,14 +922,13 @@
   resolved "https://registry.yarnpkg.com/@salesforce/babel-preset-design-system-react/-/babel-preset-design-system-react-3.0.0.tgz#b8334d14fc3801064ac5b6e5349145dc057bc17f"
   integrity sha512-NM3aObtfYl9RpfVu5eDU96fmTW7Mj2V1Y1O5b8dpLGESgXxqHiGIV7d4bKHzmD8O00g1qjPAPusd0f2IB7Yi0Q==
 
-"@salesforce/design-system-react@^0.10.21":
-  version "0.10.36"
-  resolved "https://registry.yarnpkg.com/@salesforce/design-system-react/-/design-system-react-0.10.36.tgz#151ff6200a1ad3f6808d4463b0e9e783a324f359"
-  integrity sha512-Com4QCrL0Ke5sIy1GQFEKQpASPngJjYRZ0WRpkwlQOeVTLAaJVO8Yueo56lkndPVC+NXV1lykgp5VWnyB5Q2UA==
+"@salesforce/design-system-react@0.10.32":
+  version "0.10.32"
+  resolved "https://registry.yarnpkg.com/@salesforce/design-system-react/-/design-system-react-0.10.32.tgz#f2834de2960f13adadeb0bbbc0a5bae580b517a6"
+  integrity sha512-gnF3yUFxn2C6kTU5QM6oOUPw4gTISvDVXJW0Z8RtAfNgcc2il9X5KcHrg07KQfqGKLK5DXS9uRZ4vDttzBC//g==
   dependencies:
     "@salesforce/babel-preset-design-system-react" "^3.0.0"
     classnames "^2.2.6"
-    column-resizer "^1.3.6"
     create-react-class "^15.7.0"
     lodash.assign "^4.2.0"
     lodash.escaperegexp "^4.1.2"
@@ -944,7 +943,7 @@
     prop-types ">=15.7.2"
     react-contenteditable "^3.3.5"
     react-highlighter "^0.4.3"
-    react-modal "3.14.3"
+    react-modal "3.12.1"
     react-onclickoutside "^6.10.0"
     react-required-if "^1.0.3"
     react-text-truncate "^0.16.0"
@@ -3025,13 +3024,6 @@ colors@~1.1.2:
   resolved "https://registry.yarnpkg.com/colors/-/colors-1.1.2.tgz#168a4701756b6a7f51a12ce0c97bfa28c084ed63"
   integrity sha1-FopHAXVran9RoSzgyXv6KMCE7WM=
 
-column-resizer@^1.3.6:
-  version "1.3.6"
-  resolved "https://registry.yarnpkg.com/column-resizer/-/column-resizer-1.3.6.tgz#c478d0440d0fef61b6e797da52eafe7a3e6ea8f7"
-  integrity sha512-uDiTG0bin14mapxreyQXUenKZ578xAm89x4WbRZmlQeHEJM+qxnhdzsy1skM9FyQECX1Xky/XyhnonwjHCnD7A==
-  dependencies:
-    string-hash "~1.1.3"
-
 combined-stream@^1.0.6, combined-stream@~1.0.6:
   version "1.0.8"
   resolved "https://registry.yarnpkg.com/combined-stream/-/combined-stream-1.0.8.tgz#c3d45a8b34fd730631a110a8a2520682b31d5a7f"
@@ -4752,7 +4744,7 @@ file-loader@1.1.5:
     loader-utils "^1.0.2"
     schema-utils "^0.3.0"
 
-"file-saver@github:eligrey/FileSaver.js#1.3.8":
+file-saver@eligrey/FileSaver.js#1.3.8:
   version "1.3.8"
   resolved "https://codeload.github.com/eligrey/FileSaver.js/tar.gz/e865e37af9f9947ddcced76b549e27dc45c1cb2e"
 
@@ -8980,13 +8972,13 @@ react-lifecycles-compat@^3.0.0, react-lifecycles-compat@^3.0.4:
   resolved "https://registry.yarnpkg.com/react-lifecycles-compat/-/react-lifecycles-compat-3.0.4.tgz#4f1a273afdfc8f3488a8c516bfda78f872352362"
   integrity sha512-fBASbA6LnOU9dOU2eW7aQ8xmYBSXUIWr+UmF9b1efZBazGNO+rcXT/icdKnYm2pTwcRylVUYwW7H1PHfLekVzA==
 
-react-modal@3.14.3:
-  version "3.14.3"
-  resolved "https://registry.yarnpkg.com/react-modal/-/react-modal-3.14.3.tgz#7eb7c5ec85523e5843e2d4737cc17fc3f6aeb1c0"
-  integrity sha512-+C2KODVKyu20zHXPJxfOOcf571L1u/EpFlH+oS/3YDn8rgVE51QZuxuuIwabJ8ZFnOEHaD+r6XNjqwtxZnXO0g==
+react-modal@3.12.1:
+  version "3.12.1"
+  resolved "https://registry.yarnpkg.com/react-modal/-/react-modal-3.12.1.tgz#38c33f70d81c33d02ff1ed115530443a3dc2afd3"
+  integrity sha512-WGuXn7Fq31PbFJwtWmOk+jFtGC7E9tJVbFX0lts8ZoS5EPi9+WWylUJWLKKVm3H4GlQ7ZxY7R6tLlbSIBQ5oZA==
   dependencies:
     exenv "^1.2.0"
-    prop-types "^15.7.2"
+    prop-types "^15.5.10"
     react-lifecycles-compat "^3.0.0"
     warning "^4.0.3"
 
@@ -10131,11 +10123,6 @@ strict-uri-encode@^1.0.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/strict-uri-encode/-/strict-uri-encode-1.1.0.tgz#279b225df1d582b1f54e65addd4352e18faa0713"
   integrity sha1-J5siXfHVgrH1TmWt3UNS4Y+qBxM=
-
-string-hash@~1.1.3:
-  version "1.1.3"
-  resolved "https://registry.yarnpkg.com/string-hash/-/string-hash-1.1.3.tgz#e8aafc0ac1855b4666929ed7dd1275df5d6c811b"
-  integrity sha1-6Kr8CsGFW0Zmkp7X3RJ1311sgRs=
 
 string-length@^1.0.0, string-length@^1.0.1:
   version "1.0.1"
