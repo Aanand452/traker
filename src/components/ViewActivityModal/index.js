@@ -79,19 +79,12 @@ class ViewActivityModal extends Component {
           contentClassName="activity-modal-overflow"
           isOpen={this.props.closeDetailModal && !this.state.deleteModalIsOpen}
           size="medium"
-          footer={[
-            <Button
-              label="Close"
-              onClick={this.props.closeDetailModal}
-              key="CancelButton"
-            />
-          ]}
           onRequestClose={this.props.closeDetailModal}
           heading="Activity detail"
           ariaHideApp={false}
           footer={[
             <Button label="Edit" variant="brand" onClick={this.editData} />,
-            <Button label="Clone" onClick={this.props.closeDetailModal, this.cloneData} />,
+            <Button label="Clone" onClick={this.props.closeDetailModal && this.cloneData} />,
             <Button label="Delete" variant="destructive" onClick={this.deleteData} />,
           ]}
         >

@@ -26,7 +26,6 @@ import {
   Modal,
   Combobox,
   comboboxFilterAndLimit,
-  Checkbox,
 } from "@salesforce/design-system-react";
 
 import { getCookie } from '../../utils/cookie';
@@ -178,7 +177,7 @@ class Table extends Component {
 
   componentDidMount() {
     this.setupAndFetch();
-    {!this.state.isCalanderView && this.resizableTable(this.table.current.scrollerRef.children[0])}
+    !this.state.isCalanderView && this.resizableTable(this.table.current.scrollerRef.children[0])
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -609,6 +608,9 @@ class Table extends Component {
       case 3:
         this.exportCSV('xls');
         break;
+      default:
+        console.err('Default Value')
+        break;
     }
   }
 
@@ -889,22 +891,22 @@ class Table extends Component {
   getNewPrograms = () => {
     return this.state.filteredPrograms
   }
-  getFilteredProgramsByFilters = () => {
+  // getFilteredProgramsByFilters = () => {
 
-    const selectedIndustries = this.state.industrySelected.map(function (key) {
-      return key.label
-    } )
-    const selectedApms = this.state.apm1Selected.map(function (key) {
-      return key.label
-    } )
-    const selectedSegments = this.state.segmentSelected.map(function (key) {
-      return key.label
-    } )
-    const programs = this.state.programs
-    const filteredData = programs.filter((el) => {
-    })
+  //   const selectedIndustries = this.state.industrySelected.map(function (key) {
+  //     return key.label
+  //   } )
+  //   const selectedApms = this.state.apm1Selected.map(function (key) {
+  //     return key.label
+  //   } )
+  //   const selectedSegments = this.state.segmentSelected.map(function (key) {
+  //     return key.label
+  //   } )
+  //   const programs = this.state.programs
+  //   const filteredData = programs.filter((el) => {
+  //   })
 
-  }
+  // }
 
   updateFilters = () => {
     const { formats_selected, programs_selected, regions_selected } = this.state.defaultUserFilter;
@@ -1126,12 +1128,12 @@ class Table extends Component {
   }
 
   previousMonth = () => {
-    var {date, view, action} = this.state.calendarView
+    var {date, view} = this.state.calendarView
     this.changeView(date, view, 'PREV')
   }
 
   nextMonth = () => {
-    var {date, view, action} = this.state.calendarView
+    var {date, view} = this.state.calendarView
     this.changeView(date, view, 'NEXT')
   }
 

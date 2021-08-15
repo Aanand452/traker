@@ -1,11 +1,11 @@
 import "./styles.css";
 import React, { Component,} from "react";
-import { withRouter, Link } from 'react-router-dom';
+import { withRouter} from 'react-router-dom';
 import { Calendar, momentLocalizer  } from 'react-big-calendar' 
 import moment from 'moment';
 import {ModalTableContainer, CalendarContainer } from './styles';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
-import { Modal, Card, CardFilter, Icon, CardEmpty, Button, DataTable, DataTableColumn, DataTableRowActions, Tooltip, Dropdown, Datepicker} from "@salesforce/design-system-react";
+import { Modal, Card, DataTable, DataTableColumn, DataTableRowActions, Dropdown} from "@salesforce/design-system-react";
 import ViewActivityModal from "../ViewActivityModal";
 import {setItem } from "../../actions/DataTable";
 import { connect } from "react-redux";
@@ -99,7 +99,7 @@ class ActivityCalendar extends Component {
       });
       const finalEvents = []
       this.state.displayedData.forEach(e => {
-        finalEvents.push({title:e.title, start:new Date(e.startDate), end:new Date(e.startDate), allDay:true, allDay:true, resource:{data:e}})
+        finalEvents.push({title:e.title, start:new Date(e.startDate), end:new Date(e.startDate), allDay:true, resource:{data:e}})
       })
       this.state.events = finalEvents
       this.setState({displayedDateRage:{start:start.toString(), end:end.toString()}})
@@ -265,13 +265,7 @@ class ActivityCalendar extends Component {
         };
     }
 
-    onChangeDate = (dates) => {
-        const startDate = dates.selection.startDate
-        const endDate = dates.selection.endDate
-    }
-
     render() {
-        const isEmpty = this.state.eventsOnModal.length === 0;
         return (
 
             <div>

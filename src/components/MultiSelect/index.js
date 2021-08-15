@@ -3,7 +3,6 @@ import { withRouter } from 'react-router-dom';
 import { Combobox,
         comboboxFilterAndLimit,
         Icon} from "@salesforce/design-system-react";
-import { slide as Menu } from 'react-burger-menu'
 
 class MultiSelect extends Component {
 

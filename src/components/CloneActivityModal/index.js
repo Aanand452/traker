@@ -361,7 +361,7 @@ class CloneActivityModalComponent extends Component {
       if(response.status === 200) {
         this.props.toggleOpen("cloneModalIsOPen");
         this.props.onToast(true, "Activity was created successfully", "success");
-        this.props.closeDetailModal ? this.props.closeDetailModal() : ''
+        if(this.props.closeDetailModal) this.props.closeDetailModal()
         let { startDate, endDate } = this.props.historicDate ? this.props.historicDate : {};
         if(this.props.isHistoric && startDate !== "" && endDate !== "") {
           this.props.reloadActivities(startDate, endDate);

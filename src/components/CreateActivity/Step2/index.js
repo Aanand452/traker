@@ -18,7 +18,7 @@ import {
 import { getCookie } from '../../../utils/cookie';
 import { getAPIUrl } from '../../../config/config';
 
-import { PillContianerStyled, InputIconStyled } from '../styles';
+import { PillContianerStyled} from '../styles';
 
 class Step2 extends Component {
   state = {
