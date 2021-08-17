@@ -3,8 +3,6 @@ import { withRouter } from 'react-router-dom';
 import moment from 'moment';
 import {
   Combobox,
-  comboboxFilterAndLimit,
-  Icon,
   Input,
   Datepicker,
   Button,
@@ -18,7 +16,7 @@ import {
 import { getCookie } from '../../../utils/cookie';
 import { getAPIUrl } from '../../../config/config';
 
-import { PillContianerStyled} from '../styles';
+import { PillContianerStyled, InputIconStyled} from '../styles';
 
 class Step2 extends Component {
   state = {
@@ -28,9 +26,6 @@ class Step2 extends Component {
       heading: 'Something went wrong',
       duration: 5000,
       active: false,
-      selection: [],
-      inputValue: '',
-      InputList: [],
     }
   };
 
@@ -38,15 +33,9 @@ class Step2 extends Component {
     this.setupAndFetch();
   }
 
-  addInput = () => {
-    this.props.addAsset(this.props.row.asset);
-    // this.state.InputList.push(<Input />)
-  }
-
   setupAndFetch = async () => {
     if(window.location.hostname === 'localhost') this.API_URL =  "http://localhost:3000/api/v1";
     else this.API_URL = await getAPIUrl();
-    // this.setState({selection: this.assetType[1]})
     this.getFormats();
   }
 
@@ -85,28 +74,6 @@ class Step2 extends Component {
     if(!date) return;
     return starDate.isAfter(date.date)
   }
-
-  assetType = [
-    {id:'1', label:'Home Page', subTitle: 'Home Page', type: 'topic', icon: (
-			<Icon
-				assistiveText={{ label: 'Asset' }}
-				category="utility"
-				name='topic'
-			/>
-		),}, {id:'2', label:'Registration Form', subTitle: 'Registration Form', type: 'topic', icon: (
-			<Icon
-				assistiveText={{ label: 'Asset' }}
-				category="utility"
-				name='topic'
-			/>
-		),}, {id: '3', label:'Login Page', subTitle: 'Login Page', type: 'topic', icon: (
-			<Icon
-				assistiveText={{ label: 'Asset' }}
-				category="utility"
-				name='topic'
-			/>
-		),}
-  ]
 
   render() {
     return (
@@ -194,91 +161,21 @@ class Step2 extends Component {
           />
           {this.props.error.endDate && <div className="slds-form-element__help">{this.props.error.endDate}</div>}
         </div>
-        <div className={`slds-col slds-size_1-of-6 slds-form-element`} style={{width: '20%'}}>
-          <Combobox
-            events={{
-              onChange: (event, { value }) => {
-                this.setState({ inputValue: value });
-              },
-              onRequestRemoveSelectedOption: (event, data) => {
-                this.setState({
-                  inputValue: '',
-                  selection: data.selection,
-                });
-              },
-              onSubmit: (event, { value }) => {
-                this.setState({
-                  inputValue: '',
-                  selection: [
-                    ...this.state.selection,
-                    {
-                      label: value,
-                      icon: (
-                        <Icon
-                          assistiveText={{ label: 'Account' }}
-                          category="utility"
-                          name="topic"
-                        />
-                      ),
-                    },
-                  ],
-                });
-              },
-              onSelect: (event, data) => {
-                this.props.handleChange("assetType", data.selection.label)
-                this.setState({
-                  inputValue: '',
-                  selection: data.selection,
-                });
-              },
-            }}
-            labels={{
-              label: 'Select Asset Type',
-              placeholder: 'Asset Type',
-            }}
-            options={comboboxFilterAndLimit({
-              inputValue: this.state.inputValue,
-              options: this.assetType,
-              selection: [],
-            })}
-            menuItemVisibleLength={5}
-            selection={this.state.selection}
-            value={
-              this.state.selection
-                ? ''
-                : this.state.inputValue
-            }
-            variant="inline-listbox"
-          />
-        {
-            !!this.props.assets.length && !!this.props.assetsType &&(
-              <PillContianerStyled
-                options={this.props.assets}
-                onClickPill={(e, data) => {
-                  this.props.editAsset(data.option.label);
-                }}
-                onRequestRemovePill={(e, data) => {
-                  this.props.deleteAsset(data.option.label);
-                }}
-              />
-            )
-          }
-        </div>
-        <div className={`slds-col slds-size_1-of-6 slds-form-element`} style={{width: '27%'}}>
+        <div className={`slds-m-bottom_large slds-col slds-size_1-of-2 slds-form-element`}>
           <Input
-            // iconRight={
-            //   <InputIconStyled
-            //     assistiveText={{
-            //       icon: 'add',
-            //     }}
-            //     name="add"
-            //     category="utility"
-            //     onClick={() => {
-            //       this.props.addAsset(this.props.row.asset);
-            //     }}
-            //     disabled={!!this.props.error.asset || !this.props.row.asset}
-            //   />
-            // }
+            iconRight={
+              <InputIconStyled
+                assistiveText={{
+                  icon: 'add',
+                }}
+                name="add"
+                category="utility"
+                onClick={() => {
+                  this.props.addAsset(this.props.row.asset);
+                }}
+                disabled={!!this.props.error.asset || !this.props.row.asset}
+              />
+            }
             placeholder="Insert a valid URL here"
             onChange={(event, data) => this.props.handleChange("asset", data.value)}
             onKeyPress={(e) => {
@@ -294,20 +191,20 @@ class Step2 extends Component {
             label="Asset"
             errorText={this.props.error.asset}
           />
+          {
+            !!this.props.assets.length && (
+              <PillContianerStyled
+                options={this.props.assets}
+                onClickPill={(e, data) => {
+                  this.props.editAsset(data.option.label);
+                }}
+                onRequestRemovePill={(e, data) => {
+                  this.props.deleteAsset(data.option.label);
+                }}
+              />
+            )
+          }
         </div>
-        <div className={`slds-col slds-size_1-of-6 slds-form-element`} style={{width: '3%', paddingTop: '28px'}}>
-          <Button onClick={this.addInput}
-            assistiveText={{ icon: 'Icon Bare Small' }}
-						iconCategory="utility"
-						iconName="add"
-						iconSize="small"
-						iconVariant={(!!this.props.error.asset || !this.props.row.asset || !this.props.assetType) ? "bare" : 'border-filled'}
-            disabled={!!this.props.error.asset || !this.props.row.asset || !this.props.assetType }
-						variant="icon"
-            />
-        </div>
-        
-
         <div className="slds-m-bottom_large slds-col slds-size_1-of-1">
           <Checkbox
             assistiveText={{
