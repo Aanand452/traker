@@ -16,7 +16,7 @@ import {
 import { getCookie } from '../../../utils/cookie';
 import { getAPIUrl } from '../../../config/config';
 
-import { PillContianerStyled, InputIconStyled} from '../styles';
+import { PillContianerStyled, InputIconStyled } from '../styles';
 
 class Step2 extends Component {
   state = {
@@ -25,7 +25,7 @@ class Step2 extends Component {
       variant: 'error',
       heading: 'Something went wrong',
       duration: 5000,
-      active: false,
+      active: false
     }
   };
 
@@ -36,6 +36,7 @@ class Step2 extends Component {
   setupAndFetch = async () => {
     if(window.location.hostname === 'localhost') this.API_URL =  "http://localhost:3000/api/v1";
     else this.API_URL = await getAPIUrl();
+
     this.getFormats();
   }
 
@@ -161,7 +162,7 @@ class Step2 extends Component {
           />
           {this.props.error.endDate && <div className="slds-form-element__help">{this.props.error.endDate}</div>}
         </div>
-        <div className={`slds-m-bottom_large slds-col slds-size_1-of-2 slds-form-element`}>
+        <div className="slds-m-bottom_large slds-col slds-size_1-of-2">
           <Input
             iconRight={
               <InputIconStyled
