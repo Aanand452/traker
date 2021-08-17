@@ -275,6 +275,7 @@ class ActivityCalendar extends Component {
                             reloadActivities={this.props.reloadActivities}
                             historicDate={this.props.historicDate}
                             isHistoric={this.props.isHistoric}
+                            isOpen={this.state.detailModalIsOpen}
                             closeDetailModal={this.closeDetailModal}
                             onToast={this.props.onToast}
                         />

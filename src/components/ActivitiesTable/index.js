@@ -409,6 +409,7 @@ class Table extends Component {
           programs: [{ label: "All", id: "all", icon:(<Icon assistiveText={{ label: 'Account' }} category="standard" name="campaign"/>)}, ...programs],
           filteredPrograms: [{ label: "All", id: "all", icon:(<Icon assistiveText={{ label: 'Account' }} category="standard" name="campaign"/>)}, ...programs],
         });
+        this.setState({programSelected: [this.state.programs[0]]})
       } else throw new Error(response);
     } catch (err) {
       console.error(err);
@@ -544,11 +545,7 @@ class Table extends Component {
         this.setState({
           formats: [{ label: "All", id: "all", icon:(<Icon assistiveText={{ label: 'Account' }} category="standard" name="campaign"/>)}, ...formats],
         });
-        let defaultFormatNames = ['3rdParty-Virtual Event', 'Exec Engagement', 'Executive Visit', 'F2F Event', 'Webinar', 'Webinar - 3rd Party', 'Virtual Event', 'SIC', 'Launch']
-        let defaultFormats = formats.filter(format => {
-          if(!defaultFormatNames.includes(format.label)) return false;
-          return true;
-        })
+        let defaultFormats = this.getDefaultFornats(formats)
         this.setState({
           formatsSelected:defaultFormats,
           defaultFormats:defaultFormats
@@ -559,6 +556,14 @@ class Table extends Component {
     } catch (err) {
       console.error(err);
     }
+  }
+
+  getDefaultFornats = (formats) => {
+    let defaultFormatNames = ['3rdParty-Virtual Event', 'Exec Engagement', 'Executive Visit', 'F2F Event', 'Webinar', 'Webinar - 3rd Party', 'Virtual Event', 'SIC', 'Launch']
+    return formats.filter(format => {
+      if(!defaultFormatNames.includes(format.label)) return false;
+      return true;
+    })
   }
 
   closeHistoricModal = () => this.setState({historicModalIsOpen: false, historicDate: {}})
@@ -779,10 +784,11 @@ class Table extends Component {
     this.setState({ [state]: !this.state[state] });
   };
   clearFilter = () => {
+    var defaultFormats = this.getDefaultFornats(this.state.formats)
     this.setState({
       data:this.props.data,
       calendarViewData:this.props.data,
-      formatsSelected :[this.state.formats[0]],
+      formatsSelected :defaultFormats,
       formatInputValue:'',
       programSelected:[this.state.programs[0]],
       programInputValue:'',
@@ -790,6 +796,7 @@ class Table extends Component {
       regionsInputValue:'',
       OpenFilters:false,
     })
+    this.getFilteredData();
   }
 
   editData = (row) => {
@@ -1232,10 +1239,10 @@ class Table extends Component {
     ...elem,  ...{icon:(<Icon assistiveText={{ label: 'Account' }} category="standard"/>)}
   }))}
 
-  modifyFilter = (formats) => {
-    this.state.formatsSelected = formats
-    this.getFilteredData()
-  }
+  // modifyFilter = (formats) => {
+  //   this.state.formatsSelected = formats
+  //   this.getFilteredData()
+  // }
 
   menuSetSelectedRegion = (selectedData) => {
     this.setState({regionsSelected:selectedData})
@@ -1246,7 +1253,7 @@ class Table extends Component {
 
   menuSetSelectedProgram = (selectedData) => {
     this.setState({programSelected:selectedData})
-    // this.getFilteredData()
+    this.getFilteredData()
   }
 
   menuSetSelectedFormat = (selectedData) => {

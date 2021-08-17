@@ -77,15 +77,15 @@ class ViewActivityModal extends Component {
         
         <Modal
           contentClassName="activity-modal-overflow"
-          isOpen={this.props.closeDetailModal && !this.state.deleteModalIsOpen}
+          isOpen={this.props.isOpen && !this.state.deleteModalIsOpen}
           size="medium"
           onRequestClose={this.props.closeDetailModal}
           heading="Activity detail"
           ariaHideApp={false}
           footer={[
-            <Button label="Edit" variant="brand" onClick={this.editData} />,
-            <Button label="Clone" onClick={this.props.closeDetailModal && this.cloneData} />,
-            <Button label="Delete" variant="destructive" onClick={this.deleteData} />,
+            <Button key="Edit" label="Edit" variant="brand" onClick={this.editData} />,
+            <Button key="Clone" label="Clone" onClick={this.props.closeDetailModal && this.cloneData} />,
+            <Button key="Delete" label="Delete" variant="destructive" onClick={this.deleteData} />,
           ]}
         >
           <section className="slds-p-around_large">
