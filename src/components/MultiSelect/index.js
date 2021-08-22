@@ -79,12 +79,13 @@ class MultiSelect extends Component {
                     var all = this.state.data.find(x => x.id === 'all')
                     if(data.selection.indexOf(all) > 0){
                         this.setState({inputValue: '', selectedData: [all]})
+                        this.state.selectedData = [all]
                     }else{
                         this.setState({inputValue: '', selectedData:data.selection})
                         this.state.selectedData = data.selection
                     }
                     this.props.setSelectedData(this.state.selectedData)
-
+                    this.setState({isOpen:true})
                 }
                 }}
                 // menuPosition="relative"
