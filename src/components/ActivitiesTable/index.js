@@ -155,6 +155,7 @@ class Table extends Component {
     isProgramFilterOpen:false,
     regionsSelected:[],
     regionsInputValue:'',
+    isRegionFilterOpen:false,
     industrySelected: [],
     industryInputValue: '',
     isIndustryFilterOpen:false,
@@ -1800,35 +1801,212 @@ class Table extends Component {
                         startDate={this.state.startDate}
                         endDate={this.state.endDate}
                       />
-                      {this.state.openMenuBar && <MultiSelectContainer><MultiSelect 
-                        data={this.state.regions}
-                        inputValue={''}
-                        selectedData={this.state.regionsSelected}
-                        setSelectedData={this.menuSetSelectedRegion}
-                        placeholder={'Regions'}
-                        label={''}
-                      /></MultiSelectContainer>}
-                      {this.state.openMenuBar && <MultiSelectContainer><MultiSelect 
-                        data={this.getNewPrograms()}
-                        inputValue={''}
-                        selectedData={this.state.programSelected}
-                        setSelectedData={this.menuSetSelectedProgram}
-                        placeholder={'Programs'}
-                        label={''}
-                      /></MultiSelectContainer>}
-                      {this.state.openMenuBar && <MultiSelectContainer style={{paddingBottom:'20px'}}><MultiSelect 
-                        data={this.state.formats}
-                        inputValue={''}
-                        selectedData={this.state.formatsSelected}
-                        setSelectedData={this.menuSetSelectedFormat}
-                        placeholder={'Formats'}
-                        label={''}
-                      /></MultiSelectContainer>}
-                      <div className="expandableRow">
-                        <div className="expandableColumn">
-                          <Button label="Reset" variant="text-destructive" onClick={this.clearFilter} /></div>
-                        <div className="expandableColumn">
-                          <Button label="Save As Default" variant="outline-brand" onClick={this.saveAsDefaultFilter} /></div>
+                      {this.state.openMenuBar && <MultiSelectContainer>
+                        <Combobox 
+                            multiple
+                            isOpen={this.state.isRegionFilterOpen}
+                            labels={{
+                              label: '',
+                              placeholder: 'Regions',
+                            }}
+                            events={{
+                              onChange:(event, {value}) => {
+                                this.setState({regionsInputValue:value})
+                              },
+                              onRequestClose: () => {
+                                this.setState({isRegionFilterOpen:false})
+                                if(this.state.regionsSelected.length > 1){
+                                  this.setState({regionsSelected: this.state.regionsSelected.filter(x => {return x.id !== 'all'})})
+                                }
+                                if(this.state.regionsSelected.length === 0){
+                                    this.setState({regionsSelected: this.state.regions.filter(x => {return x.id === 'all'})})
+                                }
+                                this.getFilteredPrograms(this.state.regionsSelected)
+                                this.getFilteredData()
+
+                              },
+                              onRequestOpen: () => {
+                                this.setState({isRegionFilterOpen:true})
+                              },
+                              onRequestRemoveSelectedOption: (event, data) => {
+                                this.setState({
+                                  regionsInputValue:'',
+                                  regionsSelected:data.selection
+                                })
+                              },
+                              onSubmit: (event, { value }) => {
+                                this.setState({
+                                  regionsInputValue:'',
+                                  regionsSelected:[
+                                    ...this.state.regionsSelected,
+                                    {
+                                      label:value,
+                                      icon:(<Icon assistiveText={{ label: 'Account' }} category="standard" name="campaign" />)
+                                    }
+                                  ]
+                                })
+                              },
+                              onSelect: (event, data) => {
+                                this.setState({
+                                  regionsInputValue: '',
+                                  regionsSelected:data.selection
+                                })
+                                var all = this.state.regions.find(x => x.id === 'all')
+                                if(data.selection.indexOf(all) > 0){
+                                    this.setState({regionsInputValue: '', regionsSelected: [all]})
+                                }else{
+                                    this.setState({regionsInputValue: '', regionsSelected:data.selection})
+                                }
+                              }
+                            }}
+                            selection={this.state.regionsSelected}
+                            menuItemVisibleLength={5}
+                            options={comboboxFilterAndLimit({
+                              inputValue:this.state.regionsInputValue,
+                              limit: 50,
+                              options:this.state.regions,
+                              selection:this.state.regionsSelected,
+                            })}
+                          />
+                        </MultiSelectContainer>}
+                      {this.state.openMenuBar && <MultiSelectContainer>
+                        <Combobox 
+                            multiple
+                            isOpen={this.state.isProgramFilterOpen}
+                            labels={{
+                              label: '',
+                              placeholder: 'Programs',
+                            }}
+                            events={{
+                              onChange:(event, {value}) => {
+                                this.setState({programInputValue:value})
+                              },
+                              onRequestClose: () => {
+                                this.setState({isProgramFilterOpen:false})
+                                if(this.state.programSelected.length > 1){
+                                  this.setState({programSelected: this.state.programSelected.filter(x => {return x.id !== 'all'})})
+                                }
+                                if(this.state.programSelected.length === 0){
+                                    this.setState({programSelected: this.state.programs.filter(x => {return x.id === 'all'})})
+                                }
+                                this.getFilteredData()
+
+                              },
+                              onRequestOpen: () => {
+                                this.setState({isProgramFilterOpen:true})
+                              },
+                              onRequestRemoveSelectedOption: (event, data) => {
+                                this.setState({
+                                  programInputValue:'',
+                                  programSelected:data.selection
+                                })
+                              },
+                              onSubmit: (event, { value }) => {
+                                this.setState({
+                                  programInputValue:'',
+                                  programSelected:[
+                                    ...this.state.programSelected,
+                                    {
+                                      label:value,
+                                      icon:(<Icon assistiveText={{ label: 'Account' }} category="standard" name="campaign" />)
+                                    }
+                                  ]
+                                })
+                              },
+                              onSelect: (event, data) => {
+                                this.setState({
+                                  programInputValue: '',
+                                  programSelected:data.selection
+                                })
+                                var all = this.state.regions.find(x => x.id === 'all')
+                                if(data.selection.indexOf(all) > 0){
+                                    this.setState({programInputValue: '', programSelected: [all]})
+                                }else{
+                                    this.setState({programInputValue: '', programSelected:data.selection})
+                                }
+                              }
+                            }}
+                            selection={this.state.programSelected}
+                            menuItemVisibleLength={5}
+                            options={comboboxFilterAndLimit({
+                              inputValue:this.state.programInputValue,
+                              limit: 50,
+                              options:this.getNewPrograms(),
+                              selection:this.state.programSelected,
+                            })}
+                          />
+                        </MultiSelectContainer>}
+                      {this.state.openMenuBar && <MultiSelectContainer style={{paddingBottom:'25px'}}>
+                          <Combobox 
+                            multiple
+                            isOpen={this.state.isFormatFilterOpen}
+                            labels={{
+                              label: '',
+                              placeholder: 'Regions',
+                            }}
+                            events={{
+                              onChange:(event, {value}) => {
+                                this.setState({formatInputValue:value})
+                              },
+                              onRequestClose: () => {
+                                this.setState({isFormatFilterOpen:false})
+                                if(this.state.formatsSelected.length > 1){
+                                  this.setState({formatsSelected: this.state.formatsSelected.filter(x => {return x.id !== 'all'})})
+                                }
+                                if(this.state.formatsSelected.length === 0){
+                                    this.setState({formatsSelected: this.state.regions.filter(x => {return x.id === 'all'})})
+                                }
+                                this.getFilteredData()
+
+                              },
+                              onRequestOpen: () => {
+                                this.setState({isFormatFilterOpen:true})
+                              },
+                              onRequestRemoveSelectedOption: (event, data) => {
+                                this.setState({
+                                  formatInputValue:'',
+                                  formatsSelected:data.selection
+                                })
+                              },
+                              onSubmit: (event, { value }) => {
+                                this.setState({
+                                  formatInputValue:'',
+                                  formatsSelected:[
+                                    ...this.state.formatsSelected,
+                                    {
+                                      label:value,
+                                      icon:(<Icon assistiveText={{ label: 'Account' }} category="standard" name="campaign" />)
+                                    }
+                                  ]
+                                })
+                              },
+                              onSelect: (event, data) => {
+                                this.setState({
+                                  formatInputValue: '',
+                                  formatsSelected:data.selection
+                                })
+                                var all = this.state.regions.find(x => x.id === 'all')
+                                if(data.selection.indexOf(all) > 0){
+                                    this.setState({formatInputValue: '', formatsSelected: [all]})
+                                }else{
+                                    this.setState({formatInputValue: '', formatsSelected:data.selection})
+                                }
+                              }
+                            }}
+                            selection={this.state.formatsSelected}
+                            menuItemVisibleLength={5}
+                            options={comboboxFilterAndLimit({
+                              inputValue:this.state.formatInputValue,
+                              limit: 50,
+                              options:this.state.formats,
+                              selection:this.state.formatsSelected,
+                            })}
+                          /></MultiSelectContainer>}
+                          <div className="expandableRow">
+                            <div className="expandableColumn">
+                              <Button label="Reset" variant="text-destructive" onClick={this.clearFilter} /></div>
+                            <div className="expandableColumn" style={{paddingBottom:'25px'}}>
+                              <Button label="Save As Default" variant="outline-brand" onClick={this.saveAsDefaultFilter} /></div>
                         
                         {/* <div className="expandableColumn" style={{paddingTop: '5px', paddingLeft: '40%'}}>
                           <Button iconCategory="utility"
