@@ -15,7 +15,7 @@ class MultiSelect extends Component {
             inputValue: '',
         }
     }
-    componentWillMount() {
+    UNSAFE_componentWillMount() {
         this.setState({data:this.props.data,
              selectedData:this.props.selectedData, 
              inputValue:this.props.inputValue})    
@@ -61,7 +61,7 @@ class MultiSelect extends Component {
                     inputValue:'',
                     selectedData:data.selection
                     })
-                    this.props.setSelectedData(this.state.selectedData)
+                    this.state.selectedData = data.selection
                 },
                 onSubmit: (event, { value }) => {
                     this.setState({
@@ -81,7 +81,10 @@ class MultiSelect extends Component {
                         this.setState({inputValue: '', selectedData: [all]})
                     }else{
                         this.setState({inputValue: '', selectedData:data.selection})
+                        this.state.selectedData = data.selection
                     }
+                    this.props.setSelectedData(this.state.selectedData)
+
                 }
                 }}
                 // menuPosition="relative"
