@@ -1942,7 +1942,7 @@ class Table extends Component {
                             isOpen={this.state.isFormatFilterOpen}
                             labels={{
                               label: '',
-                              placeholder: 'Regions',
+                              placeholder: 'Formats',
                             }}
                             events={{
                               onChange:(event, {value}) => {
@@ -1954,7 +1954,7 @@ class Table extends Component {
                                   this.setState({formatsSelected: this.state.formatsSelected.filter(x => {return x.id !== 'all'})})
                                 }
                                 if(this.state.formatsSelected.length === 0){
-                                    this.setState({formatsSelected: this.state.regions.filter(x => {return x.id === 'all'})})
+                                    this.setState({formatsSelected: this.state.formats.filter(x => {return x.id === 'all'})})
                                 }
                                 this.getFilteredData()
 
@@ -1985,7 +1985,7 @@ class Table extends Component {
                                   formatInputValue: '',
                                   formatsSelected:data.selection
                                 })
-                                var all = this.state.regions.find(x => x.id === 'all')
+                                var all = this.state.formats.find(x => x.id === 'all')
                                 if(data.selection.indexOf(all) > 0){
                                     this.setState({formatInputValue: '', formatsSelected: [all]})
                                 }else{
