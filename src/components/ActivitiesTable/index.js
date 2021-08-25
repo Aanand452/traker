@@ -367,9 +367,9 @@ class Table extends Component {
     this.checkProgram();
     this.checkRegion();
     this.checkFormat();
-    this.getIndustry();
-    this.getSegment();
-    this.getAPM1();
+    // this.getIndustry();
+    // this.getSegment();
+    // this.getAPM1();
     this.getUserDefaultFilter();
     this.setState({historicDate: { startDate:new Date(), key: 'selection', endDate:addDays(new Date(), 7)}, startDate:new Date(), key: 'selection', endDate:addDays(new Date(), 7) })
   };
