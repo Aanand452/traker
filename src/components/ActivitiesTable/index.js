@@ -26,6 +26,7 @@ import {
   Modal,
   Combobox,
   comboboxFilterAndLimit,
+  Spinner,
 } from "@salesforce/design-system-react";
 
 import { getCookie } from '../../utils/cookie';
@@ -39,7 +40,7 @@ import ActivityCalendar from "../ActivityCalendar"
 
 // ACTIONS
 import { selectItem, setItem } from "../../actions/DataTable";
-import { Container, MultiSelectContainer} from "./styles";
+import { Container, MultiSelectContainer, SpinnerWrapper} from "./styles";
 
 
 import jsPDF from "jspdf";
@@ -172,6 +173,7 @@ class Table extends Component {
     calendarView: {date: new Date(), view:'month', action:'Today'},
     row:{},
     openNew: false,
+    showLoader:false,
   };
 
   table = React.createRef()
@@ -961,17 +963,14 @@ class Table extends Component {
 
   onSubmit = () => {
     this.setState({showLoader: true});
-
     try {
-      this.props.history.push({
-        pathname: '/my-activities',
-        state: { newActivity: true }
-      });
+      this.onToast(true, "A New Activity Has Been Added","success")
+      this.props.reloadActivities();
     } catch (error) {
       this.setState({showToast: true});
     }
 
-    this.setState({showLoader: false});
+    this.setState({showLoader: false, openNew:false});
   };
 
   getUserDefaultFilter = async () => {
@@ -1280,6 +1279,15 @@ class Table extends Component {
     const isEmpty = this.state.data.length === 0;
     return (
       <Container id="outer-container">
+        {this.state.showLoader && (
+            <SpinnerWrapper>
+              <Spinner
+                size="small"
+                variant="brand"
+                assistiveText={{ label: 'Main Frame Loading...' }}
+              />
+            </SpinnerWrapper>
+        )}
         {this.state.cloneModalIsOPen && (
           <CloneModal
             data={this.props.dataTable.item}

@@ -19,3 +19,12 @@ padding-bottm: 3px;
 padding-right: 20px;
 display: inline-block;
 `;
+
+export const SpinnerWrapper = styled.div`
+  height: 100vh;
+  width: 100%;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 9050;
+`;

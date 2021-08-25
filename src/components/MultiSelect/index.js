@@ -16,7 +16,6 @@ class MultiSelect extends Component {
         }
     }
     UNSAFE_componentWillMount() {
-        console.log('this.is called')
         this.setState({data:this.props.data,
              selectedData:this.props.selectedData, 
              inputValue:this.props.inputValue})    
