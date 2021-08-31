@@ -9,6 +9,9 @@ import { Modal, Card, DataTable, DataTableColumn, DataTableRowActions, Dropdown}
 import ViewActivityModal from "../ViewActivityModal";
 import {setItem } from "../../actions/DataTable";
 import { connect } from "react-redux";
+import EditModal from "../EditActivityModal";
+import CloneModal from "../CloneActivityModal";
+
 
 moment.locale('en-GB',{
     week: {
@@ -269,6 +272,25 @@ class ActivityCalendar extends Component {
         return (
 
             <div>
+
+                    {this.state.cloneModalIsOPen && (
+                    <CloneModal
+                        data={this.state.editItem}
+                        onToast={this.onToast}
+                        toggleOpen={this.toggleOpen}
+                        reloadActivities={this.props.reloadActivities}
+                        historicDate={this.props.historicDate}
+                        isHistoric={this.props.isHistoric}
+                    />
+                    )}
+                    {this.state.editModalIsOPen && (
+                        <EditModal
+                            data={this.state.editItem}
+                            onToast={this.onToast}
+                            toggleOpen={this.toggleOpen}
+                            reloadActivities={this.props.reloadActivities}
+                        />
+                        )}
                     {this.state.detailModalIsOpen && (
                         <ViewActivityModal
                             onDelete={this.props.onDelete}
