@@ -587,7 +587,7 @@ class Table extends Component {
   }
   calendarViewBtn = () =>{
     this.setState({isCalanderView: !this.state.isCalanderView})
-    this.setDisplayedData(this.state.startDate, this.state.endDate)
+    this.getFilteredData()
   }
   calendarOnHover = () => {
     this.setState({popoverOpen: true})
@@ -947,7 +947,21 @@ class Table extends Component {
     const formatsSelected = this.state.formatsSelected.map(function (key) {
       return key.label
     } )
-    const arr = this.props.data
+    var arr = []
+    if(!this.state.isCalanderView){
+      const startDate = moment(this.state.startDate,"DD/MM/YYYY")
+      const endDate = this.state.endDate !== null ? moment(this.state.endDate,"DD/MM/YYYY") : startDate
+      arr = this.props.data.filter(a => {
+      var date = moment(new Date(a.startDate),"DD/MM/YYYY")
+      if(startDate === endDate){
+        return (date === startDate)
+      }else{
+        return (date >= startDate && date <= endDate)
+      }
+      
+    });}else{
+      arr = this.props.data
+    }
     const filteredData = arr.filter((row) => {
       if (!slectedRegioins.includes('All') && !slectedRegioins.includes(row.regionId)) return false;
       if (programSelected.length > 0 && !programSelected.includes('All') && !programSelected.includes(row.programId)) return false;
@@ -1127,7 +1141,7 @@ class Table extends Component {
   onChangeDate = (dates) => {
     var [start, end] = dates
     this.setState({startDate:start, endDate:end, calendarView:{date:start, view:this.state.calendarView.view ,action: moment(start, "DD/MM/YYYY") > moment(new Date(), "DD/MM/YYYY") ? 'NEXT' : 'PREV'}})
-    this.setDisplayedData(start, end ? end : start)
+    this.getFilteredData()
   }
 
   onClickToday = () => {
@@ -1150,15 +1164,16 @@ class Table extends Component {
     this.setState({calendarView:{date:addDays(date, sub*days), view: view, action: action}})
   }
 
-  setDisplayedData = (startDate, endDate) => {
-    startDate = moment(startDate,"DD/MM/YYYY")
-    endDate = moment(endDate,"DD/MM/YYYY")
-    const newData = this.props.data.filter(a => {
-      var date = moment(new Date(a.startDate),"DD/MM/YYYY")
-      return (date >= startDate && date <= endDate)
-    });    
-    this.setState({data:newData})
-  }
+  // setDisplayedData = (startDate, endDate) => {
+  //   startDate = moment(startDate,"DD/MM/YYYY")
+  //   endDate = moment(endDate,"DD/MM/YYYY")
+  //   this.setState({userSelectedStartDate: startDate, userSelectedEndDate: endDate})
+  //   const newData = this.props.data.filter(a => {
+  //     var date = moment(new Date(a.startDate),"DD/MM/YYYY")
+  //     return (date >= startDate && date <= endDate)
+  //   });    
+  //   this.setState({data:newData})
+  // }
 
   handleFilterChange = (event) => {
     this.setState({isFiltering:true})
@@ -1239,27 +1254,27 @@ class Table extends Component {
     ...elem,  ...{icon:(<Icon assistiveText={{ label: 'Account' }} category="standard"/>)}
   }))}
 
-  // modifyFilter = (formats) => {
-  //   this.state.formatsSelected = formats
+  // // modifyFilter = (formats) => {
+  // //   this.state.formatsSelected = formats
+  // //   this.getFilteredData()
+  // // }
+
+  // menuSetSelectedRegion = (selectedData) => {
+  //   this.setState({regionsSelected:selectedData})
+  //   this.getFilteredPrograms(selectedData)
+  //   this.getFilteredData()
+
+  // }
+
+  // menuSetSelectedProgram = (selectedData) => {
+  //   this.setState({programSelected:selectedData})
   //   this.getFilteredData()
   // }
 
-  menuSetSelectedRegion = (selectedData) => {
-    this.setState({regionsSelected:selectedData})
-    this.getFilteredPrograms(selectedData)
-    this.getFilteredData()
-
-  }
-
-  menuSetSelectedProgram = (selectedData) => {
-    this.setState({programSelected:selectedData})
-    this.getFilteredData()
-  }
-
-  menuSetSelectedFormat = (selectedData) => {
-    this.setState({formatsSelected:selectedData})
-    // this.getFilteredData()
-  }
+  // menuSetSelectedFormat = (selectedData) => {
+  //   this.setState({formatsSelected:selectedData})
+  //   // this.getFilteredData()
+  // }
 
   openNewActivity = () => {
     this.setState({openNew: true})
@@ -1897,7 +1912,7 @@ class Table extends Component {
                                 if(this.state.programSelected.length === 0){
                                     this.setState({programSelected: this.state.programs.filter(x => {return x.id === 'all'})})
                                 }
-                                this.getFilteredData()
+                                // this.getFilteredData()
 
                               },
                               onRequestOpen: () => {
@@ -1964,7 +1979,7 @@ class Table extends Component {
                                 if(this.state.formatsSelected.length === 0){
                                     this.setState({formatsSelected: this.state.formats.filter(x => {return x.id === 'all'})})
                                 }
-                                this.getFilteredData()
+                                // this.getFilteredData()
 
                               },
                               onRequestOpen: () => {
