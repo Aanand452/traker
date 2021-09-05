@@ -949,10 +949,10 @@ class Table extends Component {
     } )
     var arr = []
     if(!this.state.isCalanderView){
-      const startDate = moment(this.state.startDate,"DD/MM/YYYY")
-      const endDate = this.state.endDate !== null ? moment(this.state.endDate,"DD/MM/YYYY") : startDate
+      const startDate = moment(this.state.startDate).format("DD/MM/YYYY")
+      const endDate = this.state.endDate !== null ? moment(this.state.endDate).format("DD/MM/YYYY") : startDate
       arr = this.props.data.filter(a => {
-      var date = moment(new Date(a.startDate),"DD/MM/YYYY")
+      var date = moment(new Date(a.startDate)).format("DD/MM/YYYY")
       if(startDate === endDate){
         return (date === startDate)
       }else{
@@ -1141,6 +1141,8 @@ class Table extends Component {
   onChangeDate = (dates) => {
     var [start, end] = dates
     this.setState({startDate:start, endDate:end, calendarView:{date:start, view:this.state.calendarView.view ,action: moment(start, "DD/MM/YYYY") > moment(new Date(), "DD/MM/YYYY") ? 'NEXT' : 'PREV'}})
+    this.state.startDate = start
+    this.state.endDate = end
     this.getFilteredData()
   }
 
