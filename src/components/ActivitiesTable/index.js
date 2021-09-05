@@ -371,7 +371,7 @@ class Table extends Component {
     // this.getSegment();
     // this.getAPM1();
     this.getUserDefaultFilter();
-    this.setState({historicDate: { startDate:new Date(), key: 'selection', endDate:addDays(new Date(), 7)}, startDate:new Date(), key: 'selection', endDate:addDays(new Date(), 7) })
+    this.setState({historicDate: { startDate:new Date(), key: 'selection', endDate:addDays(new Date(), 7)}, startDate:new Date(), key: 'selection', endDate:null })
   };
 
   async getConfig(){
