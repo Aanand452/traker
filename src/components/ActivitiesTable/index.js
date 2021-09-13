@@ -2173,7 +2173,9 @@ class Table extends Component {
                   historicDate={this.state.historicDate}
                   isHistoric={this.state.isHistoric}
                   isMenuOpen={this.state.openMenuBar}
-                  calendarView={this.state.calendarView}/>)}
+                  calendarView={this.state.calendarView}
+                  setDisplayedItems={this.handlePagination}
+                  />)}
         {!this.state.isCalanderView && (<Pager
           data={this.state.data}
           itemsPerPage={this.state.data.length >= this.state.pageLimit ? this.state.pageLimit : this.state.data.length - 1}

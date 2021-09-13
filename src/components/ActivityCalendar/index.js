@@ -1,5 +1,6 @@
 import "./styles.css";
 import React, { Component,} from "react";
+import ReactDOM from "react-dom"
 import { withRouter} from 'react-router-dom';
 import { Calendar, momentLocalizer  } from 'react-big-calendar' 
 import moment from 'moment';
@@ -100,6 +101,8 @@ class ActivityCalendar extends Component {
             return (date >= startDate && date <= endDate)
           }
       });
+      this.props.setDisplayedItems(this.state.displayedData, 1)
+      console.log(this.state.displayedData.length)
       const finalEvents = []
       this.state.displayedData.forEach(e => {
         finalEvents.push({title:e.title, start:new Date(e.startDate), end:new Date(e.startDate), allDay:true, resource:{data:e}})
@@ -270,7 +273,6 @@ class ActivityCalendar extends Component {
 
     render() {
         return (
-
             <div>
 
                     {this.state.cloneModalIsOPen && (
@@ -390,8 +392,10 @@ class ActivityCalendar extends Component {
                         onDrillDown={this.handleDrillDown}
                         eventPropGetter={(this.eventStyleGetter)}
                         selectable
+                        slotMetrics={{'slots': 5}}
                     /></CalendarContainer>
             </div>
+            
         );
     }
 
