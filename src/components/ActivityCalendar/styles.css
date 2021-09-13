@@ -50,11 +50,11 @@
   } */
   .rbc-month-view {
     border: white !important;
-    width: 2683px !important;
+    width: 2010px !important;
   }
   .rbc-time-view{    
     border: white !important;
-    width: 2683px !important;
+    width: 2010px !important;
   }
   .rbc-header + .rbc-header:nth-child(6){
     background: #ffffff;
