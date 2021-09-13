@@ -180,6 +180,7 @@ class Table extends Component {
 
   componentDidMount() {
     this.setupAndFetch();
+    this.setState({data: this.props.data})
     !this.state.isCalanderView && this.resizableTable(this.table.current.scrollerRef.children[0])
   }
 
@@ -190,6 +191,7 @@ class Table extends Component {
           this.onSort({property: this.state.sortProperty, sortDirection: this.state.sortDirection})
         }
       });
+
       if (this.state.defaultUserFilter.length !== 0 && 
         this.state.defaultUserFilter.formats_selected.length +
         this.state.defaultUserFilter.programs_selected.length + 
@@ -952,14 +954,15 @@ class Table extends Component {
       const startDate = moment(this.state.startDate).format("DD/MM/YYYY")
       const endDate = this.state.endDate !== null ? moment(this.state.endDate).format("DD/MM/YYYY") : startDate
       arr = this.props.data.filter(a => {
-      var date = moment(new Date(a.startDate)).format("DD/MM/YYYY")
-      if(startDate === endDate){
-        return (date === startDate)
-      }else{
-        return (date >= startDate && date <= endDate)
-      }
+        var date = moment(new Date(a.startDate)).format("DD/MM/YYYY")
+        if(startDate === endDate){
+          return true
+        }else{
+          return (date >= startDate && date <= endDate)
+        }
       
-    });}else{
+      });
+    }else{
       arr = this.props.data
     }
     const filteredData = arr.filter((row) => {

@@ -79,6 +79,7 @@ class ActivityCalendar extends Component {
         }
     }
     componentDidMount() {
+        // console.log(this.props.activities)
         this.state.data = this.props.activities
         this.computeDisplayedDateRange();
     }
@@ -95,14 +96,16 @@ class ActivityCalendar extends Component {
     //   let today = new Date()
     //   let startDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1)
     //   let endDate = new Date(currentDate.getFullYear(), currentDate.getMonth()+1, 0)
-      this.state.displayedData = this.state.data.filter(a => {
+    // console.log(this.props.activities)
+
+    this.state.displayedData = this.props.activities.filter(a => {
           var date = new Date(a.startDate)
           if(date.getDay() !== 0 && date.getDay() !== 6){
             return (date >= startDate && date <= endDate)
           }
       });
+    //   console.log(this.props.activities)
       this.props.setDisplayedItems(this.state.displayedData, 1)
-      console.log(this.state.displayedData.length)
       const finalEvents = []
       this.state.displayedData.forEach(e => {
         finalEvents.push({title:e.title, start:new Date(e.startDate), end:new Date(e.startDate), allDay:true, resource:{data:e}})
