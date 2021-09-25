@@ -589,6 +589,7 @@ class Table extends Component {
   }
   calendarViewBtn = () =>{
     this.setState({isCalanderView: !this.state.isCalanderView})
+    !this.state.isCalanderView ? window.location.reload(false) : ''
     this.getFilteredData()
   }
   calendarOnHover = () => {
@@ -951,26 +952,27 @@ class Table extends Component {
     } )
     var arr = []
     if(!this.state.isCalanderView){
-      const startDate = moment(this.state.startDate).format("DD/MM/YYYY")
-      const endDate = this.state.endDate !== null ? moment(this.state.endDate).format("DD/MM/YYYY") : startDate
+      console.log('this is called')
+      const startDate = moment(this.state.startDate).format('YYYY-MM-DD')
+      const endDate = this.state.endDate ? moment(this.state.endDate).format('YYYY-MM-DD') : moment(addDays(this.state.startDate, 7)).format('YYYY-MM-DD')
+      console.log('this is called', startDate, endDate)
       arr = this.props.data.filter(a => {
-        var date = moment(new Date(a.startDate)).format("DD/MM/YYYY")
-        if(startDate === endDate){
-          return true
-        }else{
-          return (date >= startDate && date <= endDate)
-        }
-      
+        var date = moment(new Date(a.startDate)).format('YYYY-MM-DD')
+        return moment(date).isBetween(startDate, endDate)
       });
+      console.log('new arr filtered', arr)
     }else{
+      console.log('this is else', this.props.data)
       arr = this.props.data
     }
+    console.log('this is arr', arr)
     const filteredData = arr.filter((row) => {
       if (!slectedRegioins.includes('All') && !slectedRegioins.includes(row.regionId)) return false;
       if (programSelected.length > 0 && !programSelected.includes('All') && !programSelected.includes(row.programId)) return false;
       if(formatsSelected.length > 0 && !formatsSelected.includes('All') && !formatsSelected.includes(row.formatId)) return false;
       return true;
     });
+    console.log('this is filter', filteredData)
     this.setState({data:filteredData, calendarViewData:filteredData, OpenFilters:false})
   }
 
