@@ -79,7 +79,6 @@ class ActivityCalendar extends Component {
         }
     }
     componentDidMount() {
-        // console.log(this.props.activities)
         this.state.data = this.props.activities
         this.computeDisplayedDateRange();
     }
@@ -96,7 +95,6 @@ class ActivityCalendar extends Component {
     //   let today = new Date()
     //   let startDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1)
     //   let endDate = new Date(currentDate.getFullYear(), currentDate.getMonth()+1, 0)
-    // console.log(this.props.activities)
 
     this.state.displayedData = this.props.activities.filter(a => {
           var date = new Date(a.startDate)
@@ -104,7 +102,6 @@ class ActivityCalendar extends Component {
             return (date >= startDate && date <= endDate)
           }
       });
-    //   console.log(this.props.activities)
       this.props.setDisplayedItems(this.state.displayedData, 1)
       const finalEvents = []
       this.state.displayedData.forEach(e => {
@@ -112,6 +109,7 @@ class ActivityCalendar extends Component {
       })
       this.state.events = finalEvents
       this.setState({displayedDateRage:{start:start.toString(), end:end.toString()}})
+
     }
     onNavigate = async (date, view, action) => {
         await this.setState({currentDate:date});
@@ -124,11 +122,15 @@ class ActivityCalendar extends Component {
 
     componentDidUpdate(prevProps, prevState){
         if (this.props.activities !== prevProps.activities) {
+            this.setState({data: this.props.activities})
             this.state.data = this.props.activities
+            this.onNavigate(new Date(), 'month', 'Today')
             this.computeDisplayedDateRange();
         }
         if (this.props.calendarView.date !== prevProps.calendarView.date){
+            this.setState({data: this.props.activities})
             const {date, view, action} = this.props.calendarView
+            this.state.data = this.props.activities
             this.onNavigate(date, view, action)
         }
     }

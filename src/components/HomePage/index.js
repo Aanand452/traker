@@ -56,6 +56,24 @@ const HomePage = () => (
                 </Link>
               </CardAction>
             </Card>
+            <Card>
+              <CardImage src="/images/APAC_Activity_Tracker_Tile_Create_Program_notext_640x360.png" alt="Create program" />
+              <CardTitle>Create Planner</CardTitle>
+              <CardAction>
+                <Link to="/create-planner">
+                  <Button variant="brand" label="Create new planner" />
+                </Link>
+              </CardAction>
+            </Card>
+            <Card>
+              <CardImage src="/images/APAC_Activity_Tracker_Tile_Program_View_notext_640x360.png" alt="Programs" />
+              <CardTitle>View/Edit Planner</CardTitle>
+              <CardAction>
+                <Link to="/planner-view">
+                  <Button variant="brand" label="Plans" />
+                </Link>
+              </CardAction>
+            </Card>
           </React.Fragment>
         )
       }

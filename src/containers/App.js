@@ -19,6 +19,8 @@ import EditActivityPage from '../components/EditActivityPage';
 import EditProgramPage from '../components/EditProgramPage';
 import HomePage from '../components/HomePage';
 import PrivateRoute from '../components/PrivateRoute';
+import CreatePlanner from '../components/CreatePlanner';
+import EditPlanner from '../components/EditPlanner';
 
 Settings.setAppElement('#root');
 
@@ -113,6 +115,24 @@ function App({closeSettingsMenu, user}) {
             render={
               () => getCookie('role').replaceAll('"','') === 'admin'
               ? <CreateProgram />
+              : <Redirect to='/' />
+            }
+          />
+          <PrivateRoute
+            exact
+            path="/create-planner"
+            render={
+              () => getCookie('role').replaceAll('"','') === 'admin'
+              ? <CreatePlanner />
+              : <Redirect to='/' />
+            }
+          />
+          <PrivateRoute
+            exact
+            path="/planner-view"
+            render={
+              () => getCookie('role').replaceAll('"','') === 'admin'
+              ? <EditPlanner />
               : <Redirect to='/' />
             }
           />
