@@ -2,6 +2,7 @@ import React, { Component, Fragment } from 'react';
 import moment from 'moment';
 import NavBar from '../NavBar';
 import BudgetInput from '../BudgetInput/BudgetInput'
+import update from 'immutability-helper';
 
 import {
     Combobox,
@@ -23,16 +24,25 @@ class CreatePlanner extends Component {
     super(props)
     this.state = {
         offers:[{
+          id:1,
           offer:'',
           activities:[{
-            activity:''
+            id:1,
+            title:'',
+            format:'',
+            date: new Date()
           }]
         }]
     }
   }
 
   addOffer = () => {
-    this.setState({offers:[...this.state.offers, {offer: '', activities:[{activity:''}]}]})
+    this.setState({offers:[...this.state.offers, {id:this.state.offers.length+1, offer: '', activities:[{id:1, title:'', format:'', date: new Date()}]}]})
+  }
+  addActivity = (id) => {
+    var offer = this.state.offers.find(item  => {return item.id === id})
+    var newOffer = offer.activities.push({id:offer.activities.length+1, title:'', format:'', date: new Date()})
+    this.setState(update(this.state.offers, {$splice:[[this.state.offers.findIndex((item) => item.id === id), 1, newOffer]]}))
   }
 
     render() {
@@ -153,40 +163,72 @@ class CreatePlanner extends Component {
                 />
               </div>
               
-              {this.state.offers.map((x, i) => console.log(x)),this.state.offers.map((x, i) => {
+              {this.state.offers.map((x, i) => console.log(x)),this.state.offers.map((offer, i) => {
                 return (
-                <div>
-                  <div>
+                <Fragment key={i}>
+                  <div key={i} className="slds-m-bottom_large slds-col slds-size_1-of-1" style={{paddingLeft:'0.5%'}}>
                   <Input
                     required
-                    placeholder="Quarter"
-                    label="Quarter"
-                    value={x.offer}
+                    placeholder="Offer Name"
+                    label="Offer Name"
+                    value={offer.offer}
                   />
 
                   </div>
-                  {x.activities.map((x, i) => {
+                  {offer.activities.map((activity, i) => {
                   return(
-                    <div>
+                    <Fragment key={i}>
+                    <div key={i} className="slds-m-bottom_large slds-col slds-size_1-of-2" style={{paddingLeft:'1%'}}>
                   <Input
                     required
-                    placeholder="Quarter"
-                    label="Quarter"
-                    value={x.activity}
+                    placeholder="Title"
+                    label="Title"
+                    value={activity.title}
                   />
 
                   </div>
+
+                  <div className="slds-m-bottom_large slds-col slds-size_1-of-4 slds-form-element">
+                  <Input
+                    required
+                    placeholder="Format"
+                    label="Format"
+                    value={activity.format}
+                    maxLength="4"
+                  />
+                  </div>
+                  <div className="slds-m-bottom_large slds-col slds-size_1-of-4 slds-form-element">
+                  <Datepicker
+                    required
+                    label="Tentative Date"
+                    formatter={(date) => date ? moment(date).format('DD/MM/YYYY') : ''}
+                    parser={(dateString) => moment(dateString, 'DD/MM/YYYY').toDate()}
+                    value={activity.date}
+                    maxLength="4"
+                  />
+                  <Button >test</Button>
+
+                  </div>
+                  
+                </Fragment>
                   )
+                  
                   })}
+                <div className="slds-m-bottom_large slds-col slds-size_1-of-4 slds-form-element" style={{paddingLeft:'1.5%'}}>
+                  <Button
+                  label="add Activity" variant="brand"
+                  onClick={() => this.addActivity(offer.id)}
+                  />
                 </div>
+                </Fragment>
                 )
                 
               })
               
               }
-              <div className="slds-col slds-size_1-of-1">
+              <div className="slds-col slds-size_1-of-1" style={{paddingLeft:'0.5%', paddingBottom:'2%'}}>
                     <Button
-                    label="add" variant="brand"
+                    label="add Offer" variant="brand"
                     onClick={this.addOffer}
                     />
               </div>
