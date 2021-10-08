@@ -5,7 +5,7 @@ import BudgetInput from '../BudgetInput/BudgetInput'
 import update from 'immutability-helper';
 
 import {
-    Combobox,
+    Icon,
     Input,
     Datepicker,
     Button,
@@ -43,6 +43,9 @@ class CreatePlanner extends Component {
     var offer = this.state.offers.find(item  => {return item.id === id})
     var newOffer = offer.activities.push({id:offer.activities.length+1, title:'', format:'', date: new Date()})
     this.setState(update(this.state.offers, {$splice:[[this.state.offers.findIndex((item) => item.id === id), 1, newOffer]]}))
+  }
+  removeActivity = (offer, activity) => {
+    console.log(offer, activity)
   }
 
     render() {
@@ -206,8 +209,11 @@ class CreatePlanner extends Component {
                     value={activity.date}
                     maxLength="4"
                   />
-                  <Button >test</Button>
-
+                  <Button
+                  label="-"
+                  variant="destructive"
+                  onClick={() => this.removeActivity(offer.id, activity.id)}
+                  />
                   </div>
                   
                 </Fragment>
