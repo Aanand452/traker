@@ -1,90 +1,199 @@
-import React, { Component, Fragment } from 'react';
-import moment from 'moment';
-import NavBar from '../NavBar';
-import BudgetInput from '../BudgetInput/BudgetInput'
-import update from 'immutability-helper';
-import {BoxShadow} from './styles'
-import './styles.css'
+import React, { Component } from 'react';
+import { withRouter } from 'react-router-dom';
+import { Spinner, ToastContainer, Toast, IconSettings } from '@salesforce/design-system-react';
 
-import {
-    Icon,
-    Input,
-    Datepicker,
-    Button,
-    Textarea,
-    Expression,
-    ToastContainer,
-    IconSettings,
-    Checkbox,
-} from '@salesforce/design-system-react';
-
+import { getCookie } from '../../utils/cookie';
+import { getAPIUrl } from '../../config/config';
+import { Container } from './styles';
+import PlannerList from '../PlannerList';
+import ConfirmationDialog from '../Prompt';
+import NavBar from '../NavBar'
 
 class EditPlanner extends Component {
+  state = {
+    showLoader: false,
+    showConfirmationDialog: false,
+    toast: {
+      active: false
+    },
+    programs: [],
+    selectedProgram: '',
+    programsFYstartDate: '',
+    programsFYendDate: '',
+  }
 
-  constructor(props){
-    super(props)
-    this.state = {
-        offers:[{
-          id:1,
-          offer:'',
-          activities:[{
-            id:1,
-            title:'',
-            format:'',
-            date: new Date()
-          }]
-        }]
+  componentDidMount() {
+    this.setupAndFetch();
+    if(this.props.location.state && this.props.location.state.newProgram) {
+      this.setState({toast: {
+        active: true,
+        variant: 'success',
+        heading: 'The program was added successfuly'
+      }})
     }
   }
 
+  async getConfig(){
+    try{
+      const request = await fetch('/config');
+      const data = await request.json();
+      request.status === 200 && this.setState({
+        programsFYstartDate: data.programsFYstartDate,
+        programsFYendDate: data.programsFYendDate
+      });
 
-    render() {
-        return (
-        // <div>
-        //     <div style={{fontSize:'50px'}}>FY22 H2 Master Program Plan: ESMB(ANZ)</div>
-        //     <div style={{backgroundColor:'blue', width:'15%', fontSize:'20px', color:'white', paddingLeft:'20px', borderRadius:'0 20px 20px 0'}}>Owner</div>
-        //     <div style={{fontSize:'20px', paddingLeft:'20px'}}>Cat Prestipino</div>
-        //     <div style={{paddingLeft:'20%', paddingBottom:'80%'}}><BoxShadow>Hi</BoxShadow></div>
-        // </div>
-        <div class="grid-container">
-        <div class="item1">FY22 H2 Master Program Plan: ESMB(ANZ)</div>
-        <div class="item2">
-            <div className="owner">Owner</div>
-            <div className="owner-name">Cat Prestipino</div>
-
-            <div className="owner">Owner</div>
-            <div className="owner-name">Cat Prestipino</div>
-        </div>
-        <div class="item3">
-            <div className="card">
-                <div className="card-head">MP Target : 
-                    <div className="card-head-value">S8M</div>
-                </div>
-                <hr className="hr1"/>
-            </div>
-            <div className="card">
-                <div className="card-head">MP Target : 
-                    <div className="card-head-value">S8M</div>
-                </div>
-                <hr className="hr1"/>
-            </div>
-            <div className="card">
-                <div className="card-head">MP Target : 
-                    <div className="card-head-value">S8M</div>
-                </div>
-                <hr className="hr1"/>
-            </div>
-            <div className="card">
-                <div className="card-head">MP Target : 
-                    <div className="card-head-value">S8M</div>
-                </div>
-                <hr className="hr1"/>
-            </div>
-        </div> 
-        <div class="item5">Footer</div>
-        </div>
-        );
+    } catch(e) {
+      console.error('ERROR: cannot get the url config: ', e);
     }
-};
+  }
 
-export default EditPlanner;
+  setupAndFetch = async () => {
+    if(window.location.hostname === 'localhost') this.API_URL =  "http://localhost:3000/api/v1";
+    else this.API_URL = await getAPIUrl();
+    await this.getConfig();
+    this.getPrograms();
+  }
+
+  getPrograms = async (startDate, endDate) => {
+    this.setState({showLoader: true});
+    const user = localStorage.getItem('userId');
+
+    const { programsFYstartDate, programsFYendDate } = this.state;
+
+    try {
+      let token = getCookie('token').replaceAll('"','');
+      const config = {
+        method: 'POST',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({
+          programsStartDate: startDate ? startDate : programsFYstartDate,
+          programsEndDate:  endDate ? endDate :  programsFYendDate,
+        })
+      }
+      const response = await fetch(`${this.API_URL}/programs/${user}`, config);
+      if(response.status === 200) {
+        const { result } = await response.json();
+        this.setState({programs: result});
+
+      } else throw new Error(response);
+    } catch (err) {
+      console.error(err);
+      this.setState({
+        toast: {
+          active: true,
+          heading: "Something went wrong, please try again in a few seconds",
+          variant: "error"
+        }
+      });
+    }
+
+    this.setState({showLoader: false});
+  }
+
+  onDelete = program => {
+    this.setState({
+      showConfirmationDialog: true,
+      selectedProgram: program.programId,
+    });
+  };
+
+  closeConfirmationDialog = () => {
+    this.setState({showConfirmationDialog: false, selectedProgram: ''});
+  }
+
+  deleteProgram = async () => {
+    this.setState({
+      showConfirmationDialog: false,
+      showLoader: true,
+    });
+
+    const token = getCookie('token').replaceAll('"','');
+    const userId = getCookie('userid').replaceAll('"','');
+    const config = {
+      method: 'DELETE',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,
+      },
+      body: JSON.stringify({
+        userId,
+      })
+    }
+
+    try {
+      const response = await fetch(`${this.API_URL}/program/${this.state.selectedProgram}`, config)
+      if(response.status === 200) {
+        await this.getPrograms();
+
+        this.setState({
+          toast: {
+            active: true,
+            heading: "A program was deleted successfuly",
+            variant: "success"
+          },
+          selectedProgram: ''
+        });
+      } else throw new Error(response);
+    } catch (err) {
+      console.error(err);
+      this.setState({
+        toast: {
+          active: true,
+          heading: "Something went wrong, please try again in a few seconds",
+          variant: "error"
+        },
+        selectedProgram: ''
+      });
+    }
+
+    this.setState({showLoader: false});
+  }
+
+  onEdit = () => {
+    this.setState({toast: {
+      active: true,
+      variant: 'success',
+      heading: 'The program was updated successfuly'
+    }});
+    this.getPrograms();
+  }
+
+  onGetHistoric = (startDate, endDate) => {
+    this.getPrograms(startDate, endDate);
+  }
+
+  render() {
+    return (
+      <Container>
+          <NavBar />
+        <IconSettings iconPath="/assets/icons">
+          <ConfirmationDialog message="Are you sure you want to delete this program?" isOpen={this.state.showConfirmationDialog} onClose={this.closeConfirmationDialog} onConfirm={this.deleteProgram} />
+          {this.state.showLoader && <Spinner size="small" variant="brand" assistiveText={{ label: "Loading..." }} />}
+          {this.state.toast.active && (
+            <ToastContainer>
+              <Toast
+                labels={{heading: this.state.toast.heading}}
+                variant={this.state.toast.variant}
+                duration={5000}
+                onRequestClose={() => this.setState({toast: {active: false}})}
+              />
+            </ToastContainer>
+          )}
+          <PlannerList
+            onEdit={this.onEdit}
+            onDelete={this.onDelete}
+            onGetHistoric={this.onGetHistoric}
+            data={this.state.programs}
+          />
+        </IconSettings>
+      </Container>
+    );
+  }
+}
+
+export default withRouter(EditPlanner);

@@ -21,6 +21,7 @@ import HomePage from '../components/HomePage';
 import PrivateRoute from '../components/PrivateRoute';
 import CreatePlanner from '../components/CreatePlanner';
 import EditPlanner from '../components/EditPlanner';
+import PlanningView from '../components/PlanningView'
 
 Settings.setAppElement('#root');
 
@@ -133,6 +134,15 @@ function App({closeSettingsMenu, user}) {
             render={
               () => getCookie('role').replaceAll('"','') === 'admin'
               ? <EditPlanner />
+              : <Redirect to='/' />
+            }
+          />
+          <PrivateRoute
+            exact
+            path="/planner-slider"
+            render={
+              () => getCookie('role').replaceAll('"','') === 'admin'
+              ? <PlanningView />
               : <Redirect to='/' />
             }
           />
