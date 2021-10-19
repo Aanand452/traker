@@ -1,51 +1,62 @@
-.item1 { grid-area: header; font-size: 40px; padding-left: 20px;}
-.item2 { grid-area: menu; }
-.item3 { grid-area: main; }
-.item4 { grid-area: right; }
-.item5 { grid-area: footer; }
-.owner { 
-    background-color: #0b5cab;
-    font-size: 20px;
-    color: white;
-    padding-left: 20px;
-    border-radius: 0 20px 20px 0;
-    width: 80%;
-    font-weight: bold;
+.item1 {
+  grid-area: header;
+  font-size: 40px;
+  padding-left: 20px;
+}
+.item2 {
+  grid-area: menu;
+}
+.item3 {
+  grid-area: main;
+}
+.item4 {
+  grid-area: right;
+}
+.item5 {
+  grid-area: footer;
+}
+.owner {
+  background-color: #0b5cab;
+  font-size: 20px;
+  color: white;
+  padding-left: 20px;
+  border-radius: 0 20px 20px 0;
+  width: 80%;
+  font-weight: bold;
 }
 .owner-name {
-    font-size: 20px;
-    color: #bec6d3;
-    padding-left: 20px;
+  font-size: 20px;
+  color: #bec6d3;
+  padding-left: 20px;
 }
 .card {
-  width:250px;
+  width: 250px;
   box-shadow: 10px 5px 5px #bec6d3;
   float: left;
 }
 .card-head {
-    font-size: 15px;
-    color: #032d5f;
-    padding-left: 20px;
-    float: left;
-    padding-bottom: 20px;
-    font-weight: bold;
+  font-size: 15px;
+  color: #032d5f;
+  padding-left: 20px;
+  float: left;
+  padding-bottom: 20px;
+  font-weight: bold;
 }
 .card-head-value {
-    padding-left: 20px;
-    float: right;
-    color: #bec6d3;
+  padding-left: 20px;
+  float: right;
+  color: #bec6d3;
 }
 .hr1 {
-    border-top: 1px solid #daeefe;
-    padding-top: 20px;
+  border-top: 1px solid #daeefe;
 }
 
 .grid-container {
   display: grid;
   grid-template-areas:
-    'header header header header header header'
-    'menu main main main right right'
-    'menu footer footer footer footer footer';
+    "header header header header header header"
+    "menu main main main right right"
+    "menu footer footer footer footer footer";
   grid-gap: 1px;
   background-color: #f4f6f7;
   padding: 1px;
@@ -55,6 +66,5 @@
   background-color: rgba(255, 255, 255, 0.8);
   text-align: left;
   padding: 20px 0;
-  color: #032d5f
-  ;
+  color: #032d5f;
 }

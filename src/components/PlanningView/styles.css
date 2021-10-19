@@ -1,43 +1,56 @@
-.item1 { grid-area: header; font-size: 40px; padding-left: 20px;}
-.item2 { grid-area: menu;}
-.item3 { grid-area: main; }
-.item4 { grid-area: right; }
-.item5 { grid-area: footer;     position: absolute;
-  top: 38%;
-  left: 30%;
+.item1 {
+  grid-area: header;
+  font-size: 40px;
+}
+.item2 {
+  grid-area: menuu;
+}
+.item3 {
+  grid-area: main;
+}
+.item5 {
+  grid-area: footer;
   width: 100%;
+  margin-top: 20px;
 }
-.owner { 
-    background-color: #0b5cab;
-    font-size: 20px;
-    color: white;
-    padding-left: 10px;
-    border-radius: 0 20px 20px 0;
-    width: 80%;
-    font-weight: bold;
+.border-t {
+  border-top: 1px solid #daeefe;
 }
-.parent-program { 
+.owner {
+  background-color: #0b5cab;
+  font-size: 20px;
+  color: white;
+  padding-left: 10px;
+  border-radius: 0 20px 20px 0;
+  width: 80%;
+  font-weight: bold;
+}
+.parent-program {
   background-color: #109dda;
   font-size: 20px;
   color: white;
   padding-left: 10px;
+  padding-bottom: 5px;
+  padding-top: 5px;
+  margin-bottom: 20px;
+  margin-top: -30px;
   border-radius: 0 20px 20px 0;
   width: 30%;
   font-weight: bold;
 }
 .owner-name {
-    font-size: 17px;
-    color: #bec6d3;
-    padding-left: 20px;
-    padding-bottom: 100px;
+  font-size: 17px;
+  color: #bec6d3;
+  padding-left: 20px;
+  padding-bottom: 100px;
 }
-.list-ul{
+.list-ul {
   font-size: 17px;
   color: #bec6d3;
   list-style-type: circle;
   padding-left: 20%;
 }
-.program { 
+.program {
   background-color: #0e827c;
   font-size: 20px;
   color: white;
@@ -46,32 +59,33 @@
   width: 80%;
   font-weight: bold;
 }
-.program-details{
+.program-details {
   font-size: 17px;
   color: #bec6d3;
   padding-left: 20px;
   padding-bottom: 100px;
 }
 .card {
-  width:250px;
+  width: 250px;
   height: auto;
-  box-shadow: 10px 5px 5px #bec6d3;
+  box-shadow: 5px 5px 5px #ebebeb;
+  float: left;
+  border-radius: 0 20px 20px 0;
+  padding: 10px;
+}
+.card-footer {
+  width: 1000px;
+  box-shadow: 5px 5px 5px #bec6d3;
   float: left;
   border-radius: 0 20px 20px 0;
 }
-.card-footer {
-    width:1000px;
-    box-shadow: 10px 5px 5px #bec6d3;
-    float: left;
-    border-radius: 0 20px 20px 0;
-  }
 .card-head {
-    font-size: 15px;
-    color: #032d5f;
-    padding-left: 20px;
-    float: left;
-    padding-bottom: 20px;
-    font-weight: bold;
+  font-size: 15px;
+  color: #032d5f;
+  padding-left: 20px;
+  float: left;
+  padding-bottom: 20px;
+  font-weight: bold;
 }
 .activity-head {
   font-size: 15px;
@@ -87,36 +101,34 @@
 }
 
 .card-head-value {
-    padding-left: 20px;
-    float: right;
-    color: #bec6d3;
+  padding-left: 20px;
+  float: right;
+  color: #bec6d3;
 }
 .hr1 {
-    border-top: 1px solid #daeefe;
-    padding-top: 20px;
+  border-top: 1px solid #daeefe;
 }
 
 .grid-container {
   display: grid;
   grid-template-areas:
-    'header header header header header header'
-    'menu main main main right right'
-    'menu footer footer footer footer footer';
-  grid-gap: 1px;
+    "header header header header header header"
+    "menuu main main main main main"
+    "menuu footer footer footer footer footer";
+  grid-gap: 10px;
   background-color: #f4f6f7;
-  padding: 1px;
+  padding: 7px;
 }
 
 .grid-container > div {
   background-color: rgba(255, 255, 255, 0.8);
   text-align: left;
   padding: 20px 0;
-  color: #032d5f
-  ;
+  color: #032d5f;
 }
 
 .grid {
   display: grid;
-  grid-gap: 2.5px;
+  grid-gap: 20px;
   grid-template-columns: repeat(3, 1fr);
 }

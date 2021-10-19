@@ -133,7 +133,7 @@ class NavBar extends Component{
                   getCookie('role').replaceAll('"','') === 'admin' && <NavigationBarLink to="/programs-view" title="Programs" />
                 }
                 {
-                  getCookie('role').replaceAll('"','') === 'admin' && <NavigationBarLink to="/planner-view" title="PlansList" />
+                  getCookie('role').replaceAll('"','') === 'admin' && <NavigationBarLink to="/planner-view" title="Plans List" />
                 }
                 {this.state.tableauUrl !== '/' && <NavigationBarLink title="Go to reports" href={this.state.tableauUrl}/>}
 
