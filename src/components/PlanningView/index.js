@@ -47,8 +47,12 @@ class PlanningView extends Component {
             <div className="owner">Owner</div>
             <div className="owner-name">Cat Prestipino</div>
 
-            <div className="owner">Owner</div>
-            <div className="owner-name">Cat Prestipino</div>
+            <div className="program">Program Overview (abstract)</div>
+            <div className="program-details">Salesforce is a strong partner to small business helping them overcome current challenges and 
+            scale for the future, we help small business find, win, keep and contact with their customers where ever they are.</div>
+            <div className="program">Program Overview (abstract)</div>
+            <div className="program-details">Salesforce is a strong partner to small business helping them overcome current challenges and 
+            scale for the future, we help small business find, win, keep and contact with their customers where ever they are.</div>
         </div>
         <div class="item3">
             <div className="card">
@@ -56,33 +60,97 @@ class PlanningView extends Component {
                     <div className="card-head-value">S8M</div>
                 </div>
                 <hr className="hr1"/>
+                <div className="card-head" style={{position: 'absolute', top: '20%'}}>Budget : 
+                    <div className="card-head-value">$938K</div>
+                </div>
+                <div >
+                    <div className="card-head">Q1 : 
+                        <div className="card-head-value">$170K</div>
+                    </div>
+                    <div className="card-head" >Q3 : 
+                        <div className="card-head-value">$170K</div>
+                    </div>
+                </div>
+                <div style={{flex:'right'}}>
+                    <div className="card-head">Q2 : 
+                        <div className="card-head-value">$170K</div>
+                    </div>
+                    <div className="card-head">Q4 : 
+                        <div className="card-head-value">$170K</div>
+                    </div>
+                </div>
             </div>
             <div className="card">
-                <div className="card-head">MP Target : 
-                    <div className="card-head-value">S8M</div>
+                <div className="card-head">Persona 1 : 
+                    <div className="card-head-value">Sales</div>
                 </div>
                 <hr className="hr1"/>
+                <div className="card-head" style={{position: 'absolute', top: '20%'}}>Persona 2 : 
+                    <div className="card-head-value">Service/Marketing</div>
+                </div>
             </div>
             <div className="card">
-                <div className="card-head">MP Target : 
-                    <div className="card-head-value">S8M</div>
+                <div className="card-head">Industry : 
+                    <div className="card-head-value">All</div>
                 </div>
                 <hr className="hr1"/>
+                <div className="card-head" style={{position: 'absolute', top: '20%'}}>Segment : 
+                    <div className="card-head-value">ESMB</div>
+                </div>
             </div>
             <div className="card">
-                <div className="card-head">MP Target : 
-                    <div className="card-head-value">S8M</div>
+                <div className="card-head">AMP1 : 
+                    <div className="card-head-value">All</div>
                 </div>
                 <hr className="hr1"/>
             </div>
         </div> 
         <div class="item5">
         <div className="card-footer">
-                <div className="card-head"><div className="owner">Owner</div>
- 
-                    <div className="card-head-value">S8M</div>
+                <div className="parent-program">Owner</div>
+                <div class="grid">
+                <div><div className="activity-head">AMP1 :<div className="activity-value">All</div></div>
+                <div className="activity-head" style={{top:'50%'}}>Activities :</div>
+                <ul className="list-ul">
+                    <li>ABM - Business Transformation Customer Council - date TBC</li>
+                    <li>Bespoke webinar with Cyber Security Hub</li>
+                    <li>LOGIN PROMO - Placeholder - App Cookbook</li>
+                </ul>
                 </div>
-                <hr className="hr1"/>
+                <div><div><div className="activity-head">AMP1 :<div className="activity-value">All</div></div>
+                <div className="activity-head" style={{top:'50%'}}>Activities :</div>
+                <ul className="list-ul">
+                    <li>ABM - Business Transformation Customer Council - date TBC</li>
+                    <li>Bespoke webinar with Cyber Security Hub</li>
+                    <li>LOGIN PROMO - Placeholder - App Cookbook</li>
+                </ul>
+                </div></div>
+                <div><div><div className="activity-head">AMP1 :<div className="activity-value">All</div></div>
+                <div className="activity-head" style={{top:'50%'}}>Activities :</div>
+                <ul className="list-ul">
+                    <li>ABM - Business Transformation Customer Council - date TBC</li>
+                    <li>Bespoke webinar with Cyber Security Hub</li>
+                    <li>LOGIN PROMO - Placeholder - App Cookbook</li>
+                </ul>
+                </div></div>
+                <div><div><div className="activity-head">AMP1 :<div className="activity-value">All</div></div>
+                <div className="activity-head" style={{top:'50%'}}>Activities :</div>
+                <ul className="list-ul">
+                    <li>ABM - Business Transformation Customer Council - date TBC</li>
+                    <li>Bespoke webinar with Cyber Security Hub</li>
+                    <li>LOGIN PROMO - Placeholder - App Cookbook</li>
+                </ul>
+                </div></div>
+                <div><div><div className="activity-head">AMP1 :<div className="activity-value">All</div></div>
+                <div className="activity-head" style={{top:'50%'}}>Activities :</div>
+                <ul className="list-ul">
+                    <li>ABM - Business Transformation Customer Council - date TBC</li>
+                    <li>Bespoke webinar with Cyber Security Hub</li>
+                    <li>LOGIN PROMO - Placeholder - App Cookbook</li>
+                </ul>
+                </div></div>
+                <div></div>
+                </div>
             </div>
         </div>
         </div>

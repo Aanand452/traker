@@ -41,12 +41,17 @@ class CreatePlanner extends Component {
     this.setState({offers:[...this.state.offers, {id:this.state.offers.length+1, offer: '', activities:[{id:1, title:'', format:'', date: new Date()}]}]})
   }
   addActivity = (id) => {
-    var offer = this.state.offers.find(item  => {return item.id === id})
-    var newOffer = offer.activities.push({id:offer.activities.length+1, title:'', format:'', date: new Date()})
+    const offer = this.state.offers.find(item  => {return item.id === id})
+    const newOffer = offer.activities.push({id:offer.activities.length+1, title:'', format:'', date: new Date()})
     this.setState(update(this.state.offers, {$splice:[[this.state.offers.findIndex((item) => item.id === id), 1, newOffer]]}))
   }
   removeActivity = (offer, activity) => {
     console.log(offer, activity)
+  }
+  removeOffer = (offerid) => {
+    const offers = {...this.state.offers}
+    const index = this.state.offers.findIndex(item => item.id === offerid)
+    this.setState(update(this.state.offers, {$splice:[[index, 1, offers]]}))
   }
 
     render() {
@@ -67,11 +72,30 @@ class CreatePlanner extends Component {
                     />
                 </div>
                 <div style={{padding: '1%'}}>
-                  <Input
+                  <BudgetInput
                     required
-                    placeholder="Enter program name"
-                    label="Program Name"
+                    label="Budget"
                   />
+                </div>
+                <div style={{padding: '1%'}}>
+                  <Input
+                      required
+                      placeholder="Select Industry"
+                      label="Industry"
+                    />
+                </div>
+                  <div style={{padding: '1%'}}>
+                  <Input
+                      required
+                      placeholder="Select an Option"
+                      label="Region"
+                    />
+                </div>
+                <div style={{padding: '1%'}}>
+                  <Textarea
+                      label="Other Kpi's"
+                      placeholder="Enter KPI's"
+                    />
                 </div>
               </div>
               <div style={{float:'right', width:'50%'}}> 
@@ -84,10 +108,30 @@ class CreatePlanner extends Component {
                   </div>
                   <div style={{padding: '1%'}}>
                   <Input
-                    required
-                    placeholder="Enter program name"
-                    label="Program Name"
-                  />
+                      required
+                      placeholder="Select an Option"
+                      label="AMP"
+                    />
+                </div>
+                  <div style={{padding: '1%'}}>
+                  <Input
+                      required
+                      placeholder="Select an Option"
+                      label="Persona"
+                    />
+                </div>
+                <div style={{padding: '1%'}}>
+                  <Input
+                      required
+                      placeholder="Select an Option"
+                      label="Segment"
+                    />
+                </div>
+                  <div style={{padding: '1%'}}>
+                    <Textarea
+                      label="Abstract"
+                      placeholder="Enter Abstract"
+                    />
                   </div>
               </div>
               <div style={{textAlign:'center', paddingTop: '2%'}}>
@@ -160,10 +204,16 @@ class CreatePlanner extends Component {
                   )
                   
                   })}
-                <div style={{paddingLeft:'1.5%'}}>
+                <div style={{paddingLeft:'1.5%', display: 'inline-block'}}>
                   <Button
                   label="add Activity" variant="brand"
                   onClick={() => this.addActivity(offer.id)}
+                  />
+                </div>
+                <div style={{paddingLeft:'1.5%', display: 'inline-block'}}>
+                  <Button
+                  label="remove Offer" variant="destructive"
+                  onClick={() => this.removeOffer(offer.id)}
                   />
                 </div>
                 </div>
