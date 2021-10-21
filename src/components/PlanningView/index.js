@@ -6,17 +6,7 @@ import update from "immutability-helper";
 import { BoxShadow } from "./styles";
 import "./styles.css";
 
-import {
-  Icon,
-  Input,
-  Datepicker,
-  Button,
-  Textarea,
-  Expression,
-  ToastContainer,
-  IconSettings,
-  Checkbox,
-} from "@salesforce/design-system-react";
+import { Button } from "@salesforce/design-system-react";
 import { Link } from "react-router-dom";
 
 class PlanningView extends Component {
@@ -51,7 +41,7 @@ class PlanningView extends Component {
         </div>
         <div class="item2">
           <div>
-            <div className="owner">Owner</div>
+            <div className="owner">Parent Program</div>
             <div className="owner-name">Cat Prestipino</div>
 
             <div className="program">Program Overview (abstract)</div>
@@ -115,7 +105,7 @@ class PlanningView extends Component {
           </div>
           <div className="card">
             <div className="card-head">
-              AMP1 :<div className="card-head-value">All</div>
+              Offer Name :<div className="card-head-value">All</div>
             </div>
 
             <div className="card-head border-t"></div>
@@ -127,7 +117,7 @@ class PlanningView extends Component {
             <div class="grid">
               <div>
                 <div className="activity-head">
-                  AMP1 :<div className="activity-value">All</div>
+                  Offer Name :<div className="activity-value">All</div>
                 </div>
                 <div className="activity-head" style={{ top: "50%" }}>
                   Activities :
@@ -143,7 +133,7 @@ class PlanningView extends Component {
               <div>
                 <div>
                   <div className="activity-head">
-                    AMP1 :<div className="activity-value">All</div>
+                    Offer Name :<div className="activity-value">All</div>
                   </div>
                   <div className="activity-head" style={{ top: "50%" }}>
                     Activities :
@@ -160,7 +150,7 @@ class PlanningView extends Component {
               <div>
                 <div>
                   <div className="activity-head">
-                    AMP1 :<div className="activity-value">All</div>
+                    Offer Name :<div className="activity-value">All</div>
                   </div>
                   <div className="activity-head" style={{ top: "50%" }}>
                     Activities :
@@ -177,7 +167,7 @@ class PlanningView extends Component {
               <div>
                 <div>
                   <div className="activity-head">
-                    AMP1 :<div className="activity-value">All</div>
+                    Offer Name :<div className="activity-value">All</div>
                   </div>
                   <div className="activity-head" style={{ top: "50%" }}>
                     Activities :
@@ -194,7 +184,7 @@ class PlanningView extends Component {
               <div>
                 <div>
                   <div className="activity-head">
-                    AMP1 :<div className="activity-value">All</div>
+                    Offer Name :<div className="activity-value">All</div>
                   </div>
                   <div className="activity-head" style={{ top: "50%" }}>
                     Activities :

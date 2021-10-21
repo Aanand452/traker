@@ -74,7 +74,7 @@ class CreatePlanner extends Component {
   };
 
   removeActivity = (offer, activity) => {
-    // complete
+    // completed
     console.log(offer, activity);
     let offers = this.state.offers;
     const index = this.state.offers.findIndex((item) => item.id === offer);
@@ -118,10 +118,30 @@ class CreatePlanner extends Component {
                   />
                 </div>
                 <div style={{ padding: "1%", display: "flex" }}>
-                  <BudgetInput required label="Q1 Budget" placeholder="Q1" />
-                  <BudgetInput required label="Q2 Budget" placeholder="Q2" />
-                  <BudgetInput required label="Q3 Budget" placeholder="Q3" />
-                  <BudgetInput required label="Q4 Budget" placeholder="Q4" />
+                  <BudgetInput
+                    onChange={(e, t) => console.log(e, t)}
+                    required
+                    label="Q1 Budget"
+                    placeholder="Q1"
+                  />
+                  <BudgetInput
+                    onChange={(e, t) => console.log(e, t)}
+                    required
+                    label="Q2 Budget"
+                    placeholder="Q2"
+                  />
+                  <BudgetInput
+                    onChange={(e, t) => console.log(e, t)}
+                    required
+                    label="Q3 Budget"
+                    placeholder="Q3"
+                  />
+                  <BudgetInput
+                    onChange={(e, t) => console.log(e, t)}
+                    required
+                    label="Q4 Budget"
+                    placeholder="Q4"
+                  />
                 </div>
                 <div style={{ padding: "1%" }}>
                   <Input
@@ -179,7 +199,9 @@ class CreatePlanner extends Component {
           {this.state.offers.map((offer, i) => {
             return (
               <div style={{ border: "groove", padding: "2%" }}>
-                <div style={{ width: "50%", paddingBottom: "1%" }}>
+                <div
+                  style={{ width: "50%", margin: "10px", paddingBottom: "1%" }}
+                >
                   <Input
                     required
                     placeholder="Offer Name"
@@ -192,6 +214,7 @@ class CreatePlanner extends Component {
                     <div
                       style={{
                         margin: "auto",
+                        display: "flex",
                         justifyContent: "space-between",
                         marginBottom: "10px",
                       }}
@@ -204,7 +227,13 @@ class CreatePlanner extends Component {
                           width: "95%",
                         }}
                       >
-                        <div style={{ width: "50%", display: "inline-block" }}>
+                        <div
+                          style={{
+                            width: "50%",
+                            margin: "5px",
+                            display: "inline-block",
+                          }}
+                        >
                           <Input
                             required
                             placeholder="Title"
@@ -212,7 +241,13 @@ class CreatePlanner extends Component {
                             value={activity.title}
                           />
                         </div>
-                        <div style={{ width: "30%", display: "inline-block" }}>
+                        <div
+                          style={{
+                            width: "30%",
+                            margin: "5px",
+                            display: "inline-block",
+                          }}
+                        >
                           <Input
                             required
                             placeholder="Format"
@@ -220,7 +255,13 @@ class CreatePlanner extends Component {
                             value={activity.format}
                           />
                         </div>
-                        <div style={{ width: "15%", display: "inline-block" }}>
+                        <div
+                          style={{
+                            width: "15%",
+                            margin: "5px",
+                            display: "inline-block",
+                          }}
+                        >
                           <Datepicker
                             required
                             label="Tentative Date"
@@ -233,13 +274,10 @@ class CreatePlanner extends Component {
                             value={activity.date}
                           />
                         </div>
-                        <div></div>
-                        <div></div>
                       </div>
                       <div
                         style={{
                           width: "5%",
-                          display: "inline-block",
                           margin: "auto",
                           textAlign: "center",
                         }}
@@ -279,7 +317,7 @@ class CreatePlanner extends Component {
 
           <div style={{ textAlign: "center" }}>
             <Link to="/planner-view">
-              <Button label="Save" variant="brand" color="green" />
+              <Button label="Save" variant="brand" />
             </Link>
           </div>
         </div>
