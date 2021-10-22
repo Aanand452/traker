@@ -14,9 +14,13 @@ import {
   Expression,
   ToastContainer,
   IconSettings,
+  comboboxFilterAndLimit,
   Checkbox,
+  Combobox,
 } from "@salesforce/design-system-react";
 import { FormContainer, Container, Sfdch1NewRow } from "./styles";
+import { getCookie } from "../../utils/cookie";
+import { getAPIUrl } from "../../config/config";
 
 class CreatePlanner extends Component {
   constructor(props) {
@@ -36,8 +40,95 @@ class CreatePlanner extends Component {
           ],
         },
       ],
+      industries: [],
+      segments: [],
+      personas: [],
+      regions: [],
+      program: {
+        selectedApm1s: [],
+        selectedApm2s: [],
+        selectedLifecycleStages: [],
+        selectedIndustries: [],
+        selectedSegments: [],
+        selectedPersonas: [],
+        year: "",
+      },
+      error: {},
     };
   }
+
+  getIndustry = async () => {
+    try {
+      let token = getCookie("token").replaceAll('"', "");
+      const config = {
+        method: "GET",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      };
+      const request = await fetch(`${this.API_URL}/industry`, config);
+      const response = await request.json();
+      const industry = response.result.map((item) => ({
+        id: item.industryId,
+        label: item.name,
+      }));
+
+      if (response.info.code === 200) this.setState({ industries: industry });
+      else throw new Error(response.info.status);
+    } catch (err) {
+      this.showError(err);
+    }
+  };
+
+  getSegment = async () => {
+    try {
+      let token = getCookie("token").replaceAll('"', "");
+      const config = {
+        method: "GET",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      };
+      const request = await fetch(`${this.API_URL}/segment`, config);
+      const response = await request.json();
+      const segment = response.result.map((item) => ({
+        id: item.segmentId,
+        label: item.name,
+      }));
+
+      if (response.info.code === 200) this.setState({ segments: segment });
+      else throw new Error(response.info.status);
+    } catch (err) {
+      this.showError(err);
+    }
+  };
+
+  getRegions = async () => {
+    try {
+      let token = getCookie("token").replaceAll('"', "");
+      const config = {
+        method: "GET",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      };
+      const request = await fetch(`${this.API_URL}/region`, config);
+      const response = await request.json();
+
+      let regions = response.result.map((el) => ({ ...el, id: el.region_id }));
+
+      if (response.info.code === 200) this.setState({ regions });
+      else throw new Error(response.info.status);
+    } catch (err) {
+      this.showError(err);
+    }
+  };
 
   addOffer = () => {
     this.setState({
@@ -98,6 +189,121 @@ class CreatePlanner extends Component {
     this.setState({ offers });
   };
 
+  getPersona = async () => {
+    try {
+      let token = getCookie("token").replaceAll('"', "");
+      const config = {
+        method: "GET",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      };
+      const request = await fetch(`${this.API_URL}/persona`, config);
+      const response = await request.json();
+      const persona = response.result.map((item) => ({
+        id: item.personaId,
+        label: item.name,
+      }));
+
+      if (response.info.code === 200) this.setState({ personas: persona });
+      else throw new Error(response.info.status);
+    } catch (err) {
+      this.showError(err);
+    }
+  };
+
+  validations = (input, data) => {
+    let errors = { ...this.state.error };
+    const inputs = [
+      "name",
+      "owner",
+      "budget",
+      "metrics",
+      "customerMessage",
+      "regionId",
+      "selectedApm1s",
+      "selectedIndustries",
+      "selectedSegments",
+      "selectedPersonas",
+      "year",
+      "quarter",
+    ];
+
+    if (input) {
+      if (inputs.includes(input) && !data) {
+        errors = { ...errors, [input]: "This field is required" };
+      } else if (input === "year" && data.length > 0 && data.length !== 4) {
+        errors = { ...errors, year: "This field must contain 4 character" };
+      } else {
+        delete errors[input];
+      }
+    } else {
+      inputs.forEach((input) => {
+        if (
+          typeof this.state.program[input] === "number" &&
+          this.state.program[input] >= 0
+        ) {
+          delete errors[input];
+        } else if (
+          this.state.program[input] &&
+          input !== "year" &&
+          this.state.program[input].length > 0
+        ) {
+          delete errors[input];
+        } else if (this.state.program["year"].length === 4) {
+          delete errors["year"];
+        } else {
+          if (
+            this.state.program["year"].length !== 4 &&
+            this.state.program["year"].length > 0
+          ) {
+            errors = {
+              ...errors,
+              [input]: "This field is required",
+              year: "This field must contain 4 character",
+            };
+          } else {
+            errors = { ...errors, [input]: "This field is required" };
+          }
+        }
+      });
+    }
+
+    this.setState({ error: errors });
+    if (Object.keys(errors).length > 0) return false;
+
+    return true;
+  };
+
+  handleChange = (value, data) => {
+    if (value === "year" && isNaN(data)) {
+      this.setState({ year: "" });
+      return;
+    }
+
+    const newRow = { ...this.state.program, [value]: data };
+
+    this.validations(value, data);
+    this.setState({ program: newRow });
+  };
+
+  setup = async () => {
+    if (window.location.hostname === "localhost")
+      this.API_URL = "http://localhost:3000/api/v1";
+    else this.API_URL = await getAPIUrl();
+
+    this.getIndustry();
+    this.getRegions();
+    this.getSegment();
+    this.getPersona();
+  };
+
+  componentDidMount() {
+    this.setup();
+  }
+
   render() {
     return (
       <div style={{ padding: "1%", paddingTop: "5.6rem" }}>
@@ -144,17 +350,50 @@ class CreatePlanner extends Component {
                   />
                 </div>
                 <div style={{ padding: "1%" }}>
-                  <Input
+                  <Combobox
                     required
-                    placeholder="Select Industry"
-                    label="Industry"
+                    events={{
+                      onRequestRemoveSelectedOption: (event, data) => {
+                        this.setState({
+                          program: {
+                            ...this.state.program,
+                            selectedIndustries: data.selection,
+                          },
+                        });
+                      },
+                      onSelect: (event, data) =>
+                        data.selection.length &&
+                        this.handleChange("selectedIndustries", data.selection),
+                    }}
+                    labels={{
+                      label: "Industry",
+                      placeholder: "Select an option",
+                    }}
+                    menuItemVisibleLength={5}
+                    multiple
+                    options={comboboxFilterAndLimit({
+                      limit: this.state.industries.length,
+                      options: this.state.industries,
+                      selection: this.state.program.selectedIndustries,
+                    })}
+                    selection={this.state.program.selectedIndustries}
+                    errorText={this.state.error.selectedIndustries}
                   />
                 </div>
                 <div style={{ padding: "1%" }}>
-                  <Input
+                  <Combobox
                     required
-                    placeholder="Select an Option"
-                    label="Region"
+                    events={{
+                      onSelect: (event, data) =>
+                        data.selection.length &&
+                        this.handleChange("regionId", data.selection),
+                    }}
+                    labels={{ label: "Target Region" }}
+                    options={this.state.regions}
+                    selection={this.state.program.regionId}
+                    value="region"
+                    variant="readonly"
+                    errorText={this.state.error.regionId}
                   />
                 </div>
                 <div style={{ padding: "1%" }}>
@@ -169,17 +408,65 @@ class CreatePlanner extends Component {
                   <Input required placeholder="Select an Option" label="AMP" />
                 </div>
                 <div style={{ padding: "1%" }}>
-                  <Input
+                  <Combobox
                     required
-                    placeholder="Select an Option"
-                    label="Persona"
+                    events={{
+                      onRequestRemoveSelectedOption: (event, data) => {
+                        this.setState({
+                          program: {
+                            ...this.state.program,
+                            selectedPersonas: data.selection,
+                          },
+                        });
+                      },
+                      onSelect: (event, data) =>
+                        data.selection.length &&
+                        this.handleChange("selectedPersonas", data.selection),
+                    }}
+                    labels={{
+                      label: "Persona",
+                      placeholder: "Select an option",
+                    }}
+                    menuItemVisibleLength={5}
+                    multiple
+                    options={comboboxFilterAndLimit({
+                      limit: this.state.personas.length,
+                      options: this.state.personas,
+                      selection: this.state.program.selectedPersonas,
+                    })}
+                    selection={this.state.program.selectedPersonas}
+                    errorText={this.state.error.selectedPersonas}
                   />
                 </div>
                 <div style={{ padding: "1%" }}>
-                  <Input
+                  <Combobox
                     required
-                    placeholder="Select an Option"
-                    label="Segment"
+                    events={{
+                      onRequestRemoveSelectedOption: (event, data) => {
+                        this.setState({
+                          program: {
+                            ...this.state.program,
+                            selectedSegments: data.selection,
+                          },
+                        });
+                      },
+                      onSelect: (event, data) =>
+                        data.selection.length &&
+                        this.handleChange("selectedSegments", data.selection),
+                    }}
+                    labels={{
+                      label: "Segment",
+                      placeholder: "Select an option",
+                    }}
+                    menuItemVisibleLength={5}
+                    multiple
+                    options={comboboxFilterAndLimit({
+                      limit: this.state.segments.length,
+                      options: this.state.segments,
+                      selection: this.state.program.selectedSegments,
+                    })}
+                    selection={this.state.program.selectedSegments}
+                    errorText={this.state.error.selectedSegments}
                   />
                 </div>
                 <div style={{ padding: "1%" }}>
