@@ -16,6 +16,21 @@ const getAllProgramPlanners = async (req, res) => {
   }
 };
 
+const getProgramPlannersByID = async (req, res) => {
+  try {
+    var id = req.swagger.params.id.value;
+    const personas = await ProgramPlanner.getProgramPlannerByID(id);
+
+    ApiUtils.reposeWithhSuccess(res, personas, httpStatus.OK);
+  } catch (err) {
+    ApiUtils.responseWithError(
+      res,
+      httpStatus.INTERNAL_SERVER_ERROR,
+      err.toString()
+    );
+  }
+};
+
 const addNewProgramPlanner = async (req, res) => {
   try {
     console.log("@@");
@@ -34,4 +49,4 @@ const addNewProgramPlanner = async (req, res) => {
   }
 };
 
-export { getAllProgramPlanners, addNewProgramPlanner };
+export { getAllProgramPlanners, getProgramPlannersByID, addNewProgramPlanner };

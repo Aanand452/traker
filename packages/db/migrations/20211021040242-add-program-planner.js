@@ -63,6 +63,6 @@ module.exports = {
   },
 
   down: async (queryInterface, Sequelize) => {
-    return Promise.all([await queryInterface.dropTable("program_planner")]);
+    return Promise.all([await queryInterface.dropTable("user_filter")]);
   },
 };

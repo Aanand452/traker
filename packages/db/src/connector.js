@@ -19,7 +19,9 @@ export const sequelize = new Sequelize.Sequelize(db, username, password, {
   },
 });
 
-sequelize.sync();
+// sequelize.sync().then((res) => {
+//   console.info("Synced");
+// });
 
 sequelize
   .authenticate()

@@ -9,12 +9,12 @@ ProgramPlanner.init(
       allowNull: false,
       primaryKey: true,
       type: DataTypes.STRING,
-      field: "program_log_id",
+      field: "planner_id",
     },
-    programId: {
+    programName: {
       allowNull: false,
       type: DataTypes.STRING,
-      field: "program_id",
+      field: "program_name",
     },
     programOwner: {
       allowNull: false,
@@ -23,13 +23,13 @@ ProgramPlanner.init(
     },
     budgets: {
       allowNull: false,
-      type: DataTypes.ARRAY(DataTypes.INTEGER),
+      type: DataTypes.JSON,
       field: "budgets",
     },
-    amp: {
+    apm: {
       allowNull: false,
       type: DataTypes.JSON,
-      field: "amp",
+      field: "apm",
     },
     programIndustry: {
       allowNull: false,
@@ -53,12 +53,12 @@ ProgramPlanner.init(
     },
     otherKPIs: {
       allowNull: false,
-      type: DataTypes.STRING,
+      type: DataTypes.TEXT,
       field: "opther_kpis",
     },
     abstract: {
       allowNull: false,
-      type: DataTypes.STRING,
+      type: DataTypes.TEXT,
       field: "abstract",
     },
   },

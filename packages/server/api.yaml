@@ -106,7 +106,7 @@ paths:
   /program-planners:
     get:
       x-swagger-router-controller: programPlanner
-      operationId: "getProgramPlanners"
+      operationId: "getAllProgramPlanners"
       summary: Returns the list of program planners.
       description: This will be used to populate the insert and update the program planners.
       security:
@@ -155,8 +155,92 @@ paths:
               - $ref: '#/definitions/ResponseStatus'
               - $ref: '#/definitions/Error'
 
+  /program-planner/{id}:
+    get:
+      x-swagger-router-controller: programPlanner
+      operationId: "getProgramPlannersByID"
+      summary: get a program by id
+      description: N/A
+      security:
+        - Bearer: []
+      parameters:
+        - in: path
+          name: id
+          description: ID of program to fetch
+          required: true
+          type: string
+      responses:
+        200:
+          description: Success
+          schema:
+            allOf:
+              - $ref: '#/definitions/ResponseStatus'
+              - $ref: '#/definitions/ProgramResponse'
+        default:
+          description: Invalid request.
+          schema:
+            allOf:
+              - $ref: '#/definitions/ResponseStatus'
+              - $ref: '#/definitions/Error'
+    put:
+      x-swagger-router-controller: program
+      operationId: "updateProgram"
+      summary: Update a program
+      security:
+        - Bearer: []
+      description: N/A
+      parameters:
+        - in: path
+          name: id
+          description: ID of program to be updated
+          required: true
+          type: string
+        - in: body
+          name: body
+          schema:
+            $ref: '#/definitions/ProgramBody'
+      responses:
+        200:
+          description: Success
+          schema:
+            allOf:
+              - $ref: '#/definitions/ResponseStatus'
+        default:
+          description: Invalid request.
+          schema:
+            allOf:
+              - $ref: '#/definitions/ResponseStatus'
+              - $ref: '#/definitions/Error'
+    delete:
+      x-swagger-router-controller: program
+      operationId: "deleteProgram"
+      summary: Delete a program
+      security:
+        - Bearer: []
+      description: N/A
+      parameters:
+        - in: path
+          name: id
+          description: ID of program to be deleted
+          required: true
+          type: string
+        - in: body
+          name: body
+          schema:
+            $ref: '#/definitions/ProgramBodyDelete'
+      responses:
+        200:
+          description: Success
+          schema:
+            allOf:
+              - $ref: '#/definitions/ResponseStatus'
+        default:
+          description: Invalid request.
+          schema:
+            allOf:
+              - $ref: '#/definitions/ResponseStatus'
+              - $ref: '#/definitions/Error'
   
-
 
   /program/{id}:
     get:
@@ -1293,6 +1377,14 @@ definitions:
           $ref: '#/definitions/Program'
 
   ProgramResponse:
+    description: A program get by Id
+    type: object
+    properties:
+      result:
+        type: array
+        items:
+          $ref: '#/definitions/Program'
+  ProgramPLannerResponse:
     description: A program get by Id
     type: object
     properties:

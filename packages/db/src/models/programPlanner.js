@@ -6,17 +6,38 @@ class ProgramPlannerModel {
     return new Promise(async (resolve, reject) => {
       try {
         const programPlanner = await db.ProgramPlanner.findAll({
-          where: { program_id: program },
+          order: [["program_name", "ASC"]],
         });
-        const result = Promise.all(
-          programPlanner.map(
-            async (programApm) => await db.APM1.findByPk(programApm.apm1Id)
-          )
-        );
+        console.log(programPlanner);
+        // const result = Promise.all(
+        //   programPlanner.map(
+        //     async (programApm) => await db.APM1.findByPk(programApm.apm1Id)
+        //   )
+        // );
 
-        resolve(result);
+        resolve(programPlanner);
       } catch (err) {
-        console.error("Error creating program-apm1 relationship", err);
+        console.error("Error getting program-planners relationship", err);
+        reject("Error");
+      }
+    });
+  }
+
+  static getProgramPlannerByID(id) {
+    return new Promise(async (resolve, reject) => {
+      try {
+        console.log(id)
+        let programPlanner = await db.ProgramPlanner.findByPk(id);
+        console.log("11", programPlanner);
+        // const result = Promise.all(
+        //   programPlanner.map(
+        //     async (programApm) => await db.APM1.findByPk(programApm.apm1Id)
+        //   )
+        // );
+
+        resolve(programPlanner);
+      } catch (err) {
+        console.error("Error getting program-planners relationship", err);
         reject("Error");
       }
     });
