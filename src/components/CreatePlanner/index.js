@@ -22,6 +22,7 @@ import { FormContainer, Container, Sfdch1NewRow } from "./styles";
 import { getCookie } from "../../utils/cookie";
 import { getAPIUrl } from "../../config/config";
 import { Title } from "../CreateProgramPage/styles";
+import "./index.css";
 
 class CreatePlanner extends Component {
   constructor(props) {
@@ -29,11 +30,11 @@ class CreatePlanner extends Component {
     this.state = {
       offers: [
         {
-          id: 1,
+          id: 0,
           offer: "",
           activities: [
             {
-              id: 1,
+              id: 0,
               title: "",
               format: "",
               date: new Date(),
@@ -41,6 +42,7 @@ class CreatePlanner extends Component {
           ],
         },
       ],
+      planner_id: false,
       industries: [],
       apm1s: [],
       segments: [],
@@ -55,6 +57,8 @@ class CreatePlanner extends Component {
         q2_budget: "",
         q3_budget: "",
         q4_budget: "",
+        owner: "",
+        abstract: "",
       },
       error: {},
     };
@@ -171,7 +175,7 @@ class CreatePlanner extends Component {
     // completed
     console.log(offer, activity);
     let offers = this.state.offers;
-    const index = this.state.offers.findIndex((item) => item.id === offer);
+    const index = offer;
     let activities = offers[index];
 
     if (index > -1) {
@@ -214,6 +218,55 @@ class CreatePlanner extends Component {
       else throw new Error(response.info.status);
     } catch (err) {
       this.showError(err);
+    }
+  };
+
+  getPlannerByID = async (id) => {
+    try {
+      let token = getCookie("token").replaceAll('"', "");
+      const config = {
+        method: "GET",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      };
+      const request = await fetch(
+        `${this.API_URL}/program-planner/${id}`,
+        config
+      );
+      let response = await request.json();
+
+      let { result } = response;
+      console.log(response);
+      let { budgets } = result;
+
+      this.setState({
+        program: {
+          selectedApm1s: result.apm,
+          selectedIndustries: result.programIndustry,
+          selectedSegments: result.segment,
+          selectedPersonas: result.persona,
+          regionId: this.state.regions.filter(
+            (item) => result.region === item.id
+          ),
+          q1_budget: budgets.q1,
+          q2_budget: budgets.q2,
+          q3_budget: budgets.q3,
+          q4_budget: budgets.q4,
+          abstract: result.abstract,
+          name: result.programName,
+          owner: result.programOwner,
+          kpi: result.otherKPIs,
+        },
+      });
+
+      // if (response.info.code === 200) this.setState({ personas: persona });
+      // else throw new Error(response.info.status);
+    } catch (err) {
+      console.log(err);
+      // this.showError(err);
     }
   };
 
@@ -312,7 +365,7 @@ class CreatePlanner extends Component {
     }
 
     const newRow = { ...this.state.program, [value]: data };
-
+    console.log(newRow);
     this.validations(value, data);
     this.setState({ program: newRow });
   };
@@ -321,26 +374,26 @@ class CreatePlanner extends Component {
     this.setState({ showLoader: true });
 
     try {
-      let apm1Id = this.state.program.selectedApm1s.map((el) => el.id);
-      let industryId = this.state.program.selectedIndustries.map((el) => el.id);
-      let segmentId = this.state.program.selectedSegments.map((el) => el.id);
-      let personaId = this.state.program.selectedPersonas.map((el) => el.id);
+      let apm1Id = this.state.program.selectedApm1s;
+      let industryId = this.state.program.selectedIndustries;
+      let segmentId = this.state.program.selectedSegments;
+      let personaId = this.state.program.selectedPersonas;
 
       const token = getCookie("token").replaceAll('"', "");
       const userId = getCookie("userid").replaceAll('"', "");
 
       const body = {
         programId: userId,
-        // name: this.state.program.name,
+        programName: this.state.program.name,
         programOwner: this.state.program.owner,
-        budgets: [
-          Number(this.state.program.q1_budget),
-          Number(this.state.program.q2_budget),
-          Number(this.state.program.q3_budget),
-          Number(this.state.program.q4_budget),
-        ],
+        budgets: {
+          q1: Number(this.state.program.q1_budget),
+          q2: Number(this.state.program.q2_budget),
+          q3: Number(this.state.program.q3_budget),
+          q4: Number(this.state.program.q4_budget),
+        },
         region: this.state.program.regionId[0].region_id,
-        amp: apm1Id,
+        apm: apm1Id,
         programIndustry: industryId,
         segment: segmentId,
         persona: personaId,
@@ -374,7 +427,7 @@ class CreatePlanner extends Component {
     }
   };
 
-  setup = async () => {
+  setup = async (planner_id) => {
     if (window.location.hostname === "localhost")
       this.API_URL = "http://localhost:3000/api/v1";
     else this.API_URL = await getAPIUrl();
@@ -384,10 +437,21 @@ class CreatePlanner extends Component {
     this.getRegions();
     this.getSegment();
     this.getPersona();
+    console.log(planner_id);
+    if (planner_id) this.getPlannerByID(planner_id);
   };
 
   componentDidMount() {
-    this.setup();
+    console.log(11);
+    let planner_id = window.location.href.split("=");
+    if (planner_id.length > 1) {
+      console.log(planner_id[1]);
+      // for editing
+      this.setState({ planner_id: planner_id[1] });
+      this.setup(planner_id[1]);
+    } else {
+      this.setup(false);
+    }
   }
 
   render() {
@@ -398,12 +462,14 @@ class CreatePlanner extends Component {
         <div style={{ border: "groove", padding: "2%" }}>
           <Title> Create Program Planner</Title>
           <div style={{ width: "100%", overflow: "hidden" }}>
+            <h2 style={{ fontWeight: "bold", fontSize: "20px" }}>Program</h2>
             <div>
               <div style={{ width: "50%", float: "left" }}>
                 <div style={{ padding: "1%" }}>
                   <Input
                     required
                     placeholder="Enter program name"
+                    defaultValue={this.state.program.name}
                     label="Program Name"
                     onChange={(e) => this.handleChange("name", e.target.value)}
                   />
@@ -416,6 +482,7 @@ class CreatePlanner extends Component {
                     }}
                     required
                     label="Q1 Budget"
+                    defaultValue={this.state.program.q1_budget}
                     placeholder="Q1"
                   />
                   <BudgetInput
@@ -423,6 +490,7 @@ class CreatePlanner extends Component {
                       this.handleChange("q2_budget", data.value)
                     }
                     required
+                    defaultValue={this.state.program.q2_budget}
                     label="Q2 Budget"
                     placeholder="Q2"
                   />
@@ -431,6 +499,7 @@ class CreatePlanner extends Component {
                       this.handleChange("q3_budget", data.value)
                     }
                     required
+                    defaultValue={this.state.program.q3_budget}
                     label="Q3 Budget"
                     placeholder="Q3"
                   />
@@ -440,6 +509,7 @@ class CreatePlanner extends Component {
                     }
                     required
                     label="Q4 Budget"
+                    defaultValue={this.state.program.q4_budget}
                     placeholder="Q4"
                   />
                 </div>
@@ -496,6 +566,7 @@ class CreatePlanner extends Component {
                     onChange={(e) => {
                       this.handleChange("kpi", e.target.value);
                     }}
+                    defaultValue={this.state.program.kpi}
                     placeholder="Enter KPI's"
                   />
                 </div>
@@ -508,6 +579,7 @@ class CreatePlanner extends Component {
                     onChange={(e) => {
                       this.handleChange("owner", e.target.value);
                     }}
+                    defaultValue={this.state.program.owner}
                     label="Owner"
                   />
                 </div>
@@ -610,143 +682,213 @@ class CreatePlanner extends Component {
                     onChange={(e) => {
                       this.handleChange("abstract", e.target.value);
                     }}
+                    defaultValue={this.state.program.abstract}
                     placeholder="Enter Abstract"
                   />
                 </div>
               </div>
-              <div style={{ textAlign: "center", paddingTop: "2%" }}>
-                {/* <Link to="/planner-view"> */}
-                <Button onClick={this.handleSubmit}>Save</Button>
-                {/* </Link> */}
-                <Button>Reset</Button>
-              </div>
             </div>
           </div>
-        </div>
-        <div style={{ marginTop: "10px" }}>
-          {this.state.offers.map((offer, i) => {
-            return (
-              <div style={{ border: "groove", padding: "2%" }}>
-                <div
-                  style={{ width: "50%", margin: "10px", paddingBottom: "1%" }}
-                >
-                  <Input
-                    required
-                    placeholder="Offer Name"
-                    label={`Offer Name`}
-                    value={offer.offer}
-                  />
-                </div>
-                {offer.activities.map((activity, k) => {
-                  return (
-                    <div
-                      style={{
-                        margin: "auto",
-                        display: "flex",
-                        justifyContent: "space-between",
-                        marginBottom: "10px",
-                      }}
-                    >
-                      <div
-                        style={{
-                          border: "groove",
-                          padding: "1%",
-                          display: "inline-block",
-                          width: "95%",
-                        }}
-                      >
-                        <div
-                          style={{
-                            width: "50%",
-                            margin: "5px",
-                            display: "inline-block",
-                          }}
-                        >
-                          <Input
-                            required
-                            placeholder="Title"
-                            label={"Title"}
-                            value={activity.title}
-                          />
-                        </div>
-                        <div
-                          style={{
-                            width: "30%",
-                            margin: "5px",
-                            display: "inline-block",
-                          }}
-                        >
-                          <Input
-                            required
-                            placeholder="Format"
-                            label="Format"
-                            value={activity.format}
-                          />
-                        </div>
-                        <div
-                          style={{
-                            width: "15%",
-                            margin: "5px",
-                            display: "inline-block",
-                          }}
-                        >
-                          <Datepicker
-                            required
-                            label="Tentative Date"
-                            formatter={(date) =>
-                              date ? moment(date).format("DD/MM/YYYY") : ""
-                            }
-                            parser={(dateString) =>
-                              moment(dateString, "DD/MM/YYYY").toDate()
-                            }
-                            value={activity.date}
-                          />
-                        </div>
-                      </div>
-                      <div
-                        style={{
-                          width: "5%",
-                          margin: "auto",
-                          textAlign: "center",
-                        }}
-                      >
-                        <Button
-                          label="-"
-                          variant="destructive"
-                          onClick={() =>
-                            this.removeActivity(offer.id, activity.id)
-                          }
-                        />
-                      </div>
-                    </div>
-                  );
-                })}
-                <div style={{ paddingLeft: "1.5%", display: "inline-block" }}>
-                  <Button
-                    label="add Activity"
-                    variant="brand"
-                    onClick={() => this.addActivity(offer.id)}
-                  />
-                </div>
-                <div style={{ paddingLeft: "1.5%", display: "inline-block" }}>
-                  <Button
-                    label="remove Offer"
-                    variant="destructive"
-                    onClick={() => this.removeOffer(offer.id)}
-                  />
-                </div>
-              </div>
-            );
-          })}
-
-          <div style={{ paddingLeft: "0.5%", paddingBottom: "2%" }}>
-            <Button label="add Offer" variant="brand" onClick={this.addOffer} />
+          <div style={{ textAlign: "center", paddingTop: "2%" }}>
+            {/* <Link to="/planner-view"> */}
+            <Button onClick={this.handleSubmit}>Save</Button>
+            {/* </Link> */}
+            <Button
+              onClick={() =>
+                this.setState({
+                  program: {
+                    selectedApm1s: [],
+                    selectedIndustries: [],
+                    selectedSegments: [],
+                    selectedPersonas: [],
+                    q1_budget: "",
+                    q2_budget: "",
+                    q3_budget: "",
+                    q4_budget: "",
+                    owner: "",
+                    abstract: "",
+                    name: "",
+                  },
+                })
+              }
+            >
+              Reset
+            </Button>
+          </div>
+          <div style={{ display: "flex" }}>
+            <h2 style={{ fontWeight: "bold", fontSize: "20px" }}>Offers</h2>
+            <div style={{ paddingLeft: "0.5%", paddingBottom: "2%" }}>
+              <Button
+                label="Add Offer"
+                variant="brand"
+                onClick={this.addOffer}
+              />
+            </div>
           </div>
 
-          <div style={{ textAlign: "center" }}>
-            <Link to="/planner-view">
-              <Button label="Save" variant="brand" />
-            </Link>
+          <div style={{ marginTop: "5px" }}>
+            {this.state.offers.map((offer, i) => {
+              return (
+                <div style={{ padding: "2%" }}>
+                  <div style={{ display: "flex", justifyContent: "left" }}>
+                    <div
+                      style={{
+                        width: "50%",
+                        paddingBottom: "1%",
+                      }}
+                    >
+                      <Input
+                        required
+                        placeholder="Offer Name"
+                        label={`Offer Name`}
+                        value={offer.offer}
+                        onChange={(e) => {
+                          let offers = [...this.state.offers];
+                          offers[i].offer = e.target.value;
+                          this.setState({ offers });
+                        }}
+                      />
+                    </div>
+                    <div
+                      style={{
+                        paddingLeft: "1.5%",
+                        marginRight: "auto",
+                        marginTop: "auto",
+                        marginBottom: "auto",
+                      }}
+                    >
+                      <Button
+                        label="Remove Offer"
+                        variant="destructive"
+                        onClick={() => this.removeOffer(offer.id)}
+                      />
+                    </div>
+                  </div>
+                  <h2
+                    style={{
+                      fontWeight: "500",
+                      fontSize: "17px",
+                      marginTop: "4px",
+                    }}
+                  >
+                    Activities
+                  </h2>
+
+                  {offer.activities.map((activity, k) => {
+                    return (
+                      <div
+                        style={{
+                          margin: "auto",
+                          display: "flex",
+                          justifyContent: "space-between",
+                          marginBottom: "10px",
+                          paddingLeft: "10px",
+                        }}
+                      >
+                        <div
+                          style={{
+                            paddingLeft: "15px",
+                            display: "inline-block",
+                            width: "95%",
+                          }}
+                        >
+                          <div
+                            style={{
+                              width: "50%",
+                              margin: "5px",
+                              display: "inline-block",
+                            }}
+                          >
+                            <Input
+                              required
+                              placeholder="Title"
+                              label={"Title"}
+                              value={activity.title}
+                              onChange={(e) => {
+                                let offers = [...this.state.offers];
+                                offers[i].activities[k].title = e.target.value;
+                                this.setState({ offers });
+                              }}
+                            />
+                          </div>
+                          <div
+                            style={{
+                              width: "30%",
+                              margin: "5px",
+                              display: "inline-block",
+                            }}
+                          >
+                            <Input
+                              required
+                              placeholder="Format"
+                              label="Format"
+                              value={activity.format}
+                              onChange={(e) => {
+                                let offers = [...this.state.offers];
+                                offers[i].activities[k].format = e.target.value;
+                                this.setState({ offers });
+                              }}
+                            />
+                          </div>
+                          <div
+                            style={{
+                              width: "15%",
+                              margin: "5px",
+                              display: "inline-block",
+                            }}
+                          >
+                            <Datepicker
+                              required
+                              label="Tentative Date"
+                              formatter={(date) =>
+                                date ? moment(date).format("DD/MM/YYYY") : ""
+                              }
+                              parser={(dateString) =>
+                                moment(dateString, "DD/MM/YYYY").toDate()
+                              }
+                              // value={activity.date}
+                              onChange={(event, data) => {
+                                console.log(data.formattedDate);
+                                let offers = [...this.state.offers];
+                                offers[i].activities[k].date =
+                                  data.formattedDate;
+                                this.setState({ offers });
+                              }}
+                            />
+                          </div>
+                        </div>
+                        <div
+                          style={{
+                            width: "5%",
+                            margin: "auto",
+                            textAlign: "center",
+                          }}
+                        >
+                          <Button
+                            label="-"
+                            variant="destructive"
+                            onClick={() => this.removeActivity(i, k)}
+                          />
+                        </div>
+                      </div>
+                    );
+                  })}
+                  <div style={{ paddingLeft: "1.5%", display: "inline-block" }}>
+                    <Button
+                      label="add Activity"
+                      variant="brand"
+                      onClick={() => this.addActivity(offer.id)}
+                    />
+                  </div>
+                </div>
+              );
+            })}
+
+            <div style={{ textAlign: "center" }}>
+              <Link to="/planner-view">
+                <Button label="Save" variant="brand" />
+              </Link>
+            </div>
           </div>
         </div>
       </div>

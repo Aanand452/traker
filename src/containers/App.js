@@ -22,6 +22,7 @@ import PrivateRoute from '../components/PrivateRoute';
 import CreatePlanner from '../components/CreatePlanner';
 import EditPlanner from '../components/EditPlanner';
 import PlanningView from '../components/PlanningView'
+import PlannerPage from '../components/Planner';
 
 Settings.setAppElement('#root');
 
@@ -57,6 +58,16 @@ function Home(){
     <div>
       <NavBar />
       <HomePage />
+    </div>
+  )
+}
+
+
+function Planner(){
+  return(
+    <div>
+      <NavBar />
+      <PlannerPage />
     </div>
   )
 }
@@ -128,6 +139,16 @@ function App({closeSettingsMenu, user}) {
               : <Redirect to='/' />
             }
           />
+          <PrivateRoute
+            exact
+            path="/planner"
+            render={
+              () => getCookie('role').replaceAll('"','') === 'admin'
+              ? <Planner />
+              : <Redirect to='/' />
+            }
+          />
+          
           <PrivateRoute
             exact
             path="/planner-view"

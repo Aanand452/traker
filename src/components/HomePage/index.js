@@ -84,7 +84,7 @@ const HomePage = () => (
               <CardImage src="/images/APAC_Activity_Tracker_Tile_Create_Program_notext_640x360.png" alt="Create program" />
               <CardTitle>Planner</CardTitle>
               <CardAction>
-                <Link to="/planner-view">
+                <Link to="/planner">
                   <Button variant="brand" label="View All" />
                 </Link>
               </CardAction>

@@ -1,84 +1,92 @@
-import React, { Component } from 'react';
-import { withRouter } from 'react-router-dom';
-import { Spinner, ToastContainer, Toast, IconSettings } from '@salesforce/design-system-react';
+import React, { Component } from "react";
+import { withRouter } from "react-router-dom";
+import {
+  Spinner,
+  ToastContainer,
+  Toast,
+  IconSettings,
+} from "@salesforce/design-system-react";
 
-import { getCookie } from '../../utils/cookie';
-import { getAPIUrl } from '../../config/config';
-import { Container } from './styles';
-import PlannerList from '../PlannerList';
-import ConfirmationDialog from '../Prompt';
-import NavBar from '../NavBar'
+import { getCookie } from "../../utils/cookie";
+import { getAPIUrl } from "../../config/config";
+import { Container } from "./styles";
+import PlannerList from "../PlannerList";
+import ConfirmationDialog from "../Prompt";
+import NavBar from "../NavBar";
 
 class EditPlanner extends Component {
   state = {
     showLoader: false,
     showConfirmationDialog: false,
     toast: {
-      active: false
+      active: false,
     },
     programs: [],
-    selectedProgram: '',
-    programsFYstartDate: '',
-    programsFYendDate: '',
-  }
+    selectedProgram: "",
+    programsFYstartDate: "",
+    programsFYendDate: "",
+  };
 
   componentDidMount() {
     this.setupAndFetch();
-    if(this.props.location.state && this.props.location.state.newProgram) {
-      this.setState({toast: {
-        active: true,
-        variant: 'success',
-        heading: 'The program was added successfuly'
-      }})
+    if (this.props.location.state && this.props.location.state.newProgram) {
+      this.setState({
+        toast: {
+          active: true,
+          variant: "success",
+          heading: "The program was added successfuly",
+        },
+      });
     }
   }
 
-  async getConfig(){
-    try{
-      const request = await fetch('/config');
+  async getConfig() {
+    try {
+      const request = await fetch("/config");
       const data = await request.json();
-      request.status === 200 && this.setState({
-        programsFYstartDate: data.programsFYstartDate,
-        programsFYendDate: data.programsFYendDate
-      });
-
-    } catch(e) {
-      console.error('ERROR: cannot get the url config: ', e);
+      request.status === 200 &&
+        this.setState({
+          programsFYstartDate: data.programsFYstartDate,
+          programsFYendDate: data.programsFYendDate,
+        });
+    } catch (e) {
+      console.error("ERROR: cannot get the url config: ", e);
     }
   }
 
   setupAndFetch = async () => {
-    if(window.location.hostname === 'localhost') this.API_URL =  "http://localhost:3000/api/v1";
+    if (window.location.hostname === "localhost")
+      this.API_URL = "http://localhost:3000/api/v1";
     else this.API_URL = await getAPIUrl();
     await this.getConfig();
     this.getPrograms();
-  }
+  };
 
   getPrograms = async (startDate, endDate) => {
-    this.setState({showLoader: true});
-    const user = localStorage.getItem('userId');
+    this.setState({ showLoader: true });
+    const user = localStorage.getItem("userId");
 
     const { programsFYstartDate, programsFYendDate } = this.state;
 
     try {
-      let token = getCookie('token').replaceAll('"','');
+      let token = getCookie("token").replaceAll('"', "");
       const config = {
-        method: 'POST',
+        // method: 'POST',
         headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
+          Accept: "application/json",
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify({
-          programsStartDate: startDate ? startDate : programsFYstartDate,
-          programsEndDate:  endDate ? endDate :  programsFYendDate,
-        })
-      }
-      const response = await fetch(`${this.API_URL}/programs/${user}`, config);
-      if(response.status === 200) {
+        // body: JSON.stringify({
+        //   programsStartDate: startDate ? startDate : programsFYstartDate,
+        //   programsEndDate:  endDate ? endDate :  programsFYendDate,
+        // })
+      };
+      const response = await fetch(`${this.API_URL}/program-planners`, config);
+      if (response.status === 200) {
         const { result } = await response.json();
-        this.setState({programs: result});
-
+        this.setState({ programs: result });
+        console.log(result);
       } else throw new Error(response);
     } catch (err) {
       console.error(err);
@@ -86,15 +94,15 @@ class EditPlanner extends Component {
         toast: {
           active: true,
           heading: "Something went wrong, please try again in a few seconds",
-          variant: "error"
-        }
+          variant: "error",
+        },
       });
     }
 
-    this.setState({showLoader: false});
-  }
+    this.setState({ showLoader: false });
+  };
 
-  onDelete = program => {
+  onDelete = (program) => {
     this.setState({
       showConfirmationDialog: true,
       selectedProgram: program.programId,
@@ -102,8 +110,8 @@ class EditPlanner extends Component {
   };
 
   closeConfirmationDialog = () => {
-    this.setState({showConfirmationDialog: false, selectedProgram: ''});
-  }
+    this.setState({ showConfirmationDialog: false, selectedProgram: "" });
+  };
 
   deleteProgram = async () => {
     this.setState({
@@ -111,32 +119,35 @@ class EditPlanner extends Component {
       showLoader: true,
     });
 
-    const token = getCookie('token').replaceAll('"','');
-    const userId = getCookie('userid').replaceAll('"','');
+    const token = getCookie("token").replaceAll('"', "");
+    const userId = getCookie("userid").replaceAll('"', "");
     const config = {
-      method: 'DELETE',
+      method: "DELETE",
       headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`,
+        Accept: "application/json",
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
       },
       body: JSON.stringify({
         userId,
-      })
-    }
+      }),
+    };
 
     try {
-      const response = await fetch(`${this.API_URL}/program/${this.state.selectedProgram}`, config)
-      if(response.status === 200) {
+      const response = await fetch(
+        `${this.API_URL}/program/${this.state.selectedProgram}`,
+        config
+      );
+      if (response.status === 200) {
         await this.getPrograms();
 
         this.setState({
           toast: {
             active: true,
             heading: "A program was deleted successfuly",
-            variant: "success"
+            variant: "success",
           },
-          selectedProgram: ''
+          selectedProgram: "",
         });
       } else throw new Error(response);
     } catch (err) {
@@ -145,42 +156,57 @@ class EditPlanner extends Component {
         toast: {
           active: true,
           heading: "Something went wrong, please try again in a few seconds",
-          variant: "error"
+          variant: "error",
         },
-        selectedProgram: ''
+        selectedProgram: "",
       });
     }
 
-    this.setState({showLoader: false});
-  }
+    this.setState({ showLoader: false });
+  };
 
   onEdit = () => {
-    this.setState({toast: {
-      active: true,
-      variant: 'success',
-      heading: 'The program was updated successfuly'
-    }});
+    this.setState({
+      toast: {
+        active: true,
+        variant: "success",
+        heading: "The program was updated successfuly",
+      },
+    });
     this.getPrograms();
-  }
+  };
 
   onGetHistoric = (startDate, endDate) => {
     this.getPrograms(startDate, endDate);
-  }
+  };
 
   render() {
     return (
       <Container>
-          <NavBar />
+        <NavBar />
         <IconSettings iconPath="/assets/icons">
-          <ConfirmationDialog message="Are you sure you want to delete this program?" isOpen={this.state.showConfirmationDialog} onClose={this.closeConfirmationDialog} onConfirm={this.deleteProgram} />
-          {this.state.showLoader && <Spinner size="small" variant="brand" assistiveText={{ label: "Loading..." }} />}
+          <ConfirmationDialog
+            message="Are you sure you want to delete this program?"
+            isOpen={this.state.showConfirmationDialog}
+            onClose={this.closeConfirmationDialog}
+            onConfirm={this.deleteProgram}
+          />
+          {this.state.showLoader && (
+            <Spinner
+              size="small"
+              variant="brand"
+              assistiveText={{ label: "Loading..." }}
+            />
+          )}
           {this.state.toast.active && (
             <ToastContainer>
               <Toast
-                labels={{heading: this.state.toast.heading}}
+                labels={{ heading: this.state.toast.heading }}
                 variant={this.state.toast.variant}
                 duration={5000}
-                onRequestClose={() => this.setState({toast: {active: false}})}
+                onRequestClose={() =>
+                  this.setState({ toast: { active: false } })
+                }
               />
             </ToastContainer>
           )}

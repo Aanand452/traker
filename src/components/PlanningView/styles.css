@@ -151,3 +151,25 @@
 .col-span-8 {
   grid-column: span 8 / span 8;
 }
+
+.hover-none {
+  text-decoration: none;
+}
+.hover-none:hover {
+  text-decoration: none;
+}
+.button {
+  text-decoration: none;
+  padding: 3px;
+  margin-left: 3px;
+  border: 2px solid black;
+  background-color: white;
+  border-color: #04AA6D;
+  color: green;
+}
+
+.button:hover {
+  text-decoration: none;
+  background-color: #04AA6D;
+  color: white;
+}

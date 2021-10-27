@@ -28,7 +28,7 @@ import "./styles.css";
 const CurrencyCell = ({ children, ...props }) => {
   if (parseInt(children, 10) === 0) {
     return (
-      <DataTableCell {...props}>
+      <DataTableCell title={children.toString()} {...props}>
         {new Intl.NumberFormat("en-US", {
           style: "currency",
           currency: "USD",
@@ -53,46 +53,6 @@ const CurrencyCell = ({ children, ...props }) => {
   }
 };
 
-const ActionCell = ({ children, ...props }) => {
-  return (
-    <DataTableCell
-      // title={children.toString()}
-      {...props}
-      onAction={this.handleRowAction}
-    >
-      <div style={{ display: "flex", justifyContent: "space-around" }}>
-        <Link to="/planner-view" title="open">
-          <img
-            width={15}
-            alt="open"
-            src="https://img.icons8.com/external-bearicons-glyph-bearicons/64/000000/external-open-call-to-action-bearicons-glyph-bearicons.png"
-          />
-        </Link>
-        <Link
-          to={{
-            pathname: "/create-planner",
-            search: `?planner=${children}`,
-          }}
-          title="edit"
-        >
-          <img
-            src="https://img.icons8.com/material-outlined/24/000000/edit--v1.png"
-            width={15}
-            alt="edit"
-          />
-        </Link>
-        <Link to="/create-planner" title="delete">
-          <img
-            src="https://img.icons8.com/flat-round/64/000000/delete-sign.png"
-            width={15}
-            alt="delete"
-          />
-        </Link>
-      </div>
-    </DataTableCell>
-  );
-};
-
 const DropDownCell = ({ children, ...props }) => {
   let items = props.property;
   let options = props.item[items].map((el) => el);
@@ -111,7 +71,6 @@ const DropDownCell = ({ children, ...props }) => {
 };
 
 CurrencyCell.displayName = DataTableCell.displayName;
-ActionCell.displayName = DataTableCell.displayName;
 DropDownCell.displayName = DataTableCell.displayName;
 
 class Table extends Component {
@@ -743,7 +702,7 @@ class Table extends Component {
           >
             <DataTableColumn
               label="Program Name"
-              property="programName"
+              property="name"
               sortDirection={this.state.sortDirection || "desc"}
               sortable
               isSorted={this.state.sortProperty === "name"}
@@ -751,39 +710,111 @@ class Table extends Component {
             />
             <DataTableColumn
               label="Program Owner"
-              property="programOwner"
+              property="owner"
               width={`${this.state.columnWidth["Program Owner"]}px`}
             />
-            {/* <DataTableColumn
+            <DataTableColumn
               label="Budget"
-              property="budgets"
+              property="budget"
               sortDirection={this.state.sortDirection || "desc"}
               sortable
               isSorted={this.state.sortProperty === "budget"}
               width={`${this.state.columnWidth["Budget"]}px`}
             >
               <CurrencyCell />
-            </DataTableColumn> */}
-            {/* <DataTableColumn
+            </DataTableColumn>
+            <DataTableColumn
               label="MP Target"
               property="metrics"
               width={`${this.state.columnWidth["MP Target"]}px`}
             >
               <CurrencyCell />
-            </DataTableColumn> */}
+            </DataTableColumn>
             <DataTableColumn
-              label="Abstract"
-              property="abstract"
+              label="Target Region"
+              property="targetRegion"
+              sortDirection={this.state.sortDirection || "desc"}
+              sortable
+              isSorted={this.state.sortProperty === "targetRegion"}
+              width={`${this.state.columnWidth["Target Region"]}px`}
+            />
+            <DataTableColumn
+              label="Lifecycle Stage"
+              property="lifecycleStage"
+              width={`${this.state.columnWidth["Lifecycle Stage"]}px`}
+            >
+              <DropDownCell />
+            </DataTableColumn>
+            <DataTableColumn
+              label="APM1"
+              property="apm1"
+              width={`${this.state.columnWidth["APM1"]}px`}
+            >
+              <DropDownCell />
+            </DataTableColumn>
+            <DataTableColumn
+              label="APM2"
+              property="apm2"
+              width={`${this.state.columnWidth["APM2"]}px`}
+            >
+              <DropDownCell />
+            </DataTableColumn>
+            <DataTableColumn
+              label="Industry"
+              property="industry"
+              sortDirection={this.state.sortDirection || "desc"}
+              sortable
+              isSorted={this.state.sortProperty === "industry"}
+              width={`${this.state.columnWidth["Industry"]}px`}
+            >
+              <DropDownCell />
+            </DataTableColumn>
+            <DataTableColumn
+              label="Segment"
+              property="segment"
+              width={`${this.state.columnWidth["Segment"]}px`}
+            >
+              <DropDownCell />
+            </DataTableColumn>
+            <DataTableColumn
+              label="Persona"
+              property="persona"
+              width={`${this.state.columnWidth["Persona"]}px`}
+            >
+              <DropDownCell />
+            </DataTableColumn>
+            <DataTableColumn
+              label="Customer Message"
+              property="customerMessage"
               width={`${this.state.columnWidth["Customer Message"]}px`}
             />
-
             <DataTableColumn
-              label="Actions"
-              property="ProgramPlannerId"
-              width={`${this.state.columnWidth["MP Target"]}px`}
-            >
-              <ActionCell />
-            </DataTableColumn>
+              label="Other KPI's"
+              property="otherKpis"
+              width={`${this.state.columnWidth["Other KPI's"]}px`}
+            />
+            <DataTableRowActions
+              options={[
+                {
+                  id: 2,
+                  label: "View",
+                  value: "3",
+                },
+                {
+                  id: 0,
+                  label: "Edit",
+                  value: "1",
+                },
+                {
+                  id: 1,
+                  label: "Delete",
+                  value: "2",
+                },
+              ]}
+              menuPosition="overflowBoundaryElement"
+              onAction={this.handleRowAction}
+              dropdown={<Dropdown length="7" />}
+            />
           </DataTable>
           <Pager
             data={this.state.data}
