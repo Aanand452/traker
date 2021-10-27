@@ -103,6 +103,61 @@ paths:
               - $ref: '#/definitions/ResponseStatus'
               - $ref: '#/definitions/Error'
 
+  /program-planners:
+    get:
+      x-swagger-router-controller: programPlanner
+      operationId: "getProgramPlanners"
+      summary: Returns the list of program planners.
+      description: This will be used to populate the insert and update the program planners.
+      security:
+        - Bearer: []
+      x-security-scopes:
+        - admin
+        - user
+      produces:
+        - application/json
+      responses:
+        200:
+          description: Success
+          schema:
+            allOf:
+              - $ref: '#/definitions/ResponseStatus'
+              - $ref: '#/definitions/ProgramListResponse'
+        default:
+          description: Invalid request.
+          schema:
+            allOf:
+              - $ref: '#/definitions/ResponseStatus'
+              - $ref: '#/definitions/Error'
+    post:
+      x-swagger-router-controller: programPlanner
+      operationId: "addNewProgramPlanner"
+      summary: Create a new program Planner
+      description: N/A
+      security:
+        - Bearer: []
+      parameters:
+      - name: body
+        in: body
+        required: true
+        schema:
+          $ref: '#/definitions/ProgramPlannerBody'
+      responses:
+        200:
+          description: Success
+          schema:
+            allOf:
+              - $ref: '#/definitions/ResponseStatus'
+        default:
+          description: Invalid request.
+          schema:
+            allOf:
+              - $ref: '#/definitions/ResponseStatus'
+              - $ref: '#/definitions/Error'
+
+  
+
+
   /program/{id}:
     get:
       x-swagger-router-controller: program
@@ -1122,6 +1177,7 @@ definitions:
         type: string
       programsEndDate:
         type: string
+  
   ProgramBody:
     description: Body used for creating a new program.
     type: object
@@ -1170,6 +1226,43 @@ definitions:
         type: number
       year_quarter:
         type: number
+
+  ProgramPlannerBody:
+    description: Body used for creating a new program planner.
+    type: object
+    properties:
+      userId:
+        type: string
+      name:
+        type: string
+      owner:
+        type: string
+      budget:
+        type: array
+        items:
+          type: number
+      regionId:
+        type: string
+      apm1Id:
+        type: array
+        items:
+          type: string
+      industryId:
+        type: array
+        items:
+          type: string
+      segmentId:
+        type: array
+        items:
+          type: string
+      personaId:
+        type: array
+        items:
+          type: string
+      otherKpis:
+        type: string
+
+
 
   UserFiltersBody:
     description: A User Filter.

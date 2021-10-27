@@ -19,6 +19,7 @@ import Industry from './industry';
 import Segment from './segment';
 import Persona from './persona';
 import UserFilter from './userFilters'
+import ProgramPlanner from './programPlanner';
 
 let db = {};
 
@@ -41,6 +42,7 @@ db.ProgramLifecycle = ProgramLifecycle;
 db.ProgramIndustry = ProgramIndustry;
 db.ProgramSegment = ProgramSegment;
 db.ProgramPersona = ProgramPersona;
+db.ProgramPlanner = ProgramPlanner;
 db.Region = Region;
 db.LifecycleStage = LifecycleStage;
 db.APM1 = APM1;
