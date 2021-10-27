@@ -2,10 +2,9 @@
 
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    await queryInterface.renameColumn("program_planner", "amp", "apm");
+    // await queryInterface.renameColumn("program_planner", "amp", "apm");
     await queryInterface.renameColumn(
       "program_planner",
-      "program_log_id",
       "planner_id"
     );
     // await queryInterface.changeColumn("program_planner", "budgets", {
@@ -19,8 +18,7 @@ module.exports = {
     await queryInterface.renameColumn("program_planner", "amp", "apm");
     await queryInterface.renameColumn(
       "program_planner",
-      "planner_id",
-      "program_log_id"
+      "planner_id"
     );
     return await queryInterface.changeColumn("program_planner", "budgets", {
       allowNull: true,
