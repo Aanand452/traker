@@ -21,6 +21,7 @@ import {
 import { FormContainer, Container, Sfdch1NewRow } from "./styles";
 import { getCookie } from "../../utils/cookie";
 import { getAPIUrl } from "../../config/config";
+import { Title } from "../CreateProgramPage/styles";
 
 class CreatePlanner extends Component {
   constructor(props) {
@@ -41,17 +42,19 @@ class CreatePlanner extends Component {
         },
       ],
       industries: [],
+      apm1s: [],
       segments: [],
       personas: [],
       regions: [],
       program: {
         selectedApm1s: [],
-        selectedApm2s: [],
-        selectedLifecycleStages: [],
         selectedIndustries: [],
         selectedSegments: [],
         selectedPersonas: [],
-        year: "",
+        q1_budget: "",
+        q2_budget: "",
+        q3_budget: "",
+        q4_budget: "",
       },
       error: {},
     };
@@ -214,6 +217,31 @@ class CreatePlanner extends Component {
     }
   };
 
+  getAPM1 = async () => {
+    try {
+      let token = getCookie("token").replaceAll('"', "");
+      const config = {
+        method: "GET",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      };
+      const request = await fetch(`${this.API_URL}/apm1`, config);
+      const response = await request.json();
+      const apm1 = response.result.map((item) => ({
+        id: item.apm1Id,
+        label: item.name,
+      }));
+
+      if (response.info.code === 200) this.setState({ apm1s: apm1 });
+      else throw new Error(response.info.status);
+    } catch (err) {
+      this.showError(err);
+    }
+  };
+
   validations = (input, data) => {
     let errors = { ...this.state.error };
     const inputs = [
@@ -289,12 +317,70 @@ class CreatePlanner extends Component {
     this.setState({ program: newRow });
   };
 
+  handleSubmit = async () => {
+    this.setState({ showLoader: true });
+
+    try {
+      let apm1Id = this.state.program.selectedApm1s.map((el) => el.id);
+      let industryId = this.state.program.selectedIndustries.map((el) => el.id);
+      let segmentId = this.state.program.selectedSegments.map((el) => el.id);
+      let personaId = this.state.program.selectedPersonas.map((el) => el.id);
+
+      const token = getCookie("token").replaceAll('"', "");
+      const userId = getCookie("userid").replaceAll('"', "");
+
+      const body = {
+        programId: userId,
+        // name: this.state.program.name,
+        programOwner: this.state.program.owner,
+        budgets: [
+          Number(this.state.program.q1_budget),
+          Number(this.state.program.q2_budget),
+          Number(this.state.program.q3_budget),
+          Number(this.state.program.q4_budget),
+        ],
+        region: this.state.program.regionId[0].region_id,
+        amp: apm1Id,
+        programIndustry: industryId,
+        segment: segmentId,
+        persona: personaId,
+        abstract: this.state.program.abstract || "",
+      };
+      if (this.state.program.kpi) body.otherKPIs = this.state.program.kpi;
+      console.log(body);
+
+      const config = {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(body),
+      };
+
+      const response = await fetch(`${this.API_URL}/program-planners`, config);
+
+      if (response.status === 200) {
+        this.props.history.push({
+          pathname: "/programs-view",
+          state: { newProgram: true },
+        });
+      } else throw new Error("Something went wrong, please try again");
+    } catch (err) {
+      console.log(err);
+      // this.setState({ showLoader: false });
+      // this.showError(err);
+    }
+  };
+
   setup = async () => {
     if (window.location.hostname === "localhost")
       this.API_URL = "http://localhost:3000/api/v1";
     else this.API_URL = await getAPIUrl();
 
     this.getIndustry();
+    this.getAPM1();
     this.getRegions();
     this.getSegment();
     this.getPersona();
@@ -310,9 +396,7 @@ class CreatePlanner extends Component {
         <NavBar />
 
         <div style={{ border: "groove", padding: "2%" }}>
-          <div style={{ fontSize: "40px", textAlign: "center" }}>
-            Program Planner
-          </div>
+          <Title> Create Program Planner</Title>
           <div style={{ width: "100%", overflow: "hidden" }}>
             <div>
               <div style={{ width: "50%", float: "left" }}>
@@ -321,29 +405,39 @@ class CreatePlanner extends Component {
                     required
                     placeholder="Enter program name"
                     label="Program Name"
+                    onChange={(e) => this.handleChange("name", e.target.value)}
                   />
                 </div>
                 <div style={{ padding: "1%", display: "flex" }}>
                   <BudgetInput
-                    onChange={(e, t) => console.log(e, t)}
+                    onChange={(e, data) => {
+                      console.log(e.target.value);
+                      this.handleChange("q1_budget", data.value);
+                    }}
                     required
                     label="Q1 Budget"
                     placeholder="Q1"
                   />
                   <BudgetInput
-                    onChange={(e, t) => console.log(e, t)}
+                    onChange={(e, data) =>
+                      this.handleChange("q2_budget", data.value)
+                    }
                     required
                     label="Q2 Budget"
                     placeholder="Q2"
                   />
                   <BudgetInput
-                    onChange={(e, t) => console.log(e, t)}
+                    onChange={(e, data) =>
+                      this.handleChange("q3_budget", data.value)
+                    }
                     required
                     label="Q3 Budget"
                     placeholder="Q3"
                   />
                   <BudgetInput
-                    onChange={(e, t) => console.log(e, t)}
+                    onChange={(e, data) =>
+                      this.handleChange("q4_budget", data.value)
+                    }
                     required
                     label="Q4 Budget"
                     placeholder="Q4"
@@ -397,15 +491,56 @@ class CreatePlanner extends Component {
                   />
                 </div>
                 <div style={{ padding: "1%" }}>
-                  <Textarea label="Other Kpi's" placeholder="Enter KPI's" />
+                  <Textarea
+                    label="Other Kpi's"
+                    onChange={(e) => {
+                      this.handleChange("kpi", e.target.value);
+                    }}
+                    placeholder="Enter KPI's"
+                  />
                 </div>
               </div>
               <div style={{ float: "right", width: "50%" }}>
                 <div style={{ padding: "1%" }}>
-                  <Input required placeholder="Program Owner" label="Owner" />
+                  <Input
+                    required
+                    placeholder="Program Owner"
+                    onChange={(e) => {
+                      this.handleChange("owner", e.target.value);
+                    }}
+                    label="Owner"
+                  />
                 </div>
                 <div style={{ padding: "1%" }}>
-                  <Input required placeholder="Select an Option" label="AMP" />
+                  <Combobox
+                    required
+                    events={{
+                      onRequestRemoveSelectedOption: (event, data) => {
+                        this.setState({
+                          program: {
+                            ...this.state.program,
+                            selectedApm1s: data.selection,
+                          },
+                        });
+                      },
+                      onSelect: (event, data) =>
+                        data.selection.length &&
+                        this.handleChange("selectedApm1s", data.selection),
+                    }}
+                    labels={{
+                      label: "APM",
+                      placeholder: "Select an option",
+                    }}
+                    menuItemVisibleLength={5}
+                    multiple
+                    options={comboboxFilterAndLimit({
+                      limit: this.state.apm1s.length,
+                      options: this.state.apm1s,
+                      selection: this.state.program.selectedApm1s,
+                    })}
+                    selection={this.state.program.selectedApm1s}
+                    errorText={this.state.error.selectedApm1s}
+                  />
                 </div>
                 <div style={{ padding: "1%" }}>
                   <Combobox
@@ -470,13 +605,19 @@ class CreatePlanner extends Component {
                   />
                 </div>
                 <div style={{ padding: "1%" }}>
-                  <Textarea label="Abstract" placeholder="Enter Abstract" />
+                  <Textarea
+                    label="Abstract"
+                    onChange={(e) => {
+                      this.handleChange("abstract", e.target.value);
+                    }}
+                    placeholder="Enter Abstract"
+                  />
                 </div>
               </div>
               <div style={{ textAlign: "center", paddingTop: "2%" }}>
-                <Link to="/planner-view">
-                  <Button>Save</Button>
-                </Link>
+                {/* <Link to="/planner-view"> */}
+                <Button onClick={this.handleSubmit}>Save</Button>
+                {/* </Link> */}
                 <Button>Reset</Button>
               </div>
             </div>

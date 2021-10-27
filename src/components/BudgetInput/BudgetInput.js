@@ -4,27 +4,26 @@ import { Input } from "@salesforce/design-system-react";
 
 const BudgetInput = (props) => {
   const { onChange, hideCurrencySign = false, ...childProps } = props;
-  
+
   const onChangeInput = (event, data) => {
     const cleanRegex = /[^.\d]/g;
     const revoveInvalidChars = (tx) =>
-      tx.replace(cleanRegex, "")
-      .replace(/(\..*)\./g, "$1");
+      tx.replace(cleanRegex, "").replace(/(\..*)\./g, "$1");
     event.target.value = revoveInvalidChars(event.target.value);
     data.value = revoveInvalidChars(data.value);
     onChange(event, data);
   };
 
-  const onBlurFormat = (value) => {
-    if(Number(value) === 0) {
-      onChange({ target: { value } }, { value })
-      return;
-    }
-    if(value==="")
-       return;
-    value = Math.ceil(value)
-    onChange({ target: { value } }, { value });
-  };
+  // const onBlurFormat = (value) => {
+  //   if(Number(value) === 0) {
+  //     onChange({ target: { value } }, { value })
+  //     return;
+  //   }
+  //   if(value==="")
+  //      return;
+  //   value = Math.ceil(value)
+  //   onChange({ target: { value } }, { value });
+  // };
 
   return (
     <Input
@@ -32,7 +31,7 @@ const BudgetInput = (props) => {
       label={props.label}
       onChange={onChangeInput}
       fixedTextLeft={!hideCurrencySign && "$"}
-      onBlur={() => onBlurFormat(props.value)}
+      // onBlur={() => onBlurFormat(props.value)}
       {...childProps}
     />
   );
