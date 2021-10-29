@@ -6,13 +6,17 @@ import update from "immutability-helper";
 import { BoxShadow } from "./styles";
 import "./styles.css";
 
-import { Button } from "@salesforce/design-system-react";
+import { Button, Spinner } from "@salesforce/design-system-react";
 import { Link } from "react-router-dom";
+import { getCookie } from "../../utils/cookie";
+import { getAPIUrl } from "../../config/config";
 
 class PlanningView extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      planner: {},
+      loading: true,
       offers: [
         {
           id: 1,
@@ -30,10 +34,78 @@ class PlanningView extends Component {
     };
   }
 
+  getPlannerByID = async () => {
+    if (window.location.hostname === "localhost")
+      this.API_URL = "http://localhost:3000/api/v1";
+    else this.API_URL = await getAPIUrl();
+
+    try {
+      let planner_id = window.location.href.split("=");
+      if (planner_id.length > 1) {
+        console.log(planner_id[1]);
+        // for editing
+        planner_id = planner_id[1];
+      } else {
+      }
+
+      let token = getCookie("token").replaceAll('"', "");
+      const config = {
+        method: "GET",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      };
+      const request = await fetch(
+        `${this.API_URL}/program-planner/${planner_id}`,
+        config
+      );
+      let response = await request.json();
+
+      let { result } = response;
+      console.log(response);
+
+      this.setState({
+        planner: result,
+        total_budget:
+          (result.budgets.q1 +
+            result.budgets.q2 +
+            result.budgets.q3 +
+            result.budgets.q4) /
+          1000,
+        loading: false,
+      });
+
+      // if (response.info.code === 200) this.setState({ personas: persona });
+      // else throw new Error(response.info.status);
+    } catch (err) {
+      console.log(err);
+      // this.showError(err);
+    }
+  };
+
+  componentDidMount() {
+    this.getPlannerByID();
+  }
+
   render() {
+    const { planner, loading, total_budget } = this.state;
+    if (loading) {
+      return (
+        <div>
+          <Spinner
+            size="small"
+            variant="brand"
+            assistiveText={{ label: "Loading..." }}
+          />
+        </div>
+      );
+    }
+
+    const { offers } = planner.offers;
     return (
       <div>
-        {" "}
         <div style={{ backgroundColor: "white" }}>
           <NavBar />
           <div class="">
@@ -46,7 +118,7 @@ class PlanningView extends Component {
                 fontWeight: 500,
               }}
             >
-              FY22 H2 Master Program Plan: ESMB(ANZ)
+              {planner.programName}
             </h1>
           </div>
           <div style={{ margin: "10px" }} className="grid grid-cols-10">
@@ -56,19 +128,9 @@ class PlanningView extends Component {
                 <div className="owner-name">Cat Prestipino</div>
 
                 <div className="program">Program Overview (abstract)</div>
-                <div className="program-details">
-                  Salesforce is a strong partner to small business helping them
-                  overcome current challenges and scale for the future, we help
-                  small business find, win, keep and contact with their
-                  customers where ever they are.
-                </div>
+                <div className="program-details">{planner.abstract}</div>
                 <div className="program">Program Objectives (abstract)</div>
-                <div className="program-details">
-                  Salesforce is a strong partner to small business helping them
-                  overcome current challenges and scale for the future, we help
-                  small business find, win, keep and contact with their
-                  customers where ever they are.
-                </div>
+                <div className="program-details">{planner.otherKPIs}</div>
               </div>
             </div>
             <div class="col-span-8">
@@ -82,46 +144,71 @@ class PlanningView extends Component {
 
                   <div className="card-head">
                     <span> Budget :</span>
-                    <span className="card-head-value">$938K</span>
+                    <span className="card-head-value">
+                      $<span>{total_budget}</span>K
+                    </span>
                   </div>
                   <div className="grid-cols-2" style={{ display: "grid" }}>
                     <div className="budgets">
                       <div className="quarters">
                         <div> Q1</div>
-                        <div className="card-head-value">$170K</div>
+                        <div className="card-head-value">
+                          $<span>{planner.budgets.q1 / 1000}</span>K
+                        </div>
                       </div>
                       <div className="quarters">
                         <div> Q3</div>
-                        <div className="card-head-value">$140K</div>
+                        <div className="card-head-value">
+                          $<span>{planner.budgets.q2 / 1000}</span>K
+                        </div>
                       </div>
                     </div>
                     <div className="budgets">
                       <div className="quarters">
                         <div> Q2</div>
-                        <div className="card-head-value">$230K</div>
+                        <div className="card-head-value">
+                          $<span>{planner.budgets.q3 / 1000}</span>K
+                        </div>
                       </div>
                       <div className="quarters">
                         <div> Q4</div>
-                        <div className="card-head-value">$193K</div>
+                        <div className="card-head-value">
+                          $<span>{planner.budgets.q4 / 1000}</span>K
+                        </div>
                       </div>
                     </div>
                   </div>
                 </div>
                 <div className="card">
-                  <div className="card-head">
-                    Persona 1 :<div className="card-head-value">Sales</div>
-                  </div>
-                  <div className="card-head border-t">
-                    Persona 2 :
-                    <div className="card-head-value">Service/Marketing</div>
-                  </div>
+                  {planner.persona.map((item, k) => (
+                    <div
+                      className={k === 0 ? "card-head" : "card-head border-t"}
+                    >
+                      Persona {k + 1} :
+                      <div className="card-head-value">{item.label}</div>
+                    </div>
+                  ))}
                 </div>
                 <div className="card">
-                  <div className="card-head">
-                    Industry :<div className="card-head-value">All</div>
-                  </div>
+                  {planner.programIndustry.map((item, k) => (
+                    <div
+                      className={k === 0 ? "card-head" : "card-head border-t"}
+                    >
+                      Industry {k + 1} :
+                      <div className="card-head-value">{item.label}</div>
+                    </div>
+                  ))}
                   <div className="card-head border-t">
-                    Segment :<div className="card-head-value">ESMB</div>
+                    Segment :
+                    <div className="card-head-value">
+                      <span>
+                        {planner.programIndustry.map((item, k) =>
+                          planner.programIndustry.length - 1 === k
+                            ? item.label
+                            : item.label + ", "
+                        )}
+                      </span>
+                    </div>
                   </div>
                 </div>
                 <div className="card">
@@ -135,65 +222,23 @@ class PlanningView extends Component {
               <div className="card-footer">
                 <div className="parent-program">Owner</div>
                 <div class="grid">
-                  <div>
-                    <div className="activity-head">
-                      Offer Name :
-                      <div className="activity-value">CRM Starter Campaign</div>
-                    </div>
-                    <div className="activity-head" style={{ top: "50%" }}>
-                      Activities :
-                    </div>
-                    <ul className="list-ul">
-                      <li>
-                        ABM - Business Transformation Customer Council - date
-                        TBC
-                      </li>
-                      <li>Bespoke webinar with Cyber Security Hub</li>
-                      <li>LOGIN PROMO - Placeholder - App Cookbook</li>
-                    </ul>
-                  </div>
-                  <div>
+                  
+                  {offers.map((offer, k) => (
                     <div>
                       <div className="activity-head">
                         Offer Name :
-                        <div className="activity-value">
-                          5th Small Business Report
-                        </div>
+                        <div className="activity-value">{offer.offer}</div>
                       </div>
                       <div className="activity-head" style={{ top: "50%" }}>
                         Activities :
                       </div>
                       <ul className="list-ul">
-                        <li>
-                          ABM - Business Transformation Customer Council - date
-                          TBC
-                        </li>
-                        <li>Bespoke webinar with Cyber Security Hub</li>
-                        <li>LOGIN PROMO - Placeholder - App Cookbook</li>
+                        {offer.activities.map((item) => (
+                          <li>{item.title}</li>
+                        ))}
                       </ul>
                     </div>
-                  </div>
-                  <div>
-                    <div>
-                      <div className="activity-head">
-                        Offer Name :
-                        <div className="activity-value">
-                          ESMB at Strategic Events
-                        </div>
-                      </div>
-                      <div className="activity-head" style={{ top: "50%" }}>
-                        Activities :
-                      </div>
-                      <ul className="list-ul">
-                        <li>
-                          ABM - Business Transformation Customer Council - date
-                          TBC
-                        </li>
-                        <li>Bespoke webinar with Cyber Security Hub</li>
-                        <li>LOGIN PROMO - Placeholder - App Cookbook</li>
-                      </ul>
-                    </div>
-                  </div>
+                  ))}
                 </div>
               </div>
             </div>

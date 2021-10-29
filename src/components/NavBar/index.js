@@ -161,10 +161,11 @@ class NavBar extends Component {
               </GlobalNavigationBarRegion>
               <GlobalNavigationBarRegion region="secondary" navigation>
                 <NavigationBarLink to="/home" title="Home" />
+                {getCookie("role").replaceAll('"', "") === "admin" && (
+                  <NavigationBarLink to="/planner" title="Planner" />
+                )}
                 <NavigationBarLink to="/my-activities" title="Activities" />
-                {/* {
-                  getCookie('role').replaceAll('"','') === 'admin' && <NavigationBarLink to="/programs-view" title="Programs" />
-                } */}
+
                 {getCookie("role").replaceAll('"', "") === "admin" && (
                   <NavigationBarLink to="/planner-view" title="Program Plans" />
                 )}

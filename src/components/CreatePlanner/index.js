@@ -4,6 +4,7 @@ import moment from "moment";
 import NavBar from "../NavBar";
 import BudgetInput from "../BudgetInput/BudgetInput";
 import update from "immutability-helper";
+import { Redirect } from "react-router-dom";
 
 import {
   Icon,
@@ -36,7 +37,7 @@ class CreatePlanner extends Component {
             {
               id: 0,
               title: "",
-              format: "",
+              formatId: "",
               date: new Date(),
             },
           ],
@@ -144,7 +145,14 @@ class CreatePlanner extends Component {
         {
           id: this.state.offers.length + 1,
           offer: "",
-          activities: [{ id: 1, title: "", format: "", date: new Date() }],
+          activities: [
+            {
+              id: 1,
+              title: "",
+              formatId: "",
+              date: new Date(),
+            },
+          ],
         },
       ],
     });
@@ -260,6 +268,7 @@ class CreatePlanner extends Component {
           owner: result.programOwner,
           kpi: result.otherKPIs,
         },
+        offers: result.offers.offers,
       });
 
       // if (response.info.code === 200) this.setState({ personas: persona });
@@ -398,12 +407,16 @@ class CreatePlanner extends Component {
         segment: segmentId,
         persona: personaId,
         abstract: this.state.program.abstract || "",
+        offers: {
+          offers:
+            this.state.offers[0].offer.length > 0 ? this.state.offers : [],
+        },
       };
       if (this.state.program.kpi) body.otherKPIs = this.state.program.kpi;
       console.log(body);
 
       const config = {
-        method: "POST",
+        method: this.state.planner_id ? "PUT" : "POST",
         headers: {
           Accept: "application/json",
           "Content-Type": "application/json",
@@ -412,13 +425,21 @@ class CreatePlanner extends Component {
         body: JSON.stringify(body),
       };
 
-      const response = await fetch(`${this.API_URL}/program-planners`, config);
+      console.log(JSON.stringify(body));
+
+      const response = await fetch(
+        `${this.API_URL}/${
+          this.state.planner_id ? "program-planner" : "program-planners"
+        }/${this.state.planner_id ? this.state.planner_id : ""}`,
+        config
+      );
 
       if (response.status === 200) {
-        this.props.history.push({
-          pathname: "/programs-view",
-          state: { newProgram: true },
-        });
+        window.location.reload();
+        // this.props.history.push({
+        //   pathname: "/programs-view",
+        //   state: { newProgram: true },
+        // });
       } else throw new Error("Something went wrong, please try again");
     } catch (err) {
       console.log(err);
@@ -691,7 +712,9 @@ class CreatePlanner extends Component {
           </div>
           <div style={{ textAlign: "center", paddingTop: "2%" }}>
             {/* <Link to="/planner-view"> */}
-            <Button onClick={this.handleSubmit}>Save</Button>
+            <Button onClick={this.handleSubmit}>
+              {this.state.planner_id ? "Update" : "Save"}
+            </Button>
             {/* </Link> */}
             <Button
               onClick={() =>
@@ -885,9 +908,11 @@ class CreatePlanner extends Component {
             })}
 
             <div style={{ textAlign: "center" }}>
-              <Link to="/planner-view">
-                <Button label="Save" variant="brand" />
-              </Link>
+              <Button
+                onClick={this.handleSubmit}
+                label={this.state.planner_id ? "Update" : "Save"}
+                variant="brand"
+              />
             </div>
           </div>
         </div>

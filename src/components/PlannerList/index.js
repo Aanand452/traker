@@ -1,4 +1,4 @@
-import React, { Component, Fragment } from "react";
+import React, { Component, Fragment, useEffect, useState } from "react";
 import { withRouter, Link } from "react-router-dom";
 import {
   Button,
@@ -24,6 +24,8 @@ import EditProgramModal from "../ProgramModal";
 import PlanningView from "../PlanningView";
 
 import "./styles.css";
+import { getAPIUrl } from "../../config/config";
+import { getCookie } from "../../utils/cookie";
 
 const CurrencyCell = ({ children, ...props }) => {
   if (parseInt(children, 10) === 0) {
@@ -54,6 +56,42 @@ const CurrencyCell = ({ children, ...props }) => {
 };
 
 const ActionCell = ({ children, ...props }) => {
+  const [API_URL, setURL] = useState("");
+
+  const getURL = async () => {
+    if (window.location.hostname === "localhost") {
+      setURL("http://localhost:3000/api/v1");
+    } else {
+      let url = await getAPIUrl();
+      setURL(url);
+    }
+  };
+
+  const handleDelete = async () => {
+    const token = getCookie("token").replaceAll('"', "");
+    const config = {
+      method: "DELETE",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({
+        id: children,
+      }),
+    };
+
+    const response = await fetch(
+      `${API_URL}/program-planner/${children}`,
+      config
+    );
+    console.log(response);
+  };
+
+  useEffect(() => {
+    getURL();
+  }, []);
+
   return (
     <DataTableCell
       // title={children.toString()}
@@ -61,33 +99,31 @@ const ActionCell = ({ children, ...props }) => {
       onAction={this.handleRowAction}
     >
       <div style={{ display: "flex", justifyContent: "space-around" }}>
-        <Link to="/planner-view" title="open">
+        <Link to={`/planner-slider?planner=${children}`} title="open">
           <img
             width={15}
             alt="open"
             src="https://img.icons8.com/external-bearicons-glyph-bearicons/64/000000/external-open-call-to-action-bearicons-glyph-bearicons.png"
           />
         </Link>
-        <Link
-          to={{
-            pathname: "/create-planner",
-            search: `?planner=${children}`,
-          }}
-          title="edit"
-        >
+        <Link to={`/create-planner?planner=${children}`} title="edit">
           <img
             src="https://img.icons8.com/material-outlined/24/000000/edit--v1.png"
             width={15}
             alt="edit"
           />
         </Link>
-        <Link to="/create-planner" title="delete">
+        <div
+          onClick={handleDelete}
+          style={{ cursor: "pointer" }}
+          title="delete"
+        >
           <img
             src="https://img.icons8.com/flat-round/64/000000/delete-sign.png"
             width={15}
             alt="delete"
           />
-        </Link>
+        </div>
       </div>
     </DataTableCell>
   );
@@ -388,7 +424,7 @@ class Table extends Component {
   actions = () => (
     <PageHeaderControl>
       <ButtonGroup id="button-group-page-header-actions-history">
-        <Button
+        {/* <Button
           iconCategory="utility"
           label="Historic"
           variant={this.state.isHistoric ? "brand" : "neutral"}
@@ -414,7 +450,7 @@ class Table extends Component {
             this.setState({ historicModalOpen: !this.state.historicModalOpen });
           }}
           disabled={!this.state.isHistoric}
-        />
+        /> */}
       </ButtonGroup>
       <ButtonGroup id="button-group-page-header-actions">
         <Link to="/create-planner">
@@ -709,7 +745,7 @@ class Table extends Component {
               this.state.data.length
             } ${this.state.data.length === 1 ? "item" : "items"}`}
             joined
-            onRenderControls={this.controls}
+            // onRenderControls={this.controls}
             title={<h1 style={{ padding: "4px" }}>Program Plans</h1>}
             truncate
             variant="object-home"
