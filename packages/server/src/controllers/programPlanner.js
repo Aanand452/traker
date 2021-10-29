@@ -31,13 +31,44 @@ const getProgramPlannersByID = async (req, res) => {
   }
 };
 
+const updateProgramPlanner = async (req, res) => {
+  try {
+    const programId = req.swagger.params.id.value;
+    const body = req.body;
+    const programToCheck = await ProgramPlanner.getProgramPlannerByID(
+      programId
+    );
+    console.log(body);
+    if (!programToCheck) {
+      ApiUtils.reposeWithhSuccess(res, null, httpStatus.NOT_FOUND);
+    } else {
+      const program = await ProgramPlanner.updatePlanner(programId, body);
+
+      // await ProgramPlanner.logChanges(
+      //   programId,
+      //   req.body.userId,
+      //   programToCheck,
+      //   program,
+      //   "update"
+      // );
+
+      if (program === "error") {
+        ApiUtils.responseWithError(res, httpStatus.INTERNAL_SERVER_ERROR);
+      } else {
+        ApiUtils.reposeWithhSuccess(res, program, httpStatus.OK);
+      }
+    }
+  } catch (err) {
+    ApiUtils.responseWithError(res, httpStatus.INTERNAL_SERVER_ERROR, err);
+  }
+};
+
 const addNewProgramPlanner = async (req, res) => {
   try {
-    console.log("@@");
+    console.log("@@adding");
     const programPlanner = await ProgramPlanner.addNewProgramPlanner(req.body);
 
     if (programPlanner === "error") {
-      console.log("@@", res);
       ApiUtils.responseWithError(res, httpStatus.INTERNAL_SERVER_ERROR);
     } else ApiUtils.reposeWithhSuccess(res, programPlanner, httpStatus.OK);
   } catch (err) {
@@ -49,4 +80,36 @@ const addNewProgramPlanner = async (req, res) => {
   }
 };
 
-export { getAllProgramPlanners, getProgramPlannersByID, addNewProgramPlanner };
+const deletePlanner = async (req, res) => {
+  try {
+    console.log("@@");
+    const plannerId = req.swagger.params.id.value;
+    const userId = req.body.userId;
+    const programToCheck = await ProgramPlanner.getProgramPlannerByID(
+      plannerId
+    );
+    const request = await ProgramPlanner.deletePlanner(plannerId);
+
+    if (request === "error") {
+      ApiUtils.responseWithError(res, httpStatus.INTERNAL_SERVER_ERROR);
+    } else if (!request) {
+      ApiUtils.reposeWithhSuccess(res, null, httpStatus.NOT_FOUND);
+    } else {
+      ApiUtils.reposeWithhSuccess(res, request, httpStatus.OK);
+    }
+  } catch (err) {
+    ApiUtils.responseWithError(
+      res,
+      httpStatus.INTERNAL_SERVER_ERROR,
+      err.toString()
+    );
+  }
+};
+
+export {
+  getAllProgramPlanners,
+  getProgramPlannersByID,
+  updateProgramPlanner,
+  addNewProgramPlanner,
+  deletePlanner,
+};

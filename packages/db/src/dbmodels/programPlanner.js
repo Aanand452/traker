@@ -51,6 +51,13 @@ ProgramPlanner.init(
       type: DataTypes.JSON,
       field: "segment",
     },
+
+    offers: {
+      allowNull: false,
+      type: DataTypes.JSON,
+      field: "offers",
+    },
+
     otherKPIs: {
       allowNull: false,
       type: DataTypes.TEXT,

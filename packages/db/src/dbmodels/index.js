@@ -1,25 +1,26 @@
-import Activity from './activity';
-import ActivityLog from './activityLog';
-import ProgramLog from './programLog';
-import Format from './format';
-import Program from './program';
-import Tactic from './tactic';
-import User from './user';
-import ProgramApm1 from './programApm1';
-import ProgramApm2 from './programApm2';
-import ProgramLifecycle from './programLifecycle';
-import ProgramIndustry from './programIndustry';
-import ProgramSegment from './programSegment';
-import ProgramPersona from './programPersona';
-import Region from './region';
-import LifecycleStage from './lifecycleStage';
-import APM1 from './apm1';
-import APM2 from './apm2';
-import Industry from './industry';
-import Segment from './segment';
-import Persona from './persona';
-import UserFilter from './userFilters'
-import ProgramPlanner from './programPlanner';
+import Activity from "./activity";
+import ActivityLog from "./activityLog";
+import ProgramLog from "./programLog";
+import Format from "./format";
+import Program from "./program";
+import Tactic from "./tactic";
+import User from "./user";
+import ProgramApm1 from "./programApm1";
+import ProgramApm2 from "./programApm2";
+import ProgramLifecycle from "./programLifecycle";
+import ProgramIndustry from "./programIndustry";
+import ProgramSegment from "./programSegment";
+import ProgramPersona from "./programPersona";
+import Region from "./region";
+import LifecycleStage from "./lifecycleStage";
+import APM1 from "./apm1";
+import APM2 from "./apm2";
+import Industry from "./industry";
+import Segment from "./segment";
+import Persona from "./persona";
+import UserFilter from "./userFilters";
+import ProgramPlanner from "./programPlanner";
+import ProgramActivity from "./programActivity";
 
 let db = {};
 
@@ -43,6 +44,7 @@ db.ProgramIndustry = ProgramIndustry;
 db.ProgramSegment = ProgramSegment;
 db.ProgramPersona = ProgramPersona;
 db.ProgramPlanner = ProgramPlanner;
+db.ProgramActivity = ProgramActivity;
 db.Region = Region;
 db.LifecycleStage = LifecycleStage;
 db.APM1 = APM1;
@@ -56,8 +58,8 @@ db.UserFilter = UserFilter;
  *
  * Run associations
  */
-Object.keys(db).forEach( nodeName => {
+Object.keys(db).forEach((nodeName) => {
   db[nodeName].associate && db[nodeName].associate(db);
-})
+});
 
 export default db;

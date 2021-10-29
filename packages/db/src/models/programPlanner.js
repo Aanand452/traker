@@ -1,5 +1,6 @@
 import db from "../dbmodels";
 import { v4 as uuidv4 } from "uuid";
+import Activity from "./activity";
 
 class ProgramPlannerModel {
   static getProgramPlanners(program) {
@@ -26,9 +27,8 @@ class ProgramPlannerModel {
   static getProgramPlannerByID(id) {
     return new Promise(async (resolve, reject) => {
       try {
-        console.log(id)
+        console.log(id);
         let programPlanner = await db.ProgramPlanner.findByPk(id);
-        console.log("11", programPlanner);
         // const result = Promise.all(
         //   programPlanner.map(
         //     async (programApm) => await db.APM1.findByPk(programApm.apm1Id)
@@ -53,9 +53,26 @@ class ProgramPlannerModel {
           ...bodyParams,
         };
         // let result = body;
-        console.log(body);
+
+        // let {
+        //   offers: { offers },
+        // } = body;
+
+        // for (let offer of offers) {
+        //   for (let activity of offer.activities) {
+        //     console.log(activity);
+        //     let act = await Activity.addNewActivity({
+        //       activityId: uuidv4(),
+        //       ActivityTitle: "",
+        //       date: "",
+        //       formatId: "",
+        //     });
+        //     console.log("---", act);
+        //   }
+        // }
+
         let result = await db.ProgramPlanner.create(body);
-        console.log(result);
+        // let result = {};
 
         resolve(result);
       } catch (err) {
@@ -65,14 +82,39 @@ class ProgramPlannerModel {
     });
   }
 
-  static removeProgramPlanners(program) {
+  static updatePlanner(id, bodyParams) {
     return new Promise(async (resolve, reject) => {
       try {
-        const programs = await db.ProgramPlanner.findAll({
-          where: { program_id: program },
+        const body = {
+          ...bodyParams,
+        };
+        // let result = body;
+        console.log(body);
+
+        let result = await db.ProgramPlanner.update(body, {
+          where: {
+            planner_id: id,
+          },
         });
 
-        const result = programs.map(async (program) => await program.destroy());
+        console.log("@", result);
+
+        resolve(result);
+      } catch (err) {
+        console.error("Error creating program-planner relationship", err);
+        reject("Error");
+      }
+    });
+  }
+
+  static deletePlanner(program) {
+    return new Promise(async (resolve, reject) => {
+      try {
+        const planners = await db.ProgramPlanner.findAll({
+          where: { planner_id: program },
+        });
+
+        const result = planners.map(async (program) => await program.destroy());
 
         resolve(result);
       } catch (err) {

@@ -183,9 +183,9 @@ paths:
               - $ref: '#/definitions/ResponseStatus'
               - $ref: '#/definitions/Error'
     put:
-      x-swagger-router-controller: program
-      operationId: "updateProgram"
-      summary: Update a program
+      x-swagger-router-controller: programPlanner
+      operationId: "updateProgramPlanner"
+      summary: Update a program planner
       security:
         - Bearer: []
       description: N/A
@@ -212,8 +212,8 @@ paths:
               - $ref: '#/definitions/ResponseStatus'
               - $ref: '#/definitions/Error'
     delete:
-      x-swagger-router-controller: program
-      operationId: "deleteProgram"
+      x-swagger-router-controller: programPlanner
+      operationId: "deletePlanner"
       summary: Delete a program
       security:
         - Bearer: []
