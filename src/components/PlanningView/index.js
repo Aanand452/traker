@@ -6,7 +6,8 @@ import update from "immutability-helper";
 import { BoxShadow } from "./styles";
 import "./styles.css";
 
-import { Button, Spinner } from "@salesforce/design-system-react";
+// import Modal from "@salesforce/design-system-react/components/modal";
+import { Button, Spinner, Modal } from "@salesforce/design-system-react";
 import { Link } from "react-router-dom";
 import { getCookie } from "../../utils/cookie";
 import { getAPIUrl } from "../../config/config";
@@ -17,6 +18,9 @@ class PlanningView extends Component {
     this.state = {
       planner: {},
       loading: true,
+      modalOpen: false,
+      moreActivities: false,
+      selectedModal: 0,
       offers: [
         {
           id: 1,
@@ -33,6 +37,10 @@ class PlanningView extends Component {
       ],
     };
   }
+
+  toggleModal = () => {
+    this.setState({ modalOpen: !this.state.modalOpen });
+  };
 
   getPlannerByID = async () => {
     if (window.location.hostname === "localhost")
@@ -124,12 +132,12 @@ class PlanningView extends Component {
           <div style={{ margin: "10px" }} className="grid grid-cols-10">
             <div class="col-span-2">
               <div>
-                <div className="owner">Parent Program</div>
-                <div className="owner-name">Cat Prestipino</div>
+                <div className="owner">Owner</div>
+                <div className="owner-name">{planner.programOwner}</div>
 
                 <div className="program">Program Overview (abstract)</div>
                 <div className="program-details">{planner.abstract}</div>
-                <div className="program">Program Objectives (abstract)</div>
+                <div className="program">Program Objectives & KPIs</div>
                 <div className="program-details">{planner.otherKPIs}</div>
               </div>
             </div>
@@ -213,36 +221,88 @@ class PlanningView extends Component {
                 </div>
                 <div className="card">
                   <div className="card-head">
-                    Offer Name :<div className="card-head-value">All</div>
+                    APM :
+                    <div className="card-head-value">
+                      {planner.apm.map((item, k) => (
+                        <div className={k === 0 ? "pt-2" : "border-t pt-2"}>
+                          {k + 1}. {item.label}
+                        </div>
+                      ))}
+                    </div>
                   </div>
 
                   <div className="card-head border-t"></div>
                 </div>
               </div>
               <div className="card-footer">
-                <div className="parent-program">Owner</div>
+                <div className="parent-program">Parent Programs</div>
                 <div class="grid">
-                  
-                  {offers.map((offer, k) => (
-                    <div>
-                      <div className="activity-head">
-                        Offer Name :
-                        <div className="activity-value">{offer.offer}</div>
+                  {offers
+                    .slice(
+                      0,
+                      this.state.moreActivities
+                        ? this.state.moreActivities.length
+                        : 3
+                    )
+                    .map((offer, k) => (
+                      <div>
+                        <div className="activity-head">
+                          Offer Name :
+                          <div className="activity-value">{offer.offer}</div>
+                        </div>
+                        <div className="activity-head" style={{ top: "50%" }}>
+                          Activities :
+                        </div>
+                        <ul className="list-ul">
+                          {offer.activities.slice(0, 5).map((item) => (
+                            <li className="small">
+                              {item.title} - {item.date}
+                            </li>
+                          ))}
+                          {offer.activities.length > 4 ? (
+                            <div
+                              onClick={() => {
+                                this.setState({
+                                  selectedModal: k,
+                                });
+                                this.toggleModal();
+                              }}
+                              className="text-decoration-underline"
+                            >
+                              ...more
+                            </div>
+                          ) : (
+                            <div></div>
+                          )}
+                        </ul>
                       </div>
-                      <div className="activity-head" style={{ top: "50%" }}>
-                        Activities :
-                      </div>
-                      <ul className="list-ul">
-                        {offer.activities.map((item) => (
-                          <li>{item.title}</li>
-                        ))}
-                      </ul>
-                    </div>
-                  ))}
+                    ))}
                 </div>
+                <button
+                  className="my-2 text-center d-flex mx-auto"
+                  onClick={() => this.setState({ moreActivities: true })}
+                >
+                  Show more activities
+                </button>
               </div>
             </div>
           </div>
+
+          <Modal
+            isOpen={this.state.modalOpen}
+            onRequestClose={this.toggleModal}
+            size="small"
+            heading="All Activities"
+          >
+            <div className="p-4">
+              {offers[this.state.selectedModal].activities.map((item, i) => (
+                <div className="">
+                  {i + 1}. {item.title} - {item.date}
+                </div>
+              ))}
+            </div>
+          </Modal>
+
           <div
             style={{
               textAlign: "center",

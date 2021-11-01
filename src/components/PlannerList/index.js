@@ -81,11 +81,15 @@ const ActionCell = ({ children, ...props }) => {
       }),
     };
 
-    const response = await fetch(
-      `${API_URL}/program-planner/${children}`,
-      config
-    );
-    console.log(response);
+    await fetch(`${API_URL}/program-planner/${children}`, config)
+      .then((res) => res.json())
+      .then((res) => {
+        console.log(res);
+        window.location.reload();
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   };
 
   useEffect(() => {

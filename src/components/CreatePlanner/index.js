@@ -5,21 +5,16 @@ import NavBar from "../NavBar";
 import BudgetInput from "../BudgetInput/BudgetInput";
 import update from "immutability-helper";
 import { Redirect } from "react-router-dom";
+import { withRouter } from "react-router";
 
 import {
-  Icon,
   Input,
   Datepicker,
   Button,
   Textarea,
-  Expression,
-  ToastContainer,
-  IconSettings,
   comboboxFilterAndLimit,
-  Checkbox,
   Combobox,
 } from "@salesforce/design-system-react";
-import { FormContainer, Container, Sfdch1NewRow } from "./styles";
 import { getCookie } from "../../utils/cookie";
 import { getAPIUrl } from "../../config/config";
 import { Title } from "../CreateProgramPage/styles";
@@ -435,11 +430,11 @@ class CreatePlanner extends Component {
       );
 
       if (response.status === 200) {
-        window.location.reload();
-        // this.props.history.push({
-        //   pathname: "/programs-view",
-        //   state: { newProgram: true },
-        // });
+        // window.location.reload();
+        this.props.history.push({
+          pathname: "/planner-view",
+          state: { newProgram: true },
+        });
       } else throw new Error("Something went wrong, please try again");
     } catch (err) {
       console.log(err);
@@ -851,7 +846,8 @@ class CreatePlanner extends Component {
                                 offers[i].activities[k].format = e.target.value;
                                 this.setState({ offers });
                               }}
-                            />
+                            />  
+                            
                           </div>
                           <div
                             style={{
@@ -859,7 +855,7 @@ class CreatePlanner extends Component {
                               margin: "5px",
                               display: "inline-block",
                             }}
-                          >
+                          > 
                             <Datepicker
                               required
                               label="Tentative Date"
@@ -869,12 +865,12 @@ class CreatePlanner extends Component {
                               parser={(dateString) =>
                                 moment(dateString, "DD/MM/YYYY").toDate()
                               }
-                              // value={activity.date}
+                              value={activity.date}
                               onChange={(event, data) => {
-                                console.log(data.formattedDate);
                                 let offers = [...this.state.offers];
-                                offers[i].activities[k].date =
-                                  data.formattedDate;
+                                offers[i].activities[k].date = moment(
+                                  data.formattedDate
+                                ).format("DD/MM/YYYY");
                                 this.setState({ offers });
                               }}
                             />
@@ -921,4 +917,4 @@ class CreatePlanner extends Component {
   }
 }
 
-export default CreatePlanner;
+export default withRouter(CreatePlanner);
