@@ -162,10 +162,7 @@ class NavBar extends Component {
               <GlobalNavigationBarRegion region="secondary" navigation>
                 <NavigationBarLink to="/home" title="Home" />
                 {getCookie("role").replaceAll('"', "") === "admin" && (
-                  <NavigationBarLink
-                    href="http://dev-2-sfdc-activity-tracker.herokuapp.com/planner"
-                    title="Planner"
-                  />
+                  <NavigationBarLink to="/planner" title="Planner" />
                 )}
                 <NavigationBarLink to="/my-activities" title="Activities" />
 

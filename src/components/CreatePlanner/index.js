@@ -14,6 +14,7 @@ import {
   Textarea,
   comboboxFilterAndLimit,
   Combobox,
+  Icon,
 } from "@salesforce/design-system-react";
 import { getCookie } from "../../utils/cookie";
 import { getAPIUrl } from "../../config/config";
@@ -43,6 +44,9 @@ class CreatePlanner extends Component {
       apm1s: [],
       segments: [],
       personas: [],
+      formats: [],
+      formatsSelected: [],
+      defaultFormats: [],
       regions: [],
       program: {
         selectedApm1s: [],
@@ -59,6 +63,81 @@ class CreatePlanner extends Component {
       error: {},
     };
   }
+
+  async checkFormat() {
+    try {
+      let token = getCookie("token").replaceAll('"', "");
+      const config = {
+        method: "GET",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      };
+      let response = await fetch(`${this.API_URL}/format`, config);
+      if (response.status === 200) {
+        let { result } = await response.json();
+        result = result.map((item) => ({ label: item.name, ...item }));
+        let formats = result.map((el) => ({
+          ...el,
+          id: el.format_id,
+          icon: (
+            <Icon
+              assistiveText={{ label: "Task" }}
+              category="standard"
+              name="task2"
+            />
+          ),
+        }));
+        this.setState({
+          formats: [
+            {
+              label: "All",
+              id: "all",
+              icon: (
+                <Icon
+                  assistiveText={{ label: "Account" }}
+                  category="standard"
+                  name="campaign"
+                />
+              ),
+            },
+            ...formats,
+          ],
+        });
+        let defaultFormats = this.getDefaultFornats(formats);
+        console.log(defaultFormats);
+        this.setState({
+          formatsSelected: defaultFormats,
+          defaultFormats: defaultFormats,
+        });
+      } else {
+        console.log(response);
+        throw new Error(response);
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  }
+
+  getDefaultFornats = (formats) => {
+    let defaultFormatNames = [
+      "3rdParty-Virtual Event",
+      "Exec Engagement",
+      "Executive Visit",
+      "F2F Event",
+      "Webinar",
+      "Webinar - 3rd Party",
+      "Virtual Event",
+      "SIC",
+      "Launch",
+    ];
+    return formats.filter((format) => {
+      if (!defaultFormatNames.includes(format.label)) return false;
+      return true;
+    });
+  };
 
   getIndustry = async () => {
     try {
@@ -452,6 +531,7 @@ class CreatePlanner extends Component {
     this.getAPM1();
     this.getRegions();
     this.getSegment();
+    this.checkFormat();
     this.getPersona();
     console.log(planner_id);
     if (planner_id) this.getPlannerByID(planner_id);
@@ -705,34 +785,6 @@ class CreatePlanner extends Component {
               </div>
             </div>
           </div>
-          <div style={{ textAlign: "center", paddingTop: "2%" }}>
-            {/* <Link to="/planner-view"> */}
-            <Button onClick={this.handleSubmit}>
-              {this.state.planner_id ? "Update" : "Save"}
-            </Button>
-            {/* </Link> */}
-            <Button
-              onClick={() =>
-                this.setState({
-                  program: {
-                    selectedApm1s: [],
-                    selectedIndustries: [],
-                    selectedSegments: [],
-                    selectedPersonas: [],
-                    q1_budget: "",
-                    q2_budget: "",
-                    q3_budget: "",
-                    q4_budget: "",
-                    owner: "",
-                    abstract: "",
-                    name: "",
-                  },
-                })
-              }
-            >
-              Reset
-            </Button>
-          </div>
           <div style={{ display: "flex" }}>
             <h2 style={{ fontWeight: "bold", fontSize: "20px" }}>Offers</h2>
             <div style={{ paddingLeft: "0.5%", paddingBottom: "2%" }}>
@@ -836,18 +888,33 @@ class CreatePlanner extends Component {
                               display: "inline-block",
                             }}
                           >
-                            <Input
-                              required
-                              placeholder="Format"
-                              label="Format"
-                              value={activity.format}
-                              onChange={(e) => {
-                                let offers = [...this.state.offers];
-                                offers[i].activities[k].format = e.target.value;
-                                this.setState({ offers });
+                            <Combobox
+                              events={{
+                                onchange: (e, val) => {
+                                  console.log(e, val);
+                                  let offers = [...this.state.offers];
+                                  offers[i].activities[k].formatId =
+                                    e.target.value;
+                                  this.setState({ offers });
+                                },
+
+                                onSelect: (event, data) => {
+                                  if (data.selection.length) {
+                                    let offers = [...this.state.offers];
+                                    offers[i].activities[k].formatId =
+                                      data.selection;
+                                    this.setState({ offers });
+                                  }
+                                },
                               }}
-                            />  
-                            
+                              labels={{ label: "Format" }}
+                              name="format"
+                              options={this.state.defaultFormats}
+                              selection={activity.formatId}
+                              value="format"
+                              variant="readonly"
+                              // errorText={"Something went wrong!"}
+                            />
                           </div>
                           <div
                             style={{
@@ -855,7 +922,7 @@ class CreatePlanner extends Component {
                               margin: "5px",
                               display: "inline-block",
                             }}
-                          > 
+                          >
                             <Datepicker
                               required
                               label="Tentative Date"
@@ -903,12 +970,18 @@ class CreatePlanner extends Component {
               );
             })}
 
-            <div style={{ textAlign: "center" }}>
+            <div style={{ textAlign: "center", paddingTop: "2%" }}>
               <Button
                 onClick={this.handleSubmit}
-                label={this.state.planner_id ? "Update" : "Save"}
-                variant="brand"
-              />
+                style={{ backgroundColor: "#21bf4b", color: "white" }}
+              >
+                {this.state.planner_id ? "Update" : "Save"}
+              </Button>
+              <Link to="/planner-view" style={{ paddingLeft: "5px" }}>
+                <Button style={{ backgroundColor: "#ba0517", color: "white" }}>
+                  Cancel
+                </Button>
+              </Link>
             </div>
           </div>
         </div>

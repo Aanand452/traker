@@ -1,21 +1,21 @@
-import React, { Component } from 'react';
+import React, { Component } from "react";
 import {
   IconSettings,
   ToastContainer,
   Toast,
-} from '@salesforce/design-system-react';
+} from "@salesforce/design-system-react";
 
-import { getCookie } from '../../utils/cookie';
-import { getAPIUrl } from '../../config/config';
-import Prompt from '../Prompt';
-import Step1 from './Step1';
-import Step2 from './Step2';
+import { getCookie } from "../../utils/cookie";
+import { getAPIUrl } from "../../config/config";
+import Prompt from "../Prompt";
+import Step1 from "./Step1";
+import Step2 from "./Step2";
 
-import { FormContainer } from './styles';
+import { FormContainer } from "./styles";
 
 class CreateActivity extends Component {
   state = {
-    loggedUser: '',
+    loggedUser: "",
     row: {
       format: [],
       region: [],
@@ -26,7 +26,7 @@ class CreateActivity extends Component {
       endDate: "",
       asset: "",
       campaignId: "",
-      customerMarketing: false
+      customerMarketing: false,
     },
     regions: [],
     programs: [],
@@ -38,49 +38,49 @@ class CreateActivity extends Component {
     steps: [
       {
         step: 1,
-        active: true
+        active: true,
       },
       {
         step: 2,
-        active: false
-      }
+        active: false,
+      },
     ],
     toast: {
-      variant: 'error',
-      heading: 'Something went wrong',
+      variant: "error",
+      heading: "Something went wrong",
       duration: 5000,
-      active: false
+      active: false,
     },
-    programsFYstartDate: '',
-    programsFYendDate: '',
-  }
+    programsFYstartDate: "",
+    programsFYendDate: "",
+  };
 
   componentDidMount() {
     this.setupAndFetch();
   }
 
-  async getConfig(){
-    try{
-      const request = await fetch('/config');
+  async getConfig() {
+    try {
+      const request = await fetch("/config");
       const data = await request.json();
-      request.status === 200 && this.setState({
-        programsFYstartDate: data.programsFYstartDate,
-        programsFYendDate: data.programsFYendDate
-      });
-
-    } catch(e) {
-      console.error('ERROR: cannot get the url config: ', e);
+      request.status === 200 &&
+        this.setState({
+          programsFYstartDate: data.programsFYstartDate,
+          programsFYendDate: data.programsFYendDate,
+        });
+    } catch (e) {
+      console.error("ERROR: cannot get the url config: ", e);
     }
   }
 
   getUser = () => {
     let loggedUser = localStorage.getItem("userId");
     this.setState({ loggedUser });
-  }
+  };
 
   setupAndFetch = async () => {
-    if(window.location.hostname === 'localhost') {
-      this.API_URL =  "http://localhost:3000/api/v1";
+    if (window.location.hostname === "localhost") {
+      this.API_URL = "http://localhost:3000/api/v1";
     } else {
       this.API_URL = await getAPIUrl();
     }
@@ -89,59 +89,69 @@ class CreateActivity extends Component {
     this.getUser();
     this.checkRegion();
     this.props.getFormData(this.state.row);
-  }
+  };
 
   async checkRegion() {
     try {
-      let token = getCookie('token').replaceAll('"','');
+      let token = getCookie("token").replaceAll('"', "");
       const config = {
-        method: 'GET',
+        method: "GET",
         headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        }
-      }
+          Accept: "application/json",
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      };
       let response = await fetch(`${this.API_URL}/region`, config);
 
-      if(response.status === 200) {
+      if (response.status === 200) {
         let { result } = await response.json();
-        result = result.map(item => ({...item, id: item.region_id}))
+        result = result.map((item) => ({ ...item, id: item.region_id }));
 
-        this.setState({ regions: result, row: {...this.state.row, region: [result[0]]}});
+        this.setState({
+          regions: result,
+          row: { ...this.state.row, region: [result[0]] },
+        });
         this.handleChange("region", [result[0]]);
       } else {
         throw new Error(response);
       }
-    } catch(err) {
-      this.setState({toast: {...this.state.toast, active: true}});
+    } catch (err) {
+      this.setState({ toast: { ...this.state.toast, active: true } });
       console.error(err);
     }
   }
 
   async checkProgramByRegion(id) {
     try {
-      let token = getCookie('token').replaceAll('"','');
+      let token = getCookie("token").replaceAll('"', "");
       const { programsFYstartDate, programsFYendDate } = this.state;
       const config = {
-        method: 'POST',
+        method: "POST",
         headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
+          Accept: "application/json",
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({
           programsStartDate: programsFYstartDate,
           programsEndDate: programsFYendDate,
-        })
+        }),
       };
-      let response = await fetch(`${this.API_URL}/programs/region/${id}`, config);
-      if(response.status === 200) {
+      let response = await fetch(
+        `${this.API_URL}/programs/region/${id}`,
+        config
+      );
+      if (response.status === 200) {
         let { result } = await response.json();
-        let programs = result.map(el => ({...el, label: el.name, id: el.programId}));
+        let programs = result.map((el) => ({
+          ...el,
+          label: el.name,
+          id: el.programId,
+        }));
 
-        if(programs.length <= 0) this.handleStep(1);
-        else if(programs.length === 1) {
+        if (programs.length <= 0) this.handleStep(1);
+        else if (programs.length === 1) {
           this.checkProgramDetail(programs[0].programId);
           this.handleStep(2);
         } else {
@@ -149,62 +159,68 @@ class CreateActivity extends Component {
           this.handleStep(1);
         }
 
-        this.setState({ programs, row: {...this.state.row, program: [programs[0]]}});
+        this.setState({
+          programs,
+          row: { ...this.state.row, program: [programs[0]] },
+        });
       } else {
         throw new Error(response);
       }
     } catch (err) {
-      this.setState({toast: {...this.state.toast, active: true}});
+      this.setState({ toast: { ...this.state.toast, active: true } });
       console.error(err);
     }
   }
 
   async checkProgramDetail(id) {
     try {
-      let token = getCookie('token').replaceAll('"','');
+      let token = getCookie("token").replaceAll('"', "");
       const config = {
-        method: 'GET',
+        method: "GET",
         headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        }
-      }
+          Accept: "application/json",
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      };
       let response = await fetch(`${this.API_URL}/program/${id}`, config);
 
-      if(response.status === 200) {
+      if (response.status === 200) {
         let { result } = await response.json();
         this.setState({ items: result });
       } else {
         throw new Error(response);
       }
-    } catch(err) {
-      this.setState({toast: {...this.state.toast, active: true}});
+    } catch (err) {
+      this.setState({ toast: { ...this.state.toast, active: true } });
       console.error(err);
     }
   }
 
   async checkProgram() {
     try {
-      let token = getCookie('token').replaceAll('"','');
+      let token = getCookie("token").replaceAll('"', "");
       const config = {
-        method: 'GET',
+        method: "GET",
         headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        }
-      }
+          Accept: "application/json",
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      };
       let response = await fetch(`${this.API_URL}/program`, config);
-      if(response.status === 200) {
+      if (response.status === 200) {
         let { result } = await response.json();
-        this.setState({ programs: result, row: {...this.state.row, program: [result[0]]}});
+        this.setState({
+          programs: result,
+          row: { ...this.state.row, program: [result[0]] },
+        });
       } else {
         throw new Error(response);
       }
-    } catch(err) {
-      this.setState({toast: {...this.state.toast, active: true}});
-      console.error(err)
+    } catch (err) {
+      this.setState({ toast: { ...this.state.toast, active: true } });
+      console.error(err);
     }
   }
 
@@ -212,22 +228,22 @@ class CreateActivity extends Component {
     let newRow = {};
     let formats = this.state.formats;
 
-    if(value === "region") {
+    if (value === "region") {
       await this.checkProgramByRegion(data[0].region_id);
-      newRow = {...this.state.row, region: data };
-    } else if(value === "program") {
+      newRow = { ...this.state.row, region: data };
+    } else if (value === "program") {
       this.checkProgramDetail(data[0].programId);
-      newRow = {...this.state.row, program: data};
+      newRow = { ...this.state.row, program: data };
     } else {
-      newRow = {...this.state.row, [value]: data};
+      newRow = { ...this.state.row, [value]: data };
     }
 
     this.validations(value, data);
-    this.setState({row: newRow, formats});
+    this.setState({ row: newRow, formats });
     this.props.getFormData(newRow);
   };
 
-  isUrl = data => {
+  isUrl = (data) => {
     if (!data) {
       return true;
     }
@@ -235,23 +251,30 @@ class CreateActivity extends Component {
       /^((ftp|http|https):\/\/)?(?:www\.|(?!www\.))[A-z0-9-_]+\.[A-z]{2,}(.*)?$/
     );
     return regexp.test(data);
-  }
+  };
 
   validations = (input, data) => {
-    let errors = {...this.state.error};
-    const inputs = ["program", "title", "format", "region", "abstract", "startDate", "endDate"];
+    let errors = { ...this.state.error };
+    const inputs = [
+      "program",
+      "title",
+      "format",
+      "region",
+      "abstract",
+      "startDate",
+      "endDate",
+    ];
 
     if (input) {
       if (inputs.includes(input) && !data) {
         errors = { ...errors, [input]: "This field is required" };
-      } else if(input === 'asset') {
+      } else if (input === "asset") {
         if (!this.isUrl(data)) {
-          errors = { ...errors, [input]: 'Insert a valir URL' };
+          errors = { ...errors, [input]: "Insert a valir URL" };
         } else {
           delete errors[input];
         }
-      }
-      else {
+      } else {
         delete errors[input];
       }
     } else {
@@ -283,22 +306,27 @@ class CreateActivity extends Component {
       customerMarketing,
     } = this.state.row;
 
-    let asset = this.state.assets.map((asset) => asset.label).join(', ');
+    let asset = this.state.assets.map((asset) => asset.label).join(", ");
 
-    if(this.state.row.asset) {
-      if (this.state.assets.some(val => val.title.toLowerCase() === this.state.row.asset.toLowerCase())) {
+    if (this.state.row.asset) {
+      if (
+        this.state.assets.some(
+          (val) =>
+            val.title.toLowerCase() === this.state.row.asset.toLowerCase()
+        )
+      ) {
         return this.setState((state) => ({
           error: {
             ...state.error,
-            asset: 'Repeated URL',
+            asset: "Repeated URL",
           },
         }));
       }
-      let assetArr = asset.split(', ');
-      asset = [...assetArr, this.state.row.asset].join(', ');
+      let assetArr = asset.split(", ");
+      asset = [...assetArr, this.state.row.asset].join(", ");
     }
 
-    if(asset.startsWith(',')) {
+    if (asset.startsWith(",")) {
       asset = asset.slice(1).trim();
     }
 
@@ -313,8 +341,8 @@ class CreateActivity extends Component {
       startDate,
       title,
       campaignId,
-      customerMarketing
-    }
+      customerMarketing,
+    };
 
     const errors = this.validations();
 
@@ -325,50 +353,56 @@ class CreateActivity extends Component {
     return false;
   };
 
-  parseDatesGTM = row => {
-    let [m1, d1, y1] = row.startDate.split('/');
-    let [m2, d2, y2] = row.endDate.split('/');
+  parseDatesGTM = (row) => {
+    let [m1, d1, y1] = row.startDate.split("/");
+    let [m2, d2, y2] = row.endDate.split("/");
 
     row.startDate = `${d1}/${m1}/${y1}`;
     row.endDate = `${d2}/${m2}/${y2}`;
 
     return row;
-  }
+  };
 
-  onSubmit = async body => {
+  onSubmit = async (body) => {
     try {
-      let token = getCookie('token').replaceAll('"','');
+      let token = getCookie("token").replaceAll('"', "");
       body = this.parseDatesGTM(body);
       const config = {
-        method: 'POST',
+        method: "POST",
         headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
+          Accept: "application/json",
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify(body)
-      }
+        body: JSON.stringify(body),
+      };
       let response = await fetch(`${this.API_URL}/activity`, config);
-      if(response.status === 200) {
+      if (response.status === 200) {
         this.props.handleSubmit();
       } else throw new Error(response);
     } catch (err) {
-      this.setState({isDeletePromptOpen: true});
+      this.setState({ isDeletePromptOpen: true });
       console.error(err);
     }
-  }
+  };
 
-  handleStep = step => {
-    let steps = this.state.steps.map(el => el.step <= step ? {...el, active: true} : {...el, active: false});
+  handleStep = (step) => {
+    let steps = this.state.steps.map((el) =>
+      el.step <= step ? { ...el, active: true } : { ...el, active: false }
+    );
     this.setState({ steps });
-  }
+  };
 
   addAsset = (asset) => {
-    if (this.state.assets.some(val => val.title.toLowerCase() === asset.toLowerCase())) {
+    if (
+      this.state.assets.some(
+        (val) => val.title.toLowerCase() === asset.toLowerCase()
+      )
+    ) {
       return this.setState((state) => ({
         error: {
           ...state.error,
-          asset: 'Repeated URL',
+          asset: "Repeated URL",
         },
       }));
     }
@@ -380,12 +414,12 @@ class CreateActivity extends Component {
         {
           id: asset,
           label: asset,
-          title: asset
-        }
+          title: asset,
+        },
       ],
     }));
-    this.handleChange('asset', '');
-  }
+    this.handleChange("asset", "");
+  };
 
   editAsset = (asset) => {
     this.setState((state) => ({
@@ -395,62 +429,76 @@ class CreateActivity extends Component {
       },
       assets: state.assets.filter((val) => val.title !== asset),
     }));
-  }
+  };
 
   deleteAsset = (asset) => {
     this.setState((state) => ({
       assets: state.assets.filter((val) => val.title !== asset),
     }));
-  }
+  };
 
   render() {
     return (
       <IconSettings iconPath="assets/icons">
-        {
-          this.state.toast.active && (<IconSettings iconPath="/assets/icons">
+        {this.state.toast.active && (
+          <IconSettings iconPath="/assets/icons">
             <ToastContainer>
               <Toast
                 labels={{ heading: this.state.toast.heading }}
                 variant={this.state.toast.variant}
                 duration={this.state.toast.duration}
-                onRequestClose={() => this.setState({toast: {active: false}})}
+                onRequestClose={() =>
+                  this.setState({ toast: { active: false } })
+                }
               />
             </ToastContainer>
-          </IconSettings>)
-        }
-        {this.state.isDeletePromptOpen && <Prompt closeErrorHandler={() => this.setState({isDeletePromptOpen: false})} error={true} message='Interval server error' title='Error' />}
+          </IconSettings>
+        )}
+        {this.state.isDeletePromptOpen && (
+          <Prompt
+            closeErrorHandler={() =>
+              this.setState({ isDeletePromptOpen: false })
+            }
+            error={true}
+            message="Interval server error"
+            title="Error"
+          />
+        )}
         <FormContainer>
-          <form className="slds-grid slds-wrap" onSubmit={e => this.validateSubmit(e)}>
+          <form
+            className="slds-grid slds-wrap"
+            onSubmit={(e) => this.validateSubmit(e)}
+          >
             <Step1
               row={this.state.row}
               handleStep={this.handleStep}
               handleChange={this.handleChange}
               getFormats={this.getFormats}
               error={this.state.error}
-              step={this.state.steps.filter(el => el.active).length}
+              step={this.state.steps.filter((el) => el.active).length}
               programs={this.state.programs}
               items={this.state.items}
               regions={this.state.regions}
             />
-            {
-              this.state.programs.length > 0 && this.state.steps.filter(el => el.active).length === 2  &&
-              <Step2
-                row={this.state.row}
-                handleStep={this.handleStep}
-                handleChange={this.handleChange}
-                error={this.state.error}
-                formats={this.state.formats}
-                assets={this.state.assets}
-                addAsset={this.addAsset}
-                editAsset={this.editAsset}
-                deleteAsset={this.deleteAsset}
-              />
-            }
+            {this.state.programs.length > 0 &&
+              this.state.steps.filter((el) => el.active).length === 2 && (
+                <Step2
+                  row={this.state.row}
+                  handleStep={this.handleStep}
+                  handleChange={this.handleChange}
+                  error={this.state.error}
+                  formats={this.state.formats}
+                  assets={this.state.assets}
+                  addAsset={this.addAsset}
+                  editAsset={this.editAsset}
+                  deleteAsset={this.deleteAsset}
+                />
+              )}
           </form>
         </FormContainer>
       </IconSettings>
-    )
-  };
-};
+    );
+  }
+}
 
 export default CreateActivity;
