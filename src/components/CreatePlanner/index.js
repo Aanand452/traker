@@ -14,6 +14,7 @@ import {
   Textarea,
   comboboxFilterAndLimit,
   Combobox,
+  IconSettings,
   Icon,
 } from "@salesforce/design-system-react";
 import { getCookie } from "../../utils/cookie";
@@ -53,6 +54,7 @@ class CreatePlanner extends Component {
         selectedIndustries: [],
         selectedSegments: [],
         selectedPersonas: [],
+        regionId: [],
         q1_budget: "",
         q2_budget: "",
         q3_budget: "",
@@ -330,9 +332,7 @@ class CreatePlanner extends Component {
           selectedIndustries: result.programIndustry,
           selectedSegments: result.segment,
           selectedPersonas: result.persona,
-          regionId: this.state.regions.filter(
-            (item) => result.region === item.id
-          ),
+          regionId: result.region,
           q1_budget: budgets.q1,
           q2_budget: budgets.q2,
           q3_budget: budgets.q3,
@@ -383,16 +383,17 @@ class CreatePlanner extends Component {
     const inputs = [
       "name",
       "owner",
-      "budget",
-      "metrics",
-      "customerMessage",
-      "regionId",
-      "selectedApm1s",
+      "q1_budget",
+      "q2_budget",
+      "q3_budget",
+      "q4_budget",
       "selectedIndustries",
+      "regionId",
+      "kpi",
+      "selectedApm1s",
       "selectedSegments",
       "selectedPersonas",
-      "year",
-      "quarter",
+      "abstract",
     ];
 
     if (input) {
@@ -416,21 +417,8 @@ class CreatePlanner extends Component {
           this.state.program[input].length > 0
         ) {
           delete errors[input];
-        } else if (this.state.program["year"].length === 4) {
-          delete errors["year"];
         } else {
-          if (
-            this.state.program["year"].length !== 4 &&
-            this.state.program["year"].length > 0
-          ) {
-            errors = {
-              ...errors,
-              [input]: "This field is required",
-              year: "This field must contain 4 character",
-            };
-          } else {
-            errors = { ...errors, [input]: "This field is required" };
-          }
+          errors = { ...errors, [input]: "This field is required" };
         }
       });
     }
@@ -442,13 +430,7 @@ class CreatePlanner extends Component {
   };
 
   handleChange = (value, data) => {
-    if (value === "year" && isNaN(data)) {
-      this.setState({ year: "" });
-      return;
-    }
-
     const newRow = { ...this.state.program, [value]: data };
-    console.log(newRow);
     this.validations(value, data);
     this.setState({ program: newRow });
   };
@@ -461,6 +443,7 @@ class CreatePlanner extends Component {
       let industryId = this.state.program.selectedIndustries;
       let segmentId = this.state.program.selectedSegments;
       let personaId = this.state.program.selectedPersonas;
+      let regionId = this.state.program.regionId;
 
       const token = getCookie("token").replaceAll('"', "");
       const userId = getCookie("userid").replaceAll('"', "");
@@ -475,7 +458,7 @@ class CreatePlanner extends Component {
           q3: Number(this.state.program.q3_budget),
           q4: Number(this.state.program.q4_budget),
         },
-        region: this.state.program.regionId[0].region_id,
+        region: regionId,
         apm: apm1Id,
         programIndustry: industryId,
         segment: segmentId,
@@ -555,436 +538,462 @@ class CreatePlanner extends Component {
       <div style={{ padding: "1%", paddingTop: "5.6rem" }}>
         <NavBar />
 
-        <div style={{ border: "groove", padding: "2%" }}>
-          <Title> Create Program Planner</Title>
-          <div style={{ width: "100%", overflow: "hidden" }}>
-            <h2 style={{ fontWeight: "bold", fontSize: "20px" }}>Program</h2>
-            <div>
-              <div style={{ width: "50%", float: "left" }}>
-                <div style={{ padding: "1%" }}>
-                  <Input
-                    required
-                    placeholder="Enter program name"
-                    defaultValue={this.state.program.name}
-                    label="Program Name"
-                    onChange={(e) => this.handleChange("name", e.target.value)}
-                  />
-                </div>
-                <div style={{ padding: "1%", display: "flex" }}>
-                  <BudgetInput
-                    onChange={(e, data) => {
-                      console.log(e.target.value);
-                      this.handleChange("q1_budget", data.value);
-                    }}
-                    required
-                    label="Q1 Budget"
-                    defaultValue={this.state.program.q1_budget}
-                    placeholder="Q1"
-                  />
-                  <BudgetInput
-                    onChange={(e, data) =>
-                      this.handleChange("q2_budget", data.value)
-                    }
-                    required
-                    defaultValue={this.state.program.q2_budget}
-                    label="Q2 Budget"
-                    placeholder="Q2"
-                  />
-                  <BudgetInput
-                    onChange={(e, data) =>
-                      this.handleChange("q3_budget", data.value)
-                    }
-                    required
-                    defaultValue={this.state.program.q3_budget}
-                    label="Q3 Budget"
-                    placeholder="Q3"
-                  />
-                  <BudgetInput
-                    onChange={(e, data) =>
-                      this.handleChange("q4_budget", data.value)
-                    }
-                    required
-                    label="Q4 Budget"
-                    defaultValue={this.state.program.q4_budget}
-                    placeholder="Q4"
-                  />
-                </div>
-                <div style={{ padding: "1%" }}>
-                  <Combobox
-                    required
-                    events={{
-                      onRequestRemoveSelectedOption: (event, data) => {
-                        this.setState({
-                          program: {
-                            ...this.state.program,
-                            selectedIndustries: data.selection,
-                          },
-                        });
-                      },
-                      onSelect: (event, data) =>
-                        data.selection.length &&
-                        this.handleChange("selectedIndustries", data.selection),
-                    }}
-                    labels={{
-                      label: "Industry",
-                      placeholder: "Select an option",
-                    }}
-                    menuItemVisibleLength={5}
-                    multiple
-                    options={comboboxFilterAndLimit({
-                      limit: this.state.industries.length,
-                      options: this.state.industries,
-                      selection: this.state.program.selectedIndustries,
-                    })}
-                    selection={this.state.program.selectedIndustries}
-                    errorText={this.state.error.selectedIndustries}
-                  />
-                </div>
-                <div style={{ padding: "1%" }}>
-                  <Combobox
-                    required
-                    events={{
-                      onSelect: (event, data) =>
-                        data.selection.length &&
-                        this.handleChange("regionId", data.selection),
-                    }}
-                    labels={{ label: "Target Region" }}
-                    options={this.state.regions}
-                    selection={this.state.program.regionId}
-                    value="region"
-                    variant="readonly"
-                    errorText={this.state.error.regionId}
-                  />
-                </div>
-                <div style={{ padding: "1%" }}>
-                  <Textarea
-                    label="Other Kpi's"
-                    onChange={(e) => {
-                      this.handleChange("kpi", e.target.value);
-                    }}
-                    defaultValue={this.state.program.kpi}
-                    placeholder="Enter KPI's"
-                  />
-                </div>
-              </div>
-              <div style={{ float: "right", width: "50%" }}>
-                <div style={{ padding: "1%" }}>
-                  <Input
-                    required
-                    placeholder="Program Owner"
-                    onChange={(e) => {
-                      this.handleChange("owner", e.target.value);
-                    }}
-                    defaultValue={this.state.program.owner}
-                    label="Owner"
-                  />
-                </div>
-                <div style={{ padding: "1%" }}>
-                  <Combobox
-                    required
-                    events={{
-                      onRequestRemoveSelectedOption: (event, data) => {
-                        this.setState({
-                          program: {
-                            ...this.state.program,
-                            selectedApm1s: data.selection,
-                          },
-                        });
-                      },
-                      onSelect: (event, data) =>
-                        data.selection.length &&
-                        this.handleChange("selectedApm1s", data.selection),
-                    }}
-                    labels={{
-                      label: "APM",
-                      placeholder: "Select an option",
-                    }}
-                    menuItemVisibleLength={5}
-                    multiple
-                    options={comboboxFilterAndLimit({
-                      limit: this.state.apm1s.length,
-                      options: this.state.apm1s,
-                      selection: this.state.program.selectedApm1s,
-                    })}
-                    selection={this.state.program.selectedApm1s}
-                    errorText={this.state.error.selectedApm1s}
-                  />
-                </div>
-                <div style={{ padding: "1%" }}>
-                  <Combobox
-                    required
-                    events={{
-                      onRequestRemoveSelectedOption: (event, data) => {
-                        this.setState({
-                          program: {
-                            ...this.state.program,
-                            selectedPersonas: data.selection,
-                          },
-                        });
-                      },
-                      onSelect: (event, data) =>
-                        data.selection.length &&
-                        this.handleChange("selectedPersonas", data.selection),
-                    }}
-                    labels={{
-                      label: "Persona",
-                      placeholder: "Select an option",
-                    }}
-                    menuItemVisibleLength={5}
-                    multiple
-                    options={comboboxFilterAndLimit({
-                      limit: this.state.personas.length,
-                      options: this.state.personas,
-                      selection: this.state.program.selectedPersonas,
-                    })}
-                    selection={this.state.program.selectedPersonas}
-                    errorText={this.state.error.selectedPersonas}
-                  />
-                </div>
-                <div style={{ padding: "1%" }}>
-                  <Combobox
-                    required
-                    events={{
-                      onRequestRemoveSelectedOption: (event, data) => {
-                        this.setState({
-                          program: {
-                            ...this.state.program,
-                            selectedSegments: data.selection,
-                          },
-                        });
-                      },
-                      onSelect: (event, data) =>
-                        data.selection.length &&
-                        this.handleChange("selectedSegments", data.selection),
-                    }}
-                    labels={{
-                      label: "Segment",
-                      placeholder: "Select an option",
-                    }}
-                    menuItemVisibleLength={5}
-                    multiple
-                    options={comboboxFilterAndLimit({
-                      limit: this.state.segments.length,
-                      options: this.state.segments,
-                      selection: this.state.program.selectedSegments,
-                    })}
-                    selection={this.state.program.selectedSegments}
-                    errorText={this.state.error.selectedSegments}
-                  />
-                </div>
-                <div style={{ padding: "1%" }}>
-                  <Textarea
-                    label="Abstract"
-                    onChange={(e) => {
-                      this.handleChange("abstract", e.target.value);
-                    }}
-                    defaultValue={this.state.program.abstract}
-                    placeholder="Enter Abstract"
-                  />
-                </div>
-              </div>
-            </div>
-          </div>
-          <div style={{ display: "flex" }}>
-            <h2 style={{ fontWeight: "bold", fontSize: "20px" }}>Offers</h2>
-            <div style={{ paddingLeft: "0.5%", paddingBottom: "2%" }}>
-              <Button
-                label="Add Offer"
-                variant="brand"
-                onClick={this.addOffer}
-              />
-            </div>
-          </div>
-
-          <div style={{ marginTop: "5px" }}>
-            {this.state.offers.map((offer, i) => {
-              return (
-                <div style={{ padding: "2%" }}>
-                  <div style={{ display: "flex", justifyContent: "left" }}>
-                    <div
-                      style={{
-                        width: "50%",
-                        paddingBottom: "1%",
-                      }}
-                    >
-                      <Input
-                        required
-                        placeholder="Offer Name"
-                        label={`Offer Name`}
-                        value={offer.offer}
-                        onChange={(e) => {
-                          let offers = [...this.state.offers];
-                          offers[i].offer = e.target.value;
-                          this.setState({ offers });
-                        }}
-                      />
-                    </div>
-                    <div
-                      style={{
-                        paddingLeft: "1.5%",
-                        marginRight: "auto",
-                        marginTop: "auto",
-                        marginBottom: "auto",
-                      }}
-                    >
-                      <Button
-                        label="Remove Offer"
-                        variant="destructive"
-                        onClick={() => this.removeOffer(offer.id)}
-                      />
-                    </div>
+        <IconSettings iconPath="assets/icons">
+          <div style={{ border: "groove", padding: "2%" }}>
+            <Title> Create Program Planner</Title>
+            <div style={{ width: "100%", overflow: "hidden" }}>
+              <h2 style={{ fontWeight: "bold", fontSize: "20px" }}>Program</h2>
+              <div>
+                <div style={{ width: "50%", float: "left" }}>
+                  <div style={{ padding: "1%" }}>
+                    <Input
+                      required
+                      placeholder="Enter program name"
+                      defaultValue={this.state.program.name}
+                      label="Program Name"
+                      onChange={(e) =>
+                        this.handleChange("name", e.target.value)
+                      }
+                      errorText={this.state.error.name}
+                    />
                   </div>
-                  <h2
-                    style={{
-                      fontWeight: "500",
-                      fontSize: "17px",
-                      marginTop: "4px",
-                    }}
-                  >
-                    Activities
-                  </h2>
-
-                  {offer.activities.map((activity, k) => {
-                    return (
-                      <div
-                        style={{
-                          margin: "auto",
-                          display: "flex",
-                          justifyContent: "space-between",
-                          marginBottom: "10px",
-                          paddingLeft: "10px",
-                        }}
-                      >
-                        <div
-                          style={{
-                            paddingLeft: "15px",
-                            display: "inline-block",
-                            width: "95%",
-                          }}
-                        >
-                          <div
-                            style={{
-                              width: "50%",
-                              margin: "5px",
-                              display: "inline-block",
-                            }}
-                          >
-                            <Input
-                              required
-                              placeholder="Title"
-                              label={"Title"}
-                              value={activity.title}
-                              onChange={(e) => {
-                                let offers = [...this.state.offers];
-                                offers[i].activities[k].title = e.target.value;
-                                this.setState({ offers });
-                              }}
-                            />
-                          </div>
-                          <div
-                            style={{
-                              width: "30%",
-                              margin: "5px",
-                              display: "inline-block",
-                            }}
-                          >
-                            <Combobox
-                              events={{
-                                onchange: (e, val) => {
-                                  console.log(e, val);
-                                  let offers = [...this.state.offers];
-                                  offers[i].activities[k].formatId =
-                                    e.target.value;
-                                  this.setState({ offers });
-                                },
-
-                                onSelect: (event, data) => {
-                                  if (data.selection.length) {
-                                    let offers = [...this.state.offers];
-                                    offers[i].activities[k].formatId =
-                                      data.selection;
-                                    this.setState({ offers });
-                                  }
-                                },
-                              }}
-                              labels={{ label: "Format" }}
-                              name="format"
-                              options={this.state.defaultFormats}
-                              selection={activity.formatId}
-                              value="format"
-                              variant="readonly"
-                              // errorText={"Something went wrong!"}
-                            />
-                          </div>
-                          <div
-                            style={{
-                              width: "15%",
-                              margin: "5px",
-                              display: "inline-block",
-                            }}
-                          >
-                            <Datepicker
-                              required
-                              label="Tentative Date"
-                              formatter={(date) =>
-                                date ? moment(date).format("DD/MM/YYYY") : ""
-                              }
-                              parser={(dateString) =>
-                                moment(dateString, "DD/MM/YYYY").toDate()
-                              }
-                              value={activity.date}
-                              onChange={(event, data) => {
-                                let offers = [...this.state.offers];
-                                offers[i].activities[k].date = moment(
-                                  data.formattedDate
-                                ).format("DD/MM/YYYY");
-                                this.setState({ offers });
-                              }}
-                            />
-                          </div>
-                        </div>
-                        <div
-                          style={{
-                            width: "5%",
-                            margin: "auto",
-                            textAlign: "center",
-                          }}
-                        >
-                          <Button
-                            label="-"
-                            variant="destructive"
-                            onClick={() => this.removeActivity(i, k)}
-                          />
-                        </div>
-                      </div>
-                    );
-                  })}
-                  <div style={{ paddingLeft: "1.5%", display: "inline-block" }}>
-                    <Button
-                      label="add Activity"
-                      variant="brand"
-                      onClick={() => this.addActivity(offer.id)}
+                  <div style={{ padding: "1%", display: "flex" }}>
+                    <BudgetInput
+                      onChange={(e, data) => {
+                        console.log(e.target.value);
+                        this.handleChange("q1_budget", data.value);
+                      }}
+                      required
+                      label="Q1 Budget"
+                      defaultValue={this.state.program.q1_budget}
+                      placeholder="Q1"
+                      errorText={this.state.error.q1_budget}
+                    />
+                    <BudgetInput
+                      onChange={(e, data) =>
+                        this.handleChange("q2_budget", data.value)
+                      }
+                      required
+                      defaultValue={this.state.program.q2_budget}
+                      label="Q2 Budget"
+                      placeholder="Q2"
+                      errorText={this.state.error.q2_budget}
+                    />
+                    <BudgetInput
+                      onChange={(e, data) =>
+                        this.handleChange("q3_budget", data.value)
+                      }
+                      required
+                      defaultValue={this.state.program.q3_budget}
+                      label="Q3 Budget"
+                      placeholder="Q3"
+                      errorText={this.state.error.q3_budget}
+                    />
+                    <BudgetInput
+                      onChange={(e, data) =>
+                        this.handleChange("q4_budget", data.value)
+                      }
+                      required
+                      label="Q4 Budget"
+                      defaultValue={this.state.program.q4_budget}
+                      placeholder="Q4"
+                      errorText={this.state.error.q4_budget}
+                    />
+                  </div>
+                  <div style={{ padding: "1%" }}>
+                    <Combobox
+                      required
+                      events={{
+                        onRequestRemoveSelectedOption: (event, data) => {
+                          this.setState({
+                            program: {
+                              ...this.state.program,
+                              selectedIndustries: data.selection,
+                            },
+                          });
+                        },
+                        onSelect: (event, data) =>
+                          data.selection.length &&
+                          this.handleChange(
+                            "selectedIndustries",
+                            data.selection
+                          ),
+                      }}
+                      labels={{
+                        label: "Industry",
+                        placeholder: "Select an option",
+                      }}
+                      menuItemVisibleLength={5}
+                      multiple
+                      options={comboboxFilterAndLimit({
+                        limit: this.state.industries.length,
+                        options: this.state.industries,
+                        selection: this.state.program.selectedIndustries,
+                      })}
+                      selection={this.state.program.selectedIndustries}
+                      errorText={this.state.error.selectedIndustries}
+                    />
+                  </div>
+                  <div style={{ padding: "1%" }}>
+                    <Combobox
+                      required
+                      events={{
+                        onSelect: (event, data) => {
+                          return (
+                            data.selection.length &&
+                            this.handleChange("regionId", data.selection)
+                          );
+                        },
+                      }}
+                      labels={{ label: "Target Region" }}
+                      options={this.state.regions}
+                      selection={this.state.program.regionId}
+                      value="region"
+                      variant="readonly"
+                      errorText={this.state.error.regionId}
+                    />
+                  </div>
+                  <div style={{ padding: "1%" }}>
+                    <Textarea
+                      label="Other Kpi's"
+                      onChange={(e) => {
+                        this.handleChange("kpi", e.target.value);
+                      }}
+                      defaultValue={this.state.program.kpi}
+                      placeholder="Enter KPI's"
                     />
                   </div>
                 </div>
-              );
-            })}
+                <div style={{ float: "right", width: "50%" }}>
+                  <div style={{ padding: "1%" }}>
+                    <Input
+                      required
+                      placeholder="Program Owner"
+                      onChange={(e) => {
+                        this.handleChange("owner", e.target.value);
+                      }}
+                      defaultValue={this.state.program.owner}
+                      label="Owner"
+                      errorText={this.state.error.owner}
+                    />
+                  </div>
+                  <div style={{ padding: "1%" }}>
+                    <Combobox
+                      required
+                      events={{
+                        onRequestRemoveSelectedOption: (event, data) => {
+                          this.setState({
+                            program: {
+                              ...this.state.program,
+                              selectedApm1s: data.selection,
+                            },
+                          });
+                        },
+                        onSelect: (event, data) =>
+                          data.selection.length &&
+                          this.handleChange("selectedApm1s", data.selection),
+                      }}
+                      labels={{
+                        label: "APM",
+                        placeholder: "Select an option",
+                      }}
+                      menuItemVisibleLength={5}
+                      multiple
+                      options={comboboxFilterAndLimit({
+                        limit: this.state.apm1s.length,
+                        options: this.state.apm1s,
+                        selection: this.state.program.selectedApm1s,
+                      })}
+                      selection={this.state.program.selectedApm1s}
+                      errorText={this.state.error.selectedApm1s}
+                    />
+                  </div>
+                  <div style={{ padding: "1%" }}>
+                    <Combobox
+                      required
+                      events={{
+                        onRequestRemoveSelectedOption: (event, data) => {
+                          this.setState({
+                            program: {
+                              ...this.state.program,
+                              selectedPersonas: data.selection,
+                            },
+                          });
+                        },
+                        onSelect: (event, data) =>
+                          data.selection.length &&
+                          this.handleChange("selectedPersonas", data.selection),
+                      }}
+                      labels={{
+                        label: "Persona",
+                        placeholder: "Select an option",
+                      }}
+                      menuItemVisibleLength={5}
+                      multiple
+                      options={comboboxFilterAndLimit({
+                        limit: this.state.personas.length,
+                        options: this.state.personas,
+                        selection: this.state.program.selectedPersonas,
+                      })}
+                      selection={this.state.program.selectedPersonas}
+                      errorText={this.state.error.selectedPersonas}
+                    />
+                  </div>
+                  <div style={{ padding: "1%" }}>
+                    <Combobox
+                      required
+                      events={{
+                        onRequestRemoveSelectedOption: (event, data) => {
+                          this.setState({
+                            program: {
+                              ...this.state.program,
+                              selectedSegments: data.selection,
+                            },
+                          });
+                        },
+                        onSelect: (event, data) =>
+                          data.selection.length &&
+                          this.handleChange("selectedSegments", data.selection),
+                      }}
+                      labels={{
+                        label: "Segment",
+                        placeholder: "Select an option",
+                      }}
+                      menuItemVisibleLength={5}
+                      multiple
+                      options={comboboxFilterAndLimit({
+                        limit: this.state.segments.length,
+                        options: this.state.segments,
+                        selection: this.state.program.selectedSegments,
+                      })}
+                      selection={this.state.program.selectedSegments}
+                      errorText={this.state.error.selectedSegments}
+                    />
+                  </div>
+                  <div style={{ padding: "1%" }}>
+                    <Textarea
+                      label="Abstract"
+                      onChange={(e) => {
+                        this.handleChange("abstract", e.target.value);
+                      }}
+                      defaultValue={this.state.program.abstract}
+                      placeholder="Enter Abstract"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div style={{ display: "flex" }}>
+              <h2 style={{ fontWeight: "bold", fontSize: "20px" }}>Offers</h2>
+              <div style={{ paddingLeft: "0.5%", paddingBottom: "2%" }}>
+                <Button
+                  label="Add Offer"
+                  variant="brand"
+                  onClick={this.addOffer}
+                />
+              </div>
+            </div>
 
-            <div style={{ textAlign: "center", paddingTop: "2%" }}>
-              <Button
-                onClick={this.handleSubmit}
-                style={{ backgroundColor: "#21bf4b", color: "white" }}
-              >
-                {this.state.planner_id ? "Update" : "Save"}
-              </Button>
-              <Link to="/planner-view" style={{ paddingLeft: "5px" }}>
-                <Button style={{ backgroundColor: "#ba0517", color: "white" }}>
-                  Cancel
+            <div style={{ marginTop: "5px" }}>
+              {this.state.offers.map((offer, i) => {
+                return (
+                  <div style={{ padding: "2%" }}>
+                    <div style={{ display: "flex", justifyContent: "left" }}>
+                      <div
+                        style={{
+                          width: "50%",
+                          paddingBottom: "1%",
+                        }}
+                      >
+                        <Input
+                          required
+                          placeholder="Offer Name"
+                          label={`Offer Name`}
+                          value={offer.offer}
+                          onChange={(e) => {
+                            let offers = [...this.state.offers];
+                            offers[i].offer = e.target.value;
+                            this.setState({ offers });
+                          }}
+                          errorText={this.state.error.owner}
+                        />
+                      </div>
+                      <div
+                        style={{
+                          paddingLeft: "1.5%",
+                          marginRight: "auto",
+                          marginTop: "auto",
+                          marginBottom: "auto",
+                        }}
+                      >
+                        <Button
+                          label="Remove Offer"
+                          variant="destructive"
+                          onClick={() => this.removeOffer(offer.id)}
+                        />
+                      </div>
+                    </div>
+                    <h2
+                      style={{
+                        fontWeight: "500",
+                        fontSize: "17px",
+                        marginTop: "4px",
+                      }}
+                    >
+                      Activities
+                    </h2>
+
+                    {offer.activities.map((activity, k) => {
+                      return (
+                        <div
+                          style={{
+                            margin: "auto",
+                            display: "flex",
+                            justifyContent: "space-between",
+                            marginBottom: "10px",
+                            paddingLeft: "10px",
+                          }}
+                        >
+                          <div
+                            style={{
+                              paddingLeft: "15px",
+                              display: "inline-block",
+                              width: "95%",
+                            }}
+                          >
+                            <div
+                              style={{
+                                width: "50%",
+                                margin: "5px",
+                                display: "inline-block",
+                              }}
+                            >
+                              <Input
+                                required
+                                placeholder="Title"
+                                label={"Title"}
+                                value={activity.title}
+                                onChange={(e) => {
+                                  let offers = [...this.state.offers];
+                                  offers[i].activities[k].title =
+                                    e.target.value;
+                                  this.setState({ offers });
+                                }}
+                              />
+                            </div>
+                            <div
+                              style={{
+                                width: "30%",
+                                margin: "5px",
+                                display: "inline-block",
+                              }}
+                            >
+                              <Combobox
+                                events={{
+                                  onchange: (e, val) => {
+                                    let offers = [...this.state.offers];
+                                    offers[i].activities[k].formatId =
+                                      e.target.value;
+                                    this.setState({ offers });
+                                  },
+
+                                  onSelect: (event, data) => {
+                                    if (data.selection.length) {
+                                      let offers = [...this.state.offers];
+                                      offers[i].activities[k].formatId =
+                                        data.selection[0];
+                                      this.setState({ offers });
+                                    }
+                                  },
+                                }}
+                                labels={{ label: "Format" }}
+                                name="format"
+                                options={this.state.defaultFormats}
+                                selection={[{ ...activity.formatId }]}
+                                value="format"
+                                variant="readonly"
+                                // errorText={"Something went wrong!"}
+                              />
+                            </div>
+                            <div
+                              style={{
+                                width: "15%",
+                                margin: "5px",
+                                display: "inline-block",
+                              }}
+                            >
+                              <Datepicker
+                                required
+                                label="Tentative Date"
+                                formatter={(date) =>
+                                  date ? moment(date).format("DD/MM/YYYY") : ""
+                                }
+                                parser={(dateString) => {
+                                  return moment(
+                                    dateString,
+                                    "DD/MM/YYYY"
+                                  ).toDate();
+                                }}
+                                value={moment(activity.date).format(
+                                  "DD/MM/YYYY"
+                                )}
+                                onChange={(event, data) => {
+                                  let offers = [...this.state.offers];
+                                  offers[i].activities[k].date = moment(
+                                    data.formattedDate
+                                  ).format("DD/MM/YYYY");
+                                  this.setState({ offers });
+                                }}
+                              />
+                            </div>
+                          </div>
+                          <div
+                            style={{
+                              width: "5%",
+                              margin: "auto",
+                              textAlign: "center",
+                            }}
+                          >
+                            <Button
+                              label="-"
+                              variant="destructive"
+                              onClick={() => this.removeActivity(i, k)}
+                            />
+                          </div>
+                        </div>
+                      );
+                    })}
+                    <div
+                      style={{ paddingLeft: "1.5%", display: "inline-block" }}
+                    >
+                      <Button
+                        label="add Activity"
+                        variant="brand"
+                        onClick={() => this.addActivity(offer.id)}
+                      />
+                    </div>
+                  </div>
+                );
+              })}
+
+              <div style={{ textAlign: "center", paddingTop: "2%" }}>
+                <Button
+                  onClick={() => this.validations() && this.handleSubmit()}
+                  style={{ backgroundColor: "#21bf4b", color: "white" }}
+                >
+                  {this.state.planner_id ? "Update" : "Save"}
                 </Button>
-              </Link>
+                <Link to="/planner-view" style={{ paddingLeft: "5px" }}>
+                  <Button
+                    style={{ backgroundColor: "#ba0517", color: "white" }}
+                  >
+                    Cancel
+                  </Button>
+                </Link>
+              </div>
             </div>
           </div>
-        </div>
+        </IconSettings>
       </div>
     );
   }

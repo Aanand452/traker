@@ -44,11 +44,11 @@ const CurrencyCell = ({ children, ...props }) => {
         title={typeof children === "number" ? children.toString() : children}
         {...props}
       >
-        {parseInt(children, 10)
+        {parseInt(children[props.prop], 10)
           ? new Intl.NumberFormat("en-US", {
               style: "currency",
               currency: "USD",
-            }).format(children)
+            }).format(children[props.prop])
           : ""}
       </DataTableCell>
     );
@@ -792,8 +792,58 @@ class Table extends Component {
             <DataTableColumn
               label="Program Owner"
               property="programOwner"
+              sortDirection={this.state.sortDirection || "desc"}
+              sortable
+              isSorted={this.state.sortProperty === "name"}
               width={`${this.state.columnWidth["Program Owner"]}px`}
             />
+
+            <DataTableColumn
+              label="Abstract"
+              property="abstract"
+              width={`${this.state.columnWidth["Customer Message"]}px`}
+            />
+
+            <DataTableColumn
+              label="Q1"
+              property="budgets"
+              sortDirection={this.state.sortDirection || "desc"}
+              sortable
+              isSorted={this.state.sortProperty === "name"}
+              width={`${this.state.columnWidth["Program Owner"]}px`}
+            >
+              <CurrencyCell prop="q1" />
+            </DataTableColumn>
+            <DataTableColumn
+              label="Q2"
+              property="budgets"
+              sortDirection={this.state.sortDirection || "desc"}
+              sortable
+              isSorted={this.state.sortProperty === "name"}
+              width={`${this.state.columnWidth["Program Owner"]}px`}
+            >
+              <CurrencyCell prop="q1" />
+            </DataTableColumn>
+            <DataTableColumn
+              label="Q3"
+              property="budgets"
+              sortDirection={this.state.sortDirection || "desc"}
+              sortable
+              isSorted={this.state.sortProperty === "name"}
+              width={`${this.state.columnWidth["Program Owner"]}px`}
+            >
+              <CurrencyCell prop="q1" />
+            </DataTableColumn>
+            <DataTableColumn
+              label="Q4"
+              property="budgets"
+              sortDirection={this.state.sortDirection || "desc"}
+              sortable
+              isSorted={this.state.sortProperty === "name"}
+              width={`${this.state.columnWidth["Program Owner"]}px`}
+            >
+              <CurrencyCell prop="q1" />
+            </DataTableColumn>
             {/* <DataTableColumn
               label="Budget"
               property="budgets"
@@ -811,12 +861,6 @@ class Table extends Component {
             >
               <CurrencyCell />
             </DataTableColumn> */}
-            <DataTableColumn
-              label="Abstract"
-              property="abstract"
-              width={`${this.state.columnWidth["Customer Message"]}px`}
-            />
-
             <DataTableColumn
               label="Actions"
               property="ProgramPlannerId"
