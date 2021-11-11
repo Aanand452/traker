@@ -48,7 +48,7 @@ const PlannerPage = () => {
           {getCookie("role").replaceAll('"', "") === "admin" && (
             <React.Fragment>
               <Card>
-                <Link className="hover-none" to="/create-activity">
+                <Link className="hover-none" to="/planner-activities">
                   <CardTitle>Calendar View</CardTitle>
                   <img
                     style={{ backgroundColor: "#f5f2f2" }}

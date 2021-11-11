@@ -238,6 +238,12 @@ class CreatePlanner extends Component {
               formatId: "",
               date: new Date(),
             },
+            {
+              id: 2,
+              title: "",
+              formatId: "",
+              date: new Date(),
+            },
           ],
         },
       ],
@@ -371,6 +377,34 @@ class CreatePlanner extends Component {
     }
   };
 
+  handleDelete = async () => {
+    const token = getCookie("token").replaceAll('"', "");
+    const config = {
+      method: "DELETE",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({
+        id: this.state.planner_id,
+      }),
+    };
+
+    await fetch(
+      `${this.API_URL}/program-planner/${this.state.planner_id}`,
+      config
+    )
+      .then((res) => res.json())
+      .then((res) => {
+        console.log(res);
+        window.location.replace("/planner-view");
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
   getAPM1 = async () => {
     try {
       let token = getCookie("token").replaceAll('"', "");
@@ -389,7 +423,10 @@ class CreatePlanner extends Component {
         label: item.name,
       }));
 
-      if (response.info.code === 200) this.setState({ apm1s: apm1 });
+      if (response.info.code === 200)
+        this.setState({
+          apm1s: [{ id: "234521", label: "All" }, ...apm1],
+        });
       else throw new Error(response.info.status);
     } catch (err) {
       this.showError(err);
@@ -606,7 +643,9 @@ class CreatePlanner extends Component {
               </span>
             </div>
             <div style={{ width: "100%", overflow: "hidden" }}>
-              <h2 style={{ fontWeight: "bold", fontSize: "20px" }}>Program</h2>
+              <h2 style={{ fontWeight: "bold", fontSize: "20px" }}>
+                Program Level Data
+              </h2>
               <div>
                 <div style={{ width: "50%", float: "left" }}>
                   <div style={{ padding: "1%" }}>
@@ -666,6 +705,7 @@ class CreatePlanner extends Component {
                   </div>
                   <div style={{ padding: "1%" }}>
                     <Combobox
+                      variant="inline-listbox"
                       required
                       events={{
                         onRequestRemoveSelectedOption: (event, data) => {
@@ -700,6 +740,7 @@ class CreatePlanner extends Component {
                   </div>
                   <div style={{ padding: "1%" }}>
                     <Combobox
+                      variant="inline-listbox"
                       required
                       events={{
                         onSelect: (event, data) => {
@@ -807,6 +848,7 @@ class CreatePlanner extends Component {
                       }}
                       menuItemVisibleLength={5}
                       multiple
+                      variant="inline-listbox"
                       options={comboboxFilterAndLimit({
                         limit: this.state.apm1s.length,
                         options: this.state.apm1s,
@@ -819,6 +861,7 @@ class CreatePlanner extends Component {
                   <div style={{ padding: "1%" }}>
                     <Combobox
                       required
+                      variant="inline-listbox"
                       events={{
                         onRequestRemoveSelectedOption: (event, data) => {
                           this.setState({
@@ -849,6 +892,7 @@ class CreatePlanner extends Component {
                   </div>
                   <div style={{ padding: "1%" }}>
                     <Combobox
+                      variant="inline-listbox"
                       required
                       events={{
                         onRequestRemoveSelectedOption: (event, data) => {
@@ -922,20 +966,6 @@ class CreatePlanner extends Component {
                           errorText={this.state.error.owner}
                         />
                       </div>
-                      <div
-                        style={{
-                          paddingLeft: "1.5%",
-                          margin: "auto",
-                          marginTop: "auto",
-                          marginBottom: "auto",
-                        }}
-                      >
-                        <Button
-                          label="Remove Offer"
-                          variant="destructive"
-                          onClick={() => this.removeOffer(offer.id)}
-                        />
-                      </div>
                     </div>
                     <h2
                       style={{
@@ -993,6 +1023,7 @@ class CreatePlanner extends Component {
                               }}
                             >
                               <Combobox
+                                variant="inline-listbox"
                                 events={{
                                   onchange: (e, val) => {
                                     let offers = [...this.state.offers];
@@ -1084,13 +1115,18 @@ class CreatePlanner extends Component {
                     <div
                       style={{
                         paddingLeft: "1.5%",
-                        display: "inline-block",
+                        display: "flex",
+                        justifyContent: "space-between",
                         width: "100%",
-                        textAlign: "end",
                       }}
                     >
                       <Button
-                        label="add Activity"
+                        label="Remove Offer"
+                        variant="destructive"
+                        onClick={() => this.removeOffer(offer.id)}
+                      />
+                      <Button
+                        label="Add Activity"
                         variant="brand"
                         onClick={() => this.addActivity(offer.id)}
                       />
@@ -1115,11 +1151,22 @@ class CreatePlanner extends Component {
                 </Button>
                 <Link to="/planner-view" style={{ paddingLeft: "5px" }}>
                   <Button
-                    style={{ backgroundColor: "#ba0517", color: "white" }}
+                    style={{ backgroundColor: "#b0b0b0", color: "white" }}
                   >
                     Cancel
                   </Button>
                 </Link>
+                <span
+                  onClick={this.handleDelete}
+                  style={{ cursor: "pointer", paddingLeft: "5px" }}
+                  title="delete"
+                >
+                  <Button
+                    style={{ backgroundColor: "#ba0517", color: "white" }}
+                  >
+                    Delete
+                  </Button>
+                </span>
               </div>
             </div>
           </div>

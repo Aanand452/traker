@@ -109,17 +109,6 @@ const ActionCell = ({ children, ...props }) => {
         <Link to={`/create-planner?planner=${children}`} title="edit">
           Edit
         </Link>
-        <div
-          onClick={handleDelete}
-          style={{ cursor: "pointer" }}
-          title="delete"
-        >
-          <img
-            src="https://img.icons8.com/flat-round/64/000000/delete-sign.png"
-            width={15}
-            alt="delete"
-          />
-        </div>
       </div>
     </DataTableCell>
   );
@@ -447,36 +436,12 @@ class Table extends Component {
           }}
           disabled={!this.state.isHistoric}
         /> */}
-      </ButtonGroup>
+      </ButtonGroup>{" "}
       <ButtonGroup id="button-group-page-header-actions">
-        <Link to="/create-planner">
-          <Button label="New" />
+        <Link style={{ textAlign: "end" }} to="/create-planner">
+          <Button label="New" style={{ textAlign: "end", margin: "auto" }} />
         </Link>
       </ButtonGroup>
-      <div>
-        <div>
-          {" "}
-          Aggregates Budget Total:{" "}
-          <span style={{ fontWeight: "bold", paddingLeft: "4px" }}>
-            {new Intl.NumberFormat("en-US", {
-              style: "currency",
-              currency: "USD",
-              maximumSignificantDigits: 1,
-            }).format(this.props.aggregates.budget)}
-          </span>
-        </div>{" "}
-        <div>
-          {" "}
-          Aggregates MP Target Total:
-          <span style={{ fontWeight: "bold", paddingLeft: "4px" }}>
-            {new Intl.NumberFormat("en-US", {
-              style: "currency",
-              currency: "USD",
-              maximumSignificantDigits: 1,
-            }).format(this.props.aggregates.mp_target)}
-          </span>
-        </div>{" "}
-      </div>
     </PageHeaderControl>
   );
 
@@ -740,6 +705,28 @@ class Table extends Component {
   render() {
     return (
       <Container>
+        <p style={{ textAlign: "center", fontWeight: "normal" }}>
+          Aggregates Budget Total:{" "}
+          <span
+            style={{
+              fontWeight: "bold",
+              paddingLeft: "4px",
+              paddingRight: "4px",
+            }}
+          >
+            {new Intl.NumberFormat("en-US", {
+              style: "currency",
+              currency: "USD",
+            }).format(parseFloat(this.props.aggregates.budget).toFixed(0))}
+          </span>
+          MP Target Total:
+          <span style={{ fontWeight: "bold", paddingLeft: "4px" }}>
+            {new Intl.NumberFormat("en-US", {
+              style: "currency",
+              currency: "USD",
+            }).format(parseFloat(this.props.aggregates.mp_target).toFixed(0))}
+          </span>
+        </p>
         <IconSettings iconPath="/assets/icons">
           {this.state.editModalIsOPen && (
             <EditProgramModal
@@ -766,7 +753,11 @@ class Table extends Component {
             } ${this.state.data.length === 1 ? "item" : "items"}`}
             joined
             // onRenderControls={this.controls}
-            title={<h1 style={{ padding: "4px" }}>Program Plans</h1>}
+            title={
+              <div>
+                <h1 style={{ padding: "4px" }}>Program Plans</h1>
+              </div>
+            }
             truncate
             variant="object-home"
           />

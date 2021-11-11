@@ -97,11 +97,12 @@ class EditPlanner extends Component {
             program.budgets.q2 +
             program.budgets.q3 +
             program.budgets.q4;
-          program.cumulative_mp_target =
-            program.mp_target.q1 +
-            program.mp_target.q2 +
-            program.mp_target.q3 +
-            program.mp_target.q4;
+          program.cumulative_mp_target = program.mp_target
+            ? program.mp_target.q1 +
+              program.mp_target.q2 +
+              program.mp_target.q3 +
+              program.mp_target.q4
+            : 0;
           aggregates.budget += program.cumulative_budget;
           aggregates.mp_target += program.cumulative_mp_target;
           return program;
