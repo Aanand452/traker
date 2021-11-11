@@ -1,6 +1,6 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
-import { Button } from '@salesforce/design-system-react';
+import React from "react";
+import { Link } from "react-router-dom";
+import { Button } from "@salesforce/design-system-react";
 
 import {
   Container,
@@ -9,32 +9,49 @@ import {
   Card,
   CardTitle,
   CardAction,
-  CardImage
-} from './styles';
-import { getCookie } from '../../utils/cookie';
+  CardImage,
+} from "./styles";
+import { getCookie } from "../../utils/cookie";
 
 const HomePage = () => (
   <Container>
     <Banner src="images/APAC_Activity_Tracker_Headline_5334x1250.png" />
     <CardsContainer>
       <Card>
-        <CardImage src="/images/APAC_Activity_Tracker_Tile_Create_Activity_notext_640x360.png" alt="Create activity" />
+        <CardImage
+          src="/images/APAC_Activity_Tracker_Tile_Create_Activity_notext_640x360.png"
+          alt="Create activity"
+        />
         <CardTitle>Create Activity</CardTitle>
         <CardAction>
-          <Link to="/create-activity">
+          <Link
+            to="/create-activity"
+            onClick={() => {
+              localStorage.setItem("showPrograms", false);
+            }}
+          >
             <Button variant="brand" label="Create new activity" />
           </Link>
         </CardAction>
       </Card>
       <Card>
-        <CardImage src="/images/APAC_Activity_Tracker_Tile_Edit_Activities_notext_640x360.png" alt="Activities" />
+        <CardImage
+          src="/images/APAC_Activity_Tracker_Tile_Edit_Activities_notext_640x360.png"
+          alt="Activities"
+        />
         <CardTitle>View/Edit Activities</CardTitle>
         <CardAction>
-          <Link to="/my-activities">
+          <Link
+            to="/my-activities"
+            onClick={() => {
+              localStorage.setItem("showPrograms", false);
+            }}
+          >
             <Button variant="brand" label="Activities" />
           </Link>
         </CardAction>
       </Card>
+
       {/* {
         getCookie('role').replaceAll('"','') === 'admin' && (
           <React.Fragment>
@@ -77,21 +94,42 @@ const HomePage = () => (
           </React.Fragment>
         )
       } */}
-      {
-        getCookie('role').replaceAll('"','') === 'admin' && (
-          <React.Fragment>
-            <Card>
-              <CardImage src="/images/APAC_Activity_Tracker_Tile_Create_Program_notext_640x360.png" alt="Create program" />
-              <CardTitle>Planner</CardTitle>
-              <CardAction>
-                <Link to="/planner">
-                  <Button variant="brand" label="View All" />
-                </Link>
-              </CardAction>
-            </Card>
-          </React.Fragment>
-        )
-      }
+      {getCookie("role").replaceAll('"', "") === "admin" && (
+        <Card>
+          <CardImage
+            src="/images/APAC_Activity_Tracker_Tile_Create_Program_notext_640x360.png"
+            alt="Create program"
+          />
+          <CardTitle>Planner</CardTitle>
+          <CardAction>
+            <Link
+              to="/planner"
+              onClick={() => {
+                localStorage.setItem("showPrograms", true);
+              }}
+            >
+              <Button variant="brand" label="View All" />
+            </Link>
+          </CardAction>
+        </Card>
+      )}
+      <Card>
+        <CardImage
+          src="/images/APAC_Activity_Tracker_Tile_Edit_Activities_notext_640x360.png"
+          alt="Activities"
+        />
+        <CardTitle>View All programs</CardTitle>
+        <CardAction>
+          <Link
+            to="/planner-view"
+            onClick={() => {
+              localStorage.setItem("showPrograms", true);
+            }}
+          >
+            <Button variant="brand" label="Activities" />
+          </Link>
+        </CardAction>
+      </Card>
     </CardsContainer>
   </Container>
 );

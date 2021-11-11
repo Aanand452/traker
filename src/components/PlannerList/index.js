@@ -44,11 +44,11 @@ const CurrencyCell = ({ children, ...props }) => {
         title={typeof children === "number" ? children.toString() : children}
         {...props}
       >
-        {parseInt(children[props.prop], 10)
+        {parseInt(children, 10)
           ? new Intl.NumberFormat("en-US", {
               style: "currency",
               currency: "USD",
-            }).format(children[props.prop])
+            }).format(children)
           : ""}
       </DataTableCell>
     );
@@ -104,18 +104,10 @@ const ActionCell = ({ children, ...props }) => {
     >
       <div style={{ display: "flex", justifyContent: "space-around" }}>
         <Link to={`/planner-slider?planner=${children}`} title="open">
-          <img
-            width={15}
-            alt="open"
-            src="https://img.icons8.com/external-bearicons-glyph-bearicons/64/000000/external-open-call-to-action-bearicons-glyph-bearicons.png"
-          />
+          View
         </Link>
         <Link to={`/create-planner?planner=${children}`} title="edit">
-          <img
-            src="https://img.icons8.com/material-outlined/24/000000/edit--v1.png"
-            width={15}
-            alt="edit"
-          />
+          Edit
         </Link>
         <div
           onClick={handleDelete}
@@ -461,6 +453,30 @@ class Table extends Component {
           <Button label="New" />
         </Link>
       </ButtonGroup>
+      <div>
+        <div>
+          {" "}
+          Aggregates Budget Total:{" "}
+          <span style={{ fontWeight: "bold", paddingLeft: "4px" }}>
+            {new Intl.NumberFormat("en-US", {
+              style: "currency",
+              currency: "USD",
+              maximumSignificantDigits: 1,
+            }).format(this.props.aggregates.budget)}
+          </span>
+        </div>{" "}
+        <div>
+          {" "}
+          Aggregates MP Target Total:
+          <span style={{ fontWeight: "bold", paddingLeft: "4px" }}>
+            {new Intl.NumberFormat("en-US", {
+              style: "currency",
+              currency: "USD",
+              maximumSignificantDigits: 1,
+            }).format(this.props.aggregates.mp_target)}
+          </span>
+        </div>{" "}
+      </div>
     </PageHeaderControl>
   );
 
@@ -754,6 +770,7 @@ class Table extends Component {
             truncate
             variant="object-home"
           />
+
           {this.state.isPanelOpen && (
             <Panel onSearch={this.onSearch} search={this.state.search} />
           )}
@@ -805,45 +822,27 @@ class Table extends Component {
             />
 
             <DataTableColumn
-              label="Q1"
-              property="budgets"
+              label="Cumulative Budget"
+              property="cumulative_budget"
               sortDirection={this.state.sortDirection || "desc"}
               sortable
               isSorted={this.state.sortProperty === "name"}
               width={`${this.state.columnWidth["Program Owner"]}px`}
             >
-              <CurrencyCell prop="q1" />
+              <CurrencyCell />
             </DataTableColumn>
+
             <DataTableColumn
-              label="Q2"
-              property="budgets"
+              label="Cumulative MP Target"
+              property="cumulative_mp_target"
               sortDirection={this.state.sortDirection || "desc"}
               sortable
               isSorted={this.state.sortProperty === "name"}
               width={`${this.state.columnWidth["Program Owner"]}px`}
             >
-              <CurrencyCell prop="q1" />
+              <CurrencyCell />
             </DataTableColumn>
-            <DataTableColumn
-              label="Q3"
-              property="budgets"
-              sortDirection={this.state.sortDirection || "desc"}
-              sortable
-              isSorted={this.state.sortProperty === "name"}
-              width={`${this.state.columnWidth["Program Owner"]}px`}
-            >
-              <CurrencyCell prop="q1" />
-            </DataTableColumn>
-            <DataTableColumn
-              label="Q4"
-              property="budgets"
-              sortDirection={this.state.sortDirection || "desc"}
-              sortable
-              isSorted={this.state.sortProperty === "name"}
-              width={`${this.state.columnWidth["Program Owner"]}px`}
-            >
-              <CurrencyCell prop="q1" />
-            </DataTableColumn>
+
             {/* <DataTableColumn
               label="Budget"
               property="budgets"

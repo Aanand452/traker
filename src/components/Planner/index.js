@@ -49,7 +49,7 @@ const PlannerPage = () => {
             <React.Fragment>
               <Card>
                 <Link className="hover-none" to="/create-activity">
-                  <CardTitle>Activities Calendar View</CardTitle>
+                  <CardTitle>Calendar View</CardTitle>
                   <img
                     style={{ backgroundColor: "#f5f2f2" }}
                     src="/images/APAC_Activity_Tracker_Tile_Create_Program_notext_640x360.png"

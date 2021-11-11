@@ -12,6 +12,7 @@ import ActivitiesTable from "../ActivitiesTable";
 import { getAPIUrl } from "../../config/config";
 import ConfirmationDailog from "../Prompt";
 import { getCookie } from "../../utils/cookie";
+import moment from "moment";
 
 class EditActivityPage extends Component {
   state = {
@@ -64,25 +65,64 @@ class EditActivityPage extends Component {
     const user = localStorage.getItem("userId");
     const body = { startDate, endDate };
     let token = getCookie("token").replaceAll('"', "");
+    // const config = {
+    //   // method: "POST",
+    //   headers: {
+    //     Accept: "application/json",
+    //     "Content-Type": "application/json",
+    //     Authorization: `Bearer ${token}`,
+    //   },
+    //   // body: JSON.stringify(body),
+    // };
     const config = {
-      method: "POST",
+      // method: 'POST',
       headers: {
         Accept: "application/json",
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
       },
-      body: JSON.stringify(body),
+      // body: JSON.stringify({
+      //   programsStartDate: startDate ? startDate : programsFYstartDate,
+      //   programsEndDate:  endDate ? endDate :  programsFYendDate,
+      // })
     };
 
     try {
-      const request = await fetch(`${this.API_URL}/activities/${user}`, config);
-      const response = await request.json();
+      let response = await fetch(`${this.API_URL}/program-planners`, config);
+      response = await response.json();
 
+      let allActivities = [];
+
+      response.result.forEach((program) => {
+        console.log(program);
+        let {
+          offers: { offers },
+        } = program;
+
+        offers.forEach((offer, i) => {
+          offer.activities.forEach((activity, k) => {
+            console.log(activity);
+            allActivities.push({
+              title: program.programName,
+              formatId: activity.formatId.label,
+              abstract: program.abstract,
+              activityId: i + k,
+              asset: "",
+              campaignId: "",
+              customerMarketing: false,
+              endDate: moment(activity.date).toDate(),
+              id: i + k,
+              programId: "Service Buyer (ANZ)",
+              regionId: program.region[0].label,
+              startDate: moment(activity.date).toDate(),
+              userId: program.programOwner,
+            });
+          });
+        });
+      });
+      console.log("ALL activities", allActivities);
       this.setState({
-        activities: response.result.map((item) => ({
-          ...item,
-          id: item.activityId,
-        })),
+        activities: allActivities,
       });
     } catch (err) {
       console.error(err);

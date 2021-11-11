@@ -87,7 +87,7 @@ class PlanningView extends Component {
           }),
         };
       });
-
+      console.log(result);
       this.setState({
         planner: result,
         total_budget:
@@ -96,6 +96,13 @@ class PlanningView extends Component {
             result.budgets.q3 +
             result.budgets.q4) /
           1000,
+        total_mp_target: parseFloat(
+          (result.mp_target.q1 +
+            result.mp_target.q2 +
+            result.mp_target.q3 +
+            result.mp_target.q4) /
+            1000
+        ).toFixed(1),
         loading: false,
       });
 
@@ -112,7 +119,7 @@ class PlanningView extends Component {
   }
 
   render() {
-    const { planner, loading, total_budget } = this.state;
+    const { planner, loading, total_budget, total_mp_target } = this.state;
 
     if (loading) {
       return (
@@ -163,14 +170,16 @@ class PlanningView extends Component {
                   <div className="card">
                     <div className="card-head">
                       <span>MP Target :</span>
-                      <span className="card-head-value">S8M</span>
+                      <span className="card-head-value">
+                        ${parseFloat(total_mp_target).toFixed(0)}M
+                      </span>
                     </div>
                     <hr style={{ marginTop: "10px", marginBottom: "10px" }} />
 
                     <div className="card-head">
                       <span> Budget :</span>
                       <span className="card-head-value">
-                        $<span>{total_budget}</span>K
+                        $<span>{parseFloat(total_budget).toFixed(0)}</span>K
                       </span>
                     </div>
                     <div className="grid-cols-2" style={{ display: "grid" }}>
@@ -178,13 +187,21 @@ class PlanningView extends Component {
                         <div className="quarters">
                           <div> Q1</div>
                           <div className="card-head-value">
-                            $<span>{planner.budgets.q1 / 1000}</span>K
+                            $
+                            <span>
+                              {parseFloat(planner.budgets.q1 / 1000).toFixed(0)}
+                            </span>
+                            K
                           </div>
                         </div>
                         <div className="quarters">
                           <div> Q3</div>
                           <div className="card-head-value">
-                            $<span>{planner.budgets.q2 / 1000}</span>K
+                            $
+                            <span>
+                              {parseFloat(planner.budgets.q3 / 1000).toFixed(0)}
+                            </span>
+                            K
                           </div>
                         </div>
                       </div>
@@ -192,13 +209,21 @@ class PlanningView extends Component {
                         <div className="quarters">
                           <div> Q2</div>
                           <div className="card-head-value">
-                            $<span>{planner.budgets.q3 / 1000}</span>K
+                            $
+                            <span>
+                              {parseFloat(planner.budgets.q2 / 1000).toFixed(0)}
+                            </span>
+                            K
                           </div>
                         </div>
                         <div className="quarters">
                           <div> Q4</div>
                           <div className="card-head-value">
-                            $<span>{planner.budgets.q4 / 1000}</span>K
+                            $
+                            <span>
+                              {parseFloat(planner.budgets.q4 / 1000).toFixed(0)}
+                            </span>
+                            K
                           </div>
                         </div>
                       </div>

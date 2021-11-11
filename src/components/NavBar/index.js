@@ -164,11 +164,22 @@ class NavBar extends Component {
                 {getCookie("role").replaceAll('"', "") === "admin" && (
                   <NavigationBarLink to="/planner" title="Planner" />
                 )}
-                <NavigationBarLink to="/my-activities" title="Activities" />
-
-                {getCookie("role").replaceAll('"', "") === "admin" && (
-                  <NavigationBarLink to="/planner-view" title="Program Plans" />
-                )}
+                <NavigationBarLink
+                  to={
+                    localStorage.getItem("showPrograms") === "false"
+                      ? "/my-activities"
+                      : "/planner-activities"
+                  }
+                  title="Activities"
+                />
+                {console.log(localStorage.getItem("showPrograms"))}
+                {getCookie("role").replaceAll('"', "") === "admin" &&
+                  localStorage.getItem("showPrograms") !== "false" && (
+                    <NavigationBarLink
+                      to="/planner-view"
+                      title="Program Level Data"
+                    />
+                  )}
                 {this.state.tableauUrl !== "/" && (
                   <NavigationBarLink
                     title="Go to reports"

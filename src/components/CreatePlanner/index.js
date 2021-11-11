@@ -37,6 +37,12 @@ class CreatePlanner extends Component {
               formatId: "",
               date: new Date(),
             },
+            {
+              id: 1,
+              title: "",
+              formatId: "",
+              date: new Date(),
+            },
           ],
         },
       ],
@@ -59,6 +65,10 @@ class CreatePlanner extends Component {
         q2_budget: "",
         q3_budget: "",
         q4_budget: "",
+        mp_target_q1: "",
+        mp_target_q2: "",
+        mp_target_q3: "",
+        mp_target_q4: "",
         owner: "",
         abstract: "",
       },
@@ -324,7 +334,11 @@ class CreatePlanner extends Component {
 
       let { result } = response;
       console.log(response);
-      let { budgets } = result;
+      let { budgets, mp_target } = result;
+
+      if (!mp_target) {
+        mp_target = {};
+      }
 
       this.setState({
         program: {
@@ -337,6 +351,10 @@ class CreatePlanner extends Component {
           q2_budget: budgets.q2,
           q3_budget: budgets.q3,
           q4_budget: budgets.q4,
+          mp_target_q1: mp_target.q1,
+          mp_target_q2: mp_target.q2,
+          mp_target_q3: mp_target.q3,
+          mp_target_q4: mp_target.q4,
           abstract: result.abstract,
           name: result.programName,
           owner: result.programOwner,
@@ -387,6 +405,10 @@ class CreatePlanner extends Component {
       "q2_budget",
       "q3_budget",
       "q4_budget",
+      "mp_target_q1",
+      "mp_target_q2",
+      "mp_target_q3",
+      "mp_target_q4",
       "selectedIndustries",
       "regionId",
       "kpi",
@@ -431,6 +453,7 @@ class CreatePlanner extends Component {
 
   handleChange = (value, data) => {
     const newRow = { ...this.state.program, [value]: data };
+    console.log(data);
     this.validations(value, data);
     this.setState({ program: newRow });
   };
@@ -447,7 +470,7 @@ class CreatePlanner extends Component {
 
       const token = getCookie("token").replaceAll('"', "");
       const userId = getCookie("userid").replaceAll('"', "");
-
+      console.log("sads");
       const body = {
         programId: userId,
         programName: this.state.program.name,
@@ -457,6 +480,12 @@ class CreatePlanner extends Component {
           q2: Number(this.state.program.q2_budget),
           q3: Number(this.state.program.q3_budget),
           q4: Number(this.state.program.q4_budget),
+        },
+        mp_target: {
+          q1: Number(this.state.program.mp_target_q1),
+          q2: Number(this.state.program.mp_target_q2),
+          q3: Number(this.state.program.mp_target_q3),
+          q4: Number(this.state.program.mp_target_q4),
         },
         region: regionId,
         apm: apm1Id,
@@ -534,13 +563,48 @@ class CreatePlanner extends Component {
   }
 
   render() {
+    let { program } = this.state;
+    let cumulative_budget =
+      parseFloat(program.q1_budget) +
+      parseFloat(program.q2_budget) +
+      parseFloat(program.q3_budget) +
+      parseFloat(program.q4_budget);
+
+    let cumulative_mp_target =
+      parseFloat(program.mp_target_q1) +
+      parseFloat(program.mp_target_q2) +
+      parseFloat(program.mp_target_q3) +
+      parseFloat(program.mp_target_q4);
+
     return (
       <div style={{ padding: "1%", paddingTop: "5.6rem" }}>
         <NavBar />
 
         <IconSettings iconPath="assets/icons">
           <div style={{ border: "groove", padding: "2%" }}>
-            <Title> Create Program Planner</Title>
+            <Title> Program Plan on a Page</Title>
+            <div
+              style={{ width: "100%", marginRight: "auto", textAlign: "end" }}
+            >
+              Cumulative Budget:{" "}
+              <span style={{ fontWeight: "bold" }}>
+                {new Intl.NumberFormat("en-US", {
+                  style: "currency",
+                  currency: "USD",
+                }).format(cumulative_budget)}
+              </span>
+            </div>
+            <div
+              style={{ width: "100%", marginRight: "auto", textAlign: "end" }}
+            >
+              Cumulative MP Target:{" "}
+              <span style={{ fontWeight: "bold" }}>
+                {new Intl.NumberFormat("en-US", {
+                  style: "currency",
+                  currency: "USD",
+                }).format(cumulative_mp_target)}
+              </span>
+            </div>
             <div style={{ width: "100%", overflow: "hidden" }}>
               <h2 style={{ fontWeight: "bold", fontSize: "20px" }}>Program</h2>
               <div>
@@ -645,7 +709,7 @@ class CreatePlanner extends Component {
                           );
                         },
                       }}
-                      labels={{ label: "Target Region" }}
+                      labels={{ label: "Region" }}
                       options={this.state.regions}
                       selection={this.state.program.regionId}
                       value="region"
@@ -677,6 +741,50 @@ class CreatePlanner extends Component {
                       errorText={this.state.error.owner}
                     />
                   </div>
+                  {/*  */}
+                  <div style={{ padding: "1%", display: "flex" }}>
+                    <BudgetInput
+                      onChange={(e, data) => {
+                        this.handleChange("mp_target_q1", data.value);
+                      }}
+                      required
+                      label="MP Target (Q1)"
+                      defaultValue={this.state.program.mp_target_q1}
+                      placeholder="Q1"
+                      errorText={this.state.error.mp_target_q1}
+                    />
+                    <BudgetInput
+                      onChange={(e, data) =>
+                        this.handleChange("mp_target_q2", data.value)
+                      }
+                      required
+                      defaultValue={this.state.program.mp_target_q2}
+                      label="MP Target (Q2)"
+                      placeholder="Q2"
+                      errorText={this.state.error.mp_target_q2}
+                    />
+                    <BudgetInput
+                      onChange={(e, data) =>
+                        this.handleChange("mp_target_q3", data.value)
+                      }
+                      required
+                      defaultValue={this.state.program.mp_target_q3}
+                      label="MP Target (Q3)"
+                      placeholder="Q3"
+                      errorText={this.state.error.mp_target_q3}
+                    />
+                    <BudgetInput
+                      onChange={(e, data) =>
+                        this.handleChange("mp_target_q4", data.value)
+                      }
+                      required
+                      label="MP Target (Q4)"
+                      defaultValue={this.state.program.mp_target_q4}
+                      placeholder="Q4"
+                      errorText={this.state.error.mp_target_q4}
+                    />
+                  </div>
+                  {/*  */}
                   <div style={{ padding: "1%" }}>
                     <Combobox
                       required
@@ -694,7 +802,7 @@ class CreatePlanner extends Component {
                           this.handleChange("selectedApm1s", data.selection),
                       }}
                       labels={{
-                        label: "APM",
+                        label: "APM 1",
                         placeholder: "Select an option",
                       }}
                       menuItemVisibleLength={5}
@@ -778,22 +886,18 @@ class CreatePlanner extends Component {
                       }}
                       defaultValue={this.state.program.abstract}
                       placeholder="Enter Abstract"
+                      required
+                      errorText={this.state.error.abstract}
                     />
                   </div>
                 </div>
               </div>
             </div>
             <div style={{ display: "flex" }}>
-              <h2 style={{ fontWeight: "bold", fontSize: "20px" }}>Offers</h2>
-              <div style={{ paddingLeft: "0.5%", paddingBottom: "2%" }}>
-                <Button
-                  label="Add Offer"
-                  variant="brand"
-                  onClick={this.addOffer}
-                />
-              </div>
+              <h2 style={{ fontWeight: "bold", fontSize: "20px" }}>
+                Offer Level Data
+              </h2>
             </div>
-
             <div style={{ marginTop: "5px" }}>
               {this.state.offers.map((offer, i) => {
                 return (
@@ -821,7 +925,7 @@ class CreatePlanner extends Component {
                       <div
                         style={{
                           paddingLeft: "1.5%",
-                          marginRight: "auto",
+                          margin: "auto",
                           marginTop: "auto",
                           marginBottom: "auto",
                         }}
@@ -952,19 +1056,38 @@ class CreatePlanner extends Component {
                               width: "5%",
                               margin: "auto",
                               textAlign: "center",
+                              cursor: "pointer",
                             }}
+                            onClick={() => this.removeActivity(i, k)}
                           >
-                            <Button
-                              label="-"
-                              variant="destructive"
+                            {" "}
+                            <Icon
+                              assistiveText={{ lable: "Warning" }}
+                              category="utility"
+                              colorVariant="error"
+                              name="delete"
+                              size="x-small"
                               onClick={() => this.removeActivity(i, k)}
                             />
+                            {/* <Button
+                              assistiveText={{ icon: "Delete" }}
+                              iconCategory="utility"
+                              iconName="delete"
+                              variant="icon"
+                              colorVariant="error"
+                              onClick={() => this.removeActivity(i, k)}
+                            /> */}
                           </div>
                         </div>
                       );
                     })}
                     <div
-                      style={{ paddingLeft: "1.5%", display: "inline-block" }}
+                      style={{
+                        paddingLeft: "1.5%",
+                        display: "inline-block",
+                        width: "100%",
+                        textAlign: "end",
+                      }}
                     >
                       <Button
                         label="add Activity"
@@ -975,6 +1098,13 @@ class CreatePlanner extends Component {
                   </div>
                 );
               })}
+              <div style={{ paddingLeft: "0.5%", paddingBottom: "2%" }}>
+                <Button
+                  label="Add Offer"
+                  variant="brand"
+                  onClick={this.addOffer}
+                />
+              </div>
 
               <div style={{ textAlign: "center", paddingTop: "2%" }}>
                 <Button

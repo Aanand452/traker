@@ -22,6 +22,10 @@ class EditPlanner extends Component {
       active: false,
     },
     programs: [],
+    aggregates: {
+      budget: 0,
+      mp_target: 0,
+    },
     selectedProgram: "",
     programsFYstartDate: "",
     programsFYendDate: "",
@@ -84,9 +88,26 @@ class EditPlanner extends Component {
       };
       const response = await fetch(`${this.API_URL}/program-planners`, config);
       if (response.status === 200) {
-        const { result } = await response.json();
-        this.setState({ programs: result });
-        console.log(result);
+        let { result } = await response.json();
+        let aggregates = { budget: 0, mp_target: 0 };
+        result = result.map((program) => {
+          console.log(program);
+          program.cumulative_budget =
+            program.budgets.q1 +
+            program.budgets.q2 +
+            program.budgets.q3 +
+            program.budgets.q4;
+          program.cumulative_mp_target =
+            program.mp_target.q1 +
+            program.mp_target.q2 +
+            program.mp_target.q3 +
+            program.mp_target.q4;
+          aggregates.budget += program.cumulative_budget;
+          aggregates.mp_target += program.cumulative_mp_target;
+          return program;
+        });
+        this.setState({ programs: result, aggregates });
+        console.log("all programs", result);
       } else throw new Error(response);
     } catch (err) {
       console.error(err);
@@ -183,7 +204,7 @@ class EditPlanner extends Component {
   render() {
     return (
       <Container>
-        <NavBar />
+        <NavBar showPrograms={true} />
         <IconSettings iconPath="/assets/icons">
           <ConfirmationDialog
             message="Are you sure you want to delete this program?"
@@ -215,6 +236,7 @@ class EditPlanner extends Component {
             onDelete={this.onDelete}
             onGetHistoric={this.onGetHistoric}
             data={this.state.programs}
+            aggregates={this.state.aggregates}
           />
         </IconSettings>
       </Container>
