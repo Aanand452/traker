@@ -26,6 +26,11 @@ ProgramPlanner.init(
       type: DataTypes.JSON,
       field: "budgets",
     },
+    mp_target: {
+      allowNull: false,
+      type: DataTypes.JSON,
+      field: "mp_target",
+    },
     apm: {
       allowNull: false,
       type: DataTypes.JSON,
