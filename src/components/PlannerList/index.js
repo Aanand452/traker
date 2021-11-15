@@ -34,7 +34,7 @@ const CurrencyCell = ({ children, ...props }) => {
         {new Intl.NumberFormat("en-US", {
           style: "currency",
           currency: "USD",
-          maximumSignificantDigits: 1,
+          maximumFractionDigits: 0,
         }).format(children)}
       </DataTableCell>
     );
@@ -48,6 +48,7 @@ const CurrencyCell = ({ children, ...props }) => {
           ? new Intl.NumberFormat("en-US", {
               style: "currency",
               currency: "USD",
+              maximumFractionDigits: 0,
             }).format(children)
           : ""}
       </DataTableCell>
@@ -710,20 +711,38 @@ class Table extends Component {
           <span
             style={{
               fontWeight: "bold",
+              marginLeft: "4px",
+              marginRight: "4px",
               paddingLeft: "4px",
               paddingRight: "4px",
+              color: "white",
+              backgroundColor: "#4f46e5",
+              borderRadius: "4px",
             }}
           >
             {new Intl.NumberFormat("en-US", {
               style: "currency",
               currency: "USD",
-            }).format(parseFloat(this.props.aggregates.budget).toFixed(0))}
+              maximumFractionDigits: 0,
+            }).format(this.props.aggregates.budget)}
           </span>
           MP Target Total:
-          <span style={{ fontWeight: "bold", paddingLeft: "4px" }}>
+          <span
+            style={{
+              fontWeight: "bold",
+              paddingLeft: "4px",
+              marginLeft: "4px",
+              marginRight: "4px",
+              paddingRight: "4px",
+              backgroundColor: "#d52318",
+              color: "white",
+              borderRadius: "4px",
+            }}
+          >
             {new Intl.NumberFormat("en-US", {
               style: "currency",
               currency: "USD",
+              maximumFractionDigits: 0,
             }).format(parseFloat(this.props.aggregates.mp_target).toFixed(0))}
           </span>
         </p>

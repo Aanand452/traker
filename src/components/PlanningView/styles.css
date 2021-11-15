@@ -2,18 +2,20 @@
   border-top: 1px solid #daeefe;
 }
 .owner {
-  background-color: #0b5cab;
+  background-color: #000000;
   font-size: 20px;
   color: white;
   padding-left: 10px;
+  text-transform: uppercase;
   border-radius: 0 20px 20px 0;
   width: 80%;
   font-weight: bold;
 }
 .parent-program {
-  background-color: #109dda;
-  font-size: 20px;
+  background-color: #595959;
+  font-size: 18px;
   color: white;
+  text-transform: uppercase;
   padding-left: 10px;
   padding-bottom: 5px;
   padding-top: 5px;
@@ -22,48 +24,50 @@
   margin-left: -20px;
   border-radius: 0 20px 20px 0;
   width: 30%;
-  font-weight: bold;
+  font-weight: 600;
 }
 .owner-name {
   font-size: 17px;
-  color: #bec6d3;
+  color: #3071b6;
   padding-left: 20px;
   padding-bottom: 30px;
 }
 .list-ul {
   font-size: 17px;
-  color: #bec6d3;
+  color: #3071b6;
   list-style-type: circle;
   padding-left: 20%;
 }
 
 .list-activities {
   font-size: 17px;
-  color: #bec6d3;
+  color: #3071b6;
   list-style-type: circle;
-  padding-left:8%;
+  padding-left: 8%;
 }
 .program {
-  background-color: #0e827c;
+  background-color: #2397a7;
   font-size: 18px;
   color: white;
-  padding-left: 20px;
+  padding: 10px;
+  text-transform: uppercase;
   border-radius: 0 20px 20px 0;
-  width: 80%;
+  width: 25%;
   font-weight: 600;
 }
 .program-details {
   font-size: 17px;
-  color: #bec6d3;
+  color: #3071b6;
   padding-left: 20px;
-  padding-bottom: 30px;
+  margin-top: auto;
+  margin-bottom: auto;
 }
 .card {
   width: 100%;
   height: auto;
-  box-shadow: 5px 0px 15px rgba(99, 99, 99, 0.2);
   border-radius: 20px;
   padding: 10px;
+  box-shadow: 4px 0 15px rgba(99, 99, 99, 0.2);
 }
 .card-footer {
   box-shadow: 5px 0px 10px rgba(99, 99, 99, 0.2);
@@ -71,6 +75,7 @@
   margin: 20px;
   margin-top: 50px;
   border-radius: 20px;
+  background-color: white;
 }
 .card-head {
   font-size: 15px;
@@ -91,20 +96,20 @@
 
 .activity-head {
   font-size: 15px;
-  color: #31a5de;
-  padding-left: 20px;
-  padding-bottom: 10px; 
+  color: #595959;
+  padding-left: 10px;
+  padding-bottom: 10px;
   font-weight: bold;
 }
 .activity-value {
   font-size: 17px;
-  color: #bec6d3;
-  padding-left: 25px;
+  color: #7fadf8;
+  padding-left: 10px;
 }
 
 .card-head-value {
   padding-left: 20px;
-  color: #bec6d3;
+  color: #7fadf8;
   margin: auto;
   font-weight: 500;
 }

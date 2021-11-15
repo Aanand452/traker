@@ -194,10 +194,12 @@ class EditActivityPage extends Component {
     return (
       <Container>
         <IconSettings iconPath="/assets/icons">
+          {console.log("Activities", this.state.activities)}
           <ActivitiesTable
             data={this.state.activities}
             onDelete={this.onDelete}
             reloadActivities={this.getActivities}
+            planner={true}
           />
           {/* <ActivityCalendar></ActivityCalendar> */}
           <ConfirmationDailog

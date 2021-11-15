@@ -32,7 +32,7 @@ const CurrencyCell = ({ children, ...props }) => {
         {new Intl.NumberFormat("en-US", {
           style: "currency",
           currency: "USD",
-          maximumSignificantDigits: 1,
+          maximumFractionDigits: 0,
         }).format(children)}
       </DataTableCell>
     );
@@ -46,6 +46,7 @@ const CurrencyCell = ({ children, ...props }) => {
           ? new Intl.NumberFormat("en-US", {
               style: "currency",
               currency: "USD",
+              maximumFractionDigits: 0,
             }).format(children)
           : ""}
       </DataTableCell>

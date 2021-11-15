@@ -31,6 +31,7 @@ export default function Activities(props) {
                   marginTop: "5px",
                 }}
               >
+                {k + 1}.{" "}
                 <span
                   onClick={() => {
                     setOpen(open !== k ? k : false);

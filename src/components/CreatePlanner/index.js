@@ -6,6 +6,7 @@ import BudgetInput from "../BudgetInput/BudgetInput";
 import update from "immutability-helper";
 import { Redirect } from "react-router-dom";
 import { withRouter } from "react-router";
+import ConfirmationDialog from "../Prompt";
 
 import {
   Input,
@@ -16,6 +17,7 @@ import {
   Combobox,
   IconSettings,
   Icon,
+  Modal,
 } from "@salesforce/design-system-react";
 import { getCookie } from "../../utils/cookie";
 import { getAPIUrl } from "../../config/config";
@@ -46,6 +48,7 @@ class CreatePlanner extends Component {
           ],
         },
       ],
+      showConfirmationDialog: false,
       planner_id: false,
       industries: [],
       apm1s: [],
@@ -75,6 +78,10 @@ class CreatePlanner extends Component {
       error: {},
     };
   }
+
+  closeConfirmationDialog = () => {
+    this.setState({ showConfirmationDialog: false });
+  };
 
   async checkFormat() {
     try {
@@ -193,7 +200,7 @@ class CreatePlanner extends Component {
         id: item.segmentId,
         label: item.name,
       }));
-
+      console.log(segment);
       if (response.info.code === 200) this.setState({ segments: segment });
       else throw new Error(response.info.status);
     } catch (err) {
@@ -378,6 +385,8 @@ class CreatePlanner extends Component {
   };
 
   handleDelete = async () => {
+    console.log("DELETING");
+    this.setState({ showConfirmationDialog: false });
     const token = getCookie("token").replaceAll('"', "");
     const config = {
       method: "DELETE",
@@ -405,6 +414,9 @@ class CreatePlanner extends Component {
       });
   };
 
+  toggleOpen = () => {
+    this.setState({ isDeleteOpen: !this.state.isDeleteOpen });
+  };
   getAPM1 = async () => {
     try {
       let token = getCookie("token").replaceAll('"', "");
@@ -628,6 +640,7 @@ class CreatePlanner extends Component {
                 {new Intl.NumberFormat("en-US", {
                   style: "currency",
                   currency: "USD",
+                  maximumFractionDigits: 0,
                 }).format(cumulative_budget)}
               </span>
             </div>
@@ -639,6 +652,7 @@ class CreatePlanner extends Component {
                 {new Intl.NumberFormat("en-US", {
                   style: "currency",
                   currency: "USD",
+                  maximumFractionDigits: 0,
                 }).format(cumulative_mp_target)}
               </span>
             </div>
@@ -705,42 +719,6 @@ class CreatePlanner extends Component {
                   </div>
                   <div style={{ padding: "1%" }}>
                     <Combobox
-                      variant="inline-listbox"
-                      required
-                      events={{
-                        onRequestRemoveSelectedOption: (event, data) => {
-                          this.setState({
-                            program: {
-                              ...this.state.program,
-                              selectedIndustries: data.selection,
-                            },
-                          });
-                        },
-                        onSelect: (event, data) =>
-                          data.selection.length &&
-                          this.handleChange(
-                            "selectedIndustries",
-                            data.selection
-                          ),
-                      }}
-                      labels={{
-                        label: "Industry",
-                        placeholder: "Select an option",
-                      }}
-                      menuItemVisibleLength={5}
-                      multiple
-                      options={comboboxFilterAndLimit({
-                        limit: this.state.industries.length,
-                        options: this.state.industries,
-                        selection: this.state.program.selectedIndustries,
-                      })}
-                      selection={this.state.program.selectedIndustries}
-                      errorText={this.state.error.selectedIndustries}
-                    />
-                  </div>
-                  <div style={{ padding: "1%" }}>
-                    <Combobox
-                      variant="inline-listbox"
                       required
                       events={{
                         onSelect: (event, data) => {
@@ -758,6 +736,19 @@ class CreatePlanner extends Component {
                       errorText={this.state.error.regionId}
                     />
                   </div>
+                  <div style={{ padding: "1%" }}>
+                    <Textarea
+                      label="Abstract"
+                      onChange={(e) => {
+                        this.handleChange("abstract", e.target.value);
+                      }}
+                      defaultValue={this.state.program.abstract}
+                      placeholder="Enter Abstract"
+                      required
+                      errorText={this.state.error.abstract}
+                    />
+                  </div>
+
                   <div style={{ padding: "1%" }}>
                     <Textarea
                       label="Other Kpi's"
@@ -860,6 +851,41 @@ class CreatePlanner extends Component {
                   </div>
                   <div style={{ padding: "1%" }}>
                     <Combobox
+                      variant="inline-listbox"
+                      required
+                      events={{
+                        onRequestRemoveSelectedOption: (event, data) => {
+                          this.setState({
+                            program: {
+                              ...this.state.program,
+                              selectedIndustries: data.selection,
+                            },
+                          });
+                        },
+                        onSelect: (event, data) =>
+                          data.selection.length &&
+                          this.handleChange(
+                            "selectedIndustries",
+                            data.selection
+                          ),
+                      }}
+                      labels={{
+                        label: "Industry",
+                        placeholder: "Select an option",
+                      }}
+                      menuItemVisibleLength={5}
+                      multiple
+                      options={comboboxFilterAndLimit({
+                        limit: this.state.industries.length,
+                        options: this.state.industries,
+                        selection: this.state.program.selectedIndustries,
+                      })}
+                      selection={this.state.program.selectedIndustries}
+                      errorText={this.state.error.selectedIndustries}
+                    />
+                  </div>
+                  <div style={{ padding: "1%" }}>
+                    <Combobox
                       required
                       variant="inline-listbox"
                       events={{
@@ -890,7 +916,7 @@ class CreatePlanner extends Component {
                       errorText={this.state.error.selectedPersonas}
                     />
                   </div>
-                  <div style={{ padding: "1%" }}>
+                  <div style={{ padding: "1%", zIndex: 2 }}>
                     <Combobox
                       variant="inline-listbox"
                       required
@@ -922,18 +948,6 @@ class CreatePlanner extends Component {
                       errorText={this.state.error.selectedSegments}
                     />
                   </div>
-                  <div style={{ padding: "1%" }}>
-                    <Textarea
-                      label="Abstract"
-                      onChange={(e) => {
-                        this.handleChange("abstract", e.target.value);
-                      }}
-                      defaultValue={this.state.program.abstract}
-                      placeholder="Enter Abstract"
-                      required
-                      errorText={this.state.error.abstract}
-                    />
-                  </div>
                 </div>
               </div>
             </div>
@@ -946,7 +960,11 @@ class CreatePlanner extends Component {
               {this.state.offers.map((offer, i) => {
                 return (
                   <div style={{ padding: "2%" }}>
-                    <div style={{ display: "flex", justifyContent: "left" }}>
+                    <div
+                      style={{
+                        display: "flex",
+                      }}
+                    >
                       <div
                         style={{
                           width: "50%",
@@ -964,6 +982,19 @@ class CreatePlanner extends Component {
                             this.setState({ offers });
                           }}
                           errorText={this.state.error.owner}
+                        />
+                      </div>
+                      <div
+                        style={{
+                          marginTop: "auto",
+                          marginBottom: "auto",
+                          marginLeft: "20px",
+                        }}
+                      >
+                        <Button
+                          label="Remove Offer"
+                          variant="destructive"
+                          onClick={() => this.removeOffer(offer.id)}
                         />
                       </div>
                     </div>
@@ -1061,22 +1092,22 @@ class CreatePlanner extends Component {
                                 required
                                 label="Tentative Date"
                                 formatter={(date) =>
-                                  date ? moment(date).format("DD/MM/YYYY") : ""
+                                  date ? moment(date).format("MM/DD/YYYY") : ""
                                 }
                                 parser={(dateString) => {
                                   return moment(
                                     dateString,
-                                    "DD/MM/YYYY"
+                                    "MM/DD/YYYY"
                                   ).toDate();
                                 }}
                                 value={moment(activity.date).format(
-                                  "DD/MM/YYYY"
+                                  "MM/DD/YYYY"
                                 )}
                                 onChange={(event, data) => {
                                   let offers = [...this.state.offers];
                                   offers[i].activities[k].date = moment(
                                     data.formattedDate
-                                  ).format("DD/MM/YYYY");
+                                  ).format("MM/DD/YYYY");
                                   this.setState({ offers });
                                 }}
                               />
@@ -1100,14 +1131,6 @@ class CreatePlanner extends Component {
                               size="x-small"
                               onClick={() => this.removeActivity(i, k)}
                             />
-                            {/* <Button
-                              assistiveText={{ icon: "Delete" }}
-                              iconCategory="utility"
-                              iconName="delete"
-                              variant="icon"
-                              colorVariant="error"
-                              onClick={() => this.removeActivity(i, k)}
-                            /> */}
                           </div>
                         </div>
                       );
@@ -1115,16 +1138,11 @@ class CreatePlanner extends Component {
                     <div
                       style={{
                         paddingLeft: "1.5%",
-                        display: "flex",
-                        justifyContent: "space-between",
+                        display: "inline-block",
+                        textAlign: "end",
                         width: "100%",
                       }}
                     >
-                      <Button
-                        label="Remove Offer"
-                        variant="destructive"
-                        onClick={() => this.removeOffer(offer.id)}
-                      />
                       <Button
                         label="Add Activity"
                         variant="brand"
@@ -1134,13 +1152,15 @@ class CreatePlanner extends Component {
                   </div>
                 );
               })}
-              <div style={{ paddingLeft: "0.5%", paddingBottom: "2%" }}>
-                <Button
-                  label="Add Offer"
-                  variant="brand"
-                  onClick={this.addOffer}
-                />
-              </div>
+              {this.state.offers.length < 3 && (
+                <div style={{ paddingLeft: "0.5%", paddingBottom: "2%" }}>
+                  <Button
+                    label="Add Offer"
+                    variant="brand"
+                    onClick={this.addOffer}
+                  />
+                </div>
+              )}
 
               <div style={{ textAlign: "center", paddingTop: "2%" }}>
                 <Button
@@ -1156,20 +1176,85 @@ class CreatePlanner extends Component {
                     Cancel
                   </Button>
                 </Link>
-                <span
-                  onClick={this.handleDelete}
-                  style={{ cursor: "pointer", paddingLeft: "5px" }}
-                  title="delete"
-                >
-                  <Button
-                    style={{ backgroundColor: "#ba0517", color: "white" }}
+                {this.state.planner_id && (
+                  <span
+                    onClick={() =>
+                      this.setState({ showConfirmationDialog: true })
+                    }
+                    style={{ cursor: "pointer", paddingLeft: "5px" }}
+                    title="delete"
                   >
-                    Delete
-                  </Button>
-                </span>
+                    <Button
+                      style={{ backgroundColor: "#ba0517", color: "white" }}
+                    >
+                      Delete
+                    </Button>
+                  </span>
+                )}
               </div>
             </div>
           </div>
+
+          <Modal
+            isOpen={this.state.isDeleteOpen}
+            footer={[
+              <Button label="Cancel" onClick={this.toggleOpen} />,
+              <Button label="Save" variant="brand" onClick={this.toggleOpen} />,
+            ]}
+            onRequestClose={this.toggleOpen}
+            heading="New Opportunity"
+          >
+            <section className="slds-p-around_large">
+              <div className="slds-form-element slds-m-bottom_large">
+                <label className="slds-form-element__label" htmlFor="opptyName">
+                  Opportunity Name
+                </label>
+                <div className="slds-form-element__control">
+                  <input
+                    id="opptyName"
+                    className="slds-input"
+                    type="text"
+                    placeholder="Enter name"
+                  />
+                </div>
+              </div>
+              <div className="slds-form-element slds-m-bottom_large">
+                <label
+                  className="slds-form-element__label"
+                  htmlFor="description"
+                >
+                  Opportunity Description
+                </label>
+                <div className="slds-form-element__control">
+                  <textarea
+                    id="description"
+                    className="slds-textarea"
+                    placeholder="Enter description"
+                  />
+                </div>
+              </div>
+
+              <div className="slds-form-element slds-m-bottom_large">
+                <label className="slds-form-element__label" htmlFor="amount">
+                  Amount
+                </label>
+                <div className="slds-form-element__control">
+                  <input
+                    id="amount"
+                    className="slds-input"
+                    type="text"
+                    placeholder="Enter Amount"
+                  />
+                </div>
+              </div>
+            </section>
+          </Modal>
+          <ConfirmationDialog
+            message="Are you sure you want to delete this planner?"
+            isOpen={this.state.showConfirmationDialog}
+            onClose={this.closeConfirmationDialog}
+            onConfirm={this.handleDelete}
+          />
         </IconSettings>
       </div>
     );

@@ -88,6 +88,14 @@ class PlanningView extends Component {
         };
       });
       console.log(result);
+      if (!result.mp_target) {
+        result.mp_target = {
+          q1: 0,
+          q2: 0,
+          q3: 0,
+          q4: 0,
+        };
+      }
       this.setState({
         planner: result,
         total_budget:
@@ -96,13 +104,15 @@ class PlanningView extends Component {
             result.budgets.q3 +
             result.budgets.q4) /
           1000,
-        total_mp_target: parseFloat(
-          (result.mp_target.q1 +
-            result.mp_target.q2 +
-            result.mp_target.q3 +
-            result.mp_target.q4) /
-            1000
-        ).toFixed(1),
+        total_mp_target: result.mp_target
+          ? parseFloat(
+              (result.mp_target.q1 +
+                result.mp_target.q2 +
+                result.mp_target.q3 +
+                result.mp_target.q4) /
+                1000
+            ).toFixed(1)
+          : 0,
         loading: false,
       });
 
@@ -138,50 +148,67 @@ class PlanningView extends Component {
     return (
       <div>
         <IconSettings iconPath="assets/icons">
-          <div style={{ backgroundColor: "white" }}>
+          <div style={{ backgroundColor: "white", paddingLeft: "10px" }}>
             <NavBar />
-            <div class="">
-              <h1
+            <div
+              style={{
+                marginTop: "100px",
+              }}
+            >
+              <div
                 style={{
-                  marginTop: "100px",
-                  fontSize: "40px",
-                  paddingBottom: "25px",
-                  marginLeft: "10px",
-                  fontWeight: 500,
+                  display: "flex",
+                  justifyContent: "space-between",
                 }}
               >
-                {planner.programName}
-              </h1>
+                <h1
+                  style={{
+                    fontSize: "40px",
+                    marginLeft: "10px",
+                    fontWeight: 500,
+                  }}
+                >
+                  {planner.programName}
+                  <span style={{ paddingLeft: "4px" }}>
+                    ({planner.region[0].label})
+                  </span>
+                </h1>
+                <div style={{ width: "30%" }}>
+                  <div className="owner">Owner</div>
+                  <div className="owner-name">{planner.programOwner}</div>
+                </div>
+              </div>
+              <div
+                style={{
+                  display: "flex",
+                  marginBottom: "25px",
+                }}
+              >
+                <div className="program">Program Overview (abstract)</div>
+                <div className="program-details">{planner.abstract}</div>
+              </div>
             </div>
             <div style={{ margin: "10px" }} className="grid grid-cols-10">
               <div class="col-span-2">
                 <div>
-                  <div className="owner">Owner</div>
-                  <div className="owner-name">{planner.programOwner}</div>
-
-                  <div className="program">Program Overview (abstract)</div>
-                  <div className="program-details">{planner.abstract}</div>
-                  <div className="program">Program Objectives & KPIs</div>
-                  <div className="program-details">{planner.otherKPIs}</div>
-                </div>
-              </div>
-              <div class="col-span-8">
-                <div class="grid grid-cols-5">
-                  <div className="card">
+                  <div
+                    className="card"
+                    style={{ marginBottom: "25px", border: "none" }}
+                  >
                     <div className="card-head">
                       <span>MP Target :</span>
                       <span className="card-head-value">
-                        ${parseFloat(total_mp_target).toFixed(0)}M
+                        ${parseFloat(total_mp_target).toFixed(0)}K
                       </span>
                     </div>
                     <hr style={{ marginTop: "10px", marginBottom: "10px" }} />
 
-                    <div className="card-head">
+                    {/* <div className="card-head">
                       <span> Budget :</span>
                       <span className="card-head-value">
                         $<span>{parseFloat(total_budget).toFixed(0)}</span>K
                       </span>
-                    </div>
+                    </div> */}
                     <div className="grid-cols-2" style={{ display: "grid" }}>
                       <div className="budgets">
                         <div className="quarters">
@@ -229,41 +256,124 @@ class PlanningView extends Component {
                       </div>
                     </div>
                   </div>
-                  <div className="card">
+
+                  <div
+                    className="card"
+                    style={{ marginBottom: "25px", border: "none" }}
+                  >
+                    <div className="card-head">
+                      <span>Budget :</span>
+                      <span className="card-head-value">
+                        ${parseFloat(total_budget).toFixed(0)}K
+                      </span>
+                    </div>
+                    <hr style={{ marginTop: "10px", marginBottom: "10px" }} />
+
+                    {/* <div className="card-head">
+                      <span> Budget :</span>
+                      <span className="card-head-value">
+                        $<span>{parseFloat(total_budget).toFixed(0)}</span>K
+                      </span>
+                    </div> */}
+                    <div className="grid-cols-2" style={{ display: "grid" }}>
+                      <div className="budgets">
+                        <div className="quarters">
+                          <div> Q1</div>
+                          <div className="card-head-value">
+                            $
+                            <span>
+                              {parseFloat(planner.mp_target.q1 / 1000).toFixed(
+                                0
+                              )}
+                            </span>
+                            K
+                          </div>
+                        </div>
+                        <div className="quarters">
+                          <div> Q3</div>
+                          <div className="card-head-value">
+                            $
+                            <span>
+                              {parseFloat(planner.mp_target.q3 / 1000).toFixed(
+                                0
+                              )}
+                            </span>
+                            K
+                          </div>
+                        </div>
+                      </div>
+                      <div className="budgets">
+                        <div className="quarters">
+                          <div> Q2</div>
+                          <div className="card-head-value">
+                            $
+                            <span>
+                              {parseFloat(planner.mp_target.q2 / 1000).toFixed(
+                                0
+                              )}
+                            </span>
+                            K
+                          </div>
+                        </div>
+                        <div className="quarters">
+                          <div> Q4</div>
+                          <div className="card-head-value">
+                            $
+                            <span>
+                              {parseFloat(planner.mp_target.q4 / 1000).toFixed(
+                                0
+                              )}
+                            </span>
+                            K
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="card" style={{ border: "none" }}>
+                    <div className="card-head">Other KPIs :</div>
                     {planner.persona.map((item, k) => (
                       <div
                         className={k === 0 ? "card-head" : "card-head border-t"}
                       >
-                        Persona {k + 1} :
-                        <div className="card-head-value">{item.label}</div>
+                        <div className="card-head-value">
+                          {k + 1}. {planner.otherKPIs}
+                        </div>
                       </div>
                     ))}
                   </div>
-                  <div className="card">
-                    {planner.programIndustry.map((item, k) => (
-                      <div
-                        className={k === 0 ? "card-head" : "card-head border-t"}
-                      >
-                        Industry {k + 1} :
-                        <div className="card-head-value">{item.label}</div>
-                      </div>
-                    ))}
-                    <div className="card-head border-t">
-                      Segment :
+                </div>
+              </div>
+              <div class="col-span-8">
+                <div class="grid grid-cols-4">
+                  <div className="card" style={{ border: "none" }}>
+                    <div className="card-head">
+                      INDUSTRY :
                       <div className="card-head-value">
-                        <span>
-                          {planner.programIndustry.map((item, k) =>
-                            planner.programIndustry.length - 1 === k
-                              ? item.label
-                              : item.label + ", "
-                          )}
-                        </span>
+                        {planner.programIndustry.map((item, k) => (
+                          <div className={k === 0 ? "pt-2" : "border-t pt-2"}>
+                            {k + 1}. {item.label}
+                          </div>
+                        ))}
                       </div>
                     </div>
                   </div>
-                  <div className="card">
+                  <div className="card" style={{ border: "none" }}>
                     <div className="card-head">
-                      APM :
+                      PERSONA :
+                      <div className="card-head-value">
+                        {planner.persona.map((item, k) => (
+                          <div className={k === 0 ? "pt-2" : "border-t pt-2"}>
+                            {k + 1}. {item.label}
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                  <div className="card" style={{ border: "none" }}>
+                    <div className="card-head">
+                      APM 1:
                       <div className="card-head-value">
                         {planner.apm.map((item, k) => (
                           <div className={k === 0 ? "pt-2" : "border-t pt-2"}>
@@ -272,8 +382,19 @@ class PlanningView extends Component {
                         ))}
                       </div>
                     </div>
+                  </div>
 
-                    <div className="card-head border-t"></div>
+                  <div className="card" style={{ border: "none" }}>
+                    <div className="card-head">
+                      Segment 1:
+                      <div className="card-head-value">
+                        {planner.segment.map((item, k) => (
+                          <div className={k === 0 ? "pt-2" : "border-t pt-2"}>
+                            {k + 1}. {item.label}
+                          </div>
+                        ))}
+                      </div>
+                    </div>
                   </div>
                 </div>
                 <div className="card-footer">
@@ -339,9 +460,9 @@ class PlanningView extends Component {
               <Link to="/planner-view">
                 <Button label="Back to List" variant="destructive" />
               </Link>
-              <div style={{ marginLeft: "10px" }}>
+              {/* <div style={{ marginLeft: "10px" }}>
                 <Button label="Submit for Approval" variant="brand" />
-              </div>
+              </div> */}
             </div>
           </div>
         </IconSettings>

@@ -80,7 +80,7 @@ class ViewActivityModal extends Component {
           isOpen={this.props.isOpen && !this.state.deleteModalIsOpen}
           size="medium"
           onRequestClose={this.props.closeDetailModal}
-          heading="Activity detail"
+          heading="Activity details"
           ariaHideApp={false}
           footer={[
             <Button key="Edit" label="Edit" variant="brand" onClick={this.editData} />,

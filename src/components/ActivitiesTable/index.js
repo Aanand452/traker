@@ -32,7 +32,7 @@ import { getAPIUrl } from "../../config/config";
 import EditModal from "../EditActivityModal";
 import CloneModal from "../CloneActivityModal";
 import HistoricModal from "../HistoricActivityModal";
-import ViewActivityModal from "../ViewActivityModal";
+import ViewActivityModal from "../ViewActivityModal/index";
 import Pager from "../Pager";
 import ActivityCalendar from "../ActivityCalendar";
 
@@ -199,7 +199,7 @@ class Table extends Component {
           });
         }
       });
-
+      console.log("defaultUserFilter", this.state.defaultUserFilter);
       if (
         this.state.defaultUserFilter.length !== 0 &&
         this.state.defaultUserFilter.formats_selected.length +
@@ -1574,6 +1574,7 @@ class Table extends Component {
 
   render() {
     const isEmpty = this.state.data.length === 0;
+    const { planner } = this.props;
     return (
       <Container id="outer-container">
         {this.state.showLoader && (

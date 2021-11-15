@@ -103,8 +103,8 @@ class EditPlanner extends Component {
               program.mp_target.q3 +
               program.mp_target.q4
             : 0;
-          aggregates.budget += program.cumulative_budget;
-          aggregates.mp_target += program.cumulative_mp_target;
+          aggregates.budget += parseInt(program.cumulative_budget);
+          aggregates.mp_target += parseInt(program.cumulative_mp_target);
           return program;
         });
         this.setState({ programs: result, aggregates });
