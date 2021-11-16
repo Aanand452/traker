@@ -16,6 +16,21 @@ const getAllProgramPlanners = async (req, res) => {
   }
 };
 
+const getProgramPlannersFiltered = async (req, res) => {
+  try {
+    const filters = req.body;
+    const personas = await ProgramPlanner.filterProgramPlanners(filters);
+
+    ApiUtils.reposeWithhSuccess(res, personas, httpStatus.OK);
+  } catch (err) {
+    ApiUtils.responseWithError(
+      res,
+      httpStatus.INTERNAL_SERVER_ERROR,
+      err.toString()
+    );
+  }
+};
+
 const getProgramPlannersByID = async (req, res) => {
   try {
     var id = req.swagger.params.id.value;
@@ -108,6 +123,7 @@ const deletePlanner = async (req, res) => {
 
 export {
   getAllProgramPlanners,
+  getProgramPlannersFiltered,
   getProgramPlannersByID,
   updateProgramPlanner,
   addNewProgramPlanner,

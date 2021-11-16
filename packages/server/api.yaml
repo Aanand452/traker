@@ -155,6 +155,34 @@ paths:
               - $ref: '#/definitions/ResponseStatus'
               - $ref: '#/definitions/Error'
 
+  /planners:
+      post:
+        x-swagger-router-controller: programPlanner
+        operationId: "getProgramPlannersFiltered"
+        summary: Returns the list of filtered program planners.
+        description: This will be used to fetch and filter the program planners.
+        security:
+          - Bearer: []
+        x-security-scopes:
+          - admin
+          - user
+        produces:
+          - application/json
+        responses:
+          200:
+            description: Success
+            schema:
+              allOf:
+                - $ref: '#/definitions/ResponseStatus'
+                - $ref: '#/definitions/ProgramListResponse'
+          default:
+            description: Invalid request.
+            schema:
+              allOf:
+                - $ref: '#/definitions/ResponseStatus'
+                - $ref: '#/definitions/Error'
+    
+
   /program-planner/{id}:
     get:
       x-swagger-router-controller: programPlanner

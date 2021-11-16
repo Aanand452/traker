@@ -24,6 +24,27 @@ class ProgramPlannerModel {
     });
   }
 
+  static filterProgramPlanners(filters) {
+    return new Promise(async (resolve, reject) => {
+      try {
+        const programPlanner = await db.ProgramPlanner.findAll({
+          order: [["program_name", "ASC"]],
+        });
+        console.log(programPlanner);
+        // const result = Promise.all(
+        //   programPlanner.map(
+        //     async (programApm) => await db.APM1.findByPk(programApm.apm1Id)
+        //   )
+        // );
+
+        resolve(programPlanner);
+      } catch (err) {
+        console.error("Error getting program-planners relationship", err);
+        reject("Error");
+      }
+    });
+  }
+
   static getProgramPlannerByID(id) {
     return new Promise(async (resolve, reject) => {
       try {
