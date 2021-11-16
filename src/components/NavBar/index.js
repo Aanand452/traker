@@ -161,8 +161,7 @@ class NavBar extends Component {
               </GlobalNavigationBarRegion>
               <GlobalNavigationBarRegion region="secondary" navigation>
                 <NavigationBarLink to="/home" title="Home" />
-                {getCookie("role").replaceAll('"', "") === "admin" &&
-                  localStorage.getItem("showPrograms") !== "false" && (
+                {localStorage.getItem("showPrograms") !== "false" && (
                     <NavigationBarLink to="/planner" title="Planner" />
                   )}
                 <NavigationBarLink
@@ -173,8 +172,7 @@ class NavBar extends Component {
                   }
                   title="Activities"
                 />
-                {getCookie("role").replaceAll('"', "") === "admin" &&
-                  localStorage.getItem("showPrograms") !== "false" && (
+                {localStorage.getItem("showPrograms") !== "false" && (
                     <NavigationBarLink
                       to="/planner-view"
                       title="Programs List"

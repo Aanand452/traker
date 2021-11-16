@@ -24,7 +24,7 @@ const PlannerPage = () => {
 
       <div style={{ marginTop: "150px" }}>
         <CardsContainer>
-          <Card>
+        {getCookie("role").replaceAll('"', "") === "admin" && ( <Card>
             <Link className="hover-none" to="/create-planner">
               <CardTitle>Create a New Program</CardTitle>
               <img
@@ -33,7 +33,7 @@ const PlannerPage = () => {
                 alt="Create activity"
               />
             </Link>
-          </Card>
+          </Card>)}
           <Card>
             <Link className="hover-none" to="/planner-view">
               <CardTitle>View All Programs</CardTitle>
@@ -45,7 +45,7 @@ const PlannerPage = () => {
             </Link>
           </Card>
 
-          {getCookie("role").replaceAll('"', "") === "admin" && (
+          
             <React.Fragment>
               <Card>
                 <Link className="hover-none" to="/planner-activities">
@@ -58,7 +58,7 @@ const PlannerPage = () => {
                 </Link>
               </Card>
             </React.Fragment>
-          )}
+          
         </CardsContainer>
       </div>
     </Container>

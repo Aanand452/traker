@@ -94,7 +94,7 @@ const HomePage = () => (
           </React.Fragment>
         )
       } */}
-      {getCookie("role").replaceAll('"', "") === "admin" && (
+      
         <Card>
           <CardImage
             src="/images/APAC_Activity_Tracker_Tile_Create_Program_notext_640x360.png"
@@ -112,7 +112,7 @@ const HomePage = () => (
             </Link>
           </CardAction>
         </Card>
-      )}
+      
       <Card>
         <CardImage
           src="/images/APAC_Activity_Tracker_Tile_Edit_Activities_notext_640x360.png"

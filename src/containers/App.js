@@ -155,11 +155,9 @@ function App({ closeSettingsMenu, user }) {
             exact
             path="/planner"
             render={() =>
-              getCookie("role").replaceAll('"', "") === "admin" ? (
+              
                 <Planner />
-              ) : (
-                <Redirect to="/" />
-              )
+              
             }
           />
 
@@ -167,11 +165,9 @@ function App({ closeSettingsMenu, user }) {
             exact
             path="/planner-view"
             render={() =>
-              getCookie("role").replaceAll('"', "") === "admin" ? (
+              
                 <EditPlanner />
-              ) : (
-                <Redirect to="/" />
-              )
+              
             }
           />
           <PrivateRoute
