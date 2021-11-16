@@ -200,7 +200,10 @@ class CreatePlanner extends Component {
         id: item.segmentId,
         label: item.name,
       }));
-      if (response.info.code === 200) this.setState({ segments: segment });
+      if (response.info.code === 200) this.setState({ segments: [{
+        label: "All",
+        id: "all",
+      }, ...segment] });
       else throw new Error(response.info.status);
     } catch (err) {
       this.showError(err);
