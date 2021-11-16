@@ -132,7 +132,6 @@ class CreatePlanner extends Component {
           defaultFormats: defaultFormats,
         });
       } else {
-        console.log(response);
         throw new Error(response);
       }
     } catch (err) {
@@ -541,7 +540,7 @@ class CreatePlanner extends Component {
         abstract: this.state.program.abstract || "",
         offers: {
           offers:
-            this.state.offers[0].offer.length > 0 ? this.state.offers : [],
+            this.state.offers.length > 0 ? this.state.offers : [],
         },
       };
       if (this.state.program.kpi) body.otherKPIs = this.state.program.kpi;
@@ -981,11 +980,12 @@ class CreatePlanner extends Component {
                           marginLeft: "20px",
                         }}
                       >
-                        <Button
+                        
+                        {this.state.offers.length > 1  && <Button
                           label="Remove Offer"
                           variant="destructive"
                           onClick={() => this.removeOffer(offer.id)}
-                        />
+                        />}
                       </div>
                     </div>
                     <h2

@@ -399,7 +399,8 @@ class PlanningView extends Component {
                 <div className="card-footer">
                   <div className="parent-program">Parent Programs</div>
                   <div class="grid">
-                    {offers.map((offer, k) => (
+
+                    {offers.length > 0 && offers.map((offer, k) => (
                       <div>
                         <div className="activity-head">
                           Offer Name :
@@ -443,7 +444,7 @@ class PlanningView extends Component {
                     });
                     this.toggleModal();
                   }}
-                  activities={offers[this.state.selectedModal].activities}
+                  activities={offers.length > 0 ? offers[this.state.selectedModal].activities : []}
                 />
               </div>
             </Modal>

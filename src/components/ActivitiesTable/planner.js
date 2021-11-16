@@ -1158,10 +1158,8 @@ class Table extends Component {
         return moment(date).isBetween(startDate, endDate);
       });
     } else {
-      console.log(this.state.startDate, this.state.endDate);
       if (!this.state.endDate) {
         arr = this.props.data;
-        console.log(this.props.data);
       } else {
         const startDate = moment(this.state.startDate).format("YYYY-MM-DD");
         const endDate = this.state.endDate
@@ -1384,7 +1382,6 @@ class Table extends Component {
 
   onChangeDate = (dates) => {
     var [start, end] = dates;
-    console.log(dates);
     this.setState({
       startDate: start,
       endDate: end,
