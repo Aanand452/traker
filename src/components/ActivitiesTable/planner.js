@@ -458,23 +458,24 @@ class Table extends Component {
     try {
       let token = getCookie("token").replaceAll('"', "");
       const config = {
-        method: "POST",
+        // method: "POST",
         headers: {
           Accept: "application/json",
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify({
-          programsStartDate: programsFYstartDate,
-          programsEndDate: programsFYendDate,
-        }),
+        // body: JSON.stringify({
+        //   programsStartDate: programsFYstartDate,
+        //   programsEndDate: programsFYendDate,
+        // }),
       };
-      let response = await fetch(`${this.API_URL}/programs`, config);
+      let response = await fetch(`${this.API_URL}/program-planners`, config);
       if (response.status === 200) {
         let { result } = await response.json();
         let programs = result.map((el) => ({
           ...el,
-          id: el.program_id,
+          id: el.ProgramPlannerId,
+          label: el.programName,
           icon: (
             <Icon
               assistiveText={{ label: "Account" }}
@@ -824,7 +825,7 @@ class Table extends Component {
     ];
 
     const exportData = this.state.displayedData.map((elt) => [
-      elt.programId,
+      elt.ProgramPlannerId,
       elt.title,
       elt.formatId,
       elt.regionId,
@@ -1090,6 +1091,7 @@ class Table extends Component {
       }
     }
   };
+
   getNewPrograms = () => {
     return this.state.filteredPrograms;
   };
@@ -1133,9 +1135,6 @@ class Table extends Component {
       programSelected,
       formatsSelected: selectedFormats,
     });
-    // this.state.regionsSelected = slectedRegioins;
-    // this.state.programSelected = programSelected;
-    // this.state.formatsSelected = selectedFormats;
   };
 
   getFilteredData = () => {
@@ -1159,7 +1158,20 @@ class Table extends Component {
         return moment(date).isBetween(startDate, endDate);
       });
     } else {
-      arr = this.props.data;
+      console.log(this.state.startDate, this.state.endDate);
+      if (!this.state.endDate) {
+        arr = this.props.data;
+        console.log(this.props.data);
+      } else {
+        const startDate = moment(this.state.startDate).format("YYYY-MM-DD");
+        const endDate = this.state.endDate
+          ? moment(addDays(this.state.endDate, 1)).format("YYYY-MM-DD")
+          : moment(addDays(this.state.startDate, 7)).format("YYYY-MM-DD");
+        arr = this.props.data.filter((a) => {
+          var date = moment(new Date(a.startDate)).format("YYYY-MM-DD");
+          return moment(date).isBetween(startDate, endDate);
+        });
+      }
     }
     const filteredData = arr.filter((row) => {
       if (
@@ -1170,7 +1182,7 @@ class Table extends Component {
       if (
         programSelected.length > 0 &&
         !programSelected.includes("All") &&
-        !programSelected.includes(row.programId)
+        !programSelected.includes(row.title)
       )
         return false;
       if (
@@ -1372,6 +1384,7 @@ class Table extends Component {
 
   onChangeDate = (dates) => {
     var [start, end] = dates;
+    console.log(dates);
     this.setState({
       startDate: start,
       endDate: end,
@@ -1440,7 +1453,7 @@ class Table extends Component {
           RegExp(event.target.value, "i").test(item.userId) ||
           RegExp(event.target.value, "i").test(item.campaignId) ||
           RegExp(event.target.value, "i").test(item.title) ||
-          RegExp(event.target.value, "i").test(item.programId)
+          RegExp(event.target.value, "i").test(item.ProgramPlannerId)
         ) {
           return true;
         }
@@ -2312,7 +2325,7 @@ class Table extends Component {
                           }),
                         });
                       }
-                      // this.getFilteredData()
+                      this.getFilteredData();
                     },
                     onRequestOpen: () => {
                       this.setState({ isProgramFilterOpen: true });
@@ -2524,7 +2537,7 @@ class Table extends Component {
                 <DataTableColumn
                   width={`${this.state.columnWidth["Program"]}px`}
                   label="Program"
-                  property="programId"
+                  property="ProgramPlannerId"
                 />
                 <DataTableColumn
                   width={`${this.state.columnWidth["Campaign ID"]}px`}

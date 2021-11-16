@@ -17,7 +17,7 @@ import {
   Combobox,
 } from "@salesforce/design-system-react";
 
-import Panel from "../Panel";
+import Panel from "../Panel/planner";
 import { Container, FiscalYearErrorContainer } from "./styles";
 import Pager from "../Pager";
 import EditProgramModal from "../ProgramModal";
@@ -85,7 +85,6 @@ const ActionCell = ({ children, ...props }) => {
     await fetch(`${API_URL}/program-planner/${children}`, config)
       .then((res) => res.json())
       .then((res) => {
-        console.log(res);
         window.location.reload();
       })
       .catch((err) => {
@@ -139,8 +138,8 @@ DropDownCell.displayName = DataTableCell.displayName;
 class Table extends Component {
   state = {
     sortProperty: "",
-    sortDirection: null,
     isPanelOpen: false,
+    sortDirection: null,
     data: [],
     displayedData: [],
     editModalIsOPen: false,
@@ -439,9 +438,23 @@ class Table extends Component {
         /> */}
       </ButtonGroup>{" "}
       <ButtonGroup id="button-group-page-header-actions">
-        <Link style={{ textAlign: "end" }} to="/create-planner">
-          <Button label="New" style={{ textAlign: "end", margin: "auto" }} />
-        </Link>
+        <div>
+          <Link style={{ textAlign: "end" }} to="/create-planner">
+            <Button label="New" style={{ textAlign: "end", margin: "auto" }} />
+          </Link>
+        </div>
+
+        <Button
+          assistiveText={{ icon: "Filters" }}
+          iconCategory="utility"
+          iconName="filterList"
+          iconVariant="border-filled"
+          variant="icon"
+          style={{ marginLeft: "5px" }}
+          onClick={() => {
+            this.setState({ isPanelOpen: !this.state.isPanelOpen });
+          }}
+        />
       </ButtonGroup>
     </PageHeaderControl>
   );
@@ -494,23 +507,36 @@ class Table extends Component {
   );
 
   onSearch = (search) => {
-    if (search.owner === "" && search.name === "") {
+    if (search.owner === "" && search.name === "" && search.region === "") {
       this.setState({ data: this.props.data, search });
       return false;
     }
 
     let data = [...this.props.data];
 
+    console.log(search, data);
+
     if (search.owner) {
       data = data.filter((item) => {
-        return item.owner
-          ? item.owner.toLowerCase().includes(search.owner.toLowerCase())
+        return item.programOwner
+          ? item.programOwner.toLowerCase().includes(search.owner.toLowerCase())
           : false;
       });
     }
+
     if (search.name) {
       data = data.filter((item) =>
-        item.name.toLowerCase().includes(search.name.toLowerCase())
+        item.programName.toLowerCase().includes(search.name.toLowerCase())
+      );
+    }
+
+    if (search.region) {
+      data = data.filter((item) =>
+        item.region.length > 0
+          ? item.region[0].label
+              .toLowerCase()
+              .includes(search.region.toLowerCase())
+          : false
       );
     }
 
@@ -852,6 +878,15 @@ class Table extends Component {
             >
               <CurrencyCell />
             </DataTableColumn>
+
+            <DataTableColumn
+              label="Approval Status"
+              property="approval_status"
+              sortDirection={this.state.sortDirection || "desc"}
+              sortable
+              isSorted={this.state.sortProperty === "name"}
+              width={`${this.state.columnWidth["Program Owner"]}px`}
+            ></DataTableColumn>
 
             {/* <DataTableColumn
               label="Budget"

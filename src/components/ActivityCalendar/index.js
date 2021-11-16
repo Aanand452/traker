@@ -341,7 +341,6 @@ class ActivityCalendar extends Component {
             reloadActivities={this.props.reloadActivities}
           />
         )}
-        {console.log(localStorage.getItem("showPrograms"))}
         {this.state.detailModalIsOpen &&
           (localStorage.getItem("showPrograms") === "true" ? (
             <ViewPlannerActivityModal

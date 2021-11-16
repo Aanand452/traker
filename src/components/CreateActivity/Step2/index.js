@@ -110,7 +110,6 @@ class Step2 extends Component {
           />
         </div>
         <div className="slds-m-bottom_large slds-col slds-size_1-of-2">
-          {console.log("----", this.state.formats)}
           <Combobox
             events={{
               onSelect: (event, data) =>

@@ -8,7 +8,7 @@ import {
 import { withRouter } from "react-router-dom";
 
 import { Container } from "./styles";
-import ActivitiesTable from "../ActivitiesTable";
+import ActivitiesTable from "../ActivitiesTable/planner";
 import { getAPIUrl } from "../../config/config";
 import ConfirmationDailog from "../Prompt";
 import { getCookie } from "../../utils/cookie";
@@ -19,14 +19,15 @@ class EditActivityPage extends Component {
     showLoader: false,
     showConfirmationDialog: false,
     showToast: false,
+    planner_id: false,
     activities: [],
     selectedActivity: "",
     toast: {},
+    allPrograms: [],
     activitiesDate: "",
   };
 
   componentDidMount() {
-    console.log("showPrograms", localStorage.getItem("showPrograms"));
     this.setupAndFetch();
     if (this.props.location.state && this.props.location.state.newActivity) {
       this.setState({
@@ -65,6 +66,15 @@ class EditActivityPage extends Component {
     const user = localStorage.getItem("userId");
     const body = { startDate, endDate };
     let token = getCookie("token").replaceAll('"', "");
+
+    let planner_id = window.location.href.split("=");
+    if (planner_id.length > 1) {
+      // for editing
+      planner_id = planner_id[1];
+      this.setState({ planner_id });
+    } else {
+      planner_id = false;
+    }
     // const config = {
     //   // method: "POST",
     //   headers: {
@@ -92,16 +102,17 @@ class EditActivityPage extends Component {
       response = await response.json();
 
       let allActivities = [];
-
+      console.log(response.result);
+      if (planner_id)
+        response.result = response.result.filter(
+          (program) => program.ProgramPlannerId === planner_id
+        );
       response.result.forEach((program) => {
-        console.log(program);
         let {
           offers: { offers },
         } = program;
-
         offers.forEach((offer, i) => {
           offer.activities.forEach((activity, k) => {
-            console.log(activity);
             allActivities.push({
               title: program.programName,
               formatId: activity.formatId.label,
@@ -120,9 +131,9 @@ class EditActivityPage extends Component {
           });
         });
       });
-      console.log("ALL activities", allActivities);
       this.setState({
         activities: allActivities,
+        allPrograms: response.result,
       });
     } catch (err) {
       console.error(err);
@@ -194,7 +205,6 @@ class EditActivityPage extends Component {
     return (
       <Container>
         <IconSettings iconPath="/assets/icons">
-          {console.log("Activities", this.state.activities)}
           <ActivitiesTable
             data={this.state.activities}
             onDelete={this.onDelete}

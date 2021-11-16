@@ -91,7 +91,6 @@ class EditPlanner extends Component {
         let { result } = await response.json();
         let aggregates = { budget: 0, mp_target: 0 };
         result = result.map((program) => {
-          console.log(program);
           program.cumulative_budget =
             program.budgets.q1 +
             program.budgets.q2 +
@@ -103,12 +102,12 @@ class EditPlanner extends Component {
               program.mp_target.q3 +
               program.mp_target.q4
             : 0;
+          program.approval_status = "Pending for Approval";
           aggregates.budget += parseInt(program.cumulative_budget);
           aggregates.mp_target += parseInt(program.cumulative_mp_target);
           return program;
         });
         this.setState({ programs: result, aggregates });
-        console.log("all programs", result);
       } else throw new Error(response);
     } catch (err) {
       console.error(err);
@@ -245,4 +244,4 @@ class EditPlanner extends Component {
   }
 }
 
-export default withRouter(EditPlanner);
+  export default withRouter(EditPlanner);

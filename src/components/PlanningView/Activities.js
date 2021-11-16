@@ -13,9 +13,7 @@ export default function Activities(props) {
         allActivites[activity.formatId.label].push(activity);
       }
     });
-    // for (let x in allActivites) {
-    //   console.log(x, allActivites[x]);
-    // }
+    
     setActivities(allActivites);
   }, []);
   return (

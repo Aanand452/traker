@@ -18,6 +18,7 @@ class PlanningView extends Component {
     super(props);
     this.state = {
       planner: {},
+      planner_id: false,
       loading: true,
       modalOpen: false,
       selectedModal: 0,
@@ -50,10 +51,10 @@ class PlanningView extends Component {
     try {
       let planner_id = window.location.href.split("=");
       if (planner_id.length > 1) {
-        console.log(planner_id[1]);
         // for editing
         planner_id = planner_id[1];
       } else {
+        window.location.reload("/planner-view");
       }
 
       let token = getCookie("token").replaceAll('"', "");
@@ -72,10 +73,8 @@ class PlanningView extends Component {
       let response = await request.json();
 
       let { result } = response;
-      console.log(result.offers.offers);
 
       result.offers.offers = result.offers.offers.map((offer) => {
-        console.log(offer.activities);
         return {
           ...offer,
           activities: offer.activities.sort((a, b) => {
@@ -87,7 +86,6 @@ class PlanningView extends Component {
           }),
         };
       });
-      console.log(result);
       if (!result.mp_target) {
         result.mp_target = {
           q1: 0,
@@ -98,6 +96,7 @@ class PlanningView extends Component {
       }
       this.setState({
         planner: result,
+        planner_id,
         total_budget:
           (result.budgets.q1 +
             result.budgets.q2 +
@@ -459,6 +458,12 @@ class PlanningView extends Component {
             >
               <Link to="/planner-view">
                 <Button label="Back to List" variant="destructive" />
+              </Link>
+              <Link
+                to={`/planner-activities?planner=${this.state.planner_id}`}
+                style={{ marginLeft: "5px" }}
+              >
+                <Button label="Show in Calander View" variant="outline-brand" />
               </Link>
               {/* <div style={{ marginLeft: "10px" }}>
                 <Button label="Submit for Approval" variant="brand" />

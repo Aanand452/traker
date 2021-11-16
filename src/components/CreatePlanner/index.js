@@ -126,7 +126,7 @@ class CreatePlanner extends Component {
           ],
         });
         let defaultFormats = this.getDefaultFornats(formats);
-        console.log(defaultFormats);
+
         this.setState({
           formatsSelected: defaultFormats,
           defaultFormats: defaultFormats,
@@ -200,7 +200,6 @@ class CreatePlanner extends Component {
         id: item.segmentId,
         label: item.name,
       }));
-      console.log(segment);
       if (response.info.code === 200) this.setState({ segments: segment });
       else throw new Error(response.info.status);
     } catch (err) {
@@ -280,7 +279,6 @@ class CreatePlanner extends Component {
 
   removeActivity = (offer, activity) => {
     // completed
-    console.log(offer, activity);
     let offers = this.state.offers;
     const index = offer;
     let activities = offers[index];
@@ -346,7 +344,6 @@ class CreatePlanner extends Component {
       let response = await request.json();
 
       let { result } = response;
-      console.log(response);
       let { budgets, mp_target } = result;
 
       if (!mp_target) {
@@ -385,7 +382,6 @@ class CreatePlanner extends Component {
   };
 
   handleDelete = async () => {
-    console.log("DELETING");
     this.setState({ showConfirmationDialog: false });
     const token = getCookie("token").replaceAll('"', "");
     const config = {
@@ -406,7 +402,6 @@ class CreatePlanner extends Component {
     )
       .then((res) => res.json())
       .then((res) => {
-        console.log(res);
         window.location.replace("/planner-view");
       })
       .catch((err) => {
@@ -417,6 +412,7 @@ class CreatePlanner extends Component {
   toggleOpen = () => {
     this.setState({ isDeleteOpen: !this.state.isDeleteOpen });
   };
+
   getAPM1 = async () => {
     try {
       let token = getCookie("token").replaceAll('"', "");
@@ -502,7 +498,6 @@ class CreatePlanner extends Component {
 
   handleChange = (value, data) => {
     const newRow = { ...this.state.program, [value]: data };
-    console.log(data);
     this.validations(value, data);
     this.setState({ program: newRow });
   };
@@ -519,7 +514,6 @@ class CreatePlanner extends Component {
 
       const token = getCookie("token").replaceAll('"', "");
       const userId = getCookie("userid").replaceAll('"', "");
-      console.log("sads");
       const body = {
         programId: userId,
         programName: this.state.program.name,
@@ -548,7 +542,6 @@ class CreatePlanner extends Component {
         },
       };
       if (this.state.program.kpi) body.otherKPIs = this.state.program.kpi;
-      console.log(body);
 
       const config = {
         method: this.state.planner_id ? "PUT" : "POST",
@@ -559,8 +552,6 @@ class CreatePlanner extends Component {
         },
         body: JSON.stringify(body),
       };
-
-      console.log(JSON.stringify(body));
 
       const response = await fetch(
         `${this.API_URL}/${
@@ -594,15 +585,12 @@ class CreatePlanner extends Component {
     this.getSegment();
     this.checkFormat();
     this.getPersona();
-    console.log(planner_id);
     if (planner_id) this.getPlannerByID(planner_id);
   };
 
   componentDidMount() {
-    console.log(11);
     let planner_id = window.location.href.split("=");
     if (planner_id.length > 1) {
-      console.log(planner_id[1]);
       // for editing
       this.setState({ planner_id: planner_id[1] });
       this.setup(planner_id[1]);
@@ -656,7 +644,7 @@ class CreatePlanner extends Component {
                 }).format(cumulative_mp_target)}
               </span>
             </div>
-            <div style={{ width: "100%", overflow: "hidden" }}>
+            <div style={{ width: "100%", overflowX: "hidden" }}>
               <h2 style={{ fontWeight: "bold", fontSize: "20px" }}>
                 Program Level Data
               </h2>
@@ -677,7 +665,6 @@ class CreatePlanner extends Component {
                   <div style={{ padding: "1%", display: "flex" }}>
                     <BudgetInput
                       onChange={(e, data) => {
-                        console.log(e.target.value);
                         this.handleChange("q1_budget", data.value);
                       }}
                       required

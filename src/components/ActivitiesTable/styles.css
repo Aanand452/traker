@@ -11,7 +11,7 @@
 }
 
 .slds-table_bordered tbody td {
-  border-bottom: 1px solid #DDDBDA;
+  border-bottom: 1px solid #dddbda;
 }
 
 .dialog-classname {
@@ -62,11 +62,11 @@
   transition: all 0.4s ease 0s !important;
 }
 .bm-cross-button {
-  display: none !important; 
+  display: none !important;
 }
 
 .react-datepicker__month-container,
-.react-datepicker{
+.react-datepicker {
   width: 100%;
   border: none !important;
 }
@@ -78,8 +78,21 @@
   margin: inherit !important;
 }
 
-.react-datepicker__day--selected, .react-datepicker__day--in-selecting-range, .react-datepicker__day--in-range, .react-datepicker__month-text--selected, .react-datepicker__month-text--in-selecting-range, .react-datepicker__month-text--in-range, .react-datepicker__quarter-text--selected, .react-datepicker__quarter-text--in-selecting-range, .react-datepicker__quarter-text--in-range, .react-datepicker__year-text--selected, .react-datepicker__year-text--in-selecting-range, .react-datepicker__year-text--in-range {
+.react-datepicker__day--selected,
+.react-datepicker__day--in-selecting-range,
+.react-datepicker__day--in-range,
+.react-datepicker__month-text--selected,
+.react-datepicker__month-text--in-selecting-range,
+.react-datepicker__month-text--in-range,
+.react-datepicker__quarter-text--selected,
+.react-datepicker__quarter-text--in-selecting-range,
+.react-datepicker__quarter-text--in-range,
+.react-datepicker__year-text--selected,
+.react-datepicker__year-text--in-selecting-range,
+.react-datepicker__year-text--in-range {
   border-radius: 0.9rem !important;
   background-color: #45a7f1 !important;
-
+}
+.absolute-positioned {
+  z-index: 10 !important;
 }

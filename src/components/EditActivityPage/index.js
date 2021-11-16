@@ -25,7 +25,6 @@ class EditActivityPage extends Component {
   };
 
   componentDidMount() {
-    console.log("showPrograms", localStorage.getItem("showPrograms"));
     this.setupAndFetch();
     if (this.props.location.state && this.props.location.state.newActivity) {
       this.setState({
