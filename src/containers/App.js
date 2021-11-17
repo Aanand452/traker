@@ -107,12 +107,15 @@ function App({ closeSettingsMenu, user }) {
             }
           />
           <PrivateRoute exact path="/home" component={Home} />
+
           <PrivateRoute exact path="/my-activities" component={EditActivity} />
+
           <PrivateRoute
             exact
             path="/planner-activities"
             component={EditPlannerActivity}
           />
+
           <PrivateRoute
             exact
             path="/programs-view"
@@ -124,11 +127,13 @@ function App({ closeSettingsMenu, user }) {
               )
             }
           />
+
           <PrivateRoute
             exact
             path="/create-activity"
             component={CreateActivity}
           />
+
           <PrivateRoute
             exact
             path="/create-program"
@@ -140,47 +145,27 @@ function App({ closeSettingsMenu, user }) {
               )
             }
           />
+
           <PrivateRoute
             exact
             path="/create-planner"
-            render={() =>
-              getCookie("role").replaceAll('"', "") === "admin" ? (
-                <CreatePlanner />
-              ) : (
-                <Redirect to="/" />
-              )
-            }
+            render={() => <CreatePlanner />}
           />
-          <PrivateRoute
-            exact
-            path="/planner"
-            render={() =>
-              
-                <Planner />
-              
-            }
-          />
+
+          <PrivateRoute exact path="/planner" render={() => <Planner />} />
 
           <PrivateRoute
             exact
             path="/planner-view"
-            render={() =>
-              
-                <EditPlanner />
-              
-            }
+            render={() => <EditPlanner />}
           />
+
           <PrivateRoute
             exact
             path="/planner-slider"
-            render={() =>
-              getCookie("role").replaceAll('"', "") === "admin" ? (
-                <PlanningView />
-              ) : (
-                <Redirect to="/" />
-              )
-            }
+            render={() => <PlanningView />}
           />
+          
           <Route exact path="*" component={NotFoundPage} />
         </Switch>
       </SfdcPageAppWrapper>
