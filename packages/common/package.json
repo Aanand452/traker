@@ -1,0 +1,10 @@
+{
+  "name": "@sara/common",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "scripts": {
+    "test": "echo test",
+    "build": "rm -fr build && yarn babel --config-file ../../babel.config.stable.js src --out-dir build"
+  }
+}

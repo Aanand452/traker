@@ -1,0 +1,17 @@
+{
+  "verbose": true,
+  "ignore": [
+    ".git/",
+    ".gitignore",
+    "node_modules/",
+    "./packages/**/node_modules"
+  ],
+  "watch": [
+    "./packages/server/src/",
+    "./packages/common/src/",
+    "./packages/server/api.yaml",
+    "./packages/db/src/",
+    "nodemon.json"
+  ],
+  "ext": "js json yaml"
+}
