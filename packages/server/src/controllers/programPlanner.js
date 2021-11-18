@@ -53,7 +53,6 @@ const updateProgramPlanner = async (req, res) => {
     const programToCheck = await ProgramPlanner.getProgramPlannerByID(
       programId
     );
-    console.log(body);
     if (!programToCheck) {
       ApiUtils.reposeWithhSuccess(res, null, httpStatus.NOT_FOUND);
     } else {
@@ -80,7 +79,6 @@ const updateProgramPlanner = async (req, res) => {
 
 const addNewProgramPlanner = async (req, res) => {
   try {
-    console.log("@@adding");
     const programPlanner = await ProgramPlanner.addNewProgramPlanner(req.body);
 
     if (programPlanner === "error") {
@@ -97,7 +95,6 @@ const addNewProgramPlanner = async (req, res) => {
 
 const deletePlanner = async (req, res) => {
   try {
-    console.log("@@");
     const plannerId = req.swagger.params.id.value;
     const userId = req.body.userId;
     const programToCheck = await ProgramPlanner.getProgramPlannerByID(

@@ -102,7 +102,6 @@ class EditActivityPage extends Component {
       response = await response.json();
 
       let allActivities = [];
-      console.log(response.result);
       if (planner_id)
         response.result = response.result.filter(
           (program) => program.ProgramPlannerId === planner_id

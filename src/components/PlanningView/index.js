@@ -94,7 +94,6 @@ class PlanningView extends Component {
           q4: 0,
         };
       }
-      console.log(result);
       this.setState({
         planner: result,
         planner_id,

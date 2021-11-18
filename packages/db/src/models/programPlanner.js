@@ -9,7 +9,6 @@ class ProgramPlannerModel {
         const programPlanner = await db.ProgramPlanner.findAll({
           order: [["program_name", "ASC"]],
         });
-        console.log(programPlanner);
         // const result = Promise.all(
         //   programPlanner.map(
         //     async (programApm) => await db.APM1.findByPk(programApm.apm1Id)
@@ -81,14 +80,12 @@ class ProgramPlannerModel {
 
         // for (let offer of offers) {
         //   for (let activity of offer.activities) {
-        //     console.log(activity);
         //     let act = await Activity.addNewActivity({
         //       activityId: uuidv4(),
         //       ActivityTitle: "",
         //       date: "",
         //       formatId: "",
         //     });
-        //     console.log("---", act);
         //   }
         // }
 
@@ -110,15 +107,12 @@ class ProgramPlannerModel {
           ...bodyParams,
         };
         // let result = body;
-        console.log(body);
 
         let result = await db.ProgramPlanner.update(body, {
           where: {
             planner_id: id,
           },
         });
-
-        console.log("@", result);
 
         resolve(result);
       } catch (err) {
