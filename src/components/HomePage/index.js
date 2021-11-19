@@ -94,25 +94,25 @@ const HomePage = () => (
           </React.Fragment>
         )
       } */}
-      
-        <Card>
-          <CardImage
-            src="/images/APAC_Activity_Tracker_Tile_Create_Program_notext_640x360.png"
-            alt="Create program"
-          />
-          <CardTitle>Planner</CardTitle>
-          <CardAction>
-            <Link
-              to="/planner"
-              onClick={() => {
-                localStorage.setItem("showPrograms", true);
-              }}
-            >
-              <Button variant="brand" label="View All" />
-            </Link>
-          </CardAction>
-        </Card>
-      
+
+      <Card>
+        <CardImage
+          src="/images/APAC_Activity_Tracker_Tile_Create_Program_notext_640x360.png"
+          alt="Create program"
+        />
+        <CardTitle>Planner</CardTitle>
+        <CardAction>
+          <Link
+            to="/planner"
+            onClick={() => {
+              localStorage.setItem("showPrograms", true);
+            }}
+          >
+            <Button variant="brand" label="View All" />
+          </Link>
+        </CardAction>
+      </Card>
+
       <Card>
         <CardImage
           src="/images/APAC_Activity_Tracker_Tile_Edit_Activities_notext_640x360.png"
@@ -121,7 +121,10 @@ const HomePage = () => (
         <CardTitle>View All programs</CardTitle>
         <CardAction>
           <Link
-            to="/planner-view"
+            to={{
+              pathname: "/planner-view",
+              state: { allPrograms: true },
+            }}
             onClick={() => {
               localStorage.setItem("showPrograms", true);
             }}

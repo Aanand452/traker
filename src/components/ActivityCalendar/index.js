@@ -81,7 +81,7 @@ class ActivityCalendar extends Component {
     };
   }
   componentDidMount() {
-    this.state.data = this.props.activities;
+    this.setState({ data: this.props.activities });
     this.computeDisplayedDateRange();
   }
   computeDisplayedDateRange = () => {

@@ -458,18 +458,18 @@ class Table extends Component {
     try {
       let token = getCookie("token").replaceAll('"', "");
       const config = {
-        // method: "POST",
+        method: "POST",
         headers: {
           Accept: "application/json",
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
-        // body: JSON.stringify({
-        //   programsStartDate: programsFYstartDate,
-        //   programsEndDate: programsFYendDate,
-        // }),
+        body: JSON.stringify({
+          programsStartDate: programsFYstartDate,
+          programsEndDate: programsFYendDate,
+        }),
       };
-      let response = await fetch(`${this.API_URL}/program-planners`, config);
+      let response = await fetch(`${this.API_URL}/planners`, config);
       if (response.status === 200) {
         let { result } = await response.json();
         let programs = result.map((el) => ({

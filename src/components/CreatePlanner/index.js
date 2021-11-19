@@ -129,7 +129,7 @@ class CreatePlanner extends Component {
 
         this.setState({
           formatsSelected: defaultFormats,
-          defaultFormats: defaultFormats,
+          defaultFormats: formats,
         });
       } else {
         throw new Error(response);
@@ -199,10 +199,16 @@ class CreatePlanner extends Component {
         id: item.segmentId,
         label: item.name,
       }));
-      if (response.info.code === 200) this.setState({ segments: [{
-        label: "All",
-        id: "all",
-      }, ...segment] });
+      if (response.info.code === 200)
+        this.setState({
+          segments: [
+            {
+              label: "All",
+              id: "all",
+            },
+            ...segment,
+          ],
+        });
       else throw new Error(response.info.status);
     } catch (err) {
       this.showError(err);
@@ -539,8 +545,7 @@ class CreatePlanner extends Component {
         persona: personaId,
         abstract: this.state.program.abstract || "",
         offers: {
-          offers:
-            this.state.offers.length > 0 ? this.state.offers : [],
+          offers: this.state.offers.length > 0 ? this.state.offers : [],
         },
       };
       if (this.state.program.kpi) body.otherKPIs = this.state.program.kpi;
@@ -980,12 +985,13 @@ class CreatePlanner extends Component {
                           marginLeft: "20px",
                         }}
                       >
-                        
-                        {this.state.offers.length > 1  && <Button
-                          label="Remove Offer"
-                          variant="destructive"
-                          onClick={() => this.removeOffer(offer.id)}
-                        />}
+                        {this.state.offers.length > 1 && (
+                          <Button
+                            label="Remove Offer"
+                            variant="destructive"
+                            onClick={() => this.removeOffer(offer.id)}
+                          />
+                        )}
                       </div>
                     </div>
                     <h2
@@ -1064,7 +1070,7 @@ class CreatePlanner extends Component {
                                 }}
                                 labels={{ label: "Format" }}
                                 name="format"
-                                options={this.state.defaultFormats}
+                                options={this.state.formats}
                                 selection={[{ ...activity.formatId }]}
                                 value="format"
                                 variant="readonly"

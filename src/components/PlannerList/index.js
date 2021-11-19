@@ -915,7 +915,7 @@ class Table extends Component {
           </DataTable>
           <Pager
             data={this.state.data}
-            itemsPerPage={20}
+            itemsPerPage={this.props.all ? this.state.data.length : 20}
             setDisplayedItems={this.handlePagination}
             currentPage={this.state.currentPage}
           />

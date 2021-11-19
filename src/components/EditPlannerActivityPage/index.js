@@ -55,7 +55,11 @@ class EditActivityPage extends Component {
       const request = await fetch("/config");
       const data = await request.json();
       request.status === 200 &&
-        this.setState({ activitiesDate: data.activitiesDate });
+        this.setState({
+          activitiesDate: data.activitiesDate,
+          programsFYstartDate: data.programsFYstartDate,
+          programsFYendDate: data.programsFYendDate,
+        });
     } catch (e) {
       console.error("ERROR: cannot get the url config: ", e);
     }
@@ -75,30 +79,22 @@ class EditActivityPage extends Component {
     } else {
       planner_id = false;
     }
-    // const config = {
-    //   // method: "POST",
-    //   headers: {
-    //     Accept: "application/json",
-    //     "Content-Type": "application/json",
-    //     Authorization: `Bearer ${token}`,
-    //   },
-    //   // body: JSON.stringify(body),
-    // };
+    const { programsFYstartDate, programsFYendDate } = this.state;
     const config = {
-      // method: 'POST',
+      method: "POST",
       headers: {
         Accept: "application/json",
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
       },
-      // body: JSON.stringify({
-      //   programsStartDate: startDate ? startDate : programsFYstartDate,
-      //   programsEndDate:  endDate ? endDate :  programsFYendDate,
-      // })
+      body: JSON.stringify({
+        programsStartDate: startDate ? startDate : programsFYstartDate,
+        programsEndDate: endDate ? endDate : programsFYendDate,
+      }),
     };
 
     try {
-      let response = await fetch(`${this.API_URL}/program-planners`, config);
+      let response = await fetch(`${this.API_URL}/planners`, config);
       response = await response.json();
 
       let allActivities = [];
@@ -113,7 +109,7 @@ class EditActivityPage extends Component {
         offers.forEach((offer, i) => {
           offer.activities.forEach((activity, k) => {
             allActivities.push({
-              title: program.programName,
+              title: activity.title,
               formatId: activity.formatId.label,
               abstract: program.abstract,
               activityId: i + k,

@@ -94,6 +94,7 @@ class ViewActivityModal extends Component {
           ]}
         >
           <section className="slds-p-around_large">
+            {console.log(this.props.item)}
             <div className="slds-m-bottom_small">
               <div className="slds-text-title">Title</div>
               <div className="slds-text-heading_small">

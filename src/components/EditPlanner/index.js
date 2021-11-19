@@ -42,6 +42,11 @@ class EditPlanner extends Component {
         },
       });
     }
+    if (this.props.location.state && this.props.location.state.allPrograms) {
+      this.setState({
+        allPrograms: true,
+      });
+    }
   }
 
   async getConfig() {
@@ -75,21 +80,22 @@ class EditPlanner extends Component {
     try {
       let token = getCookie("token").replaceAll('"', "");
       const config = {
-        // method: 'POST',
+        method: "POST",
         headers: {
-          Accept: "application/json",
+          // Accept: "application/json",
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
-        // body: JSON.stringify({
-        //   programsStartDate: startDate ? startDate : programsFYstartDate,
-        //   programsEndDate:  endDate ? endDate :  programsFYendDate,
-        // })
+        body: JSON.stringify({
+          programsStartDate: startDate ? startDate : programsFYstartDate,
+          programsEndDate: endDate ? endDate : programsFYendDate,
+        }),
       };
-      const response = await fetch(`${this.API_URL}/program-planners`, config);
+      const response = await fetch(`${this.API_URL}/planners`, config);
       if (response.status === 200) {
         let { result } = await response.json();
         let aggregates = { budget: 0, mp_target: 0 };
+
         result = result.map((program) => {
           program.cumulative_budget =
             program.budgets.q1 +
@@ -237,6 +243,7 @@ class EditPlanner extends Component {
             onGetHistoric={this.onGetHistoric}
             data={this.state.programs}
             aggregates={this.state.aggregates}
+            all={this.state.allPrograms}
           />
         </IconSettings>
       </Container>
@@ -244,4 +251,4 @@ class EditPlanner extends Component {
   }
 }
 
-  export default withRouter(EditPlanner);
+export default withRouter(EditPlanner);
