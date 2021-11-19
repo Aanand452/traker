@@ -119,12 +119,14 @@ function App({ closeSettingsMenu, user }) {
           <PrivateRoute
             exact
             path="/programs-view"
-            render={() =>
-              getCookie("role").replaceAll('"', "") === "admin" ? (
+            render={
+              () => (
+                // getCookie("role").replaceAll('"', "") === "admin" ? (
                 <EditProgram />
-              ) : (
-                <Redirect to="/" />
               )
+              // ) : (
+              // <Redirect to="/" />
+              // )
             }
           />
 
@@ -165,7 +167,7 @@ function App({ closeSettingsMenu, user }) {
             path="/planner-slider"
             render={() => <PlanningView />}
           />
-          
+
           <Route exact path="*" component={NotFoundPage} />
         </Switch>
       </SfdcPageAppWrapper>

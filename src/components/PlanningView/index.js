@@ -508,7 +508,7 @@ class PlanningView extends Component {
                 to={`/planner-activities?planner=${this.state.planner_id}`}
                 style={{ marginLeft: "5px" }}
               >
-                <Button label="Show in Calander View" variant="outline-brand" />
+                <Button label="Show in Calendar View" variant="outline-brand" />
               </Link>
               {/* <div style={{ marginLeft: "10px" }}>
                 <Button label="Submit for Approval" variant="brand" />

@@ -24,18 +24,26 @@ const PlannerPage = () => {
 
       <div style={{ marginTop: "150px" }}>
         <CardsContainer>
-        {getCookie("role").replaceAll('"', "") === "admin" && ( <Card>
-            <Link className="hover-none" to="/create-planner">
-              <CardTitle>Create a New Program</CardTitle>
-              <img
-                style={{ backgroundColor: "#f5f2f2" }}
-                src="/images/APAC_Activity_Tracker_Tile_Create_Activity_notext_640x360.png"
-                alt="Create activity"
-              />
-            </Link>
-          </Card>)}
+          {getCookie("role").replaceAll('"', "") === "admin" && (
+            <Card>
+              <Link className="hover-none" to="/create-planner">
+                <CardTitle>Create a New Program</CardTitle>
+                <img
+                  style={{ backgroundColor: "#f5f2f2" }}
+                  src="/images/APAC_Activity_Tracker_Tile_Create_Activity_notext_640x360.png"
+                  alt="Create activity"
+                />
+              </Link>
+            </Card>
+          )}
           <Card>
-            <Link className="hover-none" to="/planner-view">
+            <Link
+              className="hover-none"
+              to={{
+                pathname: "/planner-view",
+                state: { allPrograms: true },
+              }}
+            >
               <CardTitle>View All Programs</CardTitle>
               <img
                 style={{ backgroundColor: "#f5f2f2" }}
@@ -45,20 +53,18 @@ const PlannerPage = () => {
             </Link>
           </Card>
 
-          
-            <React.Fragment>
-              <Card>
-                <Link className="hover-none" to="/planner-activities">
-                  <CardTitle>Calendar View</CardTitle>
-                  <img
-                    style={{ backgroundColor: "#f5f2f2" }}
-                    src="/images/APAC_Activity_Tracker_Tile_Create_Program_notext_640x360.png"
-                    alt="Create program"
-                  />
-                </Link>
-              </Card>
-            </React.Fragment>
-          
+          <React.Fragment>
+            <Card>
+              <Link className="hover-none" to="/planner-activities">
+                <CardTitle>Calendar View</CardTitle>
+                <img
+                  style={{ backgroundColor: "#f5f2f2" }}
+                  src="/images/APAC_Activity_Tracker_Tile_Create_Program_notext_640x360.png"
+                  alt="Create program"
+                />
+              </Link>
+            </Card>
+          </React.Fragment>
         </CardsContainer>
       </div>
     </Container>

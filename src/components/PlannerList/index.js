@@ -140,6 +140,7 @@ class Table extends Component {
     sortProperty: "",
     isPanelOpen: false,
     sortDirection: null,
+    aggregates: false,
     data: [],
     displayedData: [],
     editModalIsOPen: false,
@@ -540,6 +541,7 @@ class Table extends Component {
       );
     }
 
+    this.calculateAggregates(data);
     this.setState({ currentPage: 1, data, search });
   };
 
@@ -729,7 +731,31 @@ class Table extends Component {
     this.setState({ viewProgramModalOpen: !this.state.viewProgramModalOpen });
   };
 
+  calculateAggregates = async (result) => {
+    let aggregates = { budget: 0, mp_target: 0 };
+
+    result = result.map((program) => {
+      program.cumulative_budget =
+        program.budgets.q1 +
+        program.budgets.q2 +
+        program.budgets.q3 +
+        program.budgets.q4;
+      program.cumulative_mp_target = program.mp_target
+        ? program.mp_target.q1 +
+          program.mp_target.q2 +
+          program.mp_target.q3 +
+          program.mp_target.q4
+        : 0;
+      aggregates.budget += parseInt(program.cumulative_budget);
+      aggregates.mp_target += parseInt(program.cumulative_mp_target);
+      return program;
+    });
+
+    this.setState({ aggregates });
+  };
+
   render() {
+    const { aggregates } = this.state;
     return (
       <Container>
         <p style={{ textAlign: "center", fontWeight: "normal" }}>
@@ -750,7 +776,9 @@ class Table extends Component {
               style: "currency",
               currency: "USD",
               maximumFractionDigits: 0,
-            }).format(this.props.aggregates.budget)}
+            }).format(
+              aggregates ? aggregates.budget : this.props.aggregates.budget
+            )}
           </span>
           MP Target Total:
           <span
@@ -769,7 +797,13 @@ class Table extends Component {
               style: "currency",
               currency: "USD",
               maximumFractionDigits: 0,
-            }).format(parseFloat(this.props.aggregates.mp_target).toFixed(0))}
+            }).format(
+              parseFloat(
+                aggregates
+                  ? aggregates.mp_target
+                  : this.props.aggregates.mp_target
+              ).toFixed(0)
+            )}
           </span>
         </p>
         <IconSettings iconPath="/assets/icons">

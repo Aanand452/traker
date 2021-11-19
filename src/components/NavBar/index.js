@@ -162,8 +162,8 @@ class NavBar extends Component {
               <GlobalNavigationBarRegion region="secondary" navigation>
                 <NavigationBarLink to="/home" title="Home" />
                 {localStorage.getItem("showPrograms") !== "false" && (
-                    <NavigationBarLink to="/planner" title="Planner" />
-                  )}
+                  <NavigationBarLink to="/planner" title="Planner" />
+                )}
                 <NavigationBarLink
                   to={
                     localStorage.getItem("showPrograms") === "false"
@@ -172,12 +172,14 @@ class NavBar extends Component {
                   }
                   title="Activities"
                 />
-                {localStorage.getItem("showPrograms") !== "false" && (
-                    <NavigationBarLink
-                      to="/planner-view"
-                      title="Programs List"
-                    />
-                  )}
+                {localStorage.getItem("showPrograms") !== "false" ? (
+                  <NavigationBarLink to="/planner-view" title="Programs List" />
+                ) : (
+                  <NavigationBarLink
+                    to="/programs-view"
+                    title="Programs List"
+                  />
+                )}
                 {this.state.tableauUrl !== "/" && (
                   <NavigationBarLink
                     title="Go to reports"

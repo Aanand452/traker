@@ -1070,7 +1070,7 @@ class CreatePlanner extends Component {
                                 }}
                                 labels={{ label: "Format" }}
                                 name="format"
-                                options={this.state.formats}
+                                options={this.state.defaultFormats}
                                 selection={[{ ...activity.formatId }]}
                                 value="format"
                                 variant="readonly"

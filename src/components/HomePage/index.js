@@ -121,15 +121,16 @@ const HomePage = () => (
         <CardTitle>View All programs</CardTitle>
         <CardAction>
           <Link
-            to={{
-              pathname: "/planner-view",
-              state: { allPrograms: true },
-            }}
+            to="/programs-view"
+            // to={{
+            //   pathname: "/programs-view",
+            //   state: { allPrograms: true },
+            // }}
             onClick={() => {
-              localStorage.setItem("showPrograms", true);
+              localStorage.setItem("showPrograms", false);
             }}
           >
-            <Button variant="brand" label="Activities" />
+            <Button variant="brand" label="Programs" />
           </Link>
         </CardAction>
       </Card>
