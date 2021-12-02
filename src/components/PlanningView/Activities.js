@@ -13,14 +13,15 @@ export default function Activities(props) {
         allActivites[activity.formatId.label].push(activity);
       }
     });
-    
+
     setActivities(allActivites);
   }, []);
   return (
     <div>
       <ul className="list-activities">
+        {console.log(Object.keys(activites).length)}
         {Object.keys(activites)
-          .splice(0, props.all ? Object.keys(activites).length : 5)
+          .splice(0, props.all ? Object.keys(activites).length : 4)
           .map((item, k) => (
             <Fragment>
               <div
@@ -58,7 +59,7 @@ export default function Activities(props) {
             </Fragment>
           ))}
 
-        {!props.all && props.activities.length > 4 ? (
+        {!props.all && Object.keys(activites).length > 4 ? (
           <div
             onClick={() => {
               props.toggleModal();

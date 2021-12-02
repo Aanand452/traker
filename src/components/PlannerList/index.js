@@ -25,7 +25,6 @@ import PlanningView from "../PlanningView";
 
 import "./styles.css";
 import { getAPIUrl } from "../../config/config";
-import { getCookie } from "../../utils/cookie";
 
 const CurrencyCell = ({ children, ...props }) => {
   if (parseInt(children, 10) === 0) {
@@ -68,40 +67,12 @@ const ActionCell = ({ children, ...props }) => {
     }
   };
 
-  const handleDelete = async () => {
-    const token = getCookie("token").replaceAll('"', "");
-    const config = {
-      method: "DELETE",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify({
-        id: children,
-      }),
-    };
-
-    await fetch(`${API_URL}/program-planner/${children}`, config)
-      .then((res) => res.json())
-      .then((res) => {
-        window.location.reload();
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  };
-
   useEffect(() => {
     getURL();
   }, []);
 
   return (
-    <DataTableCell
-      // title={children.toString()}
-      {...props}
-      onAction={this.handleRowAction}
-    >
+    <DataTableCell {...props} onAction={this.handleRowAction}>
       <div style={{ display: "flex", justifyContent: "space-around" }}>
         <Link to={`/planner-slider?planner=${children}`} title="open">
           View
@@ -291,11 +262,11 @@ class Table extends Component {
       },
     });
 
-    for (let i = 0; i < cols.length - 1; i++) {
-      let div = this.createDiv(1, "35px");
-      cols[i].children[1].children[0].appendChild(div);
-      this.setListener(div);
-    }
+    // for (let i = 0; i < cols.length - 1; i++) {
+    //   let div = this.createDiv(1, "35px");
+    //   cols[i].children[1].children[0].appendChild(div);
+    //   this.setListener(div);
+    // }
   }
 
   setListener = (div) => {
@@ -873,7 +844,7 @@ class Table extends Component {
               property="programName"
               sortDirection={this.state.sortDirection || "desc"}
               sortable
-              isSorted={this.state.sortProperty === "name"}
+              isSorted={this.state.sortProperty === "programName"}
               width={`${this.state.columnWidth["Program Name"]}px`}
             />
             <DataTableColumn
@@ -881,7 +852,7 @@ class Table extends Component {
               property="programOwner"
               sortDirection={this.state.sortDirection || "desc"}
               sortable
-              isSorted={this.state.sortProperty === "name"}
+              isSorted={this.state.sortProperty === "programOwner"}
               width={`${this.state.columnWidth["Program Owner"]}px`}
             />
 
@@ -896,7 +867,7 @@ class Table extends Component {
               property="cumulative_budget"
               sortDirection={this.state.sortDirection || "desc"}
               sortable
-              isSorted={this.state.sortProperty === "name"}
+              isSorted={this.state.sortProperty === "cumulative_budget"}
               width={`${this.state.columnWidth["Program Owner"]}px`}
             >
               <CurrencyCell />
@@ -907,7 +878,7 @@ class Table extends Component {
               property="cumulative_mp_target"
               sortDirection={this.state.sortDirection || "desc"}
               sortable
-              isSorted={this.state.sortProperty === "name"}
+              isSorted={this.state.sortProperty === "cumulative_mp_target"}
               width={`${this.state.columnWidth["Program Owner"]}px`}
             >
               <CurrencyCell />
@@ -918,7 +889,7 @@ class Table extends Component {
               property="approval_status"
               sortDirection={this.state.sortDirection || "desc"}
               sortable
-              isSorted={this.state.sortProperty === "name"}
+              isSorted={this.state.sortProperty === "approval_status"}
               width={`${this.state.columnWidth["Program Owner"]}px`}
             ></DataTableColumn>
 
@@ -949,7 +920,8 @@ class Table extends Component {
           </DataTable>
           <Pager
             data={this.state.data}
-            itemsPerPage={this.props.all ? this.state.data.length : 20}
+            // itemsPerPage={this.props.all ? this.state.data.length : 20}
+            itemsPerPage={this.state.data.length}
             setDisplayedItems={this.handlePagination}
             currentPage={this.state.currentPage}
           />

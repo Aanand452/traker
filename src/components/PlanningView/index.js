@@ -6,12 +6,20 @@ import {
   Button,
   Spinner,
   Modal,
+  Icon,
+  Combobox,
   IconSettings,
+  Input,
 } from "@salesforce/design-system-react";
+import comboboxFilterAndLimit from "@salesforce/design-system-react/components/combobox/filter";
 import { Link } from "react-router-dom";
 import { getCookie } from "../../utils/cookie";
 import { getAPIUrl } from "../../config/config";
 import Activities from "./Activities";
+import jsPDF from "jspdf";
+import html2canvas from "html2canvas";
+import moment from "moment";
+import { nFormatter } from "../../utils/fomatters";
 
 class PlanningView extends Component {
   constructor(props) {
@@ -21,7 +29,129 @@ class PlanningView extends Component {
       planner_id: false,
       loading: true,
       modalOpen: false,
+      submitModal: false,
+      approvalModal: false,
       selectedModal: 0,
+      mpTargetToggle: false,
+      budgetToggle: false,
+      raw_program: {},
+      accounts: [
+        {
+          id: "1",
+          email: "leandro.perez@salesforce.com",
+          label: "Leandro Perez",
+        },
+        {
+          id: "2",
+          email: "james.clifton@salesforce.com",
+          label: "James Clifton",
+        },
+        {
+          id: "3",
+          email: "rbertram@salesforce.com",
+          label: "Renata Bertram",
+        },
+        {
+          id: "4",
+          email: "wwalker@salesforce.com",
+          label: "Wendy Walker",
+        },
+        {
+          id: "5",
+          email: "archanasinha@salesforce.com",
+          label: "Archana Sinha",
+        },
+        {
+          id: "5",
+          email: "Mairi Williamson",
+          label: "mwilliamson@salesforce.com",
+        },
+        {
+          id: "5",
+          email: "trina.ng@salesforce.com",
+          label: "Trina Ng",
+        },
+      ],
+      accounts2: [
+        {
+          id: "1",
+          email: "vcotte@salesforce.com",
+          label: "Vincent Cotte",
+        },
+        {
+          id: "2",
+          email: "smccredie@salesforce.com",
+          label: "Stephanie McCredie",
+        },
+        {
+          id: "3",
+          email: "cprestipino@salesforce.com",
+          label: "Cat Prestipino",
+        },
+        {
+          id: "4",
+          email: "andrew.ward@salesforce.com",
+          label: "Andrew Ward",
+        },
+        {
+          id: "5",
+          email: "ivy.ng@salesforce.com",
+          label: "Ivy Ng",
+        },
+        {
+          id: "5",
+          email: "jkeblejohnston@salesforce.com",
+          label: "James Keble-Johnston",
+        },
+        {
+          id: "5",
+          email: "shargreaves@salesforce.com",
+          label: "Sarah Hargreaves",
+        },
+        {
+          id: "5",
+          email: "nichola.palmer@salesforce.com",
+          label: "Nichola Palmer",
+        },
+        {
+          id: "5",
+          email: "Jeanie.sim@salesforce.com",
+          label: "Jeanie Sim Seok Kuan",
+        },
+        {
+          id: "5",
+          email: "sfrank@salesforce.com",
+          label: "Stuart Frank",
+        },
+        {
+          id: "5",
+          email: "lisa.noble@salesforce.com",
+          label: "Lisa Noble",
+        },
+        {
+          id: "5",
+          email: "npeers@salesforce.com",
+          label: "Nick Peers",
+        },
+      ],
+      approve: {
+        status: "Pending for Approval",
+        note: "",
+        date: new Date(),
+        submittedBy: "",
+      },
+      approvalList: [
+        {
+          type: "",
+          date: "21/11/2021",
+          email: "harry@salesforce.com",
+        },
+      ],
+      isUserApprover: false,
+      approver1Value: "",
+      approver2Value: "",
+      approver1: [],
+      approver2: [],
       offers: [
         {
           id: 1,
@@ -36,14 +166,46 @@ class PlanningView extends Component {
           ],
         },
       ],
+      errorTexts: {
+        note: "",
+        approver1: "",
+        approver2: "",
+      },
     };
   }
+
+  _exportPdf = () => {
+    // window.print();
+    var pdf = new jsPDF("p", "pt", "letter");
+    pdf.canvas.height = 72 * 11;
+    pdf.canvas.width = 72 * 8.5;
+
+    pdf.fromHTML(document.body);
+
+    pdf.save("test.pdf");
+    // html2canvas(document.querySelector("#printable")).then((canvas) => {
+    //   document.body.appendChild(canvas); // if you want see your screenshot in body.
+    //   const imgData = canvas.toDataURL("image/png");
+    //   const pdf = new jsPDF();
+    //   pdf.addImage(imgData, "JPEG", 0, 0);
+    //   pdf.save("download.pdf");
+    // });
+  };
 
   toggleModal = () => {
     this.setState({ modalOpen: !this.state.modalOpen });
   };
 
+  toggleSubmitModal = () => {
+    this.setState({ submitModal: !this.state.submitModal });
+  };
+
+  toggleApproveModal = () => {
+    this.setState({ approvalModal: !this.state.approvalModal });
+  };
+
   getPlannerByID = async () => {
+    const userEmail = getCookie("username").replaceAll('"', "");
     if (window.location.hostname === "localhost")
       this.API_URL = "http://localhost:3000/api/v1";
     else this.API_URL = await getAPIUrl();
@@ -74,6 +236,9 @@ class PlanningView extends Component {
 
       let { result } = response;
 
+      let raw_program = result;
+      console.log(result);
+
       result.offers.offers = result.offers.offers.map((offer) => {
         return {
           ...offer,
@@ -94,22 +259,69 @@ class PlanningView extends Component {
           q4: 0,
         };
       }
+      let approval_list = [],
+        isUserApprover = false;
+      if (result.approval) {
+        approval_list.push({
+          type: "Submitted By",
+          date: moment(result.approval.date).format("MMMM DD, YYYY hh:mm a"),
+          email: result.approval.submittedBy,
+        });
+        if (result.approval.approver1)
+          for (let app of result.approval.approver1) {
+            console.log(app.status);
+            if (app.email === userEmail) {
+              isUserApprover = true;
+            }
+            if (app.status.toLowerCase() !== "pending for approval") {
+              approval_list.push({
+                type: app.status,
+                email: app.email,
+                reason: app.note,
+              });
+            }
+          }
+
+        if (result.approval.approver2)
+          for (let app of result.approval.approver2) {
+            console.log(app.status);
+            if (app.email === userEmail) {
+              isUserApprover = true;
+            }
+            if (app.status.toLowerCase() !== "pending for approval") {
+              approval_list.push({
+                type: app.status,
+                email: app.email,
+                reason: app.note,
+              });
+            }
+          }
+      }
+
       this.setState({
+        userEmail: userEmail,
         planner: result,
+        isUserApprover,
+        approve: result.approval || {
+          status: "Pending for Approval",
+          note: "",
+          date: new Date(),
+          submittedBy: "",
+        },
+        approvalList: approval_list,
+        raw_program,
         planner_id,
         total_budget:
-          (result.budgets.q1 +
-            result.budgets.q2 +
-            result.budgets.q3 +
-            result.budgets.q4) /
-          1000,
+          result.budgets.q1 +
+          result.budgets.q2 +
+          result.budgets.q3 +
+          result.budgets.q4,
         total_mp_target: result.mp_target
           ? parseFloat(
-              (result.mp_target.q1 +
+              result.mp_target.q1 +
                 result.mp_target.q2 +
                 result.mp_target.q3 +
-                result.mp_target.q4) /
-                1000
+                result.mp_target.q4
             ).toFixed(1)
           : 0,
         loading: false,
@@ -126,6 +338,136 @@ class PlanningView extends Component {
   componentDidMount() {
     this.getPlannerByID();
   }
+
+  handleSubmit = async () => {
+    if (window.location.hostname === "localhost")
+      this.API_URL = "http://localhost:3000/api/v1";
+    else this.API_URL = await getAPIUrl();
+
+    let planner_id = window.location.href.split("=");
+    if (planner_id.length > 1) {
+      // for editing
+      planner_id = planner_id[1];
+      this.setState({ planner_id });
+    }
+
+    this.setState({ showLoader: true });
+
+    try {
+      const token = getCookie("token").replaceAll('"', "");
+      const userId = getCookie("userid").replaceAll('"', "");
+      const username = getCookie("username").replaceAll('"', "");
+      const body = {
+        approval: {
+          ...this.state.approve,
+          submittedBy: username,
+          date: new Date(),
+          approver1: this.state.approver1.map((item) => {
+            return {
+              status: "Pending for Approval",
+              note: "",
+              email: item.email,
+            };
+          }),
+          approver2: this.state.approver2.map((item) => {
+            return {
+              status: "Pending for Approval",
+              note: "",
+              email: item.email,
+            };
+          }),
+        },
+      };
+      console.log(body);
+      const config = {
+        method: "PUT",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ ...this.state.raw_program, ...body }),
+      };
+
+      const response = await fetch(
+        `${this.API_URL}/program-planner/${planner_id}`,
+        config
+      );
+
+      if (response.status === 200) {
+        this.setState({ submitModal: !this.state.submitModal });
+        // window.location.reload();
+        // this.props.history.push({
+        //   pathname: "/planner-view",
+        //   state: { newProgram: true },
+        // });
+      } else {
+        throw new Error("Something went wrong, please try again");
+      }
+    } catch (err) {
+      console.log(err);
+      // this.setState({ showLoader: false });
+      // this.showError(err);
+    }
+  };
+
+  handleApprove = async (type) => {
+    if (window.location.hostname === "localhost")
+      this.API_URL = "http://localhost:3000/api/v1";
+    else this.API_URL = await getAPIUrl();
+
+    let planner_id = window.location.href.split("=");
+    if (planner_id.length > 1) {
+      // for editing
+      planner_id = planner_id[1];
+      this.setState({ planner_id });
+    }
+
+    this.setState({ showLoader: true });
+
+    try {
+      const token = getCookie("token").replaceAll('"', "");
+      const userId = getCookie("userid").replaceAll('"', "");
+      const username = getCookie("username").replaceAll('"', "");
+      const body = {
+        status: type === "accept" ? "Accepted" : "Rejected",
+        note: this.state.approve.note,
+        planner_id,
+        email: username,
+      };
+      console.log("@@", body);
+      const config = {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(body),
+      };
+
+      const response = await fetch(
+        `${this.API_URL}/planner-approve/${planner_id}`,
+        config
+      );
+
+      if (response.status === 200) {
+        this.setState({ approvalModal: !this.state.approvalModal });
+        console.log("response", response);
+        // window.location.reload();
+        // this.props.history.push({
+        //   pathname: "/planner-view",
+        //   state: { newProgram: true },
+        // });
+      } else {
+        throw new Error("Something went wrong, please try again");
+      }
+    } catch (err) {
+      console.log(err);
+      // this.setState({ showLoader: false });
+      // this.showError(err);
+    }
+  };
 
   render() {
     const { planner, loading, total_budget, total_mp_target } = this.state;
@@ -145,7 +487,7 @@ class PlanningView extends Component {
     let { offers } = planner.offers;
 
     return (
-      <div>
+      <div id="printable">
         <IconSettings iconPath="assets/icons">
           <div style={{ backgroundColor: "white", paddingLeft: "10px" }}>
             <NavBar />
@@ -168,9 +510,9 @@ class PlanningView extends Component {
                   }}
                 >
                   {planner.programName}
-                  <span style={{ paddingLeft: "4px" }}>
+                  {/* <span style={{ paddingLeft: "4px" }}>
                     ({planner.region[0].label})
-                  </span>
+                  </span> */}
                 </h1>
                 <div style={{ width: "30%" }}>
                   <div className="owner">Owner</div>
@@ -188,19 +530,51 @@ class PlanningView extends Component {
               </div>
             </div>
             <div style={{ margin: "10px" }} className="grid grid-cols-10">
-              <div class="col-span-2">
+              <div className="col-span-2">
                 <div>
                   <div
                     className="card"
                     style={{ marginBottom: "25px", border: "none" }}
                   >
-                    <div className="card-head">
-                      <span>MP Target :</span>
-                      <span className="card-head-value">
-                        ${parseFloat(total_mp_target).toFixed(0)}K
-                      </span>
+                    <div
+                      className="card-head"
+                      style={{
+                        display: "flex",
+                        justifyContent: "space-between",
+                      }}
+                      onClick={() =>
+                        this.setState({
+                          mpTargetToggle: !this.state.mpTargetToggle,
+                        })
+                      }
+                    >
+                      <div>
+                        <span>MP Target :</span>
+                        <span className="card-head-value">
+                          $
+                          {nFormatter(
+                            parseFloat(total_mp_target).toFixed(0),
+                            0
+                          )}
+                        </span>
+                      </div>
+                      <div>
+                        {this.state.mpTargetToggle ? (
+                          <Button
+                            style={{ border: "none", color: "black" }}
+                            iconName="down"
+                          />
+                        ) : (
+                          <Button
+                            style={{ border: "none", color: "black" }}
+                            iconName="up"
+                          />
+                        )}
+                      </div>
                     </div>
-                    <hr style={{ marginTop: "10px", marginBottom: "10px" }} />
+                    {this.state.budgetToggle && (
+                      <hr style={{ marginTop: "10px", marginBottom: "10px" }} />
+                    )}
 
                     {/* <div className="card-head">
                       <span> Budget :</span>
@@ -208,76 +582,41 @@ class PlanningView extends Component {
                         $<span>{parseFloat(total_budget).toFixed(0)}</span>K
                       </span>
                     </div> */}
-                    <div className="grid-cols-2" style={{ display: "grid" }}>
-                      <div className="budgets">
-                        <div className="quarters">
-                          <div> Q1</div>
-                          <div className="card-head-value">
-                            $
-                            <span>
-                              {planner.mp_target.q1 >= 1000
-                                ? parseFloat(
-                                    planner.mp_target.q1 / 1000
-                                  ).toFixed(0)
-                                : parseFloat(
-                                    planner.mp_target.q1 / 1000
-                                  ).toFixed(1)}
-                            </span>
-                            K
+                    {this.state.mpTargetToggle && (
+                      <div className="grid-cols-2" style={{ display: "grid" }}>
+                        <div className="budgets">
+                          <div className="quarters">
+                            <div> Q1</div>
+                            <div className="card-head-value">
+                              ${nFormatter(planner.mp_target.q1, 1)}
+                            </div>
+                          </div>
+                          <div className="quarters">
+                            <div> Q3</div>
+                            <div className="card-head-value">
+                              $
+                              <span>{nFormatter(planner.mp_target.q3, 1)}</span>
+                            </div>
                           </div>
                         </div>
-                        <div className="quarters">
-                          <div> Q3</div>
-                          <div className="card-head-value">
-                            $
-                            <span>
-                              {planner.mp_target.q3 >= 1000
-                                ? parseFloat(
-                                    planner.mp_target.q3 / 1000
-                                  ).toFixed(0)
-                                : parseFloat(
-                                    planner.mp_target.q3 / 1000
-                                  ).toFixed(1)}
-                            </span>
-                            K
+                        <div className="budgets">
+                          <div className="quarters">
+                            <div> Q2</div>
+                            <div className="card-head-value">
+                              $
+                              <span>{nFormatter(planner.mp_target.q2, 1)}</span>
+                            </div>
                           </div>
-                        </div>
-                      </div>
-                      <div className="budgets">
-                        <div className="quarters">
-                          <div> Q2</div>
-                          <div className="card-head-value">
-                            $
-                            <span>
-                              {planner.mp_target.q2 >= 1000
-                                ? parseFloat(
-                                    planner.mp_target.q2 / 1000
-                                  ).toFixed(0)
-                                : parseFloat(
-                                    planner.mp_target.q2 / 1000
-                                  ).toFixed(1)}
-                            </span>
-                            K
-                          </div>
-                        </div>
-                        <div className="quarters">
-                          <div> Q4</div>
-                          <div className="card-head-value">
-                            $
-                            <span>
-                              {planner.mp_target.q4 >= 1000
-                                ? parseFloat(
-                                    planner.mp_target.q4 / 1000
-                                  ).toFixed(0)
-                                : parseFloat(
-                                    planner.mp_target.q4 / 1000
-                                  ).toFixed(1)}
-                            </span>
-                            K
+                          <div className="quarters">
+                            <div> Q4</div>
+                            <div className="card-head-value">
+                              $
+                              <span>{nFormatter(planner.mp_target.q4, 1)}</span>
+                            </div>
                           </div>
                         </div>
                       </div>
-                    </div>
+                    )}
                   </div>
 
                   <div
@@ -285,12 +624,42 @@ class PlanningView extends Component {
                     style={{ marginBottom: "25px", border: "none" }}
                   >
                     <div className="card-head">
-                      <span>Budget :</span>
-                      <span className="card-head-value">
-                        ${parseFloat(total_budget).toFixed(0)}K
-                      </span>
+                      <div
+                        style={{
+                          display: "flex",
+                          justifyContent: "space-between",
+                        }}
+                      >
+                        <div>
+                          <span>Budget :</span>
+                          <span className="card-head-value">
+                            $<span>{nFormatter(total_budget, 1)}</span>
+                          </span>
+                        </div>
+                        <div
+                          onClick={() =>
+                            this.setState({
+                              budgetToggle: !this.state.budgetToggle,
+                            })
+                          }
+                        >
+                          {this.state.budgetToggle ? (
+                            <Button
+                              style={{ border: "none", color: "black" }}
+                              iconName="down"
+                            />
+                          ) : (
+                            <Button
+                              style={{ border: "none", color: "black" }}
+                              iconName="up"
+                            />
+                          )}
+                        </div>
+                      </div>
                     </div>
-                    <hr style={{ marginTop: "10px", marginBottom: "10px" }} />
+                    {this.state.budgetToggle && (
+                      <hr style={{ marginTop: "10px", marginBottom: "10px" }} />
+                    )}
 
                     {/* <div className="card-head">
                       <span> Budget :</span>
@@ -298,82 +667,45 @@ class PlanningView extends Component {
                         $<span>{parseFloat(total_budget).toFixed(0)}</span>K
                       </span>
                     </div> */}
-                    <div className="grid-cols-2" style={{ display: "grid" }}>
-                      <div className="budgets">
-                        <div className="quarters">
-                          <div> Q1</div>
-                          <div className="card-head-value">
-                            $
-                            <span>
-                              {planner.budgets.q1 >= 1000
-                                ? parseFloat(planner.budgets.q1 / 1000).toFixed(
-                                    0
-                                  )
-                                : parseFloat(planner.budgets.q1 / 1000).toFixed(
-                                    1
-                                  )}
-                            </span>
-                            K
+                    {this.state.budgetToggle && (
+                      <div className="grid-cols-2" style={{ display: "grid" }}>
+                        <div className="budgets">
+                          <div className="quarters">
+                            <div> Q1</div>
+                            <div className="card-head-value">
+                              $<span>{nFormatter(planner.budgets.q1, 1)}</span>
+                            </div>
+                          </div>
+                          <div className="quarters">
+                            <div> Q3</div>
+                            <div className="card-head-value">
+                              $<span>{nFormatter(planner.budgets.q3, 1)}</span>
+                            </div>
                           </div>
                         </div>
-                        <div className="quarters">
-                          <div> Q3</div>
-                          <div className="card-head-value">
-                            $
-                            <span>
-                              {planner.budgets.q3 >= 1000
-                                ? parseFloat(planner.budgets.q3 / 1000).toFixed(
-                                    0
-                                  )
-                                : parseFloat(planner.budgets.q3 / 1000).toFixed(
-                                    1
-                                  )}
-                            </span>
-                            K
+                        <div className="budgets">
+                          <div className="quarters">
+                            <div> Q2</div>
+                            <div className="card-head-value">
+                              $<span>{nFormatter(planner.budgets.q2, 1)}</span>
+                            </div>
+                          </div>
+                          <div className="quarters">
+                            <div> Q4</div>
+                            <div className="card-head-value">
+                              $<span>{nFormatter(planner.budgets.q4, 1)}</span>
+                            </div>
                           </div>
                         </div>
                       </div>
-                      <div className="budgets">
-                        <div className="quarters">
-                          <div> Q2</div>
-                          <div className="card-head-value">
-                            $
-                            <span>
-                              {planner.budgets.q2 >= 1000
-                                ? parseFloat(planner.budgets.q2 / 1000).toFixed(
-                                    0
-                                  )
-                                : parseFloat(planner.budgets.q2 / 1000).toFixed(
-                                    1
-                                  )}
-                            </span>
-                            K
-                          </div>
-                        </div>
-                        <div className="quarters">
-                          <div> Q4</div>
-                          <div className="card-head-value">
-                            $
-                            <span>
-                              {planner.budgets.q4 >= 1000
-                                ? parseFloat(planner.budgets.q4 / 1000).toFixed(
-                                    0
-                                  )
-                                : parseFloat(planner.budgets.q4 / 1000).toFixed(
-                                    1
-                                  )}
-                            </span>
-                            K
-                          </div>
-                        </div>
-                      </div>
-                    </div>
+                    )}
                   </div>
 
                   <div className="card" style={{ border: "none" }}>
                     <div className="card-head">Other KPIs :</div>
                     {planner.persona.map((item, k) => (
                       <div
+                        key={k}
                         className={k === 0 ? "card-head" : "card-head border-t"}
                       >
                         <div className="card-head-value">
@@ -384,14 +716,17 @@ class PlanningView extends Component {
                   </div>
                 </div>
               </div>
-              <div class="col-span-8">
-                <div class="grid grid-cols-4">
+              <div className="col-span-8">
+                <div className="grid grid-cols-4">
                   <div className="card" style={{ border: "none" }}>
                     <div className="card-head">
                       INDUSTRY :
                       <div className="card-head-value">
                         {planner.programIndustry.map((item, k) => (
-                          <div className={k === 0 ? "pt-2" : "border-t pt-2"}>
+                          <div
+                            key={k}
+                            className={k === 0 ? "pt-2" : "border-t pt-2"}
+                          >
                             {k + 1}. {item.label}
                           </div>
                         ))}
@@ -403,7 +738,10 @@ class PlanningView extends Component {
                       PERSONA :
                       <div className="card-head-value">
                         {planner.persona.map((item, k) => (
-                          <div className={k === 0 ? "pt-2" : "border-t pt-2"}>
+                          <div
+                            key={k}
+                            className={k === 0 ? "pt-2" : "border-t pt-2"}
+                          >
                             {k + 1}. {item.label}
                           </div>
                         ))}
@@ -415,7 +753,10 @@ class PlanningView extends Component {
                       APM 1:
                       <div className="card-head-value">
                         {planner.apm.map((item, k) => (
-                          <div className={k === 0 ? "pt-2" : "border-t pt-2"}>
+                          <div
+                            key={k}
+                            className={k === 0 ? "pt-2" : "border-t pt-2"}
+                          >
                             {k + 1}. {item.label}
                           </div>
                         ))}
@@ -428,7 +769,10 @@ class PlanningView extends Component {
                       Segment 1:
                       <div className="card-head-value">
                         {planner.segment.map((item, k) => (
-                          <div className={k === 0 ? "pt-2" : "border-t pt-2"}>
+                          <div
+                            key={k}
+                            className={k === 0 ? "pt-2" : "border-t pt-2"}
+                          >
                             {k + 1}. {item.label}
                           </div>
                         ))}
@@ -438,10 +782,10 @@ class PlanningView extends Component {
                 </div>
                 <div className="card-footer">
                   <div className="parent-program">Parent Programs</div>
-                  <div class="grid">
+                  <div className="grid">
                     {offers.length > 0 &&
                       offers.map((offer, k) => (
-                        <div>
+                        <div key={k}>
                           <div className="activity-head">
                             Offer Name :
                             <div className="activity-value">{offer.offer}</div>
@@ -493,28 +837,330 @@ class PlanningView extends Component {
               </div>
             </Modal>
 
-            <div
-              style={{
-                textAlign: "center",
-                paddingBottom: "30px",
-                display: "flex",
-                justifyContent: "center",
-              }}
-            >
-              <Link to="/planner-view">
-                <Button label="Back to List" variant="destructive" />
-              </Link>
-              <Link
-                to={`/planner-activities?planner=${this.state.planner_id}`}
-                style={{ marginLeft: "5px" }}
+            {this.state.isUserApprover ? (
+              <div
+                style={{
+                  textAlign: "center",
+                  paddingBottom: "30px",
+                  display: "flex",
+                  justifyContent: "center",
+                }}
               >
-                <Button label="Show in Calendar View" variant="outline-brand" />
-              </Link>
-              {/* <div style={{ marginLeft: "10px" }}>
-                <Button label="Submit for Approval" variant="brand" />
-              </div> */}
-            </div>
+                <Link to="/planner-view">
+                  <Button label="Back to List" variant="outline-brand" />
+                </Link>
+                <Link
+                  to={`/planner-activities?planner=${this.state.planner_id}`}
+                  style={{ marginLeft: "10px" }}
+                >
+                  <Button
+                    label="Show in Calendar View"
+                    variant="outline-brand"
+                  />
+                </Link>
+
+                <div style={{ marginLeft: "10px" }} onClick={this._exportPdf}>
+                  <Button
+                    label="Download as PDF"
+                    style={{ backgroundColor: "green", color: "white" }}
+                  />
+                </div>
+
+                <div style={{ marginLeft: "10px" }}>
+                  <Button
+                    label="Reject"
+                    variant="destructive"
+                    onClick={() => this.toggleApproveModal("reject")}
+                  />
+                </div>
+
+                <div style={{ marginLeft: "10px" }}>
+                  <Button
+                    label="Approve"
+                    variant="brand"
+                    onClick={() => this.toggleApproveModal("accept")}
+                  />
+                </div>
+              </div>
+            ) : (
+              <div
+                style={{
+                  textAlign: "center",
+                  paddingBottom: "30px",
+                  display: "flex",
+                  justifyContent: "center",
+                }}
+              >
+                <Link to="/planner-view">
+                  <Button label="Back to List" variant="destructive" />
+                </Link>
+                <Link
+                  to={`/planner-activities?planner=${this.state.planner_id}`}
+                  style={{ marginLeft: "10px" }}
+                >
+                  <Button
+                    label="Show in Calendar View"
+                    variant="outline-brand"
+                  />
+                </Link>
+                <div style={{ marginLeft: "10px" }}>
+                  <Button
+                    label="Submit for Approval"
+                    variant="brand"
+                    onClick={this.toggleSubmitModal}
+                  />
+                </div>
+              </div>
+            )}
+            {this.state.approve && (
+              <div style={{ marginLeft: "10px" }}>
+                <h2 style={{ fontSize: "20px", fontWeight: "700" }}>
+                  Approval History:{" "}
+                </h2>
+                <div
+                  style={{
+                    marginLeft: "20px",
+                    marginTop: "10px",
+                    paddingBottom: "30px",
+                    fontSize: "16px",
+                  }}
+                >
+                  <ul style={{ listStyleType: "upper-roman" }}>
+                    {this.state.approvalList.map((item, key) =>
+                      key === 0 ? (
+                        <li key={key}>
+                          <span style={{ fontWeight: "600", color: "#999999" }}>
+                            Submitted
+                          </span>{" "}
+                          by <a href={"mailto:" + item.email}>{item.email}</a>{" "}
+                          on {item.date}
+                        </li>
+                      ) : item.type.toLowerCase() === "rejected" ? (
+                        <li key={key}>
+                          <span style={{ fontWeight: "600", color: "red" }}>
+                            Rejected
+                          </span>{" "}
+                          by <a href={"mailto:" + item.email}>{item.email}</a> :
+                          Reason: {item.reason}
+                        </li>
+                      ) : (
+                        <li key={key}>
+                          <span style={{ fontWeight: "600", color: "green" }}>
+                            Accepted
+                          </span>{" "}
+                          by <a href={"mailto:" + item.email}>{item.email}</a> :
+                          Reason: {item.reason}
+                        </li>
+                      )
+                    )}
+                  </ul>
+                </div>
+              </div>
+            )}
           </div>
+          <Modal
+            isOpen={this.state.submitModal}
+            onRequestClose={this.toggleSubmitModal}
+            size="small"
+            heading="Submit for Approval"
+          >
+            <div className="p-4" style={{ height: "50vh", minHeight: "50vh" }}>
+              <Combobox
+                id="combobox-base"
+                disabled={this.props.disabled}
+                events={{
+                  onChange: (event, { value }) => {
+                    if (this.props.action) {
+                      this.props.action("onChange")(event, value);
+                    }
+                    this.setState({ approver1Value: value });
+                  },
+                  onRequestRemoveSelectedOption: (event, data) => {
+                    this.setState({
+                      approver1Value: "",
+                      approver1: data.selection,
+                    });
+                  },
+                  onSubmit: (event, { value }) => {
+                    if (this.props.action) {
+                      this.props.action("onChange")(event, value);
+                    }
+                    this.setState({
+                      approver1Value: "",
+                      approver1: this.state.selection,
+                    });
+                  },
+                  onSelect: (event, data) => {
+                    if (this.props.action) {
+                      this.props.action("onSelect")(
+                        event,
+                        ...Object.keys(data).map((key) => data[key])
+                      );
+                    }
+                    this.setState({
+                      approver1Value: "",
+                      approver1: data.selection,
+                    });
+                  },
+                }}
+                labels={{
+                  label: "Approver 1",
+                  placeholder: "Select Approver 1 Emails",
+                }}
+                menuItemVisibleLength={5}
+                multiple
+                options={comboboxFilterAndLimit({
+                  inputValue: this.state.approver1Value,
+                  limit: 10,
+                  options: this.state.accounts,
+                  selection: this.state.approver1,
+                })}
+                selection={this.state.approver1}
+                value={this.state.approver1Value}
+                required
+                errorText={this.state.errorTexts.approver1}
+              />
+
+              <Combobox
+                id="combobox-base"
+                disabled={this.props.disabled}
+                events={{
+                  onChange: (event, { value }) => {
+                    if (this.props.action) {
+                      this.props.action("onChange")(event, value);
+                    }
+                    this.setState({ approver2Value: value });
+                  },
+                  onRequestRemoveSelectedOption: (event, data) => {
+                    this.setState({
+                      approver2Value: "",
+                      approver2: data.selection,
+                    });
+                  },
+                  onSubmit: (event, { value }) => {
+                    if (this.props.action) {
+                      this.props.action("onChange")(event, value);
+                    }
+                    this.setState({
+                      approver2Value: "",
+                      approver2: this.state.selection,
+                    });
+                  },
+                  onSelect: (event, data) => {
+                    if (this.props.action) {
+                      this.props.action("onSelect")(
+                        event,
+                        ...Object.keys(data).map((key) => data[key])
+                      );
+                    }
+                    this.setState({
+                      approver2Value: "",
+                      approver2: data.selection,
+                    });
+                  },
+                }}
+                labels={{
+                  label: "Approver 2",
+                  placeholder: "Select Approver 2 Emails",
+                }}
+                menuItemVisibleLength={5}
+                multiple
+                options={comboboxFilterAndLimit({
+                  inputValue: this.state.approver2Value,
+                  limit: 50,
+                  options: this.state.accounts2,
+                  selection: this.state.approver2,
+                })}
+                selection={this.state.approver2}
+                value={this.state.approver2Value}
+                required
+                errorText={this.state.errorTexts.approver2}
+              />
+
+              <Input
+                aria-describedby="error-4"
+                id="unique-id-4"
+                label="Note"
+                onChange={(event, data) => {
+                  this.setState({
+                    approve: { ...this.state.approve, note: data.value },
+                  });
+                }}
+                value={this.state.approve.note}
+                required
+                errorText={this.state.errorTexts.note}
+                placeholder="Enter description to assist approvers"
+              />
+
+              <div
+                style={{
+                  width: "100%",
+                  marginTop: "20px",
+                  marginLeft: "auto",
+                  textAlign: "center",
+                  display: "flex",
+                  justifyContent: "center",
+                }}
+              >
+                <div>
+                  <Button
+                    label="Submit for Approval"
+                    variant="brand"
+                    onClick={this.handleSubmit}
+                  />
+                </div>
+              </div>
+            </div>
+          </Modal>
+          <Modal
+            isOpen={this.state.approvalModal}
+            onRequestClose={this.toggleApproveModal}
+            size="small"
+            heading="Submit for Approval"
+          >
+            <div className="p-4">
+              <Input
+                aria-describedby="error-4"
+                id="unique-id-4"
+                label="Note"
+                onChange={(event, data) => {
+                  this.setState({
+                    approve: { ...this.state.approve, note: data.value },
+                  });
+                }}
+                value={this.state.approve.note}
+                required
+                errorText={this.state.errorTexts.note}
+                placeholder="Enter description to assist approvers"
+              />
+
+              <div
+                style={{
+                  width: "100%",
+                  marginTop: "20px",
+                  marginLeft: "auto",
+                  textAlign: "center",
+                  display: "flex",
+                  justifyContent: "center",
+                }}
+              >
+                <div>
+                  <Button
+                    label="Approve"
+                    variant="brand"
+                    onClick={() => this.handleApprove("accept")}
+                  />
+                </div>
+                <div style={{ marginLeft: "20px" }}>
+                  <Button
+                    label="Reject"
+                    variant="destructive"
+                    onClick={() => this.handleApprove("reject")}
+                  />
+                </div>
+              </div>
+            </div>
+          </Modal>
         </IconSettings>
       </div>
     );

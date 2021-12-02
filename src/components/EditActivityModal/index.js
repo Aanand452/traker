@@ -609,7 +609,7 @@ class EditActivityModalComponent extends Component {
                       autocomplete="off"
                       dateDisabled={this.checkEndDate}
                     />
-                    {this.state.errors.startDate && <div class="slds-form-element__help">This field is required</div>}
+                    {this.state.errors.startDate && <div className="slds-form-element__help">This field is required</div>}
                   </div>
                 </div>
                 <div style={{float: 'left', width: '25%'}}>
@@ -637,7 +637,7 @@ class EditActivityModalComponent extends Component {
                       autocomplete="off"
                       dateDisabled={this.checkStartDate}
                     />
-                    {this.state.errors.endDate && <div class="slds-form-element__help">This field is required</div>}
+                    {this.state.errors.endDate && <div className="slds-form-element__help">This field is required</div>}
                   </div>
                 </div>
             </div>

@@ -7,16 +7,19 @@ import {
   GlobalNavigationBarRegion,
   ProgressBar,
   ScopedNotification,
+  GlobalHeaderNotifications,
   GlobalHeaderProfile,
   GlobalHeader,
   Popover,
+  Button,
 } from "@salesforce/design-system-react";
 
 import { NavContainer } from "./styles";
 import NavigationBarLink from "./NavigationBarLink";
-import { withRouter } from "react-router-dom";
+import { Link, withRouter } from "react-router-dom";
 import { getCookie } from "../../utils/cookie";
 import { setCookie } from "../../utils/cookie";
+import { getAPIUrl } from "../../config/config";
 
 const HeaderProfileCustomContent = (props) => (
   <div id="header-profile-custom-popover-content">
@@ -33,12 +36,59 @@ const HeaderProfileCustomContent = (props) => (
 );
 HeaderProfileCustomContent.displayName = "HeaderProfileCustomContent";
 
+// Notifications content is currently the contents of a generic `Popover` with markup copied from https://www.lightningdesignsystem.com/components/global-header/#Notifications. This allows content to have tab stops and focus trapping. If you need a more specific/explicit `GlobalHeaderNotification` content, please create an issue.
+const HeaderNotificationsCustomContent = (props) => (
+  <ul id="header-notifications-custom-popover-content">
+    {props.items.length > 0 ? (
+      props.items.map((item) => (
+        <li
+          className={`slds-global-header__notification ${
+            item.unread ? "slds-global-header__notification_unread" : ""
+          }`}
+          key={`notification-item-${item.id}`}
+        >
+          <div className="slds-media slds-has-flexi-truncate slds-p-around_x-small">
+            <div className="slds-media__figure"></div>
+            <div className="slds-media__body">
+              <div className="slds-grid slds-grid_align-spread">
+                <Link
+                  to={item.link}
+                  className="slds-text-link_reset slds-has-flexi-truncate"
+                >
+                  <h3
+                    className="slds-truncate"
+                    title={`${item.name} ${item.action}`}
+                  >
+                    <strong>{`${item.name} ${item.action}`}</strong>
+                  </h3>
+                  <p className="slds-truncate" title={item.comment}>
+                    {item.comment}
+                  </p>
+                </Link>
+              </div>
+            </div>
+          </div>
+        </li>
+      ))
+    ) : (
+      <li>No new Notifications</li>
+    )}
+  </ul>
+);
+
+HeaderNotificationsCustomContent.displayName =
+  "HeaderNotificationsCustomContent";
+
 class NavBar extends Component {
   state = {
     tableauUrl: "/",
     progress: { active: false, percentage: 0 },
     notification: { active: false, message: "", type: "", icon: "" },
+    notifications: [],
+    programsFYstartDate: "",
+    programsFYendDate: "",
   };
+  API_URL = "localhost:3000";
 
   onClickLogout = (e) => {
     e.preventDefault();
@@ -86,6 +136,8 @@ class NavBar extends Component {
     this.setState(
       {
         tableauUrl: data.tablaeu,
+        programsFYstartDate: data.programsFYstartDate,
+        programsFYendDate: data.programsFYendDate,
       },
       ...this.state
     );
@@ -121,23 +173,124 @@ class NavBar extends Component {
 
   async getConfig() {
     try {
+      if (window.location.hostname === "localhost")
+        this.API_URL = "http://localhost:3000/api/v1";
+      else this.API_URL = await getAPIUrl();
+
       let response = await fetch("/config");
       let data = await response.json();
       response.status === 200 && this.configUrls(data);
     } catch (e) {
-      console.error("ERROR: cannot get the url config: ", e);
+      console.log("ERROR: cannot get the url config: ", e);
     }
   }
 
   componentDidMount() {
     this.getConfig();
+    this.getPlanners();
   }
+
+  getPlanners = async (startDate, endDate) => {
+    this.setState({ showLoader: true });
+
+    const { programsFYstartDate, programsFYendDate } = this.state;
+
+    try {
+      let token = getCookie("token").replaceAll('"', "");
+      let email = getCookie("username").replaceAll('"', "");
+      const config = {
+        method: "POST",
+        headers: {
+          // Accept: "application/json",
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          programsStartDate: startDate ? startDate : programsFYstartDate,
+          programsEndDate: endDate ? endDate : programsFYendDate,
+        }),
+      };
+      console.log(this.API_URL);
+      const response = await fetch(`${this.API_URL}/planners`, config);
+      if (response.status === 200) {
+        let { result } = await response.json();
+        let notifications = [],
+          aggregates = { budget: 0, mp_target: 0 };
+
+        for (let program of result) {
+          if (program.approval) {
+            for (let appr of program.approval.approver1) {
+              if (email === appr.email && appr.status !== "Accepted")
+                notifications.push({
+                  action: "needed",
+                  comment: "For planner - " + program.programName,
+                  id: 1,
+                  name: "Approval Request",
+                  link: "/planner-slider?planner=" + program.ProgramPlannerId,
+                });
+            }
+            for (let appr of program.approval.approver2) {
+              if (email === appr.email && appr.status !== "Accepted")
+                notifications.push({
+                  action: "needed",
+                  comment: "For planner - " + program.programName,
+                  id: 1,
+                  name: "Approval Request",
+                  link: "/planner-slider?planner=" + program.ProgramPlannerId,
+                });
+            }
+          }
+        }
+
+        this.setState({ programs: result, aggregates, notifications });
+      } else {
+        console.error(response);
+        throw new Error(response);
+      }
+    } catch (err) {
+      console.error(err);
+      this.setState({
+        toast: {
+          active: true,
+          heading: "Something went wrong, please try again in a few seconds",
+          variant: "error",
+        },
+      });
+    }
+
+    this.setState({ showLoader: false });
+  };
 
   render() {
     return (
       <NavContainer>
         <IconSettings iconPath="/assets/icons">
           <GlobalHeader logoSrc="assets/images/logo.svg">
+            <Button
+              assistiveText={{ icon: "Filters" }}
+              iconCategory="utility"
+              iconName="filterList"
+              iconVariant="border-filled"
+              variant="icon"
+              style={{ marginLeft: "5px" }}
+              onClick={() => {
+                console.log("notificatiosn");
+              }}
+            />
+            <GlobalHeaderNotifications
+              notificationCount={this.state.notifications.length}
+              popover={
+                <Popover
+                  ariaLabelledby="header-notifications-custom-popover-content"
+                  body={
+                    <HeaderNotificationsCustomContent
+                      items={this.state.notifications}
+                    />
+                  }
+                  id="header-notifications-popover-id"
+                />
+              }
+            />
             <GlobalHeaderProfile
               avatar="/images/avatar.png"
               userName={getCookie("userName").replaceAll('"', "")}
