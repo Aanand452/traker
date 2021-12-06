@@ -176,20 +176,13 @@ class PlanningView extends Component {
 
   _exportPdf = () => {
     // window.print();
-    var pdf = new jsPDF("p", "pt", "letter");
-    pdf.canvas.height = 72 * 11;
-    pdf.canvas.width = 72 * 8.5;
-
-    pdf.fromHTML(document.body);
-
-    pdf.save("test.pdf");
-    // html2canvas(document.querySelector("#printable")).then((canvas) => {
-    //   document.body.appendChild(canvas); // if you want see your screenshot in body.
-    //   const imgData = canvas.toDataURL("image/png");
-    //   const pdf = new jsPDF();
-    //   pdf.addImage(imgData, "JPEG", 0, 0);
-    //   pdf.save("download.pdf");
-    // });
+    html2canvas(document.querySelector("#printable")).then((canvas) => {
+      document.body.appendChild(canvas); // if you want see your screenshot in body.
+      const imgData = canvas.toDataURL("image/png");
+      const pdf = new jsPDF("l", "mm", "a2");
+      pdf.addImage(imgData, "JPEG", 0, 0);
+      pdf.save("download.pdf");
+    });
   };
 
   toggleModal = () => {
@@ -572,7 +565,7 @@ class PlanningView extends Component {
                         )}
                       </div>
                     </div>
-                    {this.state.budgetToggle && (
+                    {this.state.mpTargetToggle && (
                       <hr style={{ marginTop: "10px", marginBottom: "10px" }} />
                     )}
 
@@ -903,6 +896,14 @@ class PlanningView extends Component {
                     variant="outline-brand"
                   />
                 </Link>
+
+                <div style={{ marginLeft: "10px" }} onClick={this._exportPdf}>
+                  <Button
+                    label="Download as PDF"
+                    style={{ backgroundColor: "green", color: "white" }}
+                  />
+                </div>
+
                 <div style={{ marginLeft: "10px" }}>
                   <Button
                     label="Submit for Approval"

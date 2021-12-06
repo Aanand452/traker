@@ -4,7 +4,6 @@ import moment from "moment";
 import NavBar from "../NavBar";
 import BudgetInput from "../BudgetInput/BudgetInput";
 import update from "immutability-helper";
-import { Redirect } from "react-router-dom";
 import { withRouter } from "react-router";
 import ConfirmationDialog from "../Prompt";
 

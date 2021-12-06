@@ -1,157 +1,70 @@
-# SARA (Salesforce Reporter application)
+# Getting Started with Create React App
 
-Basic node/express project
+This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
-- Sequelize ORM documentation [https://sequelize.org/master/manual/](https://sequelize.org/master/manual/) 
-- Postrgres  [https://www.postgresql.org/](https://www.postgresql.org/) 
-- Express MVC framework[https://expressjs.com/](https://expressjs.com/)
-- Yarn monorepos [https://classic.yarnpkg.com/blog/2017/08/02/introducing-workspaces/](https://classic.yarnpkg.com/blog/2017/08/02/introducing-workspaces/) 
-- Docker [https://docs.docker.com/compose/](https://docs.docker.com/compose/) 
+## Available Scripts
 
-## Project startup
+In the project directory, you can run:
 
-This project is built using docker containers to development porpuses, the final app will work direcly with a node env and database env built in in *Heroku*
+### `yarn start`
 
-### Startup containers (node / postgres )
+Runs the app in the development mode.\
+Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
 
-executing the next command will bring up 2 containers will allow run the app, this project uses nodemon to the automatically restart the node server once a change is done in the project.
+The page will reload if you make edits.\
+You will also see any lint errors in the console.
 
-if it is the firts time run
-```
-yarn && docker-compose up -d && docker-compose logs -f
-```  
+### `yarn test`
 
-if you already had ran the fisrt time command just use
-```
-docker-compose up -d && docker-compose logs -f
-```  
+Launches the test runner in the interactive watch mode.\
+See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
 
-to close the connection with the containers use `control + c`
+### `yarn build`
 
-### stop containers (node / postgres )
+Builds the app for production to the `build` folder.\
+It correctly bundles React in production mode and optimizes the build for the best performance.
 
-```
-docker-compose down
-```
+The build is minified and the filenames include the hashes.\
+Your app is ready to be deployed!
 
-## BD setup
+See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
 
-Restart the docker container and then create an .env file  inside @sara/db workspace on `cd packages/db` folder, in this file add this enviroment variable (this will be used only for the DB startup and run migrations).
+### `yarn eject`
 
-```
-DB_HOST=localhost
-```
+**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
 
-run the initial db migration command using this command
-  
-```
-yarn workspace @sara/db db:migrate
-```
+If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
 
-A success message like this should appear once the initial migration was done.
+Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
 
-## Modifing the DB model locally
+You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
 
-Sometimes is required modify the DB model, for this follow the documentation given in [https://sequelize.org/master/manual/migrations.html](https://sequelize.org/master/manual/migrations.html) , basically the only task you need to run are this 
+## Learn More
 
-create new migration
+You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
 
-```
-yarn workspace @sara/db db:new-migration {migration name here}
-``` 
+To learn React, check out the [React documentation](https://reactjs.org/).
 
-this will generate a new file inside of `./packages/db/migrations` that will look like this 
+### Code Splitting
 
-```
-'use strict';
+This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
 
-module.exports = {
-  up: async (queryInterface, Sequelize) => {
-    /**
-     * Add altering commands here.
-     *
-     * Example:
-     * await queryInterface.createTable('users', { id: Sequelize.INTEGER });
-     */
-  },
+### Analyzing the Bundle Size
 
-  down: async (queryInterface, Sequelize) => {
-    /**
-     * Add reverting commands here.
-     *
-     * Example:
-     * await queryInterface.dropTable('users');
-     */
-  }
-};
+This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
 
-```
+### Making a Progressive Web App
 
-to excecute the new  migration just use the command 
+This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
 
-```
-yarn workspace @sara/db db:migrate
-```
+### Advanced Configuration
 
-##  Running db migrations over HEROKU env
+This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
 
-Heroku will be used as a cloud service to host this web app, for that, we created 2 environments: one for testing and one for stable. When a change is performed in the database schema a migration might be required to implement these changes over this environments databases. To perform these changes please run the nexts commands
+### Deployment
 
-make sure you are a colaborator in the heroku app and have the remotes setup [https://devcenter.heroku.com/articles/git#creating-a-heroku-remote](see on heroku) and then run the commands below 
+This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
 
-Do login via Heroku CLI
+### `yarn build` fails to minify
 
-```
-heroku login
-```
-
-to perform a new migration run this command over you local terminal
-
-```
-heroku run bash
-```
-
-once you get connected you will be able to run any command over the heroku server, to perform a new migration run
-
-```
-yarn workspace @sara/db db:migrate
-```
-
-
-## Seegin dummy data
-
-Run the scripts given in the directory `./packages/db/seed/dummy` , these are required to get dropdowns data
-
-
-## Swagger  documentation
-
-  whole API documentation is given in this link [http://localhost:3000/docs/](http://localhost:3000/docs/) 
-
-
-## Setting up login for the app
-
-The app currently uses a SSO system to perform the login locally and in other envs (testing - stable), if you are just setting up the a new environment locally please follow the next steps. This can apply also for stable env but the SSO endpoint will change to the Salesforce's aloha org.
-
-### Testing login via salesforce org
-
-The testing org used for this project is allocated in https://mgonzalez-dev-ed.lightning.force.com/ a developer org, please refer to miller.gonzalez@globant.com to get access to it. 
-
-A new ORG can be setup also for it please refer to https://www.youtube.com/watch?v=9Ov4Y6M5PLE and modify the .env vars in the frontend project (salesforce-reporter-app) https://drive.google.com/drive/folders/1F_NionUQOqNvJaW_K5vzvTM6mZPoW-7g?usp=sharing to match with the new org 
-  
-  
-### Setup login local  
-
-  Before run the project you need to create a .env file at the root of the project inside this file, add the `AUTH_KEY` variable, when there is a request to the login endpoint `/login` API will check if this env var match with the password sent through the body request.
-  
-  
-  ```
-DB_HOST=localhost
-AUTH_KEY=some value than match with the AUTH_KEY on frontend app
-  ```
-
-  In the frontend app, we also have to create the same env var, and the value of these two has to be the same.
-  There are two ways to login into the app, for more information refer to the frontend's app readme https://drive.google.com/drive/folders/1F_NionUQOqNvJaW_K5vzvTM6mZPoW-7g?usp=sharing
-
-  One of those need the setup and configuration of a salesforce org, to know more about it, read the official documentation on the next link [https://help.salesforce.com/articleView?id=setup_overview.htm&type=5](https://help.salesforce.com/articleView?id=setup_overview.htm&type=5)
-
-  Remind that Heroku has its way to set the env vars and applies to test and production environments.
+This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)

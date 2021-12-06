@@ -771,7 +771,7 @@ class Table extends Component {
   };
   calendarViewBtn = () => {
     this.setState({ isCalanderView: !this.state.isCalanderView });
-    !this.state.isCalanderView ? window.location.reload(false) : "";
+    if (!this.state.isCalanderView) window.location.reload(false);
     this.getFilteredData();
   };
   calendarOnHover = () => {

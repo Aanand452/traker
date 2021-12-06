@@ -60,7 +60,6 @@ class EditProgramPage extends Component {
     const { programsFYstartDate, programsFYendDate } = this.state;
 
     try {
-      console.log('This is called')
       let token = getCookie('token').replaceAll('"','');
       const config = {
         method: 'POST',
@@ -82,7 +81,6 @@ class EditProgramPage extends Component {
       } else throw new Error(response);
     } catch (err) {
       console.error(err);
-      console.log('This is called')
       this.setState({
         toast: {
           active: true,

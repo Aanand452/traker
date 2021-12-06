@@ -71,8 +71,34 @@ const ActionCell = ({ children, ...props }) => {
     getURL();
   }, []);
 
+  const handleRowAction = (item, { id }) => {
+    switch (id) {
+      case 0:
+        // this.setState({
+        //   selectedprogram: {
+        //     ...item,
+        //     metrics: item.metrics && item.metrics.toString(),
+        //   },
+        // });
+        // this.toggleOpen(true);
+        this.props.history.push("create-planner");
+        break;
+      case 1:
+        this.props.onDelete(item);
+        break;
+      case 2:
+        this.setState({ viewItem: item });
+        // this.toggleViewProgramModal();
+        // <Link to="/planner-slider" />
+        this.props.history.push("/planner-slider");
+        break;
+      default:
+        break;
+    }
+  };
+
   return (
-    <DataTableCell {...props} onAction={this.handleRowAction}>
+    <DataTableCell {...props} onAction={handleRowAction}>
       <div style={{ display: "flex", justifyContent: "space-around" }}>
         <Link to={`/planner-slider?planner=${children}`} title="open">
           View
@@ -557,32 +583,6 @@ class Table extends Component {
 
   toggleHistoricModal = () => {
     this.setState({ historicModalOpen: !this.state.historicModalOpen });
-  };
-
-  handleRowAction = (item, { id }) => {
-    switch (id) {
-      case 0:
-        // this.setState({
-        //   selectedprogram: {
-        //     ...item,
-        //     metrics: item.metrics && item.metrics.toString(),
-        //   },
-        // });
-        // this.toggleOpen(true);
-        this.props.history.push("create-planner");
-        break;
-      case 1:
-        this.props.onDelete(item);
-        break;
-      case 2:
-        this.setState({ viewItem: item });
-        // this.toggleViewProgramModal();
-        // <Link to="/planner-slider" />
-        this.props.history.push("/planner-slider");
-        break;
-      default:
-        break;
-    }
   };
 
   validations = (input, data) => {
