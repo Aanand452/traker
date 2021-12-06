@@ -1,70 +1,72 @@
-# Getting Started with Create React App
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
-## Available Scripts
 
-In the project directory, you can run:
+Basic react+redux project.
+- Full Webpack pipeline created through [react-create-app](https://github.com/facebookincubator/create-react-app)
+- Redux basic config with thunk and [redux devtools](https://github.com/zalmoxisus/redux-devtools-extension) integration
+- Basic Master/Detail Routing using [react-router](https://reacttraining.com/react-router)
+- Added data mock and example of how to load data async with redux
+- Integrated [Salesforce Lightning Design System](https://www.lightningdesignsystem.com) to use as base CSS
 
-### `yarn start`
+### Structure
+```
+|- server
+    |- config
+      |- config.js  // Passport configuration for SAML authentication
+      |- routes     // Route configuration for the Express application
+      ...
+    |- app.js       // Entry point for the Express application
+|- src
+   |- index.js      // Entry point for the app, contains redux store config and initial render
+   |- actions/      // Redux action creators, single file for now, distribute in multiple as app scales
+   |- reducers/     // Redux reduces, business logic and state management, single file for now, distribute in multiple as app scales
+   |- config/     // Global js configuration variables and api url consts.
+   |- components/   // Visual UI components, components with no state dependent logic
+   |- containers/   // State dependent components
+      |- App.js     // Main app container, contains routing
+```
+* For more check create-react-app [Folder Structure](#folder-structure)
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+### How to run for localhost for react development
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+This must be used only for react development, in this way the webapp will not use the SSO authentication and instead will use a dummy login given by the user table in DB (user-password)
 
-### `yarn test`
+1. Install [nodejs LTS](https://nodejs.org/en/download/)
+2. Install [yarn](https://yarnpkg.com)
+3. run ```yarn start```
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
 
-### `yarn build`
+### How to test as testing env locally
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+This must be used for to test whole app with SSO authentication
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+```
+yarn && yarn server
+```
 
-### `yarn eject`
+---------
+This project was bootstrapped with [Create React App](https://github.com/facebookincubator/create-react-app).
+You can find some information on how to perform common tasks. [here](https://github.com/facebookincubator/create-react-app/blob/master/packages/react-scripts/template/README.md).
+---------
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+## External Libraries used
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+- [glamour](https://www.npmjs.com/package/glamor): Used for having each component styles inside the component file.
+- [rc-tooltip](https://www.npmjs.com/package/rc-tooltip): Used for tooltips in the app they were styled lightning like.
+- [currency-formatter](https://www.npmjs.com/package/currency-formatter): Used for formatting numbers in the app.
+- [react-select](https://www.npmjs.com/package/react-select): Used for dropdown pickers.
+- [react-highlight-words](https://www.npmjs.com/package/react-highlight-words): Used for highlighting searched words in the price lists.
+- [lodash](https://www.npmjs.com/package/lodash): Used for some specific array processing in the app for a better compatibility among browsers.
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+## Login into the app
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+  Create a .env file at the root of the project inside this file, add the `AUTH_KEY` variable, when there is a request to the login endpoint `/login` API will check if this env var match with the password sent through the body request.
 
-## Learn More
+  There are two ways to login, which depends on the value of the env var `SSO`:
+    - If `SSO` equals `'true'` then, you will be redirected to an external salesforce authenticator; if the login goes well, there will be a new request, this time to the API, and the `AUTH_KEY` will be sent automatically.
+    - If `SSO` different to `'true'` you have to send the `AUTH_KEY` as a password in the respective input.
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+  In the backend app, we also have to create the same env var, and the value of these two has to be the same.
 
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `yarn build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+  Remind that Heroku has its way to set the env vars and applies to test and production environments.
