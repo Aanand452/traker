@@ -70,7 +70,19 @@ class PlanningView extends Component {
           id: "5",
           email: "trina.ng@salesforce.com",
           label: "Trina Ng",
-        },
+        },{//This is just for Test
+          id: "6",
+          email: "kvarma@salesforce.com",
+          label: "Krishna Verma",
+        },{
+          id: "7",
+          email: "vgosu@salesforce.com",
+          label: "Vamsi Krishna",
+        },{
+          id: "7",
+          email: "hpediredla@salesforce.com ",
+          label: "Harsha",
+        },//remove till here
       ],
       accounts2: [
         {
@@ -132,7 +144,19 @@ class PlanningView extends Component {
           id: "5",
           email: "npeers@salesforce.com",
           label: "Nick Peers",
-        },
+        },{//This is just for Test
+          id: "6",
+          email: "kvarma@salesforce.com",
+          label: "Krishna Verma",
+        },{
+          id: "7",
+          email: "vgosu@salesforce.com",
+          label: "Vamsi Krishna",
+        },{
+          id: "7",
+          email: "hpediredla@salesforce.com ",
+          label: "Harsha",
+        },//remove till here
       ],
       approve: {
         status: "Pending for Approval",
@@ -230,7 +254,6 @@ class PlanningView extends Component {
       let { result } = response;
 
       let raw_program = result;
-      console.log(result);
 
       result.offers.offers = result.offers.offers.map((offer) => {
         return {
@@ -262,7 +285,6 @@ class PlanningView extends Component {
         });
         if (result.approval.approver1)
           for (let app of result.approval.approver1) {
-            console.log(app.status);
             if (app.email === userEmail) {
               isUserApprover = true;
             }
@@ -277,7 +299,6 @@ class PlanningView extends Component {
 
         if (result.approval.approver2)
           for (let app of result.approval.approver2) {
-            console.log(app.status);
             if (app.email === userEmail) {
               isUserApprover = true;
             }
@@ -371,7 +392,6 @@ class PlanningView extends Component {
           }),
         },
       };
-      console.log(body);
       const config = {
         method: "PUT",
         headers: {
@@ -428,7 +448,6 @@ class PlanningView extends Component {
         planner_id,
         email: username,
       };
-      console.log("@@", body);
       const config = {
         method: "POST",
         headers: {
@@ -446,7 +465,6 @@ class PlanningView extends Component {
 
       if (response.status === 200) {
         this.setState({ approvalModal: !this.state.approvalModal });
-        console.log("response", response);
         // window.location.reload();
         // this.props.history.push({
         //   pathname: "/planner-view",

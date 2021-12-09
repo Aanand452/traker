@@ -19,7 +19,6 @@ export default function Activities(props) {
   return (
     <div>
       <ul className="list-activities">
-        {console.log(Object.keys(activites).length)}
         {Object.keys(activites)
           .splice(0, props.all ? Object.keys(activites).length : 4)
           .map((item, k) => (

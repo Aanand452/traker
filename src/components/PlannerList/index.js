@@ -512,8 +512,6 @@ class Table extends Component {
 
     let data = [...this.props.data];
 
-    console.log(search, data);
-
     if (search.owner) {
       data = data.filter((item) => {
         return item.programOwner
