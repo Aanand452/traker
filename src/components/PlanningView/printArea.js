@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { Component, Fragment, useEffect, useState } from "react";
 import NavBar from "../NavBar";
 import "./styles.css";
 // import Modal from "@salesforce/design-system-react/components/modal";
@@ -15,27 +15,24 @@ import comboboxFilterAndLimit from "@salesforce/design-system-react/components/c
 import { Link } from "react-router-dom";
 import { getCookie } from "../../utils/cookie";
 import { getAPIUrl } from "../../config/config";
-import Activities from "./Activities";
 import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
 import moment from "moment";
 import { nFormatter } from "../../utils/fomatters";
-import PlanningViewPrintArea from "./printArea";
 
-class PlanningView extends Component {
+class PlanningViewPrintArea extends Component {
   constructor(props) {
     super(props);
     this.state = {
       planner: {},
-      print: false,
       planner_id: false,
       loading: true,
       modalOpen: false,
       submitModal: false,
       approvalModal: false,
       selectedModal: 0,
-      mpTargetToggle: false,
-      budgetToggle: false,
+      mpTargetToggle: true,
+      budgetToggle: true,
       raw_program: {},
       accounts: [
         {
@@ -177,18 +174,14 @@ class PlanningView extends Component {
   }
 
   _exportPdf = () => {
-    this.setState({ print: true });
     // window.print();
-    setTimeout(() => {
-      html2canvas(document.querySelector("#printable")).then((canvas) => {
-        document.body.appendChild(canvas); // if you want see your screenshot in body.
-        const imgData = canvas.toDataURL("image/png");
-        const pdf = new jsPDF("l", "mm", "a2");
-        pdf.addImage(imgData, "JPEG", 0, 0);
-        pdf.save("download.pdf");
-      });
-      this.setState({ print: false });
-    }, 300);
+    html2canvas(document.querySelector("#printable")).then((canvas) => {
+      document.body.appendChild(canvas); // if you want see your screenshot in body.
+      const imgData = canvas.toDataURL("image/png");
+      const pdf = new jsPDF("l", "mm", "a2");
+      pdf.addImage(imgData, "JPEG", 0, 0);
+      pdf.save("download.pdf");
+    });
   };
 
   toggleModal = () => {
@@ -480,7 +473,7 @@ class PlanningView extends Component {
     let { offers } = planner.offers;
 
     return (
-      <div>
+      <div id="">
         <IconSettings iconPath="assets/icons">
           <div style={{ backgroundColor: "white", paddingLeft: "10px" }}>
             <NavBar />
@@ -527,7 +520,10 @@ class PlanningView extends Component {
                 <div>
                   <div
                     className="card"
-                    style={{ marginBottom: "25px", border: "none" }}
+                    style={{
+                      marginBottom: "25px",
+                      border: "none",
+                    }}
                   >
                     <div
                       className="card-head"
@@ -614,7 +610,10 @@ class PlanningView extends Component {
 
                   <div
                     className="card"
-                    style={{ marginBottom: "25px", border: "none" }}
+                    style={{
+                      marginBottom: "25px",
+                      border: "none",
+                    }}
                   >
                     <div className="card-head">
                       <div
@@ -654,12 +653,6 @@ class PlanningView extends Component {
                       <hr style={{ marginTop: "10px", marginBottom: "10px" }} />
                     )}
 
-                    {/* <div className="card-head">
-                      <span> Budget :</span>
-                      <span className="card-head-value">
-                        $<span>{parseFloat(total_budget).toFixed(0)}</span>K
-                      </span>
-                    </div> */}
                     {this.state.budgetToggle && (
                       <div className="grid-cols-2" style={{ display: "grid" }}>
                         <div className="budgets">
@@ -694,7 +687,12 @@ class PlanningView extends Component {
                     )}
                   </div>
 
-                  <div className="card" style={{ border: "none" }}>
+                  <div
+                    className="card"
+                    style={{
+                      border: "none",
+                    }}
+                  >
                     <div className="card-head">Other KPIs :</div>
                     {planner.persona.map((item, k) => (
                       <div
@@ -776,30 +774,29 @@ class PlanningView extends Component {
                 <div className="card-footer">
                   <div className="parent-program">Parent Programs</div>
                   <div className="grid">
-                    {offers.length > 0 &&
-                      offers.map((offer, k) => (
-                        <div key={k}>
-                          <div className="activity-head">
-                            Offer Name :
-                            <div className="activity-value">{offer.offer}</div>
-                          </div>
-
-                          <div className="activity-head" style={{ top: "50%" }}>
-                            Activities :
-                          </div>
-
-                          <Activities
-                            index={k}
-                            toggleModal={() => {
-                              this.setState({
-                                selectedModal: k,
-                              });
-                              this.toggleModal();
-                            }}
-                            activities={offer.activities}
-                          />
+                    {offers.map((offer, k) => (
+                      <div key={k}>
+                        <div className="activity-head">
+                          Offer Name :
+                          <div className="activity-value">{offer.offer}</div>
                         </div>
-                      ))}
+
+                        <div className="activity-head" style={{ top: "50%" }}>
+                          Activities :
+                        </div>
+
+                        <Activities
+                          index={k}
+                          toggleModal={() => {
+                            this.setState({
+                              selectedModal: k,
+                            });
+                            this.toggleModal();
+                          }}
+                          activities={offer.activities}
+                        />
+                      </div>
+                    ))}
                   </div>
                 </div>
               </div>
@@ -830,89 +827,6 @@ class PlanningView extends Component {
               </div>
             </Modal>
 
-            {this.state.isUserApprover ? (
-              <div
-                style={{
-                  textAlign: "center",
-                  paddingBottom: "30px",
-                  display: "flex",
-                  justifyContent: "center",
-                }}
-              >
-                <Link to="/planner-view">
-                  <Button label="Back to List" variant="outline-brand" />
-                </Link>
-                <Link
-                  to={`/planner-activities?planner=${this.state.planner_id}`}
-                  style={{ marginLeft: "10px" }}
-                >
-                  <Button
-                    label="Show in Calendar View"
-                    variant="outline-brand"
-                  />
-                </Link>
-
-                <div style={{ marginLeft: "10px" }} onClick={this._exportPdf}>
-                  <Button
-                    label="Download as PDF"
-                    style={{ backgroundColor: "green", color: "white" }}
-                  />
-                </div>
-
-                <div style={{ marginLeft: "10px" }}>
-                  <Button
-                    label="Reject"
-                    variant="destructive"
-                    onClick={() => this.toggleApproveModal("reject")}
-                  />
-                </div>
-
-                <div style={{ marginLeft: "10px" }}>
-                  <Button
-                    label="Approve"
-                    variant="brand"
-                    onClick={() => this.toggleApproveModal("accept")}
-                  />
-                </div>
-              </div>
-            ) : (
-              <div
-                style={{
-                  textAlign: "center",
-                  paddingBottom: "30px",
-                  display: "flex",
-                  justifyContent: "center",
-                }}
-              >
-                <Link to="/planner-view">
-                  <Button label="Back to List" variant="destructive" />
-                </Link>
-                <Link
-                  to={`/planner-activities?planner=${this.state.planner_id}`}
-                  style={{ marginLeft: "10px" }}
-                >
-                  <Button
-                    label="Show in Calendar View"
-                    variant="outline-brand"
-                  />
-                </Link>
-
-                <div style={{ marginLeft: "10px" }} onClick={this._exportPdf}>
-                  <Button
-                    label="Download as PDF"
-                    style={{ backgroundColor: "green", color: "white" }}
-                  />
-                </div>
-
-                <div style={{ marginLeft: "10px" }}>
-                  <Button
-                    label="Submit for Approval"
-                    variant="brand"
-                    onClick={this.toggleSubmitModal}
-                  />
-                </div>
-              </div>
-            )}
             {this.state.approve && (
               <div style={{ marginLeft: "10px" }}>
                 <h2 style={{ fontSize: "20px", fontWeight: "700" }}>
@@ -1163,14 +1077,70 @@ class PlanningView extends Component {
             </div>
           </Modal>
         </IconSettings>
-        {this.state.print && (
-          <div id="printable">
-            <PlanningViewPrintArea />
-          </div>
-        )}
       </div>
     );
   }
 }
 
-export default PlanningView;
+export default PlanningViewPrintArea;
+
+function Activities(props) {
+  const [activites, setActivities] = useState([]);
+  const [open, setOpen] = useState(false);
+
+  useEffect(() => {
+    let allActivites = {};
+    props.activities.forEach((activity) => {
+      if (allActivites[activity.formatId.label] === undefined) {
+        allActivites[activity.formatId.label] = [activity];
+      } else {
+        allActivites[activity.formatId.label].push(activity);
+      }
+    });
+
+    setActivities(allActivites);
+  }, []);
+  return (
+    <div>
+      <ul className="list-activities">
+        {Object.keys(activites)
+          .splice(0, props.all ? Object.keys(activites).length : 4)
+          .map((item, k) => (
+            <Fragment>
+              <div
+                style={{
+                  marginBottom: "5px",
+                  marginTop: "5px",
+                }}
+              >
+                {k + 1}.{" "}
+                <span
+                  onClick={() => {
+                    setOpen(open !== k ? k : false);
+                  }}
+                  style={{
+                    backgroundColor: "#fcba03",
+                    cursor: "pointer",
+                    color: "white",
+                    fontSize: "small",
+                    padding: "5px",
+                    fontWeight: "bold",
+                    width: "auto",
+                    borderRadius: "5px",
+                  }}
+                >
+                  {item} - {activites[item].length}
+                </span>
+              </div>
+
+              {activites[item].map((format) => (
+                <li className="small pl-3">
+                  {format.title} - {format.date}
+                </li>
+              ))}
+            </Fragment>
+          ))}
+      </ul>
+    </div>
+  );
+}

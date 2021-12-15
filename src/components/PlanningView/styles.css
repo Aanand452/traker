@@ -67,10 +67,10 @@
   height: auto;
   border-radius: 20px;
   padding: 10px;
-  box-shadow: 4px 0 15px rgba(99, 99, 99, 0.2);
+  /* box-shadow: 4px 0 15px rgba(99, 99, 99, 0.2); */
 }
 .card-footer {
-  box-shadow: 5px 0px 10px rgba(99, 99, 99, 0.2);
+  /* box-shadow: 5px 0px 10px rgba(99, 99, 99, 0.2); */
   border: 12px #000000;
   margin: 20px;
   margin-top: 50px;
