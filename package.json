@@ -65,7 +65,7 @@
   "scripts": {
     "server": "webpack --mode production  && nodemon server/app.js",
     "dev": "webpack --mode development && nodemon server/app.js",
-    "start": "set PORT=3300 && webpack serve --open",
+    "start": "webpack serve --open --port 3300",
     "test": "node scripts/test.js --env=jsdom"
   },
   "eslintConfig": {
