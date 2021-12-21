@@ -13,12 +13,11 @@ const fetchAPIUrl = async () => {
   })
 };
 
-async function getAPIUrl(){
-  try{
-    return API_URL = process.env.REACT_APP_BASE_API_URL;
-    
-  } catch(err) {
-    console.error('SARA', err);
+async function getAPIUrl() {
+  try {
+    return (API_URL = await fetchAPIUrl());
+  } catch (err) {
+    console.error("SARA", err);
   }
 }
 
