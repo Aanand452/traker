@@ -1,51 +1,69 @@
+const HtmlWebPackPlugin = require("html-webpack-plugin");
 const path = require("path");
-const webpack = require("webpack");
-const ExtractTextPlugin = require("extract-text-webpack-plugin");
-
+const htmlPlugin = new HtmlWebPackPlugin({
+  template: "./public/index.html",
+  filename: "./index.html",
+});
 module.exports = {
-  entry: {
-    bundle: "./public/src/index.js",
-  },
-  resolve: {
-    extensions: ["", ".js", ".jsx"],
-  },
-  devtool: "source-map",
+  entry: "./src/index.js",
   output: {
+    // NEW
     path: path.join(__dirname, "build"),
     filename: "[name].js",
     publicPath: "/",
-  },
+    clean: true,
+  }, // NEW Ends
+  plugins: [htmlPlugin],
+
   module: {
-    loaders: [
+    rules: [
       {
-        test: /\.jsx?$/,
-        loaders: ["babel"],
-        include: [
-          path.join(__dirname, "public/src"),
-          path.join(__dirname, "node_modules/@salesforce/design-system-react"),
+        test: /\.(js|jsx)$/,
+        exclude: /node_modules/,
+        use: {
+          loader: "babel-loader",
+          options: {
+            presets: ["@babel/preset-env"],
+          },
+        },
+      },
+      {
+        test: /\.css$/i,
+        use: ["style-loader", "css-loader"],
+      },
+      {
+        test: /\.html$/i,
+        loader: "html-loader",
+      },
+      {
+        test: /\.svg/,
+        use: {
+          loader: "svg-url-loader",
+          options: {
+            // make all svg images to work in IE
+            iesafe: true,
+          },
+        },
+      },
+      {
+        test: /\.(png|svg|jpg|jpeg|gif|ico)$/,
+        use: [
+          {
+            loader: "file-loader",
+          },
         ],
       },
       {
-        test: /\.css$/,
-        loader: ExtractTextPlugin.extract(
-          "style-loader",
-          "css-loader?url=false&outputStyle=expanded&sourceMap=true&sourceMapContents=true"
-        ),
-      },
-      {
-        test: /\.(svg|gif|jpe?g|png)$/,
-        loader: "url-loader?limit=10000",
-      },
-      {
-        test: /\.(eot|woff|woff2|ttf)$/,
-        loader: "url-loader?limit=30&name=assets/fonts/webfonts/[name].[ext]",
+        test: /\.(png|jpg|gif)$/i,
+        use: [
+          {
+            loader: "url-loader",
+            options: {
+              limit: 8192,
+            },
+          },
+        ],
       },
     ],
   },
-  plugins: [
-    new webpack.DefinePlugin({
-      "process.env": { NODE_ENV: JSON.stringify("production") },
-    }),
-    new ExtractTextPlugin("[name].css"),
-  ],
 };

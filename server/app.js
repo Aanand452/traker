@@ -5,7 +5,6 @@ const passport = require('passport');
 const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
 const session = require('express-session');
-const errorhandler = require('errorhandler');
 
 var env = process.env.NODE_ENV || 'development';
 const config = require('./config/config')[env];
@@ -19,7 +18,7 @@ app.get('/', function (req, res) {
   res.redirect('/home');
 });
 
-app.set('port', config.app.port);
+app.set('port', config.app.port); 
 app.use(cookieParser());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
@@ -31,7 +30,7 @@ app.use(session(
   }));
 app.use(passport.initialize());
 app.use(passport.session());
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, '../public')));
 app.use(express.static(path.resolve(__dirname, '../build')));
 app.use(express.static(path.resolve(__dirname, 'static')));
 
