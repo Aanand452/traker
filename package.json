@@ -42,9 +42,9 @@
     "webpack": "^5.65.0"
   },
   "scripts": {
-    "start": "webpack --mode production  && nodemon server/app.js",
+    "server": "webpack --mode production  && nodemon server/app.js",
     "dev": "webpack --mode development && nodemon server/app.js",
-    "server": "webpack serve --open",
+    "start": "webpack serve --open",
     "test": "node scripts/test.js --env=jsdom"
   },
   "eslintConfig": {
