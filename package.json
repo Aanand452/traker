@@ -1,5 +1,5 @@
 {
-  "name": "sfdc-activity-frontend",
+  "name": "sfdc-activity-tracker",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
