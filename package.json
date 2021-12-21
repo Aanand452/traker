@@ -41,9 +41,9 @@
     "web-vitals": "^1.0.1"
   },
   "scripts": {
-    "server": "webpack --mode production  && nodemon server/app.js",
+    "start": "webpack --mode production  && nodemon server/app.js",
     "dev": "webpack --mode development && nodemon server/app.js",
-    "start": "webpack serve --open",
+    "server": "webpack serve --open",
     "test": "node scripts/test.js --env=jsdom"
   },
   "eslintConfig": {
