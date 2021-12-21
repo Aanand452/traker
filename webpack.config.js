@@ -14,6 +14,7 @@ module.exports = {
     clean: true,
   }, // NEW Ends
   plugins: [htmlPlugin],
+  mode:"production",
 
   module: {
     rules: [
