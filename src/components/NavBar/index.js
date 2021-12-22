@@ -229,6 +229,7 @@ class NavBar extends Component {
                   link: "/planner-slider?planner=" + program.ProgramPlannerId,
                 });
             }
+
             for (let appr of program.approval.approver2) {
               if (email === appr.email && appr.status !== "Accepted")
                 notifications.push({
@@ -241,10 +242,9 @@ class NavBar extends Component {
             }
           }
         }
-
         this.setState({ programs: result, aggregates, notifications });
       } else {
-        console.error(response);
+        console.error("---", response);
         throw new Error(response);
       }
     } catch (err) {

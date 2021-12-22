@@ -51,6 +51,13 @@ class PanelComponent extends Component {
           label="Search"
           variant="brand"
         />
+
+        <Button
+          onClick={() => this.props.onClose()}
+          className="slds-m-top_small"
+          label="Cancel"
+          variant="destructive"
+        />
       </PanelContainer>
     );
   }

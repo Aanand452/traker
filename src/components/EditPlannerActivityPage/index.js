@@ -110,7 +110,7 @@ class EditActivityPage extends Component {
           offer.activities.forEach((activity, k) => {
             allActivities.push({
               title: activity.title,
-              formatId: activity.formatId.label,
+              formatId: activity.formatId?.label,
               abstract: program.abstract,
               activityId: i + k,
               asset: "",
@@ -119,7 +119,8 @@ class EditActivityPage extends Component {
               endDate: moment(activity.date).toDate(),
               id: i + k,
               programId: "Service Buyer (ANZ)",
-              regionId: program.region[0].label,
+              regionId:
+                program.region.length > 0 ? program.region[0]?.label : 0,
               startDate: moment(activity.date).toDate(),
               userId: program.programOwner,
             });

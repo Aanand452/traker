@@ -108,7 +108,10 @@ class EditPlanner extends Component {
               program.mp_target.q3 +
               program.mp_target.q4
             : 0;
-          program.approval_status = "Pending for Approval";
+
+          program.approval_status = program?.approval?.status
+            ? program.approval.status
+            : "Pending for Approval";
           aggregates.budget += parseInt(program.cumulative_budget);
           aggregates.mp_target += parseInt(program.cumulative_mp_target);
           return program;

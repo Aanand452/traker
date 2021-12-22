@@ -2473,11 +2473,11 @@ class Table extends Component {
                 className="expandableColumn"
                 style={{ paddingBottom: "25px" }}
               >
-                {/* <Button
+                <Button
                   label="Save As Default"
                   variant="outline-brand"
                   onClick={this.saveAsDefaultFilter}
-                /> */}
+                />
               </div>
 
               {/* <div className="expandableColumn" style={{paddingTop: '5px', paddingLeft: '40%'}}>

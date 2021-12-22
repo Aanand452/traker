@@ -811,7 +811,13 @@ class Table extends Component {
           />
 
           {this.state.isPanelOpen && (
-            <Panel onSearch={this.onSearch} search={this.state.search} />
+            <Panel
+              onSearch={this.onSearch}
+              onClose={() => {
+                this.setState({ isPanelOpen: false });
+              }}
+              search={this.state.search}
+            />
           )}
           <DataTable
             assistiveText={{

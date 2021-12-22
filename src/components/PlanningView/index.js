@@ -72,19 +72,7 @@ class PlanningView extends Component {
           id: "5",
           email: "trina.ng@salesforce.com",
           label: "Trina Ng",
-        },{//This is just for Test
-          id: "6",
-          email: "kvarma@salesforce.com",
-          label: "Krishna Verma",
-        },{
-          id: "7",
-          email: "vgosu@salesforce.com",
-          label: "Vamsi Krishna",
-        },{
-          id: "7",
-          email: "hpediredla@salesforce.com ",
-          label: "Harsha",
-        },//remove till here
+        },
       ],
       accounts2: [
         {
@@ -146,19 +134,7 @@ class PlanningView extends Component {
           id: "5",
           email: "npeers@salesforce.com",
           label: "Nick Peers",
-        },{//This is just for Test
-          id: "6",
-          email: "kvarma@salesforce.com",
-          label: "Krishna Verma",
-        },{
-          id: "7",
-          email: "vgosu@salesforce.com",
-          label: "Vamsi Krishna",
-        },{
-          id: "7",
-          email: "hpediredla@salesforce.com ",
-          label: "Harsha",
-        },//remove till here
+        },
       ],
       approve: {
         status: "Pending for Approval",
@@ -376,7 +352,10 @@ class PlanningView extends Component {
     try {
       const token = getCookie("token").replaceAll('"', "");
       const userId = getCookie("userid").replaceAll('"', "");
-      const username = getCookie("username").replaceAll('"', "");
+      let username = getCookie("username").replaceAll('"', "");
+      if (!username) {
+        username = localStorage.getItem("userEmail");
+      }
       const body = {
         approval: {
           ...this.state.approve,
@@ -567,13 +546,15 @@ class PlanningView extends Component {
                     >
                       <div>
                         <span>MP Target :</span>
-                        <span className="card-head-value">
-                          $
-                          {nFormatter(
-                            parseFloat(total_mp_target).toFixed(0),
-                            0
-                          )}
-                        </span>
+                        {this.state.mpTargetToggle && (
+                          <span className="card-head-value">
+                            $
+                            {nFormatter(
+                              parseFloat(total_mp_target).toFixed(0),
+                              0
+                            )}
+                          </span>
+                        )}
                       </div>
                       <div>
                         {this.state.mpTargetToggle ? (
@@ -649,9 +630,11 @@ class PlanningView extends Component {
                       >
                         <div>
                           <span>Budget :</span>
-                          <span className="card-head-value">
-                            $<span>{nFormatter(total_budget, 1)}</span>
-                          </span>
+                          {this.state.budgetToggle && (
+                            <span className="card-head-value">
+                              $<span>{nFormatter(total_budget, 1)}</span>
+                            </span>
+                          )}
                         </div>
                         <div
                           onClick={() =>
@@ -726,7 +709,7 @@ class PlanningView extends Component {
                         className={k === 0 ? "card-head" : "card-head border-t"}
                       >
                         <div className="card-head-value">
-                          {k + 1}. {planner.otherKPIs}
+                          {planner.otherKPIs}
                         </div>
                       </div>
                     ))}

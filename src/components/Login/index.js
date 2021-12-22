@@ -58,6 +58,7 @@ class Login extends Component {
 
     try {
       let body = { username, password };
+      localStorage.setItem("userEmail", username);
       const config = {
         method: "POST",
         headers: {

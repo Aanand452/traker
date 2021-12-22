@@ -521,6 +521,7 @@ class CreatePlanner extends Component {
 
       const token = getCookie("token").replaceAll('"', "");
       const userId = getCookie("userid").replaceAll('"', "");
+      console.log(this.state.program.abstract);
       const body = {
         programId: userId,
         programName: this.state.program.name,
@@ -537,7 +538,7 @@ class CreatePlanner extends Component {
           q3: Number(this.state.program.mp_target_q3),
           q4: Number(this.state.program.mp_target_q4),
         },
-        approval:{},
+        approval: {},
         region: regionId,
         apm: apm1Id,
         programIndustry: industryId,
