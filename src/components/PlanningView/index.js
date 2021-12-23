@@ -192,7 +192,7 @@ class PlanningView extends Component {
         document.body.appendChild(canvas); // if you want see your screenshot in body.
         const imgData = canvas.toDataURL("image/png");
         const pdf = new jsPDF("l", "mm", "a2");
-        pdf.addImage(imgData, "JPEG", 0, 0);
+        pdf.addImage(imgData, "JPEG", 15, 40, 600, 400);
         pdf.save("download.pdf");
       });
       this.setState({ print: false });
