@@ -1182,7 +1182,7 @@ class PlanningView extends Component {
             </div>
           </Modal>
         </IconSettings>
-        {this.state.print && console.log(this.state.print) && (
+        {this.state.print && (
           <div id="printable">
             <PlanningViewPrintArea />
           </div>
