@@ -73,13 +73,15 @@ class Login extends Component {
         let { result } = await response.json();
 
         if (!this.validations()) {
-          let { userId, role, token } = result;
+          let { userId, role, token, name } = result;
 
           !userId && this.setState({ errors: { invalid: true } });
 
           userId && localStorage.setItem("userId", userId);
+          userId && localStorage.setItem("name", name);
           userId && setCookie("userid", userId);
           userId && setCookie("username", username);
+          userId && setCookie("name", name);
           token && setCookie("token", token);
           setCookie("role", role || "user");
           this.props.history.push("/home");

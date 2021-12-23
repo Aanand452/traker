@@ -72,6 +72,10 @@ class PlanningView extends Component {
           id: "5",
           email: "trina.ng@salesforce.com",
           label: "Trina Ng",
+        },{//This is just for Test
+          id: "6",
+          email: "kvarma@salesforce.com",
+          label: "Krishna Verma",
         },
       ],
       accounts2: [
@@ -134,6 +138,10 @@ class PlanningView extends Component {
           id: "5",
           email: "npeers@salesforce.com",
           label: "Nick Peers",
+        },{//This is just for Test
+          id: "6",
+          email: "kvarma@salesforce.com",
+          label: "Krishna Verma",
         },
       ],
       approve: {
@@ -183,8 +191,7 @@ class PlanningView extends Component {
       html2canvas(document.querySelector("#printable")).then((canvas) => {
         document.body.appendChild(canvas); // if you want see your screenshot in body.
         const imgData = canvas.toDataURL("image/png");
-        // const pdf = new jsPDF("p", "px", "A4");
-        const pdf = new jsPDF();
+        const pdf = new jsPDF("l", "mm", "a2");
         pdf.addImage(imgData, "JPEG", 0, 0);
         pdf.save("download.pdf");
       });
@@ -265,7 +272,9 @@ class PlanningView extends Component {
           type: "Submitted By",
           date: moment(result.approval.date).format("MMMM DD, YYYY hh:mm a"),
           email: result.approval.submittedBy,
+          name: result.approval.submittedByName,
         });
+
         if (result.approval.approver1)
           for (let app of result.approval.approver1) {
             if (app.email === userEmail) {
@@ -275,6 +284,7 @@ class PlanningView extends Component {
               approval_list.push({
                 type: app.status,
                 email: app.email,
+                name: app.name,
                 reason: app.note,
               });
             }
@@ -290,6 +300,7 @@ class PlanningView extends Component {
                 type: app.status,
                 email: app.email,
                 reason: app.note,
+                name: app.name,
               });
             }
           }
@@ -304,6 +315,7 @@ class PlanningView extends Component {
           note: "",
           date: new Date(),
           submittedBy: "",
+          submittedByName: "",
         },
         approvalList: approval_list,
         raw_program,
@@ -353,26 +365,31 @@ class PlanningView extends Component {
     try {
       const token = getCookie("token").replaceAll('"', "");
       const userId = getCookie("userid").replaceAll('"', "");
+      const name = getCookie("name").replaceAll('"', "");
       let username = getCookie("username").replaceAll('"', "");
       if (!username) {
         username = localStorage.getItem("userEmail");
       }
+      console.log(name);
       const body = {
         approval: {
           ...this.state.approve,
           submittedBy: username,
+          submittedByName: name,
           date: new Date(),
           approver1: this.state.approver1.map((item) => {
             return {
               status: "Pending for Approval",
               note: "",
               email: item.email,
+              name: item.name,
             };
           }),
           approver2: this.state.approver2.map((item) => {
             return {
               status: "Pending for Approval",
               note: "",
+              name: item.name,
               email: item.email,
             };
           }),
@@ -704,16 +721,10 @@ class PlanningView extends Component {
 
                   <div className="card" style={{ border: "none" }}>
                     <div className="card-head">Other KPIs :</div>
-                    {planner.persona.map((item, k) => (
-                      <div
-                        key={k}
-                        className={k === 0 ? "card-head" : "card-head border-t"}
-                      >
-                        <div className="card-head-value">
-                          {planner.otherKPIs}
-                        </div>
-                      </div>
-                    ))}
+
+                    <div className={"card-head"}>
+                      <div className="card-head-value">{planner.otherKPIs}</div>
+                    </div>
                   </div>
                 </div>
               </div>
