@@ -196,7 +196,7 @@ class PlanningView extends Component {
         pdf.save("download.pdf");
       });
       this.setState({ print: false });
-    }, 300);
+    }, 3000);
   };
 
   toggleModal = () => {
