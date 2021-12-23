@@ -694,16 +694,9 @@ class PlanningViewPrintArea extends Component {
                     }}
                   >
                     <div className="card-head">Other KPIs :</div>
-                    {planner.persona.map((item, k) => (
-                      <div
-                        key={k}
-                        className={k === 0 ? "card-head" : "card-head border-t"}
-                      >
-                        <div className="card-head-value">
-                          {k + 1}. {planner.otherKPIs}
-                        </div>
+                    <div className={"card-head"}>
+                      <div className="card-head-value">{planner.otherKPIs}</div>
                       </div>
-                    ))}
                   </div>
                 </div>
               </div>
