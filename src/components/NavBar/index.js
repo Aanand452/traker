@@ -39,6 +39,7 @@ HeaderProfileCustomContent.displayName = "HeaderProfileCustomContent";
 // Notifications content is currently the contents of a generic `Popover` with markup copied from https://www.lightningdesignsystem.com/components/global-header/#Notifications. This allows content to have tab stops and focus trapping. If you need a more specific/explicit `GlobalHeaderNotification` content, please create an issue.
 const HeaderNotificationsCustomContent = (props) => (
   <ul id="header-notifications-custom-popover-content">
+    {console.log(props.items.length)}
     {props.items.length > 0 ? (
       props.items.map((item) => (
         <li

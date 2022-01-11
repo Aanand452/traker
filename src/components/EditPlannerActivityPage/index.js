@@ -127,6 +127,7 @@ class EditActivityPage extends Component {
           });
         });
       });
+      console.log(allActivities);
       this.setState({
         activities: allActivities,
         allPrograms: response.result,

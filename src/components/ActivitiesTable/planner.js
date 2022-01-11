@@ -184,6 +184,7 @@ class Table extends Component {
 
   componentDidMount() {
     this.setupAndFetch();
+    console.log("@@", this.props.data);
     this.setState({ data: this.props.data });
     !this.state.isCalanderView &&
       this.resizableTable(this.table.current.scrollerRef.children[0]);
@@ -728,17 +729,21 @@ class Table extends Component {
   }
 
   getDefaultFornats = (formats) => {
-    let defaultFormatNames = [
-      "3rdParty-Virtual Event",
-      "Exec Engagement",
-      "Executive Visit",
-      "F2F Event",
-      "Webinar",
-      "Webinar - 3rd Party",
-      "Virtual Event",
-      "SIC",
-      "Launch",
-    ];
+    if (localStorage.getItem("showPrograms")) {
+    }
+    let defaultFormatNames = localStorage.getItem("showPrograms")
+      ? ["All"]
+      : [
+          "3rdParty-Virtual Event",
+          "Exec Engagement",
+          "Executive Visit",
+          "F2F Event",
+          "Webinar",
+          "Webinar - 3rd Party",
+          "Virtual Event",
+          "SIC",
+          "Launch",
+        ];
     return formats.filter((format) => {
       if (!defaultFormatNames.includes(format.label)) return false;
       return true;
