@@ -72,10 +72,6 @@ class PlanningView extends Component {
           id: "5",
           email: "trina.ng@salesforce.com",
           label: "Trina Ng",
-        },{//This is just for Test
-          id: "6",
-          email: "kvarma@salesforce.com",
-          label: "Krishna Verma",
         },
       ],
       accounts2: [
@@ -138,10 +134,6 @@ class PlanningView extends Component {
           id: "5",
           email: "npeers@salesforce.com",
           label: "Nick Peers",
-        },{//This is just for Test
-          id: "6",
-          email: "kvarma@salesforce.com",
-          label: "Krishna Verma",
         },
       ],
       approve: {
