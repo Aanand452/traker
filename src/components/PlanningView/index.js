@@ -73,8 +73,6 @@ class PlanningView extends Component {
           email: "trina.ng@salesforce.com",
           label: "Trina Ng",
         },
-      ],
-      accounts2: [
         {
           id: "1",
           email: "vcotte@salesforce.com",
@@ -184,11 +182,11 @@ class PlanningView extends Component {
         document.body.appendChild(canvas); // if you want see your screenshot in body.
         const imgData = canvas.toDataURL("image/png");
         const pdf = new jsPDF("l", "mm", "a2");
-        pdf.addImage(imgData, "JPEG", 15, 40, 600, 400);
+        pdf.addImage(imgData, "JPEG", 0, 0);
         pdf.save("download.pdf");
       });
       this.setState({ print: false });
-    }, 3000);
+    }, 300);
   };
 
   toggleModal = () => {
@@ -789,7 +787,7 @@ class PlanningView extends Component {
                   <div className="grid">
                     {offers.length > 0 &&
                       offers.map((offer, k) => (
-                        <div key={k}>
+                        <div key={k} className="border-box">
                           <div className="activity-head">
                             Offer Name :
                             <div className="activity-value">{offer.offer}</div>
@@ -1023,7 +1021,7 @@ class PlanningView extends Component {
                 multiple
                 options={comboboxFilterAndLimit({
                   inputValue: this.state.approver1Value,
-                  limit: 10,
+                  limit: 200,
                   options: this.state.accounts,
                   selection: this.state.approver1,
                 })}
@@ -1079,13 +1077,12 @@ class PlanningView extends Component {
                 multiple
                 options={comboboxFilterAndLimit({
                   inputValue: this.state.approver2Value,
-                  limit: 50,
-                  options: this.state.accounts2,
+                  limit: 200,
+                  options: this.state.accounts,
                   selection: this.state.approver2,
                 })}
                 selection={this.state.approver2}
                 value={this.state.approver2Value}
-                required
                 errorText={this.state.errorTexts.approver2}
               />
 

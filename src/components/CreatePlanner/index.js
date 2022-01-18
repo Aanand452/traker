@@ -976,7 +976,7 @@ class CreatePlanner extends Component {
                             offers[i].offer = e.target.value;
                             this.setState({ offers });
                           }}
-                          errorText={this.state.error.owner}
+                          errorText={this.state.error.offer_name}
                         />
                       </div>
                       <div
@@ -1075,7 +1075,8 @@ class CreatePlanner extends Component {
                                 selection={[{ ...activity.formatId }]}
                                 value="format"
                                 variant="readonly"
-                                // errorText={"Something went wrong!"}
+                                required
+                                errorText={this.state.error.format}
                               />
                             </div>
                             <div

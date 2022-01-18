@@ -211,7 +211,7 @@ class NavBar extends Component {
           programsEndDate: endDate ? endDate : programsFYendDate,
         }),
       };
-      console.log(this.API_URL);
+
       const response = await fetch(`${this.API_URL}/planners`, config);
       if (response.status === 200) {
         let { result } = await response.json();
@@ -220,29 +220,32 @@ class NavBar extends Component {
 
         for (let program of result) {
           if (program.approval) {
-            for (let appr of program.approval.approver1) {
-              if (email === appr.email && appr.status !== "Accepted")
-                notifications.push({
-                  action: "needed",
-                  comment: "For planner - " + program.programName,
-                  id: 1,
-                  name: "Approval Request",
-                  link: "/planner-slider?planner=" + program.ProgramPlannerId,
-                });
-            }
+            if (program.approval.submittedBy) {
+              for (let appr of program.approval.approver1) {
+                if (email === appr.email && appr.status !== "Accepted")
+                  notifications.push({
+                    action: "needed",
+                    comment: "For planner - " + program.programName,
+                    id: 1,
+                    name: "Approval Request",
+                    link: "/planner-slider?planner=" + program.ProgramPlannerId,
+                  });
+              }
 
-            for (let appr of program.approval.approver2) {
-              if (email === appr.email && appr.status !== "Accepted")
-                notifications.push({
-                  action: "needed",
-                  comment: "For planner - " + program.programName,
-                  id: 1,
-                  name: "Approval Request",
-                  link: "/planner-slider?planner=" + program.ProgramPlannerId,
-                });
+              for (let appr of program.approval.approver2) {
+                if (email === appr.email && appr.status !== "Accepted")
+                  notifications.push({
+                    action: "needed",
+                    comment: "For planner - " + program.programName,
+                    id: 1,
+                    name: "Approval Request",
+                    link: "/planner-slider?planner=" + program.ProgramPlannerId,
+                  });
+              }
             }
           }
         }
+
         this.setState({ programs: result, aggregates, notifications });
       } else {
         console.error("---", response);
@@ -274,9 +277,7 @@ class NavBar extends Component {
               iconVariant="border-filled"
               variant="icon"
               style={{ marginLeft: "5px" }}
-              onClick={() => {
-                console.log("notificatiosn");
-              }}
+              onClick={() => {}}
             />
             <GlobalHeaderNotifications
               notificationCount={this.state.notifications.length}

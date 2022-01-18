@@ -94,6 +94,13 @@
   border: #000000;
 }
 
+.border-box {
+  border: 2px solid rgba(107, 107, 107, 0.1);
+  border-radius: 10px;
+  box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 20px 0px;
+  padding: 4px;
+}
+
 .activity-head {
   font-size: 15px;
   color: #595959;
