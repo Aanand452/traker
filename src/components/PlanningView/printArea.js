@@ -694,9 +694,16 @@ class PlanningViewPrintArea extends Component {
                     }}
                   >
                     <div className="card-head">Other KPIs :</div>
-                    <div className={"card-head"}>
-                      <div className="card-head-value">{planner.otherKPIs}</div>
+                    {planner.persona.map((item, k) => (
+                      <div
+                        key={k}
+                        className={k === 0 ? "card-head" : "card-head border-t"}
+                      >
+                        <div className="card-head-value">
+                          {k + 1}. {planner.otherKPIs}
+                        </div>
                       </div>
+                    ))}
                   </div>
                 </div>
               </div>
@@ -1079,7 +1086,6 @@ export default PlanningViewPrintArea;
 
 function Activities(props) {
   const [activites, setActivities] = useState([]);
-  const [open, setOpen] = useState(false);
 
   useEffect(() => {
     let allActivites = {};
@@ -1093,46 +1099,53 @@ function Activities(props) {
 
     setActivities(allActivites);
   }, []);
+
   return (
     <div>
       <ul className="list-activities">
-        {Object.keys(activites)
-          .splice(0, props.all ? Object.keys(activites).length : 4)
-          .map((item, k) => (
-            <Fragment>
-              <div
+        {Object.keys(activites).map((item, k) => (
+          <Fragment>
+            <div
+              style={{
+                marginBottom: "5px",
+                marginTop: "10px",
+              }}
+            >
+              {k + 1}.{" "}
+              <span
                 style={{
-                  marginBottom: "5px",
-                  marginTop: "5px",
+                  backgroundColor: "#fcba03",
+                  cursor: "pointer",
+                  color: "white",
+                  fontSize: "small",
+                  marginTop: "10px",
+                  padding: "5px",
+                  fontWeight: "bold",
+                  width: "auto",
+                  borderRadius: "5px",
                 }}
               >
-                {k + 1}.{" "}
-                <span
-                  onClick={() => {
-                    setOpen(open !== k ? k : false);
-                  }}
-                  style={{
-                    backgroundColor: "#fcba03",
-                    cursor: "pointer",
-                    color: "white",
-                    fontSize: "small",
-                    padding: "5px",
-                    fontWeight: "bold",
-                    width: "auto",
-                    borderRadius: "5px",
-                  }}
-                >
-                  {item} - {activites[item].length}
-                </span>
-              </div>
+                {item} - {activites[item].length}
+              </span>
+            </div>
 
-              {activites[item].map((format) => (
-                <li className="small pl-3">
-                  {format.title} - {format.date}
-                </li>
-              ))}
-            </Fragment>
-          ))}
+            {activites[item].map((format) => (
+              <li
+                className="small pl-3"
+                style={{
+                  marginTop: "10px",
+                  paddingLeft: "3px",
+                  lineHeight: 1.5,
+                  textOverflow: "ellipsis",
+                }}
+              >
+                {`${format.title} - ${moment(format.date).format(
+                  "MM/DD/YYYY"
+                )}`}
+              </li>
+            ))}
+          </Fragment>
+        ))}
       </ul>
     </div>
   );

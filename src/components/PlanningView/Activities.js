@@ -26,7 +26,7 @@ export default function Activities(props) {
               <div
                 style={{
                   marginBottom: "5px",
-                  marginTop: "5px",
+                  marginTop: "10px",
                 }}
               >
                 {k + 1}.{" "}
@@ -51,7 +51,10 @@ export default function Activities(props) {
 
               {open === k &&
                 activites[item].map((format) => (
-                  <li className="small">
+                  <li
+                    className="small"
+                    style={{ marginTop: "10px", lineHeight: "1.6" }}
+                  >
                     {format.title} - {format.date}
                   </li>
                 ))}
