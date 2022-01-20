@@ -19,6 +19,7 @@ module.exports = function (passport, config) {
       authnRequestBinding: 'HTTP-POST'
     },
     function (profile, done) {
+      console.log(profile.email);
       return done(null,
         {
           id: profile.uid,
