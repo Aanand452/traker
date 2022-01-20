@@ -178,7 +178,7 @@ class PlanningView extends Component {
     this.setState({ print: true });
     // window.print();
     setTimeout(() => {
-      html2canvas(document.querySelector("#printable"), {allowTaint: true}).then((canvas) => {
+      html2canvas(document.querySelector("#printable"), {allowTaint: true, foreignObjectRendering: true}).then((canvas) => {
         document.body.appendChild(canvas); // if you want see your screenshot in body.
         const imgData = canvas.toDataURL("image/png");
         const pdf = new jsPDF("l", "mm", "a2");
