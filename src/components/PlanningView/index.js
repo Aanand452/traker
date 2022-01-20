@@ -335,6 +335,13 @@ class PlanningView extends Component {
   };
 
   componentDidMount() {
+    const script = document.createElement("script");
+
+    script.src = "https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.3.2/jspdf.min.js";
+    script.async = true;
+
+    document.body.appendChild(script);
+
     this.getPlannerByID();
   }
 
