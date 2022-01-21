@@ -1,3 +1,4 @@
+import moment from "moment";
 import React, { Fragment, useEffect, useState } from "react";
 
 export default function Activities(props) {
@@ -55,7 +56,7 @@ export default function Activities(props) {
                     className="small"
                     style={{ marginTop: "10px", lineHeight: "1.6" }}
                   >
-                    {format.title} - {format.date}
+                    {format.title} - {moment(format.date).format("MM/DD/YYYY")}
                   </li>
                 ))}
             </Fragment>

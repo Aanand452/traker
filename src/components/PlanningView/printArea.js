@@ -197,7 +197,7 @@ class PlanningViewPrintArea extends Component {
   };
 
   getPlannerByID = async () => {
-    const userEmail = getCookie("username").replaceAll('"', "");
+    const userEmail = getCookie("userEmail").replaceAll('"', "");
     if (window.location.hostname === "localhost")
       this.API_URL = "http://localhost:3000/api/v1";
     else this.API_URL = await getAPIUrl();

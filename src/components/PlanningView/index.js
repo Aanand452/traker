@@ -178,7 +178,7 @@ class PlanningView extends Component {
     this.setState({ print: true });
     // window.print();
     setTimeout(() => {
-      html2canvas(document.querySelector("#printable"), {allowTaint: true, foreignObjectRendering: true}).then((canvas) => {
+      html2canvas(document.querySelector("#printable")).then((canvas) => {
         document.body.appendChild(canvas); // if you want see your screenshot in body.
         const imgData = canvas.toDataURL("image/png");
         const pdf = new jsPDF("l", "mm", "a2");
@@ -202,7 +202,7 @@ class PlanningView extends Component {
   };
 
   getPlannerByID = async () => {
-    const userEmail = getCookie("username").replaceAll('"', "");
+    const userEmail = getCookie("userEmail").replaceAll('"', "");
     if (window.location.hostname === "localhost")
       this.API_URL = "http://localhost:3000/api/v1";
     else this.API_URL = await getAPIUrl();
@@ -258,12 +258,13 @@ class PlanningView extends Component {
       let approval_list = [],
         isUserApprover = false;
       if (result.approval) {
-        approval_list.push({
-          type: "Submitted By",
-          date: moment(result.approval.date).format("MMMM DD, YYYY hh:mm a"),
-          email: result.approval.submittedBy,
-          name: result.approval.submittedByName,
-        });
+        if (result.approval.date)
+          approval_list.push({
+            type: "Submitted By",
+            date: moment(result.approval.date).format("MMMM DD, YYYY hh:mm a"),
+            email: result.approval.submittedBy,
+            name: result.approval.submittedByName,
+          });
 
         if (result.approval.approver1)
           for (let app of result.approval.approver1) {
@@ -295,7 +296,7 @@ class PlanningView extends Component {
             }
           }
       }
-
+      console.log(result, approval_list);
       this.setState({
         userEmail: userEmail,
         planner: result,
@@ -335,13 +336,6 @@ class PlanningView extends Component {
   };
 
   componentDidMount() {
-    const script = document.createElement("script");
-
-    script.src = "https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.3.2/jspdf.min.js";
-    script.async = true;
-
-    document.body.appendChild(script);
-
     this.getPlannerByID();
   }
 
@@ -364,10 +358,8 @@ class PlanningView extends Component {
       const userId = getCookie("userid").replaceAll('"', "");
       const name = getCookie("name").replaceAll('"', "");
       let username = getCookie("username").replaceAll('"', "");
-      if (!username) {
-        username = localStorage.getItem("userEmail");
-      }
-      console.log(name);
+
+      console.log(username, name, this.state.approver1);
       const body = {
         approval: {
           ...this.state.approve,
@@ -378,7 +370,7 @@ class PlanningView extends Component {
             return {
               status: "Pending for Approval",
               note: "",
-              email: item.email,
+              email: item.label,
               name: item.name,
             };
           }),
@@ -386,12 +378,13 @@ class PlanningView extends Component {
             return {
               status: "Pending for Approval",
               note: "",
-              name: item.name,
+              name: item.label,
               email: item.email,
             };
           }),
         },
       };
+      console.log(body);
       const config = {
         method: "PUT",
         headers: {
@@ -929,7 +922,7 @@ class PlanningView extends Component {
                 </div>
               </div>
             )}
-            {this.state.approve && (
+            {this.state.approvalList.length > 0 && (
               <div style={{ marginLeft: "10px" }}>
                 <h2 style={{ fontSize: "20px", fontWeight: "700" }}>
                   Approval History:{" "}
@@ -942,6 +935,7 @@ class PlanningView extends Component {
                     fontSize: "16px",
                   }}
                 >
+                  {console.log(this.state.approve)}
                   <ul style={{ listStyleType: "upper-roman" }}>
                     {this.state.approvalList.map((item, key) =>
                       key === 0 ? (
@@ -949,7 +943,10 @@ class PlanningView extends Component {
                           <span style={{ fontWeight: "600", color: "#999999" }}>
                             Submitted
                           </span>{" "}
-                          by <a href={"mailto:" + item.email}>{item.email}</a>{" "}
+                          by{" "}
+                          <a href={"mailto:" + this.state.approve.submittedBy}>
+                            {this.state.approve.submittedByName}
+                          </a>{" "}
                           on {item.date}
                         </li>
                       ) : item.type.toLowerCase() === "rejected" ? (

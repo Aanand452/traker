@@ -58,7 +58,6 @@ class Login extends Component {
 
     try {
       let body = { username, password };
-      localStorage.setItem("userEmail", username);
       const config = {
         method: "POST",
         headers: {
@@ -72,16 +71,18 @@ class Login extends Component {
       if (response.status === 200) {
         let { result } = await response.json();
 
+        localStorage.setItem("userEmail", result.username);
         if (!this.validations()) {
           let { userId, role, token, name } = result;
 
           !userId && this.setState({ errors: { invalid: true } });
-
+          console.log(result);
           userId && localStorage.setItem("userId", userId);
           userId && localStorage.setItem("name", name);
           userId && setCookie("userid", userId);
-          userId && setCookie("username", username);
+          userId && setCookie("username", result.username);
           userId && setCookie("name", name);
+          userId && setCookie("userEmail", result.username);
           token && setCookie("token", token);
           setCookie("role", role || "user");
           this.props.history.push("/home");
