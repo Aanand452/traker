@@ -192,6 +192,9 @@ class NavBar extends Component {
   }
 
   getPlanners = async (startDate, endDate) => {
+    if (window.location.hostname === "localhost")
+      this.API_URL = "http://localhost:3000/api/v1";
+    else this.API_URL = await getAPIUrl();
     this.setState({ showLoader: true });
 
     const { programsFYstartDate, programsFYendDate } = this.state;

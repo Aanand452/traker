@@ -687,33 +687,33 @@ class Table extends Component {
       if (response.status === 200) {
         let { result } = await response.json();
         result = result.map((item) => ({ label: item.name, ...item }));
-        let formats = result.map((el) => ({
-          ...el,
-          id: el.format_id,
-          icon: (
-            <Icon
-              assistiveText={{ label: "Task" }}
-              category="standard"
-              name="task2"
-              style={{ background: "#" + this.getEventColor(el.label) }}
-            />
-          ),
-        }));
+        let formats = [
+          {
+            label: "All",
+            id: "all",
+            icon: (
+              <Icon
+                assistiveText={{ label: "Account" }}
+                category="standard"
+                name="campaign"
+              />
+            ),
+          },
+          ...result.map((el) => ({
+            ...el,
+            id: el.format_id,
+            icon: (
+              <Icon
+                assistiveText={{ label: "Task" }}
+                category="standard"
+                name="task2"
+                style={{ background: "#" + this.getEventColor(el.label) }}
+              />
+            ),
+          })),
+        ];
         this.setState({
-          formats: [
-            {
-              label: "All",
-              id: "all",
-              icon: (
-                <Icon
-                  assistiveText={{ label: "Account" }}
-                  category="standard"
-                  name="campaign"
-                />
-              ),
-            },
-            ...formats,
-          ],
+          formats: formats,
         });
         let defaultFormats = this.getDefaultFornats(formats);
         this.setState({
@@ -729,8 +729,6 @@ class Table extends Component {
   }
 
   getDefaultFornats = (formats) => {
-    if (localStorage.getItem("showPrograms")) {
-    }
     let defaultFormatNames = localStorage.getItem("showPrograms")
       ? ["All"]
       : [
@@ -744,6 +742,7 @@ class Table extends Component {
           "SIC",
           "Launch",
         ];
+    console.log(formats);
     return formats.filter((format) => {
       if (!defaultFormatNames.includes(format.label)) return false;
       return true;

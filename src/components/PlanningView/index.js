@@ -370,8 +370,8 @@ class PlanningView extends Component {
             return {
               status: "Pending for Approval",
               note: "",
-              email: item.label,
-              name: item.name,
+              name: item.label,
+              email: item.email,
             };
           }),
           approver2: this.state.approver2.map((item) => {
