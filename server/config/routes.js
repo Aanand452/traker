@@ -41,6 +41,7 @@ module.exports = function (app, config, passport) {
         if (response.result.userId) {
           res.cookie("userid", JSON.stringify(response.result.userId));
           res.cookie("userName", JSON.stringify(response.result.name));
+          res.cookie("username", JSON.stringify(response.result.name));
           res.cookie("userEmail", JSON.stringify(response.result.username));
           res.cookie("role", JSON.stringify(response.result.role || "user"));
           res.cookie("token", JSON.stringify(response.result.token));
