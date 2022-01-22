@@ -52,8 +52,10 @@ const HeaderNotificationsCustomContent = (props) => (
             <div className="slds-media__figure"></div>
             <div className="slds-media__body">
               <div className="slds-grid slds-grid_align-spread">
-                <Link
-                  to={item.link}
+                <a
+                  href={item.link}
+                  target={"_blank"}
+                  rel="noreferrer"
                   className="slds-text-link_reset slds-has-flexi-truncate"
                 >
                   <h3
@@ -65,7 +67,7 @@ const HeaderNotificationsCustomContent = (props) => (
                   <p className="slds-truncate" title={item.comment}>
                     {item.comment}
                   </p>
-                </Link>
+                </a>
               </div>
             </div>
           </div>

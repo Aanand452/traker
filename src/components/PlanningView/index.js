@@ -296,7 +296,6 @@ class PlanningView extends Component {
             }
           }
       }
-      console.log(result, approval_list);
       this.setState({
         userEmail: userEmail,
         planner: result,
@@ -359,7 +358,6 @@ class PlanningView extends Component {
       const name = getCookie("name").replaceAll('"', "");
       let username = getCookie("username").replaceAll('"', "");
 
-      console.log(username, name, this.state.approver1);
       const body = {
         approval: {
           ...this.state.approve,
@@ -384,7 +382,6 @@ class PlanningView extends Component {
           }),
         },
       };
-      console.log(body);
       const config = {
         method: "PUT",
         headers: {
@@ -935,7 +932,6 @@ class PlanningView extends Component {
                     fontSize: "16px",
                   }}
                 >
-                  {console.log(this.state.approve)}
                   <ul style={{ listStyleType: "upper-roman" }}>
                     {this.state.approvalList.map((item, key) =>
                       key === 0 ? (

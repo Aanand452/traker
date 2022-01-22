@@ -75,6 +75,7 @@ class CreatePlanner extends Component {
         abstract: "",
       },
       error: {},
+      offer_errors: {},
     };
   }
 
@@ -496,8 +497,54 @@ class CreatePlanner extends Component {
         }
       });
     }
-
+    console.log(errors);
     this.setState({ error: errors });
+    if (Object.keys(errors).length > 0) return false;
+
+    return true;
+  };
+
+  validateOffers = (input, data) => {
+    let errors = { ...this.state.offer_errors };
+
+    if (input) {
+      if (!data) {
+        errors = { ...errors, [input]: "This field is required" };
+      } else {
+        delete errors[input];
+      }
+    } else {
+      this.state.offers.forEach((offer, i) => {
+        if (!offer.offer) {
+          errors = {
+            ...errors,
+            [`offer_${i}_name`]: "This field is required",
+          };
+        }
+        offer.activities.forEach((activity, k) => {
+          if (!activity.formatId) {
+            errors = {
+              ...errors,
+              [`offer_${i}_format_${k}`]: "This field is required",
+            };
+          }
+          if (!activity.date) {
+            errors = {
+              ...errors,
+              [`offer_${i}_date_${k}`]: "This field is required",
+            };
+          }
+          if (!activity.title) {
+            errors = {
+              ...errors,
+              [`offer_${i}_title_${k}`]: "This field is required",
+            };
+          }
+        });
+      });
+    }
+
+    this.setState({ offer_errors: errors });
     if (Object.keys(errors).length > 0) return false;
 
     return true;
@@ -974,9 +1021,13 @@ class CreatePlanner extends Component {
                           onChange={(e) => {
                             let offers = [...this.state.offers];
                             offers[i].offer = e.target.value;
+                            this.validateOffers(
+                              `offer_${i}_name`,
+                              e.target.value
+                            );
                             this.setState({ offers });
                           }}
-                          errorText={this.state.error.offer_name}
+                          errorText={this.state.offer_errors[`offer_${i}_name`]}
                         />
                       </div>
                       <div
@@ -1039,8 +1090,17 @@ class CreatePlanner extends Component {
                                   let offers = [...this.state.offers];
                                   offers[i].activities[k].title =
                                     e.target.value;
+                                  this.validateOffers(
+                                    `offer_${i}_title_${k}`,
+                                    activity.title
+                                  );
                                   this.setState({ offers });
                                 }}
+                                errorText={
+                                  this.state.offer_errors[
+                                    `offer_${i}_title_${k}`
+                                  ]
+                                }
                               />
                             </div>
                             <div
@@ -1057,6 +1117,10 @@ class CreatePlanner extends Component {
                                     let offers = [...this.state.offers];
                                     offers[i].activities[k].formatId =
                                       e.target.value;
+                                    this.validateOffers(
+                                      `offer_${i}_format_${k}`,
+                                      e.target.value
+                                    );
                                     this.setState({ offers });
                                   },
 
@@ -1065,6 +1129,10 @@ class CreatePlanner extends Component {
                                       let offers = [...this.state.offers];
                                       offers[i].activities[k].formatId =
                                         data.selection[0];
+                                      this.validateOffers(
+                                        `offer_${i}_format_${k}`,
+                                        data.selection[0]
+                                      );
                                       this.setState({ offers });
                                     }
                                   },
@@ -1076,7 +1144,11 @@ class CreatePlanner extends Component {
                                 value="format"
                                 variant="readonly"
                                 required
-                                errorText={this.state.error.format}
+                                errorText={
+                                  this.state.offer_errors[
+                                    `offer_${i}_format_${k}`
+                                  ]
+                                }
                               />
                             </div>
                             <div
@@ -1106,8 +1178,17 @@ class CreatePlanner extends Component {
                                   offers[i].activities[k].date = moment(
                                     data.formattedDate
                                   ).format("MM/DD/YYYY");
+                                  this.validateOffers(
+                                    `offer_${i}_format_${k}`,
+                                    moment(data.formattedDate).format(
+                                      "MM/DD/YYYY"
+                                    )
+                                  );
                                   this.setState({ offers });
                                 }}
+                                errorText={
+                                  this.state.error[`offer_${i}_format_${k}`]
+                                }
                               />
                             </div>
                           </div>
@@ -1120,7 +1201,6 @@ class CreatePlanner extends Component {
                             }}
                             onClick={() => this.removeActivity(i, k)}
                           >
-                            {" "}
                             <Icon
                               assistiveText={{ lable: "Warning" }}
                               category="utility"
@@ -1162,7 +1242,11 @@ class CreatePlanner extends Component {
 
               <div style={{ textAlign: "center", paddingTop: "2%" }}>
                 <Button
-                  onClick={() => this.validations() && this.handleSubmit()}
+                  onClick={() =>
+                    this.validateOffers() &&
+                    this.validations() &&
+                    this.handleSubmit()
+                  }
                   style={{ backgroundColor: "#21bf4b", color: "white" }}
                 >
                   {this.state.planner_id ? "Update" : "Save"}
