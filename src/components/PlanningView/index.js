@@ -296,6 +296,7 @@ class PlanningView extends Component {
             }
           }
       }
+      console.log(result, approval_list);
       this.setState({
         userEmail: userEmail,
         planner: result,
@@ -358,6 +359,7 @@ class PlanningView extends Component {
       const name = getCookie("name").replaceAll('"', "");
       let username = getCookie("username").replaceAll('"', "");
 
+      console.log(username, name, this.state.approver1);
       const body = {
         approval: {
           ...this.state.approve,
@@ -382,6 +384,7 @@ class PlanningView extends Component {
           }),
         },
       };
+      console.log(body);
       const config = {
         method: "PUT",
         headers: {
@@ -437,6 +440,7 @@ class PlanningView extends Component {
         note: this.state.approve.note,
         planner_id,
         email: username,
+        userId,
       };
       const config = {
         method: "POST",
@@ -456,10 +460,9 @@ class PlanningView extends Component {
       if (response.status === 200) {
         this.setState({ approvalModal: !this.state.approvalModal });
         // window.location.reload();
-        // this.props.history.push({
-        //   pathname: "/planner-view",
-        //   state: { newProgram: true },
-        // });
+        this.props.history.push({
+          pathname: "/planner-view",
+        });
       } else {
         throw new Error("Something went wrong, please try again");
       }
@@ -932,6 +935,7 @@ class PlanningView extends Component {
                     fontSize: "16px",
                   }}
                 >
+                  {console.log(this.state.approve)}
                   <ul style={{ listStyleType: "upper-roman" }}>
                     {this.state.approvalList.map((item, key) =>
                       key === 0 ? (
