@@ -12,6 +12,7 @@ import Step1 from "./Step1";
 import Step2 from "./Step2";
 
 import { FormContainer } from "./styles";
+import moment from "moment";
 
 class CreateActivity extends Component {
   state = {
@@ -134,7 +135,9 @@ class CreateActivity extends Component {
           Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({
-          programsStartDate: programsFYstartDate,
+          programsStartDate: programsFYstartDate
+            ? programsFYstartDate
+            : moment().startOf("year"),
           programsEndDate: programsFYendDate,
         }),
       };
@@ -144,6 +147,7 @@ class CreateActivity extends Component {
       );
       if (response.status === 200) {
         let { result } = await response.json();
+        console.log(result);
         let programs = result.map((el) => ({
           ...el,
           label: el.name,
