@@ -2630,7 +2630,7 @@ class Table extends Component {
                 itemsPerPage={
                   this.state.data.length >= this.state.pageLimit
                     ? this.state.pageLimit
-                    : this.state.data.length - 1
+                    : this.state.data.length
                 }
                 setDisplayedItems={this.handlePagination}
                 currentPage={this.state.currentPage}

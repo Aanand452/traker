@@ -3,6 +3,8 @@ import styled from 'styled-components';
 export const PagerContainer = styled.div`
   text-align: center;
   margin-top: 15px;
+  margin-bottom: 15px;
+  padding-bottom: 15px;
 
   & .active {
     background-color: #0070d2;
