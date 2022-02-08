@@ -172,6 +172,7 @@ class Table extends Component {
     isApmFilterOpen: false,
     OpenFilters: false,
     openMenuBar: false,
+    regions: [],
     userId: localStorage.getItem("userId"),
     defaultUserFilter: {},
     calendarView: { date: new Date(), view: "month", action: "Today" },
@@ -206,8 +207,11 @@ class Table extends Component {
             this.state.defaultUserFilter.programs_selected.length +
             this.state.defaultUserFilter.regions_selected.length !==
             0
-        )
+        ) {
+          console.log("@@@");
           this.updateFilters();
+        }
+      console.log("@@@");
       this.getFilteredData();
     }
   }
@@ -423,10 +427,13 @@ class Table extends Component {
     this.checkProgram();
     this.checkRegion();
     this.checkFormat();
+    this.getUserDefaultFilter();
+    setTimeout(() => {
+      this.updateFilters();
+    }, 300);
     // this.getIndustry();
     // this.getSegment();
     // this.getAPM1();
-    this.getUserDefaultFilter();
     this.setState({
       historicDate: {
         startDate: new Date(),
@@ -1113,17 +1120,20 @@ class Table extends Component {
   updateFilters = () => {
     const { formats_selected, programs_selected, regions_selected } =
       this.state.defaultUserFilter;
+    console.log(11111, this.state.programs, this.state.regions);
     let selectedFormats = this.state.formats.filter((item) => {
       if (formats_selected.length >= 0 && !formats_selected.includes(item.id))
         return false;
       return true;
     });
-    let programSelected = this.state.programs.filter((item) => {
+    console.log("regions_selected", this.state.programs);
+    let programSelected = this.state?.programs?.filter((item) => {
       if (programs_selected.length >= 0 && !programs_selected.includes(item.id))
         return false;
       return true;
     });
-    let slectedRegioins = this.state.regions.filter((item) => {
+    console.log("regions_selected", regions_selected);
+    let slectedRegioins = this.state.regions?.filter((item) => {
       if (regions_selected.length >= 0 && !regions_selected.includes(item.id))
         return false;
       return true;
@@ -1221,11 +1231,14 @@ class Table extends Component {
       );
       const response = await request.json();
       const defaultUserFilter =
-        response.result.length > 0 ? response.result[0] : [];
-
-      if (response.info.code === 200)
+        response.result.length > 0
+          ? response.result[response.result.length - 1]
+          : [];
+      console.log("---", response.result[response.result.length - 1]);
+      if (response.info.code === 200) {
         this.setState({ defaultUserFilter: defaultUserFilter });
-      else throw new Error(response.info.status);
+        this.updateFilters();
+      } else throw new Error(response.info.status);
     } catch (err) {
       console.error(err);
     }
@@ -1259,6 +1272,12 @@ class Table extends Component {
           programs: programSelectedId,
         }),
       };
+      console.log({
+        userId: this.state.userId,
+        formats: formatsSelectedId,
+        regions: slectedRegioinsId,
+        programs: programSelectedId,
+      });
       let response =
         this.state.defaultUserFilter.length !== 0
           ? await fetch(
