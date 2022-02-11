@@ -60,7 +60,6 @@ const Pager = memo((props) => {
 
   return (
     <PagerContainer>
-      {console.log("PAGE", data, pages)}
       {pages.length > 1 && (
         <ButtonGroup>
           <Button disabled={page === 1} onClick={prevPage} label="Prev" />

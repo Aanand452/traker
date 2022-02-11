@@ -778,8 +778,7 @@ class Table extends Component {
   };
   calendarViewBtn = () => {
     this.setState({ isCalanderView: !this.state.isCalanderView });
-    if (!this.state.isCalanderView) window.location.reload(false);
-    this.getFilteredData();
+    // if (!this.state.isCalanderView) window.location.reload(false);
   };
   calendarOnHover = () => {
     this.setState({ popoverOpen: true });
@@ -2269,8 +2268,10 @@ class Table extends Component {
                           },
                         ],
                       });
+                      this.getFilteredData();
                     },
                     onSelect: (event, data) => {
+                      this.getFilteredData();
                       this.setState({
                         regionsInputValue: "",
                         regionsSelected: data.selection,
@@ -2402,6 +2403,9 @@ class Table extends Component {
                   events={{
                     onChange: (event, { value }) => {
                       this.setState({ formatInputValue: value });
+                      setTimeout(() => {
+                        this.getFilteredData();
+                      }, 200);
                     },
                     onRequestClose: () => {
                       this.setState({ isFormatFilterOpen: false });
@@ -2467,6 +2471,9 @@ class Table extends Component {
                           formatsSelected: data.selection,
                         });
                       }
+                      setTimeout(() => {
+                        this.getFilteredData();
+                      }, 200);
                     },
                   }}
                   selection={this.state.formatsSelected}
@@ -2643,6 +2650,7 @@ class Table extends Component {
                 setDisplayedItems={this.handlePagination}
               />
             )}
+            {console.log(this.state.data)}
             {!this.state.isCalanderView && (
               <Pager
                 data={this.state.data}
