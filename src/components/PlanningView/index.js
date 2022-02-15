@@ -176,12 +176,12 @@ class PlanningView extends Component {
 
   _exportPdf = () => {
     this.setState({ print: true });
-    console.log(this.state.print)
+    console.log('first set',this.state.print)
     // window.print();
     setTimeout(() => {
       this.setState({ print: true });
 
-      console.log(this.state.print)
+      console.log('second set', this.state.print)
       html2canvas(document.querySelector("#printable")).then((canvas) => {
         document.body.appendChild(canvas); // if you want see your screenshot in body.
         const imgData = canvas.toDataURL("image/png");
@@ -194,7 +194,7 @@ class PlanningView extends Component {
         pdf.save("download.pdf");
       });
       this.setState({ print: false });
-      console.log(this.state.print)
+      console.log('third set', this.state.print)
     }, 300);
   };
 
