@@ -179,10 +179,12 @@ class PlanningView extends Component {
     // window.print();
     setTimeout(() => {
       const height = document.getElementById('printable').clientHeight
+      console.log(height)
       html2canvas(document.querySelector("#printable")).then((canvas) => {
         document.body.appendChild(canvas); // if you want see your screenshot in body.
         const imgData = canvas.toDataURL("image/png");
         const pdf = new jsPDF("l", "px", "a0");
+        pdf.setFontSize(16)
         pdf.addImage(imgData, "JPEG", 0, 0, 1440, height);
         pdf.save("download.pdf");
       });
