@@ -185,7 +185,7 @@ class PlanningView extends Component {
         const imgData = canvas.toDataURL("image/png");
         const pdf = new jsPDF("l", "px", "a0");
         pdf.setFontSize(16)
-        pdf.addImage(imgData, "JPEG", 0, 0, 1440, height);
+        pdf.addImage(imgData, "JPEG", 0, 0, 0, 0);
         pdf.save("download.pdf");
       });
       this.setState({ print: false });
