@@ -195,7 +195,7 @@ class PlanningView extends Component {
       });
       this.setState({ print: false });
       console.log('third set', this.state.print)
-    }, 300);
+    }, 600);
   };
 
   toggleModal = () => {
