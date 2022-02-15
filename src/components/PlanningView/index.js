@@ -178,11 +178,12 @@ class PlanningView extends Component {
     this.setState({ print: true });
     // window.print();
     setTimeout(() => {
+      const height = document.getElementById('printable').clientHeight
       html2canvas(document.querySelector("#printable")).then((canvas) => {
         document.body.appendChild(canvas); // if you want see your screenshot in body.
         const imgData = canvas.toDataURL("image/png");
-        const pdf = new jsPDF("p", "mm", "a0");
-        pdf.addImage(imgData, "JPEG", 0, 0);
+        const pdf = new jsPDF("l", "px", "a2");
+        pdf.addImage(imgData, "JPEG", 0, 0, 1440, height);
         pdf.save("download.pdf");
       });
       this.setState({ print: false });
@@ -296,7 +297,6 @@ class PlanningView extends Component {
             }
           }
       }
-      console.log(result, approval_list);
       this.setState({
         userEmail: userEmail,
         planner: result,
@@ -359,7 +359,6 @@ class PlanningView extends Component {
       const name = getCookie("name").replaceAll('"', "");
       let username = getCookie("username").replaceAll('"', "");
 
-      console.log(username, name, this.state.approver1);
       const body = {
         approval: {
           ...this.state.approve,
@@ -384,7 +383,6 @@ class PlanningView extends Component {
           }),
         },
       };
-      console.log(body);
       const config = {
         method: "PUT",
         headers: {
@@ -935,7 +933,6 @@ class PlanningView extends Component {
                     fontSize: "16px",
                   }}
                 >
-                  {console.log(this.state.approve)}
                   <ul style={{ listStyleType: "upper-roman" }}>
                     {this.state.approvalList.map((item, key) =>
                       key === 0 ? (
@@ -1176,7 +1173,7 @@ class PlanningView extends Component {
           </Modal>
         </IconSettings>
         {this.state.print && (
-          <div id="printable">
+          <div id="printable" >
             <PlanningViewPrintArea />
           </div>
         )}
