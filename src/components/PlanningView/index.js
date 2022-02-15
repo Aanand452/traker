@@ -182,7 +182,7 @@ class PlanningView extends Component {
       html2canvas(document.querySelector("#printable")).then((canvas) => {
         document.body.appendChild(canvas); // if you want see your screenshot in body.
         const imgData = canvas.toDataURL("image/png");
-        const pdf = new jsPDF("l", "px", "b0");
+        const pdf = new jsPDF({orientation: 'l', unit: 'px', format: [canvas.width, canvas.height] });
         pdf.setFontSize(16)
         const width =  pdf.internal.pageSize.getWidth()
         const height = canvas.height * width / width
