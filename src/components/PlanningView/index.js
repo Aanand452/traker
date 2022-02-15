@@ -178,15 +178,15 @@ class PlanningView extends Component {
     this.setState({ print: true });
     // window.print();
     setTimeout(() => {
-      const width = 1440
-      const height = document.getElementById('printable').clientHeight * width / width
-      console.log(height)
       html2canvas(document.querySelector("#printable")).then((canvas) => {
+        const width = 1440
+        const height = canvas.height * width / width
+        console.log(height, width)  
         document.body.appendChild(canvas); // if you want see your screenshot in body.
         const imgData = canvas.toDataURL("image/png");
         const pdf = new jsPDF("l", "px", "a0");
         pdf.setFontSize(16)
-        pdf.addImage(imgData, "JPEG", 0, 0, pdf.internal.pageSize.getWidth(), pdf.internal.pageSize.getHeight());
+        pdf.addImage(imgData, "JPEG", 0, 0, width, height);
         pdf.save("download.pdf");
       });
       this.setState({ print: false });
