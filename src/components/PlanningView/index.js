@@ -182,7 +182,7 @@ class PlanningView extends Component {
       html2canvas(document.querySelector("#printable")).then((canvas) => {
         document.body.appendChild(canvas); // if you want see your screenshot in body.
         const imgData = canvas.toDataURL("image/png");
-        const pdf = new jsPDF("l", "px", "a0");
+        const pdf = new jsPDF("l", "px", "b0");
         pdf.setFontSize(16)
         const width =  pdf.internal.pageSize.getWidth()
         const height = canvas.height * width / width
@@ -207,6 +207,7 @@ class PlanningView extends Component {
   };
 
   getPlannerByID = async () => {
+    this.setState({showLoader:true})
     const userEmail = getCookie("userEmail").replaceAll('"', "");
     if (window.location.hostname === "localhost")
       this.API_URL = "http://localhost:3000/api/v1";
@@ -329,6 +330,7 @@ class PlanningView extends Component {
             ).toFixed(1)
           : 0,
         loading: false,
+        showLoader:false,
       });
 
       // if (response.info.code === 200) this.setState({ personas: persona });
@@ -403,7 +405,7 @@ class PlanningView extends Component {
       );
 
       if (response.status === 200) {
-        this.setState({ submitModal: !this.state.submitModal });
+        this.setState({ submitModal: !this.state.submitModal, showLoader:false });
         // window.location.reload();
         // this.props.history.push({
         //   pathname: "/planner-view",
@@ -460,7 +462,7 @@ class PlanningView extends Component {
       );
 
       if (response.status === 200) {
-        this.setState({ approvalModal: !this.state.approvalModal });
+        this.setState({ approvalModal: !this.state.approvalModal, showLoader:false });
         // window.location.reload();
         this.props.history.push({
           pathname: "/planner-view",
