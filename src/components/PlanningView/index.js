@@ -480,18 +480,6 @@ class PlanningView extends Component {
   render() {
     const { planner, loading, total_budget, total_mp_target } = this.state;
 
-    if (loading) {
-      return (
-        <div>
-          <Spinner
-            size="small"
-            variant="brand"
-            assistiveText={{ label: "Loading..." }}
-          />
-        </div>
-      );
-    }
-
     let { offers } = planner.offers;
 
     return (
