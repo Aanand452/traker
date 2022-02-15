@@ -29,6 +29,7 @@ class PlanningView extends Component {
       planner: {},
       print: false,
       planner_id: false,
+      showLoader:false,
       loading: true,
       modalOpen: false,
       submitModal: false,
@@ -175,13 +176,9 @@ class PlanningView extends Component {
   }
 
   _exportPdf = () => {
-    this.setState({ print: true });
-    console.log('first set',this.state.print)
+    this.setState({ print: true, showLoader:true});
     // window.print();
     setTimeout(() => {
-      this.setState({ print: true });
-
-      console.log('second set', this.state.print)
       html2canvas(document.querySelector("#printable")).then((canvas) => {
         document.body.appendChild(canvas); // if you want see your screenshot in body.
         const imgData = canvas.toDataURL("image/png");
@@ -193,9 +190,8 @@ class PlanningView extends Component {
         pdf.addImage(imgData, "JPEG", 0, 0, width, height);
         pdf.save("download.pdf");
       });
-      this.setState({ print: false });
-      console.log('third set', this.state.print)
-    }, 600);
+      this.setState({ print: false, showLoader:false });
+    }, 1000);
   };
 
   toggleModal = () => {
@@ -500,6 +496,13 @@ class PlanningView extends Component {
       <div>
         <IconSettings iconPath="assets/icons">
           <div style={{ backgroundColor: "white", paddingLeft: "10px" }}>
+          {this.state.showLoader && (
+            <Spinner
+              size="small"
+              variant="brand"
+              assistiveText={{ label: "Loading..." }}
+            />
+          )}
             <NavBar />
             <div
               style={{
