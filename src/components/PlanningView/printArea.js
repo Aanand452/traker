@@ -802,7 +802,7 @@ class PlanningViewPrintArea extends Component {
               </div>
             </div>
 
-            <Modal
+            {/* <Modal
               isOpen={this.state.modalOpen}
               onRequestClose={this.toggleModal}
               size="small"
@@ -825,9 +825,9 @@ class PlanningViewPrintArea extends Component {
                   }
                 />
               </div>
-            </Modal>
+            </Modal> */}
 
-            {this.state.approve && (
+            {/* {this.state.approve && (
               <div style={{ marginLeft: "10px" }}>
                 <h2 style={{ fontSize: "20px", fontWeight: "700" }}>
                   Approval History:{" "}
@@ -871,211 +871,8 @@ class PlanningViewPrintArea extends Component {
                   </ul>
                 </div>
               </div>
-            )}
+            )} */}
           </div>
-          <Modal
-            isOpen={this.state.submitModal}
-            onRequestClose={this.toggleSubmitModal}
-            size="small"
-            heading="Submit for Approval"
-          >
-            <div className="p-4" style={{ height: "50vh", minHeight: "50vh" }}>
-              <Combobox
-                id="combobox-base"
-                disabled={this.props.disabled}
-                events={{
-                  onChange: (event, { value }) => {
-                    if (this.props.action) {
-                      this.props.action("onChange")(event, value);
-                    }
-                    this.setState({ approver1Value: value });
-                  },
-                  onRequestRemoveSelectedOption: (event, data) => {
-                    this.setState({
-                      approver1Value: "",
-                      approver1: data.selection,
-                    });
-                  },
-                  onSubmit: (event, { value }) => {
-                    if (this.props.action) {
-                      this.props.action("onChange")(event, value);
-                    }
-                    this.setState({
-                      approver1Value: "",
-                      approver1: this.state.selection,
-                    });
-                  },
-                  onSelect: (event, data) => {
-                    if (this.props.action) {
-                      this.props.action("onSelect")(
-                        event,
-                        ...Object.keys(data).map((key) => data[key])
-                      );
-                    }
-                    this.setState({
-                      approver1Value: "",
-                      approver1: data.selection,
-                    });
-                  },
-                }}
-                labels={{
-                  label: "Approver 1",
-                  placeholder: "Select Approver 1 Emails",
-                }}
-                menuItemVisibleLength={5}
-                multiple
-                options={comboboxFilterAndLimit({
-                  inputValue: this.state.approver1Value,
-                  limit: 10,
-                  options: this.state.accounts,
-                  selection: this.state.approver1,
-                })}
-                selection={this.state.approver1}
-                value={this.state.approver1Value}
-                required
-                errorText={this.state.errorTexts.approver1}
-              />
-
-              <Combobox
-                id="combobox-base"
-                disabled={this.props.disabled}
-                events={{
-                  onChange: (event, { value }) => {
-                    if (this.props.action) {
-                      this.props.action("onChange")(event, value);
-                    }
-                    this.setState({ approver2Value: value });
-                  },
-                  onRequestRemoveSelectedOption: (event, data) => {
-                    this.setState({
-                      approver2Value: "",
-                      approver2: data.selection,
-                    });
-                  },
-                  onSubmit: (event, { value }) => {
-                    if (this.props.action) {
-                      this.props.action("onChange")(event, value);
-                    }
-                    this.setState({
-                      approver2Value: "",
-                      approver2: this.state.selection,
-                    });
-                  },
-                  onSelect: (event, data) => {
-                    if (this.props.action) {
-                      this.props.action("onSelect")(
-                        event,
-                        ...Object.keys(data).map((key) => data[key])
-                      );
-                    }
-                    this.setState({
-                      approver2Value: "",
-                      approver2: data.selection,
-                    });
-                  },
-                }}
-                labels={{
-                  label: "Approver 2",
-                  placeholder: "Select Approver 2 Emails",
-                }}
-                menuItemVisibleLength={5}
-                multiple
-                options={comboboxFilterAndLimit({
-                  inputValue: this.state.approver2Value,
-                  limit: 50,
-                  options: this.state.accounts2,
-                  selection: this.state.approver2,
-                })}
-                selection={this.state.approver2}
-                value={this.state.approver2Value}
-                required
-                errorText={this.state.errorTexts.approver2}
-              />
-
-              <Input
-                aria-describedby="error-4"
-                id="unique-id-4"
-                label="Note"
-                onChange={(event, data) => {
-                  this.setState({
-                    approve: { ...this.state.approve, note: data.value },
-                  });
-                }}
-                value={this.state.approve.note}
-                required
-                errorText={this.state.errorTexts.note}
-                placeholder="Enter description to assist approvers"
-              />
-
-              <div
-                style={{
-                  width: "100%",
-                  marginTop: "20px",
-                  marginLeft: "auto",
-                  textAlign: "center",
-                  display: "flex",
-                  justifyContent: "center",
-                }}
-              >
-                <div>
-                  <Button
-                    label="Submit for Approval"
-                    variant="brand"
-                    onClick={this.handleSubmit}
-                  />
-                </div>
-              </div>
-            </div>
-          </Modal>
-          <Modal
-            isOpen={this.state.approvalModal}
-            onRequestClose={this.toggleApproveModal}
-            size="small"
-            heading="Submit for Approval"
-          >
-            <div className="p-4">
-              <Input
-                aria-describedby="error-4"
-                id="unique-id-4"
-                label="Note"
-                onChange={(event, data) => {
-                  this.setState({
-                    approve: { ...this.state.approve, note: data.value },
-                  });
-                }}
-                value={this.state.approve.note}
-                required
-                errorText={this.state.errorTexts.note}
-                placeholder="Enter description to assist approvers"
-              />
-
-              <div
-                style={{
-                  width: "100%",
-                  marginTop: "20px",
-                  marginLeft: "auto",
-                  textAlign: "center",
-                  display: "flex",
-                  justifyContent: "center",
-                }}
-              >
-                <div>
-                  <Button
-                    label="Approve"
-                    variant="brand"
-                    onClick={() => this.handleApprove("accept")}
-                  />
-                </div>
-                <div style={{ marginLeft: "20px" }}>
-                  <Button
-                    label="Reject"
-                    variant="destructive"
-                    onClick={() => this.handleApprove("reject")}
-                  />
-                </div>
-              </div>
-            </div>
-          </Modal>
         </IconSettings>
       </div>
     );
