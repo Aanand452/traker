@@ -1148,6 +1148,8 @@ class Table extends Component {
   };
 
   getFilteredData = () => {
+
+    setTimeout(()=>{this.setState({showLoader:false})},500)
     const slectedRegioins = this.state.regionsSelected.map(function (key) {
       return key.label;
     });
@@ -2247,9 +2249,11 @@ class Table extends Component {
                     },
                     onRequestRemoveSelectedOption: (event, data) => {
                       this.setState({
+                        
                         regionsInputValue: "",
                         regionsSelected: data.selection,
                       });
+                      
                     },
                     onSubmit: (event, { value }) => {
                       this.setState({
@@ -2273,6 +2277,7 @@ class Table extends Component {
                     onSelect: (event, data) => {
                       this.getFilteredData();
                       this.setState({
+                        showLoader:true,
                         regionsInputValue: "",
                         regionsSelected: data.selection,
                       });
@@ -2363,6 +2368,7 @@ class Table extends Component {
                     },
                     onSelect: (event, data) => {
                       this.setState({
+                        showLoader:true,
                         programInputValue: "",
                         programSelected: data.selection,
                       });
@@ -2378,6 +2384,12 @@ class Table extends Component {
                           programSelected: data.selection,
                         });
                       }
+                      setTimeout(()=>{
+                        this.setState({
+                          showLoader:false,
+                        })
+
+                      },500)
                     },
                   }}
                   selection={this.state.programSelected}
@@ -2456,6 +2468,7 @@ class Table extends Component {
                     },
                     onSelect: (event, data) => {
                       this.setState({
+                        showLoader:true,
                         formatInputValue: "",
                         formatsSelected: data.selection,
                       });
