@@ -133,7 +133,9 @@ class ActivityCalendar extends Component {
     if (this.props.activities !== prevProps.activities) {
       this.setState({ data: this.props.activities });
       this.state.data = this.props.activities;
-      this.onNavigate(new Date(), "month", "Today");
+      const { date, view, action } = this.props.calendarView;
+      this.onNavigate(date, view, action);
+      // this.onNavigate(new Date(), "month", "Today");
       this.computeDisplayedDateRange();
     }
     if (this.props.calendarView.date !== prevProps.calendarView.date) {

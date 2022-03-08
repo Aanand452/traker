@@ -212,7 +212,8 @@ class Table extends Component {
           this.updateFilters();
         }
       console.log("@@@");
-      this.getFilteredData();
+      setTimeout(()=>{this.getFilteredData();},200)
+      
     }
   }
 
@@ -981,6 +982,8 @@ class Table extends Component {
   clearFilter = () => {
     var defaultFormats = this.getDefaultFornats(this.state.formats);
     this.setState({
+      startDate:new Date(),
+      endDate:null,
       data: this.props.data,
       calendarViewData: this.props.data,
       formatsSelected: defaultFormats,
@@ -1160,8 +1163,7 @@ class Table extends Component {
       return key.label;
     });
     var arr = [];
-    if (!this.state.isCalanderView) {
-      const startDate = moment(this.state.startDate).format("YYYY-MM-DD");
+    const startDate = moment(this.state.startDate).format("YYYY-MM-DD");
       const endDate = this.state.endDate
         ? moment(addDays(this.state.endDate, 1)).format("YYYY-MM-DD")
         : moment(addDays(this.state.startDate, 7)).format("YYYY-MM-DD");
@@ -1169,9 +1171,6 @@ class Table extends Component {
         var date = moment(new Date(a.startDate)).format("YYYY-MM-DD");
         return moment(date).isBetween(startDate, endDate);
       });
-    } else {
-      arr = this.props.data;
-    }
     const filteredData = arr.filter((row) => {
       if (
         !slectedRegioins.includes("All") &&
@@ -1404,7 +1403,9 @@ class Table extends Component {
             : "PREV",
       },
     });
-    this.getFilteredData();
+
+    setTimeout(()=>{this.getFilteredData();},200)
+    
   };
 
   onClickToday = () => {
@@ -1590,9 +1591,18 @@ class Table extends Component {
     }
   };
 
+
+ 
+
   render() {
     const isEmpty = this.state.data.length === 0;
     const { planner } = this.props;
+    let item;
+    if (this.state.displayedData.length>0) {
+      item = <div></div>;
+    } else {
+      item = <div style={{color:'red',fontSize:20,textAlign:"center",fontFamily:"bold"}}>Data Not Found</div>;
+    }
     return (
       <Container id="outer-container">
         {this.state.showLoader && (
@@ -2222,6 +2232,7 @@ class Table extends Component {
                   events={{
                     onChange: (event, { value }) => {
                       this.setState({ regionsInputValue: value });
+                      setTimeout(()=>{this.getFilteredData();},200)
                     },
                     onRequestClose: () => {
                       this.setState({ isRegionFilterOpen: false });
@@ -2242,7 +2253,8 @@ class Table extends Component {
                         });
                       }
                       this.getFilteredPrograms(this.state.regionsSelected);
-                      this.getFilteredData();
+                      setTimeout(()=>{this.getFilteredData();},200)
+                      
                     },
                     onRequestOpen: () => {
                       this.setState({ isRegionFilterOpen: true });
@@ -2253,7 +2265,7 @@ class Table extends Component {
                         regionsInputValue: "",
                         regionsSelected: data.selection,
                       });
-                      
+                      setTimeout(()=>{this.getFilteredData();},200)
                     },
                     onSubmit: (event, { value }) => {
                       this.setState({
@@ -2272,7 +2284,7 @@ class Table extends Component {
                           },
                         ],
                       });
-                      this.getFilteredData();
+                      setTimeout(()=>{this.getFilteredData();},200)
                     },
                     onSelect: (event, data) => {
                       this.getFilteredData();
@@ -2292,8 +2304,9 @@ class Table extends Component {
                           regionsInputValue: "",
                           regionsSelected: data.selection,
                         });
-                      }
+                      }setTimeout(()=>{this.getFilteredData();},200)
                     },
+                    
                   }}
                   selection={this.state.regionsSelected}
                   menuItemVisibleLength={5}
@@ -2318,6 +2331,7 @@ class Table extends Component {
                   events={{
                     onChange: (event, { value }) => {
                       this.setState({ programInputValue: value });
+                      setTimeout(()=>{this.getFilteredData();},200)
                     },
                     onRequestClose: () => {
                       this.setState({ isProgramFilterOpen: false });
@@ -2337,7 +2351,7 @@ class Table extends Component {
                           }),
                         });
                       }
-                      // this.getFilteredData()
+                      setTimeout(()=>{this.getFilteredData();},200)
                     },
                     onRequestOpen: () => {
                       this.setState({ isProgramFilterOpen: true });
@@ -2347,6 +2361,7 @@ class Table extends Component {
                         programInputValue: "",
                         programSelected: data.selection,
                       });
+                      setTimeout(()=>{this.getFilteredData();},200)
                     },
                     onSubmit: (event, { value }) => {
                       this.setState({
@@ -2390,7 +2405,9 @@ class Table extends Component {
                         })
 
                       },500)
+                      setTimeout(()=>{this.getFilteredData();},200)
                     },
+                    
                   }}
                   selection={this.state.programSelected}
                   menuItemVisibleLength={5}
@@ -2437,7 +2454,7 @@ class Table extends Component {
                           }),
                         });
                       }
-                      // this.getFilteredData()
+                      setTimeout(()=>{this.getFilteredData();},200)
                     },
                     onRequestOpen: () => {
                       this.setState({ isFormatFilterOpen: true });
@@ -2447,6 +2464,7 @@ class Table extends Component {
                         formatInputValue: "",
                         formatsSelected: data.selection,
                       });
+                      setTimeout(()=>{this.getFilteredData();},200)
                     },
                     onSubmit: (event, { value }) => {
                       this.setState({
@@ -2528,7 +2546,9 @@ class Table extends Component {
             </div>
           </Menu>
           <main id="page-wrap">
+
             {!this.state.isCalanderView && (
+              
               <DataTable
                 assistiveText={{
                   actionsHeader: "actions",
@@ -2555,6 +2575,7 @@ class Table extends Component {
                     : ""
                 }`}
               >
+
                 <DataTableColumn
                   width={`${this.state.columnWidth["Owner"]}px`}
                   label="Owner"
@@ -2648,8 +2669,20 @@ class Table extends Component {
                   onAction={this.handleRowAction}
                   dropdown={<Dropdown length="7" />}
                 />
+                
               </DataTable>
+              
+             
+             
             )}
+
+            {!this.state.isCalanderView &&(
+              <div>
+                {item}
+              </div>
+            )}
+            
+            
             {this.state.isCalanderView && (
               <ActivityCalendar
                 activities={this.state.calendarViewData}
@@ -2664,6 +2697,8 @@ class Table extends Component {
               />
             )}
             {console.log(this.state.data)}
+            {console.log(this.state.startDate)}
+            {console.log(this.state.endDate)}
             {!this.state.isCalanderView && (
               <Pager
                 data={this.state.data}

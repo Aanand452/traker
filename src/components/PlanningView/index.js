@@ -207,7 +207,7 @@ class PlanningView extends Component {
   };
 
   getPlannerByID = async () => {
-    this.setState({showLoader:true})
+    
     const userEmail = getCookie("userEmail").replaceAll('"', "");
     if (window.location.hostname === "localhost")
       this.API_URL = "http://localhost:3000/api/v1";
@@ -303,6 +303,8 @@ class PlanningView extends Component {
           }
       }
       this.setState({
+        loading: false,
+        showLoader:false,
         userEmail: userEmail,
         planner: result,
         isUserApprover,
@@ -329,8 +331,7 @@ class PlanningView extends Component {
                 result.mp_target.q4
             ).toFixed(1)
           : 0,
-        loading: false,
-        showLoader:false,
+       
       });
 
       // if (response.info.code === 200) this.setState({ personas: persona });
