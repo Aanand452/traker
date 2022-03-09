@@ -1163,7 +1163,13 @@ class Table extends Component {
       return key.label;
     });
     var arr = [];
-    const startDate = moment(this.state.startDate).format("YYYY-MM-DD");
+
+    if(this.state.endDate===null){
+      console.log('null')
+      arr=this.props.data
+    }else{
+      console.log('not null')
+      const startDate = moment(this.state.startDate).format("YYYY-MM-DD");
       const endDate = this.state.endDate
         ? moment(addDays(this.state.endDate, 1)).format("YYYY-MM-DD")
         : moment(addDays(this.state.startDate, 7)).format("YYYY-MM-DD");
@@ -1171,6 +1177,9 @@ class Table extends Component {
         var date = moment(new Date(a.startDate)).format("YYYY-MM-DD");
         return moment(date).isBetween(startDate, endDate);
       });
+      
+    }
+    
     const filteredData = arr.filter((row) => {
       if (
         !slectedRegioins.includes("All") &&
