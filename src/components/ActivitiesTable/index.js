@@ -139,6 +139,7 @@ class Table extends Component {
     columnWidth: {},
     tableExtraWidth: 0,
     noRowHover: false,
+    category:[],
     isHistoric: false,
     isCalanderView: true,
     popoverOpen: false,
@@ -150,6 +151,7 @@ class Table extends Component {
     programsFYendDate: "",
     startDate: "",
     endDate: "",
+    formats:[],
     isFiltering: false,
     formatsSelected: [],
     defaultFormats: [],
@@ -208,10 +210,10 @@ class Table extends Component {
             this.state.defaultUserFilter.regions_selected.length !==
             0
         ) {
-          console.log("@@@");
+         
           this.updateFilters();
         }
-      console.log("@@@");
+     
       setTimeout(()=>{this.getFilteredData();},200)
       
     }
@@ -412,7 +414,7 @@ class Table extends Component {
     div.style.width = width;
     div.style.position = "absolute";
     div.style.cursor = "col-resize";
-    div.style.userSelect = "none";
+    div.style.userSelectge = "none";
     div.style.height = "100%";
     div.style.zIndex = zIndex;
     return div;
@@ -692,8 +694,10 @@ class Table extends Component {
       let response = await fetch(`${this.API_URL}/format`, config);
       if (response.status === 200) {
         let { result } = await response.json();
-        result = result.map((item) => ({ label: item.name, ...item }));
-        let formats = result.map((el) => ({
+       
+        
+        const formateresult = result.map((item) => ({ label: item.name, ...item }));
+        let formats = formateresult.map((el) => ({
           ...el,
           id: el.format_id,
           icon: (
@@ -721,6 +725,62 @@ class Table extends Component {
             ...formats,
           ],
         });
+       
+       
+        const categoryresult = result.map((item) => ({ label: item.category, ...item }));
+        let categorylist = categoryresult.map((el) => ({
+          ...el,
+          id: el.format_id,
+          icon: (
+            <Icon
+              assistiveText={{ label: "Task" }}
+              category="standard"
+              name="task2"
+              style={{ background: "#" + this.getEventColor(el.label) }}
+            />
+          ),
+        }));
+
+        var category=[
+          {
+            label: "All",
+            id: "all",
+            icon: (
+              <Icon
+                assistiveText={{ label: "Account" }}
+                category="standard"
+                name="campaign"
+              />
+            ),
+          },
+          
+        ];
+        var categoryrowlist=[]
+        formats.map((item)=>{
+          if(categoryrowlist.indexOf(item.category)===-1 && item.category !==null ){
+            categoryrowlist.push(item.category)
+          }
+        })
+        
+        categoryrowlist.map((item)=>{
+
+           category.push({
+            label: item,
+            id: item,
+            icon: (
+              <Icon
+                assistiveText={{ label: "Account" }}
+                category="standard"
+                name="campaign"
+              />
+            ),
+          })
+         
+        })
+        this.setState({
+          category: category,
+        });
+     
         let defaultFormats = this.getDefaultFornats(formats);
         this.setState({
           formatsSelected: defaultFormats,
@@ -734,7 +794,18 @@ class Table extends Component {
     }
   }
 
+  
   getDefaultFornats = (formats) => {
+    
+
+    var categorylist=[]
+    formats.map((item)=>{
+      if(categorylist.indexOf(item.category)===-1 && item.category !==null ){
+        categorylist.push(item.category)
+      }
+    })
+    
+  
     let defaultFormatNames = [
       "3rdParty-Virtual Event",
       "Exec Engagement",
@@ -1122,19 +1193,19 @@ class Table extends Component {
   updateFilters = () => {
     const { formats_selected, programs_selected, regions_selected } =
       this.state.defaultUserFilter;
-    console.log(11111, this.state.programs, this.state.regions);
+   
     let selectedFormats = this.state.formats.filter((item) => {
       if (formats_selected.length >= 0 && !formats_selected.includes(item.id))
         return false;
       return true;
     });
-    console.log("regions_selected", this.state.programs);
+    
     let programSelected = this.state?.programs?.filter((item) => {
       if (programs_selected.length >= 0 && !programs_selected.includes(item.id))
         return false;
       return true;
     });
-    console.log("regions_selected", regions_selected);
+   
     let slectedRegioins = this.state.regions?.filter((item) => {
       if (regions_selected.length >= 0 && !regions_selected.includes(item.id))
         return false;
@@ -1159,16 +1230,36 @@ class Table extends Component {
     const programSelected = this.state.programSelected.map(function (key) {
       return key.label;
     });
-    const formatsSelected = this.state.formatsSelected.map(function (key) {
-      return key.label;
+    const formatsSelected = [];
+    this.state.formatsSelected.map( (key)=> {
+  
+      console.log('this is formate')
+      
+      this.state.formats.map((item)=>{
+        
+        if(item.category===key.label){
+         
+          formatsSelected.push(item.label)
+          
+        }
+       
+      })
+      
+     
+      
     });
+    console.log('this is formate data')
+    this.state.formats.map((item)=>{
+      console.log(item)
+    })
+   console.log(formatsSelected)
     var arr = [];
 
     if(this.state.endDate===null){
-      console.log('null')
+     
       arr=this.props.data
     }else{
-      console.log('not null')
+     
       const startDate = moment(this.state.startDate).format("YYYY-MM-DD");
       const endDate = this.state.endDate
         ? moment(addDays(this.state.endDate, 1)).format("YYYY-MM-DD")
@@ -1243,7 +1334,7 @@ class Table extends Component {
         response.result.length > 0
           ? response.result[response.result.length - 1]
           : [];
-      console.log("---", response.result[response.result.length - 1]);
+      
       if (response.info.code === 200) {
         this.setState({ defaultUserFilter: defaultUserFilter });
         this.updateFilters();
@@ -1281,12 +1372,7 @@ class Table extends Component {
           programs: programSelectedId,
         }),
       };
-      console.log({
-        userId: this.state.userId,
-        formats: formatsSelectedId,
-        regions: slectedRegioinsId,
-        programs: programSelectedId,
-      });
+     
       let response =
         this.state.defaultUserFilter.length !== 0
           ? await fetch(
@@ -2521,7 +2607,7 @@ class Table extends Component {
                   options={comboboxFilterAndLimit({
                     inputValue: this.state.formatInputValue,
                     limit: 50,
-                    options: this.state.formats,
+                    options: this.state.category,
                     selection: this.state.formatsSelected,
                   })}
                 />
@@ -2684,6 +2770,7 @@ class Table extends Component {
              
              
             )}
+            {console.log(this.state.data)}
 
             {!this.state.isCalanderView &&(
               <div>
@@ -2705,9 +2792,7 @@ class Table extends Component {
                 setDisplayedItems={this.handlePagination}
               />
             )}
-            {console.log(this.state.data)}
-            {console.log(this.state.startDate)}
-            {console.log(this.state.endDate)}
+           
             {!this.state.isCalanderView && (
               <Pager
                 data={this.state.data}
@@ -2733,8 +2818,11 @@ class Table extends Component {
           </ToastContainer>
         )}
       </Container>
+      
     );
+    
   }
+  
 }
 
 let mapState = ({ dataTable }) => ({

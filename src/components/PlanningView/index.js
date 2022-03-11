@@ -209,8 +209,12 @@ class PlanningView extends Component {
   getPlannerByID = async () => {
     
     const userEmail = getCookie("userEmail").replaceAll('"', "");
-    if (window.location.hostname === "localhost")
-      this.API_URL = "http://localhost:3000/api/v1";
+    if (window.location.hostname === "localhost"){
+
+  this.API_URL = "http://localhost:3000/api/v1";
+
+    }
+      
     else this.API_URL = await getAPIUrl();
 
     try {
@@ -235,7 +239,7 @@ class PlanningView extends Component {
         `${this.API_URL}/program-planner/${planner_id}`,
         config
       );
-      let response = await request.json();
+      let response =await request.json();
 
       let { result } = response;
 
