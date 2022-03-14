@@ -781,7 +781,7 @@ class Table extends Component {
           category: category,
         });
      
-        let defaultFormats = this.getDefaultFornats(formats);
+        let defaultFormats = this.getDefaultFornats(category);
         this.setState({
           formatsSelected: defaultFormats,
           defaultFormats: defaultFormats,
@@ -807,15 +807,9 @@ class Table extends Component {
     
   
     let defaultFormatNames = [
-      "3rdParty-Virtual Event",
-      "Exec Engagement",
-      "Executive Visit",
-      "F2F Event",
-      "Webinar",
-      "Webinar - 3rd Party",
-      "Virtual Event",
-      "SIC",
-      "Launch",
+      "Campaign",
+      "Event",
+  
     ];
     return formats.filter((format) => {
       if (!defaultFormatNames.includes(format.label)) return false;
@@ -2771,6 +2765,7 @@ class Table extends Component {
              
             )}
             {console.log(this.state.data)}
+            {console.log(this.state.category)}
 
             {!this.state.isCalanderView &&(
               <div>
