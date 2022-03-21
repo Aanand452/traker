@@ -237,75 +237,73 @@ class ActivityCalendar extends Component {
         break;
     }
   };
+  getCatagoryByFormat = (format, isOld) => {
+    let ff = !!format ? this.props.formats.find((f) => f.label === format).category: "Empty";
+    ff = format !== '' || ff !== null ? ff : "Empty";
+    let color = isOld ? this.getOldEventColor(ff) : this.getEventColor(ff);
+    return color
+  }
+  getEventColor = (category) => {
+      switch (category) {
+        case "Event":
+          return "ea9a99";
+        case "Campaign":
+          return "fff2cc";
+        case "Exec Engagement":
+          return "c9daf8";
+        case "Digital":
+          return "b5d7a8";
+        case "Webinar":
+          return "d0dfe3";
+        case "SIC":
+          return "c9daf8";
+        case "Content":
+          return "ead1db";
+        default:
+          return "04f7398c";
+    }
+  };
 
-  getEventColor = (format) => {
-    switch (format) {
-      case "3rdParty-Virtual Event":
-        return "02d4308c";
-      case "Webinar":
-        return "e081048c";
+  getOldEventColor = (category) => {
+    switch (category) {
+      case "Event":
+        return "e6adac";
+      case "Campaign":
+        return "fcf5de";
       case "Exec Engagement":
-        return "c9c5068c";
-      case "Executive Visit":
-        return "058eb88c";
-      case "F2F Event":
-        return "0520b88c";
-      case "Webinar - 3rd Party":
-        return "4405b88c";
-      case "Virtual Event":
-        return "a905b88c";
+        return "e1ebfc";
+      case "Digital":
+        return "e1fad7";
+      case "Webinar":
+        return "e8f6fa";
       case "SIC":
-        return "b805148c";
-      case "Launch":
-        return "5983598c";
+        return "dee9fc";
+      case "Content":
+        return "fce8f0";
       default:
         return "04f7398c";
     }
   };
-
-  getOldEventColor = (format) => {
-    switch (format) {
-      case "3rdParty-Virtual Event":
-        return "bafac88c";
-      case "Webinar":
-        return "fadcb58c";
-      case "Exec Engagement":
-        return "f8f7ba8c";
-      case "Executive Visit":
-        return "bbe9f78c";
-      case "F2F Event":
-        return "aeb9f78c";
-      case "Webinar - 3rd Party":
-        return "c6acf88c";
-      case "Virtual Event":
-        return "f0a2f78c";
-      case "SIC":
-        return "f8a9b08c";
-      case "Launch":
-        return "c9f8c98c";
-      default:
-        return "d0fad98c";
-    }
-  };
   eventStyleGetter = (event, start, end, isSelected) => {
+
     var backgroundColor = "";
     var color = "";
     if (
       moment(start, "DD-MM-YYYY").valueOf() >
       moment(new Date(), "DD-MM-YYYY").valueOf()
     ) {
-      backgroundColor = "#" + this.getEventColor(event.resource.data.formatId);
+      backgroundColor = "#" + this.getCatagoryByFormat(event.resource.data.formatId, false);
       color = "black";
     } else {
       backgroundColor =
-        "#" + this.getOldEventColor(event.resource.data.formatId);
+        "#" + this.getCatagoryByFormat(event.resource.data.formatId, true);
       color = "gray";
     }
     if (
       moment(start).format("DD-MM-YYYY") ===
       moment(new Date()).format("DD-MM-YYYY")
     ) {
-      backgroundColor = "#" + this.getEventColor(event.resource.data.formatId);
+      backgroundColor = "#" + this.getCatagoryByFormat(event.resource.data.formatId, false);
       color = "black";
     }
 

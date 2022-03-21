@@ -210,12 +210,12 @@ class Table extends Component {
             this.state.defaultUserFilter.regions_selected.length !==
             0
         ) {
-         
+
           this.updateFilters();
         }
-     
+
       setTimeout(()=>{this.getFilteredData();},200)
-      
+
     }
   }
 
@@ -529,79 +529,6 @@ class Table extends Component {
       console.error(err);
     }
   }
-  getIndustry = async () => {
-    try {
-      let token = getCookie("token").replaceAll('"', "");
-      const config = {
-        method: "GET",
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      };
-      const request = await fetch(`${this.API_URL}/industry`, config);
-      const response = await request.json();
-      const industry = response.result.map((item) => ({
-        id: item.industryId,
-        label: item.name,
-      }));
-
-      if (response.info.code === 200) this.setState({ industries: industry });
-      else throw new Error(response.info.status);
-    } catch (err) {
-      console.error(err);
-    }
-  };
-
-  getSegment = async () => {
-    try {
-      let token = getCookie("token").replaceAll('"', "");
-      const config = {
-        method: "GET",
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      };
-      const request = await fetch(`${this.API_URL}/segment`, config);
-      const response = await request.json();
-      const segment = response.result.map((item) => ({
-        id: item.segmentId,
-        label: item.name,
-      }));
-
-      if (response.info.code === 200) this.setState({ segments: segment });
-      else throw new Error(response.info.status);
-    } catch (err) {
-      console.error(err);
-    }
-  };
-  getAPM1 = async () => {
-    try {
-      let token = getCookie("token").replaceAll('"', "");
-      const config = {
-        method: "GET",
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      };
-      const request = await fetch(`${this.API_URL}/apm1`, config);
-      const response = await request.json();
-      const apm1 = response.result.map((item) => ({
-        id: item.apm1Id,
-        label: item.name,
-      }));
-
-      if (response.info.code === 200) this.setState({ apm1s: apm1 });
-      else throw new Error(response.info.status);
-    } catch (err) {
-      console.error(err);
-    }
-  };
 
   async checkRegion() {
     try {
@@ -655,26 +582,22 @@ class Table extends Component {
     }
   }
 
-  getEventColor = (format) => {
-    switch (format) {
-      case "3rdParty-Virtual Event":
-        return "02d4308c";
-      case "Webinar":
-        return "e081048c";
+  getEventColor = (category) => {
+    switch (category) {
+      case "Event":
+        return "ff0000";
+      case "Campaign":
+        return "fe9900";
       case "Exec Engagement":
-        return "c9c5068c";
-      case "Executive Visit":
-        return "058eb88c";
-      case "F2F Event":
-        return "0520b88c";
-      case "Webinar - 3rd Party":
-        return "4405b88c";
-      case "Virtual Event":
-        return "a905b88c";
+        return "4b86e8";
+      case "Digital":
+        return "93c47d";
+      case "Webinar":
+        return "a1c4c9";
       case "SIC":
-        return "b805148c";
-      case "Launch":
-        return "5983598c";
+        return "#9900ff";
+      case "Content":
+        return "#ff01ff";
       default:
         return "04f7398c";
     }
@@ -694,8 +617,8 @@ class Table extends Component {
       let response = await fetch(`${this.API_URL}/format`, config);
       if (response.status === 200) {
         let { result } = await response.json();
-       
-        
+
+
         const formateresult = result.map((item) => ({ label: item.name, ...item }));
         let formats = formateresult.map((el) => ({
           ...el,
@@ -705,7 +628,7 @@ class Table extends Component {
               assistiveText={{ label: "Task" }}
               category="standard"
               name="task2"
-              style={{ background: "#" + this.getEventColor(el.label) }}
+              style={{ background: "#" + this.getEventColor(el.category) }}
             />
           ),
         }));
@@ -714,6 +637,7 @@ class Table extends Component {
             {
               label: "All",
               id: "all",
+              catagory: "",
               icon: (
                 <Icon
                   assistiveText={{ label: "Account" }}
@@ -725,8 +649,8 @@ class Table extends Component {
             ...formats,
           ],
         });
-       
-       
+
+
         const categoryresult = result.map((item) => ({ label: item.category, ...item }));
         let categorylist = categoryresult.map((el) => ({
           ...el,
@@ -736,7 +660,6 @@ class Table extends Component {
               assistiveText={{ label: "Task" }}
               category="standard"
               name="task2"
-              style={{ background: "#" + this.getEventColor(el.label) }}
             />
           ),
         }));
@@ -753,7 +676,7 @@ class Table extends Component {
               />
             ),
           },
-          
+
         ];
         var categoryrowlist=[]
         formats.map((item)=>{
@@ -761,9 +684,8 @@ class Table extends Component {
             categoryrowlist.push(item.category)
           }
         })
-        
-        categoryrowlist.map((item)=>{
 
+        categoryrowlist.map((item)=>{
            category.push({
             label: item,
             id: item,
@@ -772,15 +694,16 @@ class Table extends Component {
                 assistiveText={{ label: "Account" }}
                 category="standard"
                 name="campaign"
+                style={{ background: "#" + this.getEventColor(item) }}
               />
             ),
           })
-         
+
         })
         this.setState({
           category: category,
         });
-     
+
         let defaultFormats = this.getDefaultFornats(category);
         this.setState({
           formatsSelected: defaultFormats,
@@ -794,9 +717,9 @@ class Table extends Component {
     }
   }
 
-  
+
   getDefaultFornats = (formats) => {
-    
+
 
     var categorylist=[]
     formats.map((item)=>{
@@ -804,12 +727,12 @@ class Table extends Component {
         categorylist.push(item.category)
       }
     })
-    
-  
+
+
     let defaultFormatNames = [
       "Campaign",
       "Event",
-  
+
     ];
     return formats.filter((format) => {
       if (!defaultFormatNames.includes(format.label)) return false;
@@ -1187,19 +1110,19 @@ class Table extends Component {
   updateFilters = () => {
     const { formats_selected, programs_selected, regions_selected } =
       this.state.defaultUserFilter;
-   
+
     let selectedFormats = this.state.formats.filter((item) => {
       if (formats_selected.length >= 0 && !formats_selected.includes(item.id))
         return false;
       return true;
     });
-    
+
     let programSelected = this.state?.programs?.filter((item) => {
       if (programs_selected.length >= 0 && !programs_selected.includes(item.id))
         return false;
       return true;
     });
-   
+
     let slectedRegioins = this.state.regions?.filter((item) => {
       if (regions_selected.length >= 0 && !regions_selected.includes(item.id))
         return false;
@@ -1226,34 +1149,19 @@ class Table extends Component {
     });
     const formatsSelected = [];
     this.state.formatsSelected.map( (key)=> {
-  
-      console.log('this is formate')
-      
       this.state.formats.map((item)=>{
-        
         if(item.category===key.label){
-         
           formatsSelected.push(item.label)
-          
         }
-       
       })
-      
-     
-      
     });
-    console.log('this is formate data')
-    this.state.formats.map((item)=>{
-      console.log(item)
-    })
-   console.log(formatsSelected)
     var arr = [];
 
     if(this.state.endDate===null){
-     
+
       arr=this.props.data
     }else{
-     
+
       const startDate = moment(this.state.startDate).format("YYYY-MM-DD");
       const endDate = this.state.endDate
         ? moment(addDays(this.state.endDate, 1)).format("YYYY-MM-DD")
@@ -1262,9 +1170,9 @@ class Table extends Component {
         var date = moment(new Date(a.startDate)).format("YYYY-MM-DD");
         return moment(date).isBetween(startDate, endDate);
       });
-      
+
     }
-    
+
     const filteredData = arr.filter((row) => {
       if (
         !slectedRegioins.includes("All") &&
@@ -1328,7 +1236,7 @@ class Table extends Component {
         response.result.length > 0
           ? response.result[response.result.length - 1]
           : [];
-      
+
       if (response.info.code === 200) {
         this.setState({ defaultUserFilter: defaultUserFilter });
         this.updateFilters();
@@ -1366,7 +1274,7 @@ class Table extends Component {
           programs: programSelectedId,
         }),
       };
-     
+
       let response =
         this.state.defaultUserFilter.length !== 0
           ? await fetch(
@@ -1494,7 +1402,7 @@ class Table extends Component {
     });
 
     setTimeout(()=>{this.getFilteredData();},200)
-    
+
   };
 
   onClickToday = () => {
@@ -1681,7 +1589,7 @@ class Table extends Component {
   };
 
 
- 
+
 
   render() {
     const isEmpty = this.state.data.length === 0;
@@ -1784,7 +1692,7 @@ class Table extends Component {
           //   direction="horizontal"
           // /></Modal>
         }
-        {/* {<Modal 
+        {/* {<Modal
             isOpen={this.state.OpenFilters}
             size="medium"
             onRequestClose={() => this.setState({OpenFilters:false})}
@@ -1804,7 +1712,7 @@ class Table extends Component {
             >
               <div className="expandableRow">
                 <div className="expandableColumn">
-                <Combobox 
+                <Combobox
                     multiple
                     labels={{
                       placeholder: 'Add Industry',
@@ -1856,7 +1764,7 @@ class Table extends Component {
                   />
                 </div>
                 <div className="expandableColumn">
-                <Combobox 
+                <Combobox
                       multiple
                       labels={{
                         placeholder: 'Add APM',
@@ -1908,7 +1816,7 @@ class Table extends Component {
                     />
                 </div>
                 <div className="expandableColumn">
-                <Combobox 
+                <Combobox
                       multiple
                       labels={{
                         placeholder: 'Add Segment',
@@ -1962,9 +1870,9 @@ class Table extends Component {
                 <div className="expandableColumn">
                   <Button label="Filter Programs" variant="outline-brand" onClick={this.getFilteredProgramsByFilters}/>
                 </div>
-              </div>    
+              </div>
             </ExpandableSection>
-             <Combobox 
+             <Combobox
               multiple
               isOpen={this.state.isProgramFilterOpen}
               labels={{
@@ -2016,7 +1924,7 @@ class Table extends Component {
                 selection:this.state.programSelected,
               })}
             /></div>)}
-          {this.state.OpenFilters && (<div className="slds-form-element slds-m-bottom_large"><Combobox 
+          {this.state.OpenFilters && (<div className="slds-form-element slds-m-bottom_large"><Combobox
             multiple
             labels={{
               label: 'Search Format',
@@ -2162,9 +2070,9 @@ class Table extends Component {
               options={[{label:'Month', value: 'month'}, {label:'Week', value: 'week'}]}
               label={this.state.calendarView.view=='month'? 'Month' : 'Week'}
             /></div>} */}
-                {/* {this.state.isCalanderView &&  
+                {/* {this.state.isCalanderView &&
               <div>
-              <CalendarViewHeadFilter 
+              <CalendarViewHeadFilter
                 defaultFormats={this.state.defaultFormats}
                 modifyFilter={this.modifyFilter}
               />
@@ -2195,7 +2103,7 @@ class Table extends Component {
             title="Filter"
             onClick={() => {
               this.setState({OpenFilters:true})}}/></Tooltip>
-          {!this.state.isCalanderView && (<Tooltip content="Select Date Range for Filter" align="bottom right"><Button 
+          {!this.state.isCalanderView && (<Tooltip content="Select Date Range for Filter" align="bottom right"><Button
           label={this.state.startDate.toLocaleDateString()+" To "+this.state.endDate.toLocaleDateString()}
           onClick={this.historicBtn}
           /></Tooltip>)} */}
@@ -2343,14 +2251,14 @@ class Table extends Component {
                       }
                       this.getFilteredPrograms(this.state.regionsSelected);
                       setTimeout(()=>{this.getFilteredData();},200)
-                      
+
                     },
                     onRequestOpen: () => {
                       this.setState({ isRegionFilterOpen: true });
                     },
                     onRequestRemoveSelectedOption: (event, data) => {
                       this.setState({
-                        
+
                         regionsInputValue: "",
                         regionsSelected: data.selection,
                       });
@@ -2395,7 +2303,7 @@ class Table extends Component {
                         });
                       }setTimeout(()=>{this.getFilteredData();},200)
                     },
-                    
+
                   }}
                   selection={this.state.regionsSelected}
                   menuItemVisibleLength={5}
@@ -2496,7 +2404,7 @@ class Table extends Component {
                       },500)
                       setTimeout(()=>{this.getFilteredData();},200)
                     },
-                    
+
                   }}
                   selection={this.state.programSelected}
                   menuItemVisibleLength={5}
@@ -2637,7 +2545,7 @@ class Table extends Component {
           <main id="page-wrap">
 
             {!this.state.isCalanderView && (
-              
+
               <DataTable
                 assistiveText={{
                   actionsHeader: "actions",
@@ -2758,22 +2666,19 @@ class Table extends Component {
                   onAction={this.handleRowAction}
                   dropdown={<Dropdown length="7" />}
                 />
-                
-              </DataTable>
-              
-             
-             
-            )}
-            {console.log(this.state.data)}
-            {console.log(this.state.category)}
 
+              </DataTable>
+
+
+
+            )}
             {!this.state.isCalanderView &&(
               <div>
                 {item}
               </div>
             )}
-            
-            
+
+
             {this.state.isCalanderView && (
               <ActivityCalendar
                 activities={this.state.calendarViewData}
@@ -2785,9 +2690,10 @@ class Table extends Component {
                 isMenuOpen={this.state.openMenuBar}
                 calendarView={this.state.calendarView}
                 setDisplayedItems={this.handlePagination}
+                formats={this.state.formats}
               />
             )}
-           
+
             {!this.state.isCalanderView && (
               <Pager
                 data={this.state.data}
@@ -2813,11 +2719,11 @@ class Table extends Component {
           </ToastContainer>
         )}
       </Container>
-      
+
     );
-    
+
   }
-  
+
 }
 
 let mapState = ({ dataTable }) => ({

@@ -186,7 +186,6 @@ class PlanningView extends Component {
         pdf.setFontSize(16)
         const width =  pdf.internal.pageSize.getWidth()
         const height = canvas.height * width / width
-        console.log(height, width)  
         pdf.addImage(imgData, "JPEG", 0, 0, width, height);
         pdf.save("download.pdf");
       });
@@ -207,14 +206,14 @@ class PlanningView extends Component {
   };
 
   getPlannerByID = async () => {
-    
+
     const userEmail = getCookie("userEmail").replaceAll('"', "");
     if (window.location.hostname === "localhost"){
 
   this.API_URL = "http://localhost:3000/api/v1";
 
     }
-      
+
     else this.API_URL = await getAPIUrl();
 
     try {
@@ -335,7 +334,7 @@ class PlanningView extends Component {
                 result.mp_target.q4
             ).toFixed(1)
           : 0,
-       
+
       });
 
       // if (response.info.code === 200) this.setState({ personas: persona });
