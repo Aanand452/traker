@@ -2424,7 +2424,7 @@ class Table extends Component {
                   isOpen={this.state.isFormatFilterOpen}
                   labels={{
                     label: "",
-                    placeholder: "Catagory",
+                    placeholder: "Category",
                   }}
                   events={{
                     onChange: (event, { value }) => {
