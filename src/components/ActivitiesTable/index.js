@@ -595,9 +595,9 @@ class Table extends Component {
       case "Webinar":
         return "a1c4c9";
       case "SIC":
-        return "#9900ff";
+        return "9900ff";
       case "Content":
-        return "#ff01ff";
+        return "ff01ff";
       default:
         return "04f7398c";
     }
@@ -703,7 +703,6 @@ class Table extends Component {
         this.setState({
           category: category,
         });
-
         let defaultFormats = this.getDefaultFornats(category);
         this.setState({
           formatsSelected: defaultFormats,
@@ -730,9 +729,7 @@ class Table extends Component {
 
 
     let defaultFormatNames = [
-      "Campaign",
-      "Event",
-
+      "All",
     ];
     return formats.filter((format) => {
       if (!defaultFormatNames.includes(format.label)) return false;
@@ -1111,7 +1108,7 @@ class Table extends Component {
     const { formats_selected, programs_selected, regions_selected } =
       this.state.defaultUserFilter;
 
-    let selectedFormats = this.state.formats.filter((item) => {
+    let selectedFormats = this.state.category.filter((item) => {
       if (formats_selected.length >= 0 && !formats_selected.includes(item.id))
         return false;
       return true;
