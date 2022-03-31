@@ -603,6 +603,16 @@ class Table extends Component {
     }
   };
 
+  getCatagoryByFormat = (format) => {
+    let data = ''
+    if(format !== ''){
+      data = this.state.formats.find((x) => x.label === format).category
+    }else{
+    }
+    return data
+
+  }
+
   async checkFormat() {
     try {
       let token = getCookie("token").replaceAll('"', "");
@@ -1155,21 +1165,26 @@ class Table extends Component {
     var arr = [];
 
     if(this.state.endDate===null){
-
-      arr=this.props.data
+      arr = this.props.data.map((item) => ({ category: this.getCatagoryByFormat(item.formatId), ...item }));
+      //arr=this.props.data
     }else{
 
       const startDate = moment(this.state.startDate).format("YYYY-MM-DD");
       const endDate = this.state.endDate
         ? moment(addDays(this.state.endDate, 1)).format("YYYY-MM-DD")
         : moment(addDays(this.state.startDate, 7)).format("YYYY-MM-DD");
-      arr = this.props.data.filter((a) => {
+      arr = this.props.data.map((item) => ({ category: this.getCatagoryByFormat(item.formatId), ...item }))
+      arr = arr.filter((a) => {
         var date = moment(new Date(a.startDate)).format("YYYY-MM-DD");
         return moment(date).isBetween(startDate, endDate);
       });
 
     }
-
+    arr = arr.sort((a,b)=> {
+      a = a.category || '';
+      b = b.category || '';
+      return (a < b) ? -1 : (a > b) ? 1 : 0;
+    });
     const filteredData = arr.filter((row) => {
       if (
         !slectedRegioins.includes("All") &&
