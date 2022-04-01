@@ -108,7 +108,7 @@ class ActivityCalendar extends Component {
     const finalEvents = [];
     this.state.displayedData.forEach((e) => {
       finalEvents.push({
-        title: e.formatId + ' - ' + e.title,
+        title: e.formatId + ' : ' + e.title,
         start: new Date(e.startDate),
         end: new Date(e.startDate),
         allDay: true,

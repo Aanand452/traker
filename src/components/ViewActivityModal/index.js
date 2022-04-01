@@ -189,12 +189,12 @@ class ViewActivityModal extends Component {
                     key={el}
                     className="slds-text-heading_small slds-m-bottom_x-small"
                   >
-                  <a href={el} >  {el} </a>
+                  <a href={el} target="_blank" rel="noopener noreferrer">  {el} </a>
                   </div>
                 ))
               ) : (
                 <div className="slds-text-heading_small">
-                  <a href={this.props.item.asset} >{this.props.item.asset}</a>
+                  <a href={this.props.item.asset} target="_blank" rel="noopener noreferrer">{this.props.item.asset}</a>
                 </div>
               )}
             </div>
