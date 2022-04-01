@@ -47,10 +47,13 @@ module.exports = function (app, config, passport) {
           res.cookie("userEmail", JSON.stringify(response.result.username));
           res.cookie("role", JSON.stringify(response.result.role || "user"));
           res.cookie("token", JSON.stringify(response.result.token));
-          next();
+          // next();
+          console.log('Auth success so redirecting');
+          res.redirect("https://dev-2-sfdc-activity-tracker.herokuapp.com/my-activities")
+
         } else {
           console.log('Auth failed so redirecting');
-          <Link to={{ pathname: "https://dev-2-sfdc-activity-tracker.herokuapp.com/my-activities" }}/>
+          res.redirect("https://dev-2-sfdc-activity-tracker.herokuapp.com/my-activities")
         }
       } catch (err) {
         console.error(err);
