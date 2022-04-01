@@ -16,6 +16,7 @@ module.exports = function (app, config, passport) {
   const isAuthenticated = async (req, res, next) => {
     console.log(req);
     if (req.isAuthenticated()) {
+      console.log('Auth is called API');
       res.cookie("user", JSON.stringify(req.user || ""), {
         domain: process.env.APP_DOMAIN || DEFAULT_DOMAIN,
       });
@@ -48,13 +49,15 @@ module.exports = function (app, config, passport) {
           res.cookie("token", JSON.stringify(response.result.token));
           next();
         } else {
-          res.redirect('https://dev-2-sfdc-activity-tracker.herokuapp.com/my-activities')
+          console.log('Auth failed so redirecting');
+          <Link to={{ pathname: "https://dev-2-sfdc-activity-tracker.herokuapp.com/my-activities" }}/>
         }
       } catch (err) {
         console.error(err);
         show403Error(req, res);
       }
     } else {
+      console.log('Auth Failed else');
       res.redirect(LOGIN_URL);
     }
   };
@@ -123,10 +126,12 @@ module.exports = function (app, config, passport) {
   app.post(
     config.passport.saml.path,
     passport.authenticate(config.passport.strategy, {
+      console.log('this is called from app.post');
       failureRedirect: HOME_URL,
       failureFlash: true,
     }),
     function (req, res) {
+      console.log('Function call to home');
       res.redirect(HOME_URL);
     }
   );
@@ -147,6 +152,7 @@ module.exports = function (app, config, passport) {
   }
 
   app.get("/*", ...authMiddlewares, (req, res) => {
+    console.log('calling middle ware');
     goToApp(req, res);
   });
 };
