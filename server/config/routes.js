@@ -6,7 +6,7 @@ const LOGIN_URL = "/login";
 const LOGOUT_URL = "/logout";
 const INDEX_FILE = path.resolve(__dirname, "../../build/index.html");
 const ERROR_403 = path.resolve(__dirname, "../static/forbidden.html");
-const DEFAULT_DOMAIN = ".dev-2-sfdc-activity-tracker.herokuapp.com";
+const DEFAULT_DOMAIN = ".sfdc-activity-tracker.herokuapp.com";
 const ENV_UPLOAD_WHITELIST = process.env.UPLOAD_WHITELIST || "";
 const UPLOAD_WHITELIST = ENV_UPLOAD_WHITELIST.split(",") || [];
 const APP_LOCKED = process.env.APP_LOCKED || "";
@@ -14,6 +14,7 @@ const APP_LOCKED_ALLOWED_USERS = APP_LOCKED.split(",") || [];
 
 module.exports = function (app, config, passport) {
   const isAuthenticated = async (req, res, next) => {
+    console.log(req);
     if (req.isAuthenticated()) {
       res.cookie("user", JSON.stringify(req.user || ""), {
         domain: process.env.APP_DOMAIN || DEFAULT_DOMAIN,
@@ -47,7 +48,7 @@ module.exports = function (app, config, passport) {
           res.cookie("token", JSON.stringify(response.result.token));
           next();
         } else {
-          show403Error(req, res);
+          res.redirect('https://dev-2-sfdc-activity-tracker.herokuapp.com/my-activities')
         }
       } catch (err) {
         console.error(err);
@@ -100,7 +101,7 @@ module.exports = function (app, config, passport) {
   app.get(
     LOGIN_URL,
     passport.authenticate(config.passport.strategy, {
-      successRedirect: HOME_URL,
+      successRedirect: 'https://dev-2-sfdc-activity-tracker.herokuapp.com/my-activities',
       failureRedirect: LOGIN_URL,
     })
   );
