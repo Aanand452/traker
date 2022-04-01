@@ -129,7 +129,6 @@ module.exports = function (app, config, passport) {
   app.post(
     config.passport.saml.path,
     passport.authenticate(config.passport.strategy, {
-      console.log('this is called from app.post');
       failureRedirect: HOME_URL,
       failureFlash: true,
     }),
