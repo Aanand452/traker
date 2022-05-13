@@ -1,0 +1,124 @@
+
+.expandable-section-content {
+    padding: 10px;
+    border-left: 3px solid aquamarine;
+  }
+  
+  .expandable-section-content .box {
+    border: 1px solid gainsboro;
+    padding: 20px 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    border-radius: 15px;
+  }
+  .expandable-section-content .box .description {
+    width: 50%;
+  }
+  .icon-text-gp .icon {
+    margin-right: 10px;
+  }
+  .icon-text-gp .title {
+    color: gray;
+    font-size: 20px;
+  }
+  .icon-text-gp{
+      display: flex;
+  }
+  .content-gp{
+      margin-bottom: 20px;
+  }
+
+  .expandable-section .toggle-button {
+    background: none;
+    border: none;
+    display: flex;
+    width: -webkit-fill-available;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .expandable-section .toggle-button .main-part {
+    display: flex;
+    align-items: center;
+    position: relative;
+  }
+  .expandable-section .toggle-button .title {
+    display: flex;
+    align-items: center;
+  }
+  .expandable-section .label-gp {
+    text-align: start;
+    margin-top: 13px;
+  }
+  .expandable-section .toggle-button .title .label {
+    color: #03a5fc;
+    font-weight: bold;
+  }
+  .expandable-section .calendar-icon {
+    margin: 0 10px;
+  }
+  
+  .content {
+    width: auto;
+    height: auto;
+    display: none;
+    /* position: absolute;
+    top: 44px;
+    left: 50px; */
+    padding:18px 50px;
+  }
+  
+  .show {
+    display: flex;
+  }
+  .expandable-section .format-section {
+    border-left: 3px solid aquamarine;
+    position: absolute;
+    top: 24px;
+    left: 44px;
+    padding-left: 18px;
+  }
+  .expandable-section .slds-icon-standard-event{
+      background-color: aquamarine;
+  }
+  /* .expandable-section .slds-icon-standard-event{
+    background-color:#ff8000;
+}
+.expandable-section .slds-icon-standard-event{
+    background-color:#0099ff;
+}
+.expandable-section .slds-icon-standard-event{
+    background-color:#b5d7a8;
+}
+.expandable-section .slds-icon-standard-event{
+    background-color:#3e6a85;
+}
+.expandable-section .slds-icon-standard-event{
+    background-color:#cc00ff;
+}
+.expandable-section .slds-icon-standard-event{
+    background-color:#eb34d2;
+} */
+
+
+
+  .slds-section__content{
+    padding-left: 50px;
+    padding-right: 20px;
+  }
+
+  .expandable-section{
+      position: relative;
+      margin-bottom: 20px;
+  }
+  .expandable-section-content .slds-icon-text-default{
+      background-color:#03cffc ;
+  }
+  .childshow{
+    display: flex;
+    flex-direction: column;
+  }
+  .childcollapsible{
+    background-color: whitesmoke;
+  }

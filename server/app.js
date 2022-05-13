@@ -15,10 +15,11 @@ require('./config/passport')(passport, config);
 var app = express();
 
 app.get('/', function (req, res) {
+  console.log('get funcitno is called');
   res.redirect('/home');
 });
 
-app.set('port', config.app.port); 
+app.set('port', config.app.port);
 app.use(cookieParser());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));

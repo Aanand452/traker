@@ -1,0 +1,101 @@
+.new-activity {
+    /* text-align: center; */
+  }
+  .new-activity .activity-header {
+    border-bottom: 1px solid #dddbda;
+    text-align:center;
+    font-weight: bold;
+    font-size:25px;
+    padding:20px;
+  }
+  .new-activity .activity-body {
+    display: flex;
+    padding: 20px;
+  }
+  .new-activity .activity-body .row-flex{
+      display: flex;
+      justify-content: space-between;
+  }
+  .new-activity .activity-body .row-flex .slds-dropdown-trigger{
+      width:97%;
+  }
+  .new-activity .activity-body .row-flex .slds-form-element{
+      width: 97%;
+  }
+  .new-activity .activity-body .slds-form-element__control{
+      width:97%;
+  }
+  .new-activity .activity-body .form-fields {
+    width: 70%;
+  }
+  #unique-id-1{
+      height:124px;
+  }
+  #row-input{
+      width:97%;
+  }
+  .new-activity .activity-footer {
+    border-top: 1px solid #dddbda;
+  
+    background-color: gainsboro;
+    padding: 20px;
+    display: flex;
+    justify-content: flex-end;
+  }
+
+  .new-activity .activity-footer button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+  }
+  .new-activity .activity-footer .cancel-btn {
+    background-color: white;
+    color: blue;
+    margin-right: 10px;
+  }
+  .new-activity .activity-footer .save-btn {
+    background-color: blue;
+    color: white;
+  }
+
+  /* .Program-Details{
+      margin-top:7px;
+  }
+
+  #program-input{
+    margin-top:2px;
+    height: 281px;
+    width:450px;
+  } */
+
+  .new-activity .program-details {
+    width: 30%;
+    text-align: start;
+    color:black;
+  }
+  .new-activity .program-details-box {
+    
+   
+    border: 1px solid gainsboro;
+    padding: 10px 20px;
+    background-color: white;
+    width: 400px;
+    
+  }
+  .new-activity .program-details-box .first-items {
+    display: flex;
+    justify-content: space-between;
+    text-align: start;
+  }
+  .new-activity .program-details-box .details-item span {
+    color: gray;
+  }
+  
+  .new-activity .program-details-box .details-item p {
+    margin-bottom: 7px;
+  }
+  
+/* .new-activity .activity-body .slds-form-element__control{
+    height: 281px;
+    width:347px;
+  }   */

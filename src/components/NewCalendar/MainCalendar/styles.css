@@ -1,0 +1,108 @@
+/* .selected {
+  color: white;
+  background: #0176d3;
+  width: 30px;
+  height: 30px;
+  border-radius: 25px;
+  margin: auto;
+} */
+
+/* .today {
+  padding: 5px;
+} */
+
+.calendar .day {
+
+}
+
+.week {
+  position: relative;
+  width: calc(100% / 5);
+  height: 30px;
+  border-color: #dddbda;
+  border-style: solid;
+  border-width: thin;
+  display: inline-block;
+  background-color: white;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  /* z-index: 1; */
+  text-align: center;
+  font-weight: bold;
+}
+
+.popover {
+  z-index: 2;
+  position: relative;
+}
+.ongoing-activities {
+  position: relative;
+  /* width: 100%; */
+  height: 60px;
+  border-color: #dddbda;
+  border-style: solid;
+  border-width: thin;
+  background-color: white;
+  margin: 0;
+  padding: 0;
+  display: flex;
+}
+.ongoing-activities > .title {
+
+}
+
+.ongoing-activities > .pills {
+  padding: 15px;
+}
+
+.ongoing-activities > .view-all{
+  position: absolute;
+  top: 0px;
+  right: 0px;
+  padding: 15px
+}
+.title > .title-main {
+  font-weight: bold;
+  text-align: left;
+  padding-left: 15px;
+  padding-top: 15px;
+  padding-right: 10px;
+}
+.title > .sub-title {
+  text-align: left;
+  padding-left: 15px;
+}
+.day-footer {
+  position: absolute;
+  width: 100%;
+  bottom: 0;
+  text-align: center;
+  padding-left: 20px;
+  padding-right: 20px;
+  text-decoration-line: overline;
+
+}
+.footer-activities {
+  float:left;
+  width:25%;
+}
+.footer-activities .tab {
+  width: 30px;
+  height: 2px;
+  background: #01abd3;
+  border-radius: 25px;
+  margin: auto;
+}
+
+.day-footer .line {
+  width: 100%;
+  border: 1px solid #C4C4C4;
+  margin: 5px;
+}
+
+.footer-title {
+  float:left;
+  width:75%;
+  font-weight: bold;
+}

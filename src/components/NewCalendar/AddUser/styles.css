@@ -1,0 +1,56 @@
+
+/* .new-user{
+    text-align:center;
+    padding: 20px;
+} */
+
+ .new-user .user-header{
+    border-bottom: 1px solid #dddbda;
+    text-align: center;
+    font-weight: bold;
+    font-size: 30px;
+    padding: 20px;
+} 
+
+.new-user .user-body .row-flex{
+   
+    justify-content: space-between;
+    
+    padding: 20px;
+}
+
+.new-user .user-body .row-flex .slds-form-element__label{
+    /* font-weight: bold;
+    font-size: 15px; */
+}
+
+.new-user .user-body .form-fields {
+  
+    justify-content: center;
+    /* align-items: center; */
+  }
+
+  .new-user .user-footer {
+    border-top: 1px solid #dddbda;
+  
+    background-color: gainsboro;
+    padding: 20px;
+    display: flex;
+    justify-content: center;
+  }
+
+  .new-user .user-footer button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+  }
+
+  .new-user .user-footer .cancel-btn {
+    background-color: white;
+    color: blue;
+    margin-right: 10px;
+  }
+  .new-user .user-footer .save-btn {
+    background-color: blue;
+    color: white;
+  }

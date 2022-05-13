@@ -110,7 +110,7 @@ class ActivityCalendar extends Component {
       finalEvents.push({
         title: e.formatId + ' : ' + e.title,
         start: new Date(e.startDate),
-        end: new Date(e.startDate),
+        end: new Date(e.endDate),
         allDay: true,
         resource: { data: e },
       });
@@ -194,7 +194,7 @@ class ActivityCalendar extends Component {
     this.setState({ toast: { show, message, variant } });
   };
 
-  handleRowClicked = (row, e) => {};
+  handleRowClicked = (row, e) => { };
   handleFilterChange = (event) => {
     // const filteredUserItems = this.state.eventsOnModal.filter((item) =>
     //         RegExp(event.target.value, 'i').test(item.userId)
@@ -238,29 +238,29 @@ class ActivityCalendar extends Component {
     }
   };
   getCatagoryByFormat = (format, isOld) => {
-    let ff = !!format ? this.props.formats.find((f) => f.label === format).category: "Empty";
+    let ff = !!format ? this.props.formats.find((f) => f.label === format).category : "Empty";
     ff = format !== '' || ff !== null ? ff : "Empty";
     let color = isOld ? this.getOldEventColor(ff) : this.getEventColor(ff);
     return color
   }
   getEventColor = (category) => {
-      switch (category) {
-        case "Event":
-          return "ea9a99";
-        case "Campaign":
-          return "fff2cc";
-        case "Exec Engagement":
-          return "c9daf8";
-        case "Digital":
-          return "b5d7a8";
-        case "Webinar":
-          return "d0dfe3";
-        case "SIC":
-          return "c9daf8";
-        case "Content":
-          return "ead1db";
-        default:
-          return "04f7398c";
+    switch (category) {
+      case "Event":
+        return "ea9a99";
+      case "Campaign":
+        return "fff2cc";
+      case "Exec Engagement":
+        return "c9daf8";
+      case "Digital":
+        return "b5d7a8";
+      case "Webinar":
+        return "d0dfe3";
+      case "SIC":
+        return "c9daf8";
+      case "Content":
+        return "ead1db";
+      default:
+        return "04f7398c";
     }
   };
 
@@ -309,7 +309,7 @@ class ActivityCalendar extends Component {
 
     var style = {
       backgroundColor: backgroundColor,
-      borderRadius: "0px",
+      borderRadius: "25px",
       opacity: 1,
       color: color,
       border: "0px",
@@ -384,15 +384,15 @@ class ActivityCalendar extends Component {
               //     </Button></Tooltip>
               // </Link>)}
               hasNoHeader
-              // heading=""
-              // // icon={<Icon category="standard" name="document" size="small" />}
-              // empty={
-              //     isEmpty ? (
-              //         <CardEmpty heading="No Related Items">
-              //             <Button label="Add Item" onClick={this.handleAddItem} />
-              //         </CardEmpty>
-              //     ) : null
-              // }
+            // heading=""
+            // // icon={<Icon category="standard" name="document" size="small" />}
+            // empty={
+            //     isEmpty ? (
+            //         <CardEmpty heading="No Related Items">
+            //             <Button label="Add Item" onClick={this.handleAddItem} />
+            //         </CardEmpty>
+            //     ) : null
+            // }
             >
               <section className="slds-p-around_large">
                 <ModalTableContainer>
@@ -443,7 +443,11 @@ class ActivityCalendar extends Component {
             width: this.props.isMenuOpen ? "80%" : "100%",
             transition: "all 0.4s ease 0s",
           }}
+        ><div
+          style={{ border: "solid" }}
         >
+            On going Activities
+          </div>
           <Calendar
             localizer={localizer}
             events={this.state.events}

@@ -1,0 +1,102 @@
+.border {
+  transition: 0.05s ease;
+}
+
+.border:hover {
+  background-color: #dddbda8c;
+}
+
+.padding_bottom {
+  padding-bottom: 150px;
+}
+.slds-table_bordered tbody td {
+  border-bottom: 1px solid #dddbda;
+}
+
+.dialog-classname {
+  max-width: 50vw;
+  white-space: break-spaces;
+  line-height: 1.5;
+}
+
+.expandableRow {
+  content: "";
+  display: table;
+  border: #1311108c;
+  padding-bottom: 50px;
+}
+
+.expandableColumn {
+  float: left;
+  /* width: 15%; */
+  padding-left: 10px;
+}
+/* .slds-pill__remove {
+  display: none !important;
+} */
+
+.bm-menu {
+  background: #fff;
+  font-size: 0.9em;
+  overflow: auto;
+  height: 700px;
+}
+
+.bm-overlay {
+  background: rgba(0, 0, 0, 0.3);
+}
+.bm-item-list {
+  height: 100vh !important;
+  overflow: auto !important;
+  padding-bottom: 150px;
+}
+.bm-burger-button {
+  position: fixed;
+  width: 36px;
+  height: 30px;
+  left: 36px;
+  top: 36px;
+  overflow: auto;
+}
+.bm-menu-wrap {
+  position: relative;
+  height: 700px !important;
+  overflow: auto;
+  padding-bottom: 30px;
+  transition: all 0.4s ease 0s !important;
+}
+.bm-cross-button {
+  display: none !important;
+}
+
+.react-datepicker__month-container,
+.react-datepicker {
+  width: 100%;
+  border: none !important;
+}
+
+.react-datepicker__month,
+.react-datepicker__header {
+  background: #fff !important;
+  border-bottom: none !important;
+  margin: inherit !important;
+}
+
+.react-datepicker__day--selected,
+.react-datepicker__day--in-selecting-range,
+.react-datepicker__day--in-range,
+.react-datepicker__month-text--selected,
+.react-datepicker__month-text--in-selecting-range,
+.react-datepicker__month-text--in-range,
+.react-datepicker__quarter-text--selected,
+.react-datepicker__quarter-text--in-selecting-range,
+.react-datepicker__quarter-text--in-range,
+.react-datepicker__year-text--selected,
+.react-datepicker__year-text--in-selecting-range,
+.react-datepicker__year-text--in-range {
+  border-radius: 0.9rem !important;
+  background-color: #45a7f1 !important;
+}
+.absolute-positioned {
+  z-index: 150 !important;
+}
