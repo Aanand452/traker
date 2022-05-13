@@ -24,6 +24,7 @@ import {
   Modal,
   Combobox,
   comboboxFilterAndLimit,
+  Popover,
   Spinner,
 } from "@salesforce/design-system-react";
 
@@ -112,6 +113,33 @@ const DropDownCellAsset = ({ children, ...props }) => {
   );
 };
 
+const options = [
+	{
+    disabled:false,
+		label: 'Month View',
+		value: 'month',
+		rightIcon: {
+			category: 'utility',
+			name: 'monthlyview',
+		},
+	},
+	{
+		label: 'Week View',
+		value: 'week',
+		rightIcon: {
+			category: 'utility',
+			name: 'weeklyview',
+		},
+	},
+	{
+		label: 'List View',
+		value: 'list',
+		rightIcon: {
+			category: 'utility',
+			name: 'list',
+		},
+	},
+];
 DropDownCellAsset.displayName = DataTableCell.displayName;
 moment.locale("en-GB");
 class Table extends Component {
@@ -181,6 +209,9 @@ class Table extends Component {
     row: {},
     openNew: false,
     showLoader: false,
+    selectedOptionIndex: 0,
+    inputValue: '',
+		selection: [],
   };
 
   table = React.createRef();
@@ -2016,7 +2047,7 @@ class Table extends Component {
           headerActions={
             <div style={{ paddingTop: "6px" }}>
               <ButtonGroup id="button-group-page-header-actions">
-                {this.state.isCalanderView && (
+                {/*this.state.isCalanderView && (
                   <div style={{ float: "left", paddingRight: "40px" }}>
                     <div
                       style={{
@@ -2070,7 +2101,7 @@ class Table extends Component {
                       </div>
                     </div>
                   </div>
-                )}
+                )*/}
                 {/* {this.state.isCalanderView && <div style={{float: 'left', paddingRight: '30px'}}>
             <Dropdown
               align="right"
@@ -2089,7 +2120,7 @@ class Table extends Component {
                 modifyFilter={this.modifyFilter}
               />
               &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div>} */}
-                <Tooltip
+                {/*}<Tooltip
                   content={
                     !this.state.isCalanderView
                       ? "Open Calendar View"
@@ -2104,7 +2135,7 @@ class Table extends Component {
                       size="x-small"
                     />
                   </Button>
-                </Tooltip>
+                </Tooltip>*/}
                 {/* <Tooltip content="Add Filter" align="bottom right">
           <Button
             assistiveText={{ icon: "Filters" }}
@@ -2119,6 +2150,48 @@ class Table extends Component {
           label={this.state.startDate.toLocaleDateString()+" To "+this.state.endDate.toLocaleDateString()}
           onClick={this.historicBtn}
           /></Tooltip>)} */}
+
+
+      <Dropdown
+					align="right"
+					width="xx-small"
+          checkmark
+					iconPosition="right"
+          onSelect={(option) => {
+								const selectedOptionIndex = options.findIndex(
+									(currenOption) => currenOption.value === option.value
+								);
+								this.setState({ selectedOptionIndex });
+					}}
+          iconCategory={
+								options[this.state.selectedOptionIndex].rightIcon.category
+							}
+					iconName={options[this.state.selectedOptionIndex].rightIcon.name}
+					// iconSize="large"
+					label={options[this.state.selectedOptionIndex].label}
+          value={options[this.state.selectedOptionIndex].value}
+          {...this.props}
+					options={options}
+          menuPosition="overflowBoundaryElement"
+          popover={
+						<Popover
+							body={
+								<div>
+									<fieldset className="slds-form-element">
+										<legend className="slds-form-element__legend slds-form-element__label">
+											Select up to 2
+										</legend>
+										<div className="slds-form-element__control">
+											This is it
+										</div>
+									</fieldset>
+								</div>
+							}
+							onClose={console.log('this is called')}
+						/>
+					}
+				/>
+
                 <Dropdown
                   onSelect={this.exportBtn}
                   width="xx-small"
@@ -2136,14 +2209,13 @@ class Table extends Component {
                 </Dropdown>
                 <Link to="/create-activity"></Link>
                 <Tooltip content="Add New Activity" align="bottom right">
-                  <Button onClick={this.openNewActivity}>
-                    <Icon
-                      assistiveText={{ icon: "New" }}
-                      category="utility"
-                      name="new"
-                      size="x-small"
-                    />
-                  </Button>
+                  <Button
+                    iconCategory="utility"
+                    iconName="add"
+                    iconPosition="left"
+                    label="New Activity"
+                    variant="brand"
+                  />
                 </Tooltip>
               </ButtonGroup>
             </div>
@@ -2162,43 +2234,14 @@ class Table extends Component {
               </div>
               {this.state.isCalanderView && (
                 <div style={{ float: "left" }}>
-                  <div style={{ float: "left", paddingLeft: "100px" }}>
-                    <Button onClick={this.onClickToday}> Today </Button>
-                  </div>
-                  <div
-                    style={{
-                      float: "left",
-                      paddingLeft: "20px",
-                      paddingTop: "4px",
-                    }}
-                  >
-                    <Button
-                      assistiveText={{ icon: "Previous" }}
-                      onClick={this.previousMonth}
-                      iconCategory="utility"
-                      iconName="chevronleft"
-                      iconVariant="bare"
-                      variant="icon"
-                    />
-                  </div>
-                  <div
-                    style={{
-                      float: "left",
-                      paddingLeft: "20px",
-                      paddingTop: "4px",
-                    }}
-                  >
-                    <Button
-                      assistiveText={{ icon: "Next" }}
-                      onClick={this.nextMonth}
-                      iconCategory="utility"
-                      iconName="chevronright"
-                      iconVariant="bare"
-                      variant="icon"
-                    />
-                  </div>
-                  <div style={{ float: "left", paddingLeft: "300px" }}>
-                    <div style={{ fontSize: "18px" }}>
+                  <div style={{ float: "left", paddingLeft: "10px" }}> <Icon
+          							assistiveText={{ label: 'event' }}
+          							category="utility"
+          							name="event"
+          							size="medium"
+						           /></div>
+                  <div style={{ float: "left", paddingLeft: "30px", paddingRight: "30px"}}>
+                    <div style={{ fontSize: "20px", fontWeight: "bold" }}>
                       {new Date(this.state.calendarView.date)
                         .toLocaleString("default", { month: "long" })
                         .toString()}{" "}
@@ -2207,6 +2250,48 @@ class Table extends Component {
                         .toString()}
                     </div>
                   </div>
+
+                  <div
+                    style={{
+                      float: "left",
+                      padding: "5px",
+                      borderRadius:"25px",
+                      marginRight:"10px",
+                      border:"1px solid rgb(236 238 232)",
+                      boxShadow:" #e6f1f5 2px 2px 2px"
+                    }}
+                  >
+                    <Button
+                      assistiveText={{ icon: "Previous" }}
+                      onClick={this.previousMonth}
+                      iconCategory="utility"
+                      iconSize="large"
+                      iconName="chevronleft"
+                      // iconVariant="border"
+                      variant="icon"
+                    />
+                  </div>
+                  <div
+                    style={{
+                      float: "left",
+                      padding: "5px",
+                      borderRadius:"25px",
+
+                      border:"1px solid rgb(236 238 232)",
+                      boxShadow:" #e6f1f5 2px 2px 2px"
+                    }}
+                  >
+                    <Button
+                      assistiveText={{ icon: "Next" }}
+                      onClick={this.nextMonth}
+                      iconCategory="utility"
+                      iconSize="large"
+                      iconName="chevronright"
+                      // iconVariant="border"
+                      variant="icon"
+                    />
+                  </div>
+
                 </div>
               )}
             </div>

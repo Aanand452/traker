@@ -6,27 +6,27 @@
   .rbc-day-bg.rbc-today {
     border-bottom: 2px solid #293541;
     border-top: 2px solid #293541;
-    border-left: 2px solid #293541 !important;    
+    border-left: 2px solid #293541 !important;
     border-right: 2px solid #293541;
     /* background: #b1e4f5 !important;  fallback for old browsers */
-    /* background: -webkit-linear-gradient(to right, rgb(80, 143, 226), rgb(108, 205, 238)) !important;  /* Chrome 10-25, Safari 5.1-6 
+    /* background: -webkit-linear-gradient(to right, rgb(80, 143, 226), rgb(108, 205, 238)) !important;  /* Chrome 10-25, Safari 5.1-6
     background: linear-gradient(to right, rgb(77, 146, 236), rgb(102, 198, 230)) !important; /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
     background-color: #f5fafd;
   }
 
   /* .rbc-calendar {
-    width: 2010px !important; 
+    width: 2010px !important;
   } */
 
   .rbc-toolbar {
-    margin-right: 580px !important; 
+    margin-right: 580px !important;
   }
 
   .rbc-time-content {
-    display: none !important; 
+    display: none !important;
   }
   .rbc-time-view .rbc-allday-cell {
-    border-bottom: 5px solid #fbf9f9 !important; 
+    border-bottom: 5px solid #fbf9f9 !important;
   }
 
   .rbc-off-range-bg {
@@ -35,7 +35,7 @@
   }
 
   .rbc-toolbar {
-    display: none !important; 
+    display: none !important;
   }
   .rbc-header{
    border-bottom: none !important;
@@ -52,7 +52,7 @@
     border: white !important;
     width: 140% !important;
   }
-  .rbc-time-view{    
+  .rbc-time-view{
     border: white !important;
     width: 140% !important;
   }
@@ -93,8 +93,8 @@
     border-top: white;
   }
   /* .rbc-row-segment {
-    max-width: 20% !important; 
-    flex-basis: 20% !important; 
+    max-width: 20% !important;
+    flex-basis: 20% !important;
   } */
  .rbc-row-segment:nth-child(6){
   background: #ffffff;
@@ -118,10 +118,10 @@
     border-style: none !important;
   }
   .rbc-ellipsis, .rbc-event-label, .rbc-row-segment .rbc-event-content, .rbc-show-more {
-    white-space: normal !important; 
-    line-height: 1.2em !important; 
-    height: 2.4em !important; 
-    overflow: hidden !important; 
+    white-space: normal !important;
+    line-height: 1.2em !important;
+    height: 1.2em !important; 
+    overflow: hidden !important;
   }
   .rbc-month-row + .rbc-month-row {
     border: none !important;

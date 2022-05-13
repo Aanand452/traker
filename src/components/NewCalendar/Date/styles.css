@@ -1,0 +1,45 @@
+.week-calendar {
+    padding-top:50px;
+}
+.week-calendar
+
+  table {
+    font-family: arial, sans-serif;
+    border-collapse: collapse;
+    width: 100%;
+  }
+.week-calendar
+  td,
+  .week-calendar
+  th {
+    border: 1px solid #dddddd;
+    text-align: left;
+    padding: 8px;
+    text-align: center;
+    width: 10%;
+  }
+  .week-calendar
+  td {
+    vertical-align: baseline;
+    height: 90vh;
+    padding-top: 15px;
+  }
+.week-calendar
+  td span {
+    cursor: pointer;
+  }
+  .week-calendar
+  .selected {
+    background: #3483eb;
+    border-radius: 50%;
+    padding: 5px;
+    color: white;
+  }
+  
+  .week-calendar .btn-gp {
+    margin-bottom: 20px;
+  }
+  .week-calendar .btn-gp button {
+    margin-left: 10px;
+  }
+  

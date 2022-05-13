@@ -1,0 +1,148 @@
+ .sidenavbar{
+    
+    background-color:white;
+    
+    position: relative;
+    border-color: #dddbda;
+    border-style: solid;
+    border-width: thin;
+    /* margin: 0 auto; */
+    
+} 
+
+
+.sub--title{
+    display: flex;
+    flex: 1;
+    justify-content: center;
+    color:#006dcc;
+    margin-top: 10px;
+}
+.down--firstbar{
+    display: flex;
+    flex-direction: row;
+    flex: 1;
+}
+.title{
+    display: flex;
+    flex-direction: row;
+    flex: 1;
+    align-items: center;
+    justify-content: space-between;
+}
+.title .text{
+    text-align: center;
+}
+.downbar--box{
+    padding: 10px;
+}
+
+.second-downbar{
+    
+    display: flex;
+    flex-direction: row;
+    flex: 1;
+
+}
+.title-two{
+    
+    display: flex;
+    flex-direction: row;
+    flex: 1;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.second-bar{
+    padding: 10px;
+}
+
+/* .formats{
+    display: flex;
+    flex-direction: row;
+    flex: 1;
+} */
+.title--three{
+    display: flex;
+    flex-direction: row;
+    /* flex: 1; */
+    align-items: center;
+    justify-content: space-between;
+    /* padding:10px; */
+}
+
+.last--search{
+    display: flex;
+    flex: 1;
+    justify-content: center;
+    flex-direction: column;
+    padding:10px;
+    margin-top:10px;
+}
+
+.last--checkbox{
+    padding-left: 24px;
+    justify-content: center;
+    display:flex; 
+    flex-direction: column;
+    margin-top: 10px;
+     
+}
+
+.button--save{
+    justify-content: center;
+    display: flex;
+    padding: 10px;
+}
+
+.reset--button{
+    justify-content: center;
+    display: flex;
+    padding: 10px;
+}
+/* .Event_checkbox .slds-checkbox_faux{
+    background-color:#ff0000;
+}
+.Campaign_checkbox .slds-checkbox_faux{
+    background-color: #ff8000;
+}
+.Digital_checkbox .slds-checkbox_faux{
+    background-color:#b5d7a8;
+}
+.Webnair_checkbox .slds-checkbox_faux{
+    background-color:#c9daf8;
+}
+.ExecEngagement_checkbox .slds-checkbox_faux{
+    background-color:#006dcc;
+} 
+.SIC_checkbox .slds-checkbox_faux{
+    background-color:#8a3d7f;
+}
+.Content_checkbox .slds-checkbox_faux{
+    background-color:#eb34d2;
+} */
+
+
+
+
+
+
+
+
+.sub--title{
+    text-align: center;
+    padding: 10px 0;
+    font-size: 15px;
+    color:#006dcc;
+}  
+
+.Category{
+    margin-top:10px;
+}
+
+
+
+
+
+
+

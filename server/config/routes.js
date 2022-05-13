@@ -13,8 +13,10 @@ const APP_LOCKED = process.env.APP_LOCKED || "";
 const APP_LOCKED_ALLOWED_USERS = APP_LOCKED.split(",") || [];
 
 module.exports = function (app, config, passport) {
+  console.log('this funcitn is called');
   const isAuthenticated = async (req, res, next) => {
-    console.log(req);
+    console.log('is Authenticated ic called');
+    console.log(req.user);
     if (req.isAuthenticated()) {
       console.log('Auth is called API');
       res.cookie("user", JSON.stringify(req.user || ""), {
@@ -47,10 +49,7 @@ module.exports = function (app, config, passport) {
           res.cookie("userEmail", JSON.stringify(response.result.username));
           res.cookie("role", JSON.stringify(response.result.role || "user"));
           res.cookie("token", JSON.stringify(response.result.token));
-          // next();
-          console.log('Auth success so redirecting');
-          res.redirect("https://dev-2-sfdc-activity-tracker.herokuapp.com/my-activities")
-
+          next();
         } else {
           console.log('Auth failed so redirecting');
           res.redirect("https://dev-2-sfdc-activity-tracker.herokuapp.com/my-activities")
@@ -82,8 +81,9 @@ module.exports = function (app, config, passport) {
   };
 
   const isUserAllowed = (req, res, next) => {
+    console.log('is user allowed called');
     const email = req.user ? req.user.email : "";
-
+    console.log(email);
     if (isAppLocked()) {
       if (APP_LOCKED_ALLOWED_USERS.includes(email)) {
         next();
@@ -154,7 +154,10 @@ module.exports = function (app, config, passport) {
   }
 
   app.get("/*", ...authMiddlewares, (req, res) => {
+    console.log(req.user);
+
     console.log('calling middle ware');
+    console.log(process.env.SSO);
     goToApp(req, res);
   });
 };

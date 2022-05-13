@@ -1,0 +1,16 @@
+.headding-1 {
+  overflow: hidden;
+  width: 100%;
+  padding-top: 10px;
+}
+
+.headding-1 > .logo{
+  width: 25px;
+  float: left;
+}
+.headding-1 > .title {
+  margin-left: 20px;
+}
+.result {
+  padding-left: 22px;
+}

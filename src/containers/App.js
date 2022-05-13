@@ -24,6 +24,12 @@ import CreatePlanner from "../components/CreatePlanner";
 import EditPlanner from "../components/EditPlanner";
 import PlanningView from "../components/PlanningView";
 import PlannerPage from "../components/Planner";
+import Calendar from "../components/Calendar";
+import SideNavBar from "../components/NewCalendar/SideNavBar/";
+import ListView from "../components/NewCalendar/ListView";
+import Date from "../components/NewCalendar/Date";
+import NewActivity from "../components/NewCalendar/NewActivity"
+import AddUser from "../components/NewCalendar/AddUser"
 
 Settings.setAppElement("#root");
 
@@ -95,17 +101,24 @@ function App({ closeSettingsMenu, user }) {
     <Router>
       <SfdcPageAppWrapper className="app" onClick={closeSettingsMenu}>
         <Switch>
-          <Route
-            exact
-            path="/"
+          <Route exact path="/"
             render={() =>
-              !localStorage.getItem("userId") ? (
-                <Login />
-              ) : (
-                <Redirect to="/home" />
-              )
+
+              <SideNavBar />
+
+
+              //!localStorage.getItem("userId") ? (
+              // <Login />
+              // ) : (
+              // <Redirect to="/home" />
+              // )
             }
           />
+          <Route exact path="/addUser" component={AddUser} />
+          <Route exact path="/newActivity" component={NewActivity} />
+          <Route exact path="/date" component={Date} />
+          <Route exact path="/listView" component={ListView} />
+          <PrivateRoute exact path="/sideNavBar" component={SideNavBar} />
           <PrivateRoute exact path="/home" component={Home} />
 
           <PrivateRoute exact path="/my-activities" component={EditActivity} />
